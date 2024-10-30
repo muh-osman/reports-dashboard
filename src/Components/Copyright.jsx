@@ -6,6 +6,7 @@ import Link from "@mui/material/Link";
 export default function Copyright(props) {
   return (
     <Typography
+      dir="auto"
       variant="body2"
       color="text.secondary"
       align="center"
@@ -19,7 +20,7 @@ export default function Copyright(props) {
         onMouseOver={(e) => (e.target.style.color = "#7431fa")}
         onMouseOut={(e) => (e.target.style.color = "inherit")}
       >
-        Your Website
+        Cashif
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}

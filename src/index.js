@@ -9,6 +9,8 @@ import reportWebVitals from "./reportWebVitals";
 // MUI theme
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import ScopedCssBaseline from "@mui/material/ScopedCssBaseline";
+// Phone number context
+import { PhoneNumberProvider } from "./Contexts/PhoneNumberContext";
 // Toastify
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -29,7 +31,7 @@ const qc = new QueryClient({
 const defaultTheme = createTheme({
   palette: {
     primary: {
-      main: "#7431fa",
+      main: "#174545",
     },
     // ... other colors
   },
@@ -44,7 +46,9 @@ root.render(
       <QueryClientProvider client={qc}>
         <ToastContainer />
         <ScopedCssBaseline>
-          <App />
+          <PhoneNumberProvider>
+            <App />
+          </PhoneNumberProvider>
         </ScopedCssBaseline>
       </QueryClientProvider>
     </CookiesProvider>

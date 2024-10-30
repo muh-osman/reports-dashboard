@@ -3,27 +3,27 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 // API base
 import API from "./Api";
-// Cookies
-import { useCookies } from "react-cookie";
 // Toastify
 import { toast } from "react-toastify";
+//  phone number context
+import { usePhoneNumber } from "../Contexts/PhoneNumberContext";
 
-export const useSignUpApi = () => {
+export const useAskCodeApi = () => {
   //
   const navigate = useNavigate();
-  // Cookies
-  const [cookies, setCookie] = useCookies(["token", "verified"]);
+  const { setPhoneNumber } = usePhoneNumber();
 
   return useMutation({
     mutationFn: async (data) => {
-      const res = await API.post("api/register", data);
+      // console.log(data.get("phoneNumber"));
+      const res = await API.post("api/XXX", data);
       return res.data;
     },
 
-    onSuccess: (responseData) => {
-      setCookie("verified", responseData.user.email_verified_at);
-      setCookie("token", responseData.token);
-      navigate("/dashboard", { replace: true });
+    onSuccess: (responseData, variables) => {
+      const phoneNumber = variables.get("phoneNumber");
+      setPhoneNumber(phoneNumber); // Store phoneNumber in context
+      navigate("/verify");
     },
 
     onError: (err) => {

@@ -7,5 +7,5 @@ export default function Auth() {
 
   // console.log(cookies.token);
 
-  return !cookies.token ? <Outlet /> : <Navigate to="dashboard" />;
+  return !cookies.token ? <Outlet /> : <Navigate to="reports" />;
 }
