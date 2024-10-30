@@ -8,19 +8,19 @@ import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
 import PersonIcon from "@mui/icons-material/Person";
-//
+// Logo
 import logo from "../Assets/Images/logo.png";
+// Cookies
+import { useCookies } from "react-cookie";
 
 const pages = [];
-const settings = ["Profile", "Logout"];
+const settings = ["Logout"];
 
 function HomeLayout() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 900); // Assuming md breakpoint is 960px
@@ -55,18 +55,22 @@ function HomeLayout() {
     setAnchorElUser(null);
   };
 
+  // Logout
+  const [cookies, setCookie, removeCookie] = useCookies(["token"]);
+  const logout = () => {
+    removeCookie("token", { path: "/dashboard" });
+  };
+
   return (
     <Box>
       <AppBar position="static">
         <Container maxWidth="xl">
           <Toolbar disableGutters>
-            {/* <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} /> */}
-
             <div
               style={{
                 width: "55px",
+                height: "67px",
                 margin: "6px",
-                // display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
                 display: isMobile ? "none" : "flex",
@@ -91,12 +95,11 @@ function HomeLayout() {
               }}
             ></Typography>
 
-            {/* <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} /> */}
             <div
               style={{
                 width: "45px",
+                height: "55px",
                 margin: "6px",
-                // display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
                 display: isMobile ? "flex" : "none",
@@ -133,7 +136,7 @@ function HomeLayout() {
               ))}
             </Box>
             <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
+              <Tooltip title="Cashif Account">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar>
                     <PersonIcon sx={{ color: "white", fontSize: "2rem" }} />
@@ -158,7 +161,7 @@ function HomeLayout() {
               >
                 {settings.map((setting) => (
                   <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography sx={{ textAlign: "center" }}>
+                    <Typography sx={{ textAlign: "center" }} onClick={logout}>
                       {setting}
                     </Typography>
                   </MenuItem>

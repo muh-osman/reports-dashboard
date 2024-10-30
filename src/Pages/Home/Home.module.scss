@@ -1,0 +1,80 @@
+.points_container {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  padding-top: 31px;
+}
+
+.point_card {
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  padding: 18px;
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 16px;
+  transition: all 0.2s ease-in-out;
+}
+
+.point_card:nth-child(1):hover {
+  background-color: #9747ff;
+}
+
+.point_card:nth-child(2):hover {
+  background-color: #0d99ff;
+}
+
+.point_card:nth-child(3):hover {
+  background-color: #757575;
+}
+
+.point_card h2 {
+  color: #fff;
+  padding: 5px;
+  border-radius: 50%;
+  height: 66px;
+  width: 66px;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.point_card p {
+  font-size: 14px;
+  width: 246px;
+  color: #00000080;
+  transition: all 0.2s ease-in-out;
+}
+
+.point_card h3 {
+  font-size: 16px;
+  transition: all 0.2s ease-in-out;
+}
+.point_card:hover h3 {
+  color: #fff;
+}
+
+.point_card:hover p {
+  color: #ffffffcc;
+}
+
+@media (max-width: 1150px) {
+  .point_card {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 900px) {
+  .points_container {
+    flex-direction: column;
+    gap: 24px;
+    padding-top: 0px !important;
+  }
+
+  .point_card {
+    width: 100%;
+  }
+}
