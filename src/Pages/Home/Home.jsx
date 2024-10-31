@@ -18,7 +18,7 @@ export default function Home() {
           </div>
           <div>
             <h3>مجموع النقاط المكتسبة</h3>
-            <p>يتضمن جميع النقاط الحالية والمستهلكة</p>
+            <p>جميع النقاط المكتسبة من خدمات سيارتك</p>
           </div>
         </div>
 
@@ -43,11 +43,10 @@ export default function Home() {
         </div>
       </div>
 
-      <h5 className={style.last_reports_title}>آخر التقارير</h5>
+      <h5 className={style.last_reports_title}>تقاريري</h5>
       <Divider sx={{ marginBottom: "18px" }} />
 
       <div className={style.reports_cards_container}>
-
         <Card sx={{ width: 300, backgroundColor: "#f5f5f5" }}>
           <CardContent>
             <Typography
@@ -537,7 +536,6 @@ export default function Home() {
             </Button>
           </CardActions>
         </Card>
-
       </div>
     </div>
   );
