@@ -15,18 +15,18 @@ export const useVerifyApi = () => {
 
   return useMutation({
     mutationFn: async (data) => {
-      const res = await API.post("api/XXX", data);
+      const res = await API.post("api/ZZZ", data);
       return res.data;
     },
 
     onSuccess: (responseData) => {
-      setCookie("token", responseData.token, { path: "/dashboard" });
-      navigate("/dashboard/reports", { replace: true });
+      setCookie("token", "ZZZ", { path: "/" });
+      navigate("/reports", { replace: true });
     },
 
     onError: (err) => {
       console.error(err);
-      removeCookie("token", { path: "/dashboard" });
+      removeCookie("token", { path: "/" });
       const errorMessage =
         err?.response?.data?.message || err?.message || "An error occurred";
       // Toastify

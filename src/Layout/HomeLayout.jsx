@@ -57,7 +57,7 @@ function HomeLayout() {
   // Logout
   const [cookies, setCookie, removeCookie] = useCookies(["token"]);
   const logout = () => {
-    removeCookie("token", { path: "/dashboard" });
+    removeCookie("token", { path: "/" });
   };
 
   return (
