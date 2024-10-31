@@ -102,6 +102,7 @@ export default function Verify() {
                 InputLabelProps={{
                   className: "custom-label-rtl",
                 }}
+                inputProps={{ maxLength: 5 }}
               />
             </Grid>
           </Grid>
@@ -123,7 +124,7 @@ export default function Verify() {
           onMouseOver={(e) => (e.target.style.color = "#7431fa")}
           onMouseOut={(e) => (e.target.style.color = "inherit")}
         >
-          لم أتلقى رمز التحقق
+          إعادة طلب رمز التحقق
         </Link>
       </Typography>
     </Container>

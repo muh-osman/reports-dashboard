@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 //
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -20,7 +20,6 @@ import logo from "../Assets/Images/logo.png";
 import { useCookies } from "react-cookie";
 
 const pages = [];
-const settings = ["Logout"];
 
 function HomeLayout() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 900); // Assuming md breakpoint is 960px
@@ -64,7 +63,10 @@ function HomeLayout() {
   return (
     <Box>
       <AppBar position="static">
-        <Container maxWidth="xl">
+        <Container
+          maxWidth="xl"
+          sx={{ paddingLeft: { xs: 2, md: 4 }, paddingRight: { xs: 2, md: 4 } }}
+        >
           <Toolbar disableGutters>
             <div
               style={{
@@ -76,7 +78,9 @@ function HomeLayout() {
                 display: isMobile ? "none" : "flex",
               }}
             >
-              <img style={{ width: "100%" }} src={logo} alt="logo" />
+              <Link to="/" style={{ display: "flex", alignItems: "center" }}>
+                <img style={{ width: "100%" }} src={logo} alt="logo" />
+              </Link>
             </div>
 
             <Typography
@@ -105,7 +109,9 @@ function HomeLayout() {
                 display: isMobile ? "flex" : "none",
               }}
             >
-              <img style={{ width: "100%" }} src={logo} alt="logo" />
+              <Link to="/" style={{ display: "flex", alignItems: "center" }}>
+                <img style={{ width: "100%" }} src={logo} alt="logo" />
+              </Link>
             </div>
 
             <Typography
@@ -135,14 +141,19 @@ function HomeLayout() {
                 </Button>
               ))}
             </Box>
-            <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Cashif Account">
+            <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
+              <Typography variant="body1" sx={{ marginRight: 1 }}>
+                محمد علي احمد
+              </Typography>
+
+              <Tooltip title="Account">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar>
                     <PersonIcon sx={{ color: "white", fontSize: "2rem" }} />
                   </Avatar>
                 </IconButton>
               </Tooltip>
+
               <Menu
                 sx={{ mt: "45px" }}
                 id="menu-appbar"
@@ -159,13 +170,14 @@ function HomeLayout() {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography sx={{ textAlign: "center" }} onClick={logout}>
-                      {setting}
-                    </Typography>
-                  </MenuItem>
-                ))}
+                <MenuItem onClick={handleCloseUserMenu}>
+                  <Typography
+                    sx={{ textAlign: "right", width: "100%" }}
+                    onClick={logout}
+                  >
+                    تسجيل خروج
+                  </Typography>
+                </MenuItem>
               </Menu>
             </Box>
           </Toolbar>

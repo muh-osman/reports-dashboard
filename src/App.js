@@ -8,6 +8,7 @@ import {
 import Layout from "./Layout/Layout";
 import HomeLayout from "./Layout/HomeLayout";
 import Home from "./Pages/Home/Home";
+import Preview from "./Pages/Preview/Preview";
 import SignUp from "./Pages/SignUp/SignUp";
 import Verify from "./Pages/Verify/Verify";
 import Auth from "./Utils/Auth";
@@ -30,6 +31,7 @@ export default function App() {
           {/* Start protected route */}
           <Route element={<HomeLayout />}>
             <Route path="reports" element={<Home />} />
+            <Route path="preview/:id" element={<Preview />} />
           </Route>
           {/* End protected route */}
         </Route>

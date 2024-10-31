@@ -113,6 +113,7 @@ export default function SignUp() {
                     <InputAdornment position="start">+966</InputAdornment>
                   ),
                 }}
+                inputProps={{ maxLength: 9 }}
               />
             </Grid>
           </Grid>
