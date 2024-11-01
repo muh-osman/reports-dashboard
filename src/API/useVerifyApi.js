@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 
 export const useVerifyApi = () => {
+  const navigate = useNavigate();
   // Cookies
   const [cookies, setCookie, removeCookie] = useCookies([
     "token",
@@ -18,45 +19,50 @@ export const useVerifyApi = () => {
     "userId",
     "phoneNumber",
   ]);
-  const navigate = useNavigate();
 
   return useMutation({
     mutationFn: async (data) => {
-      const res = await API.post("api/Account/login", data);
+      const res = await API.post("api/Account/login", data, {
+        headers: {
+          "Content-Type": "application/json-patch+json",
+        },
+      });
       return res.data;
     },
 
     onSuccess: (responseData) => {
-      const token = responseData.token;
-      // Decode the token to extract username and ID
-      try {
-        // Decode the token
-        const decodedToken = jwtDecode(token);
+      if (responseData.status === false) {
+        toast.warn(responseData.description);
+      } else {
+        const token = responseData.token;
+        try {
+          // Decode the token
+          const decodedToken = jwtDecode(token);
+          // Extract Name and clientId... from token
+          const username = decodedToken.Name;
+          const userId = decodedToken.clientId;
+          const phoneNumber = decodedToken.PhoneNumber;
+          const exp = decodedToken.exp; // Extract expiration date from token
+          const expirationDate = new Date(exp * 1000); // Convert seconds to milliseconds
 
-        // Extract Name and clientId
-        const username = decodedToken.Name;
-        const userId = decodedToken.clientId;
-        const phoneNumber = decodedToken.PhoneNumber;
+          // Set values in cookies
+          setCookie("username", username, {
+            path: "/",
+            expires: expirationDate,
+          });
+          setCookie("userId", userId, { path: "/", expires: expirationDate });
+          setCookie("phoneNumber", phoneNumber, {
+            path: "/",
+            expires: expirationDate,
+          });
+          setCookie("token", token, { path: "/", expires: expirationDate });
 
-        const exp = decodedToken.exp;
-        const expirationDate = new Date(exp * 1000); // Convert seconds to milliseconds
-
-        // Optionally, you can set these values in cookies or state
-        setCookie("username", username, { path: "/", expires: expirationDate });
-        setCookie("userId", userId, { path: "/", expires: expirationDate });
-        setCookie("phoneNumber", phoneNumber, {
-          path: "/",
-          expires: expirationDate,
-        });
-        setCookie("token", token, { path: "/", expires: expirationDate });
-
-        // Navigate to reports
-        navigate("/reports", { replace: true });
-      } catch (error) {
-        console.error("Failed to decode token:", error);
+          // Navigate to reports
+          navigate("/reports", { replace: true });
+        } catch (error) {
+          console.error("Failed to decode token:", error);
+        }
       }
-
-      navigate("/reports", { replace: true });
     },
 
     onError: (err) => {
