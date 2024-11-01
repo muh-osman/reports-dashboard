@@ -55,10 +55,22 @@ function HomeLayout() {
   };
 
   // Logout
-  const [cookies, setCookie, removeCookie] = useCookies(["token"]);
+  const [cookies, setCookie, removeCookie] = useCookies([
+    "token",
+    "username",
+    "userId",
+    "phoneNumber",
+  ]);
   const logout = () => {
+    removeCookie("userId", { path: "/" });
+    removeCookie("username", { path: "/" });
+    removeCookie("phoneNumber", { path: "/" });
     removeCookie("token", { path: "/" });
   };
+
+  // Add nake near Avatar
+  const name = cookies.username;
+
 
   return (
     <Box>
@@ -143,7 +155,7 @@ function HomeLayout() {
             </Box>
             <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
               <Typography variant="body1" sx={{ marginRight: 1 }}>
-                محمد علي احمد
+                {name}
               </Typography>
 
               <Tooltip title="Account">

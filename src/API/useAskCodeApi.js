@@ -16,7 +16,9 @@ export const useAskCodeApi = () => {
   return useMutation({
     mutationFn: async (data) => {
       // console.log(data.get("phoneNumber"));
-      const res = await API.post("api/XXX", data);
+      const res = await API.get(
+        `api/Account/sendOtp?phoneNumber=${data.get("phoneNumber")}`
+      );
       return res.data;
     },
 

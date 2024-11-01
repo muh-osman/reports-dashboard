@@ -24,12 +24,13 @@ export default function Verify() {
   const { mutate, isPending } = useVerifyApi();
 
   const handleChange = (e) => {
-    const code = e.target.value;
+    const otp = e.target.value;
 
-    // Check if code has a length of 5 characters
-    if (code.length === 5) {
+    // Check if otp has a length of 5 characters
+    if (otp.length === 4) {
       const data = new FormData(formRef.current);
-      // console.log(code);
+      // Append phoneNumber to the FormData
+      data.append("phoneNumber", phoneNumber);
       mutate(data);
     }
   };
@@ -94,7 +95,7 @@ export default function Verify() {
                 onChange={handleChange}
                 autoFocus
                 fullWidth
-                name="code"
+                name="otp"
                 label="كود التحقق"
                 type="tel"
                 required
@@ -102,7 +103,7 @@ export default function Verify() {
                 InputLabelProps={{
                   className: "custom-label-rtl",
                 }}
-                inputProps={{ maxLength: 5 }}
+                inputProps={{ maxLength: 4 }}
               />
             </Grid>
           </Grid>

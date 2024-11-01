@@ -52,9 +52,12 @@ export default function SignUp() {
       return;
     }
 
+    // Prepend '0' to the phone number
+    const formattedPhoneNumber = "0" + phoneNumber;
+
     // Submit data
     const data = new FormData(e.currentTarget);
-    // console.log(data.get("phoneNumber"));
+    data.set("phoneNumber", formattedPhoneNumber); // Update the phoneNumber in FormData
     mutate(data);
   };
 

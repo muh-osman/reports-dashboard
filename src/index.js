@@ -24,6 +24,10 @@ const qc = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 0,
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      cacheTime: 1000 * 60 * 10, // 10 minutes
+      refetchOnWindowFocus: false, // Prevent refetching on window focus
+      refetchOnReconnect: false, // Prevent refetching on reconnect
     },
   },
 });
