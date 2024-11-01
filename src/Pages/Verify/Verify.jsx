@@ -36,7 +36,7 @@ export default function Verify() {
   };
 
   return !phoneNumber ? (
-    <Navigate to="/" replace />
+    <Navigate to={`${process.env.PUBLIC_URL}/`} replace />
   ) : (
     <Container
       dir="rtl"
@@ -76,8 +76,8 @@ export default function Verify() {
           variant="h5"
           sx={{
             textAlign: "center",
-            color: "#00000099", // Use the secondary color from your theme
-            fontSize: "0.875rem", // Adjust the font size as needed (this is equivalent to 14px)
+            color: "#00000099",
+            fontSize: "0.875rem",
           }}
         >
           لقد أرسلنا رسالة الى رقمك تحوي كود التحقق.
@@ -121,7 +121,7 @@ export default function Verify() {
           underline="hover"
           color="inherit"
           component={RouterLink}
-          to="/"
+          to={`${process.env.PUBLIC_URL}/`}
           onMouseOver={(e) => (e.target.style.color = "#7431fa")}
           onMouseOut={(e) => (e.target.style.color = "inherit")}
         >

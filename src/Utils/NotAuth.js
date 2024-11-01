@@ -7,5 +7,9 @@ export default function Auth() {
 
   // console.log(cookies.token);
 
-  return !cookies.token ? <Outlet /> : <Navigate to="reports" />;
+  return !cookies.token ? (
+    <Outlet />
+  ) : (
+    <Navigate to={`${process.env.PUBLIC_URL}/reports`} />
+  );
 }

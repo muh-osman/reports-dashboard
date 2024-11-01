@@ -28,7 +28,7 @@ export const useAskCodeApi = () => {
       } else {
         const phoneNumber = variables.get("phoneNumber");
         setPhoneNumber(phoneNumber); // Store phoneNumber in context
-        navigate("/verify");
+        navigate(`${process.env.PUBLIC_URL}/verify`);
       }
     },
 

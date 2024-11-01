@@ -62,15 +62,14 @@ function HomeLayout() {
     "phoneNumber",
   ]);
   const logout = () => {
-    removeCookie("userId", { path: "/" });
-    removeCookie("username", { path: "/" });
-    removeCookie("phoneNumber", { path: "/" });
-    removeCookie("token", { path: "/" });
+    removeCookie("userId", { path: "/dashboard" });
+    removeCookie("phoneNumber", { path: "/dashboard" });
+    removeCookie("username", { path: "/dashboard" });
+    removeCookie("token", { path: "/dashboard" });
   };
 
-  // Add nake near Avatar
+  // Add name near Avatar
   const name = cookies.username;
-
 
   return (
     <Box>
@@ -90,7 +89,10 @@ function HomeLayout() {
                 display: isMobile ? "none" : "flex",
               }}
             >
-              <Link to="/" style={{ display: "flex", alignItems: "center" }}>
+              <Link
+                to={`${process.env.PUBLIC_URL}/reports`}
+                style={{ display: "flex", alignItems: "center" }}
+              >
                 <img style={{ width: "100%" }} src={logo} alt="logo" />
               </Link>
             </div>
@@ -121,7 +123,10 @@ function HomeLayout() {
                 display: isMobile ? "flex" : "none",
               }}
             >
-              <Link to="/" style={{ display: "flex", alignItems: "center" }}>
+              <Link
+                to={`${process.env.PUBLIC_URL}/reports`}
+                style={{ display: "flex", alignItems: "center" }}
+              >
                 <img style={{ width: "100%" }} src={logo} alt="logo" />
               </Link>
             </div>

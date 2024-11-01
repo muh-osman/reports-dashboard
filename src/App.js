@@ -17,27 +17,29 @@ import NotFound from "./Pages/NotFound/NotFound";
 export default function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/" element={<Layout />}>
-
+      <Route path={`${process.env.PUBLIC_URL}/`} element={<Layout />}>
         <Route element={<NotAuth />}>
           {/* Start Check if login */}
           <Route index element={<SignUp />} />
-          <Route path="verify" element={<Verify />} />
+          <Route
+            path={`${process.env.PUBLIC_URL}/verify`}
+            element={<Verify />}
+          />
           {/* End Check if login */}
         </Route>
 
         <Route element={<Auth />}>
           {/* Start protected route */}
           <Route element={<HomeLayout />}>
-            <Route path="reports" element={<Home />} />
+            <Route path={`${process.env.PUBLIC_URL}/reports`} element={<Home />} />
           </Route>
           {/* End protected route */}
         </Route>
 
-        <Route path="*" element={<NotFound />} />
+        <Route path={`${process.env.PUBLIC_URL}/*`} element={<NotFound />} />
       </Route>
     )
   );
 
-  return <RouterProvider router={router} />;
+  return <RouterProvider router={router} basename="/dashboard" />;
 }

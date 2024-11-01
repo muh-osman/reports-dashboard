@@ -24,7 +24,7 @@ export const useVerifyApi = () => {
     mutationFn: async (data) => {
       const res = await API.post("api/Account/login", data, {
         headers: {
-          "Content-Type": "application/json-patch+json",
+          "Content-Type": "application/json-patch+json", // this nessesary for sending data as json patch
         },
       });
       return res.data;
@@ -47,18 +47,24 @@ export const useVerifyApi = () => {
 
           // Set values in cookies
           setCookie("username", username, {
-            path: "/",
+            path: "/dashboard",
             expires: expirationDate,
           });
-          setCookie("userId", userId, { path: "/", expires: expirationDate });
+          setCookie("userId", userId, {
+            path: "/dashboard",
+            expires: expirationDate,
+          });
           setCookie("phoneNumber", phoneNumber, {
-            path: "/",
+            path: "/dashboard",
             expires: expirationDate,
           });
-          setCookie("token", token, { path: "/", expires: expirationDate });
+          setCookie("token", token, {
+            path: "/dashboard",
+            expires: expirationDate,
+          });
 
           // Navigate to reports
-          navigate("/reports", { replace: true });
+          navigate(`${process.env.PUBLIC_URL}/reports`, { replace: true });
         } catch (error) {
           console.error("Failed to decode token:", error);
         }
@@ -67,10 +73,10 @@ export const useVerifyApi = () => {
 
     onError: (err) => {
       console.error(err);
-      removeCookie("userId", { path: "/" });
-      removeCookie("username", { path: "/" });
-      removeCookie("phoneNumber", { path: "/" });
-      removeCookie("token", { path: "/" });
+      removeCookie("userId", { path: "/dashboard" });
+      removeCookie("username", { path: "/dashboard" });
+      removeCookie("phoneNumber", { path: "/dashboard" });
+      removeCookie("token", { path: "/dashboard" });
       const errorMessage =
         err?.response?.data?.message || err?.message || "An error occurred";
       // Toastify
