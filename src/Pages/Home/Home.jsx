@@ -1,5 +1,5 @@
 import style from "./Home.module.scss";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 // MUI
 import Divider from "@mui/material/Divider";
 import Card from "@mui/material/Card";
@@ -44,8 +44,10 @@ export default function Home() {
     mutate();
   }, []);
 
-  // Download Card
+  // Download pdf Card
+  const [isDownloading, setIsDownloading] = useState(false);
   const handleDownloadCard = async (id) => {
+    setIsDownloading(true);
     try {
       // Call the API to download the card
       const response = await fetchDownloadCard(id);
@@ -69,16 +71,14 @@ export default function Home() {
     } catch (error) {
       console.error("Error downloading the card:", error);
       // Optionally, show an error message to the user
+    } finally {
+      setIsDownloading(false);
     }
   };
 
   // Preview Card
-  // const handlePreviewCard = (id) => {
-  //   window.open(`/preview/${id}`, "_blank");
-  // };
-
-  // Preview Card
   const handlePreviewCard = async (id) => {
+    setIsDownloading(true);
     try {
       // Call the API to fetch the PDF data
       const response = await fetchDownloadCard(id);
@@ -94,12 +94,17 @@ export default function Home() {
     } catch (error) {
       console.error("Error previewing the card:", error);
       // Optionally, show an error message to the user
+    } finally {
+      setIsDownloading(false);
     }
   };
 
   return (
     <div dir="rtl" className={style.container}>
-      {fetchStatus === "fetching" && (
+      {(fetchStatus === "fetching" ||
+        pdfFileFetchStatus === "fetching" ||
+        isPending ||
+        isDownloading) && (
         <div className={style.progressContainer}>
           <LinearProgress />
         </div>
@@ -189,7 +194,7 @@ export default function Home() {
                 >
                   الفرع: {card.branchNameAr}
                 </Typography>
-                <Typography
+                {/* <Typography
                   gutterBottom
                   variant="h5"
                   component="div"
@@ -199,7 +204,7 @@ export default function Home() {
                   {card.servicesList.length > 0
                     ? card.servicesList.join(", ")
                     : "غير محدد"}
-                </Typography>
+                </Typography> */}
               </CardContent>
 
               <CardActions sx={{ backgroundColor: "#fff" }}>
