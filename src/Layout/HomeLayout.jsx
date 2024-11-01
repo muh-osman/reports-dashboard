@@ -18,6 +18,8 @@ import PersonIcon from "@mui/icons-material/Person";
 import logo from "../Assets/Images/logo.png";
 // Cookies
 import { useCookies } from "react-cookie";
+// LogedOutContext
+import { useLogedOut } from "../Contexts/LogedOutContext";
 
 const pages = [];
 
@@ -61,7 +63,11 @@ function HomeLayout() {
     "userId",
     "phoneNumber",
   ]);
+
+  const { logedOut, setLogedOut } = useLogedOut(); // Context
+
   const logout = () => {
+    setLogedOut(true); // used in Auth.js to redirect to "https://cashif.cc/"
     removeCookie("userId", { path: "/dashboard" });
     removeCookie("phoneNumber", { path: "/dashboard" });
     removeCookie("username", { path: "/dashboard" });
