@@ -3,7 +3,10 @@ import { useQuery } from "@tanstack/react-query";
 import API from "./Api";
 
 export const fetchDownloadCard = async (id) => {
-  const res = await API.get(`api/StageReports/${id}`);
+  const res = await API.get(`api/StageReports/${id}`, {
+    responseType: "arraybuffer",
+  });
+  console.log(res);
   return res.data;
 };
 

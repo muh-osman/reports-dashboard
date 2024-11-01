@@ -155,7 +155,7 @@ export default function Home() {
                   component="div"
                   style={{ fontSize: "14px" }}
                 >
-                  رقم الكارت: {card.id}
+                  رقم الكرت: {card.id}
                 </Typography>
                 <Typography
                   gutterBottom
