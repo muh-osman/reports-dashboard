@@ -23,9 +23,13 @@ export const useAskCodeApi = () => {
     },
 
     onSuccess: (responseData, variables) => {
-      const phoneNumber = variables.get("phoneNumber");
-      setPhoneNumber(phoneNumber); // Store phoneNumber in context
-      navigate("/verify");
+      if (responseData.status === false) {
+        toast.warn(responseData.description);
+      } else {
+        const phoneNumber = variables.get("phoneNumber");
+        setPhoneNumber(phoneNumber); // Store phoneNumber in context
+        navigate("/verify");
+      }
     },
 
     onError: (err) => {

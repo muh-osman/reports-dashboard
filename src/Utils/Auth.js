@@ -8,5 +8,4 @@ export default function Auth() {
   // console.log(cookies.token);
 
   return cookies.token ? <Outlet /> : <Navigate to="/" />;
-  // return <Outlet />;
 }

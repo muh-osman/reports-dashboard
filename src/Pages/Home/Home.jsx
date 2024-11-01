@@ -73,8 +73,28 @@ export default function Home() {
   };
 
   // Preview Card
-  const handlePreviewCard = (id) => {
-    window.open(`/preview/${id}`, "_blank");
+  // const handlePreviewCard = (id) => {
+  //   window.open(`/preview/${id}`, "_blank");
+  // };
+
+  // Preview Card
+  const handlePreviewCard = async (id) => {
+    try {
+      // Call the API to fetch the PDF data
+      const response = await fetchDownloadCard(id);
+
+      // Create a blob from the response data
+      const blob = new Blob([response], { type: "application/pdf" });
+
+      // Create a link element
+      const url = window.URL.createObjectURL(blob);
+
+      // Open the PDF in a new tab
+      window.open(url, "_blank");
+    } catch (error) {
+      console.error("Error previewing the card:", error);
+      // Optionally, show an error message to the user
+    }
   };
 
   return (
