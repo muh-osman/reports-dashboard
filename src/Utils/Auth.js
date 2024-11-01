@@ -10,8 +10,6 @@ export default function Auth() {
 
   // console.log(cookies.token);
 
-  // setCookie("token", "123", { path: "/dashboard" });
-
   return cookies.token ? (
     <Outlet />
   ) : logedOut ? (
