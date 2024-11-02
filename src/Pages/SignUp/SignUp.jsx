@@ -89,6 +89,21 @@ export default function SignUp() {
           تسجيل الدخول
         </Typography>
 
+        <Typography
+          dir="rtl"
+          component="h5"
+          variant="h5"
+          sx={{
+            textAlign: "center",
+            color: "#00000099",
+            fontSize: "0.875rem",
+            marginTop: "9px",
+            marginBottom: "32px",
+          }}
+        >
+          للحصول على تقرير الفحص استخدم رقم الجوال المسجل في التقرير
+        </Typography>
+
         <Box
           onSubmit={handleSubmit}
           ref={formRef}
