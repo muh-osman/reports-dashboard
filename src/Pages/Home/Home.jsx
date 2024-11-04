@@ -194,7 +194,7 @@ export default function Home() {
                 >
                   الفرع: {card.branchNameAr}
                 </Typography>
-                {/* <Typography
+                <Typography
                   gutterBottom
                   variant="h5"
                   component="div"
@@ -204,7 +204,7 @@ export default function Home() {
                   {card.servicesList.length > 0
                     ? card.servicesList.join(", ")
                     : "غير محدد"}
-                </Typography> */}
+                </Typography>
               </CardContent>
 
               <CardActions sx={{ backgroundColor: "#fff" }}>
