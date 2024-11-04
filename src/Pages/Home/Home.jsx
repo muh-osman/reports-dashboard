@@ -201,8 +201,8 @@ export default function Home() {
                   style={{ fontSize: "14px" }}
                 >
                   نوع الخدمة:{" "}
-                  {card.servicesList.length > 0
-                    ? card.servicesList.join(", ")
+                  {card.servicesListNameAr.length > 0
+                    ? card.servicesListNameAr.join(", ")
                     : "غير محدد"}
                 </Typography>
               </CardContent>
