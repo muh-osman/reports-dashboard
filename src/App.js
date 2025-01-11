@@ -3,6 +3,7 @@ import {
   createRoutesFromElements,
   Route,
   RouterProvider,
+  useLocation,
 } from "react-router-dom";
 // Pages & components
 import Layout from "./Layout/Layout";
@@ -14,6 +15,15 @@ import Auth from "./Utils/Auth";
 import NotAuth from "./Utils/NotAuth";
 import NotFound from "./Pages/NotFound/NotFound";
 
+// Animations
+import MotionWrapper from "./Utils/MotionWrapper";
+import { AnimatePresence } from "framer-motion";
+
+function AnimatedRoute({ element }) {
+  const location = useLocation();
+  return <MotionWrapper key={location.pathname}>{element}</MotionWrapper>;
+}
+
 export default function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -23,7 +33,7 @@ export default function App() {
           <Route index element={<SignUp />} />
           <Route
             path={`${process.env.PUBLIC_URL}/verify`}
-            element={<Verify />}
+            element={<AnimatedRoute element={<Verify />} />}
           />
           {/* End Check if login */}
         </Route>
@@ -31,7 +41,10 @@ export default function App() {
         <Route element={<Auth />}>
           {/* Start protected route */}
           <Route element={<HomeLayout />}>
-            <Route path={`${process.env.PUBLIC_URL}/reports`} element={<Home />} />
+            <Route
+              path={`${process.env.PUBLIC_URL}/reports`}
+              element={<Home />}
+            />
           </Route>
           {/* End protected route */}
         </Route>

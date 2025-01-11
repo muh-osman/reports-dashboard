@@ -6,7 +6,7 @@ export const fetchDownloadCard = async (id) => {
   const res = await API.get(`api/StageReports/${id}`, {
     responseType: "arraybuffer", // To handle binary data
   });
-  console.log(res);
+  // console.log(res);
   return res.data;
 };
 

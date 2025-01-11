@@ -10,12 +10,23 @@ import Box from "@mui/material/Box";
 import PasswordIcon from "@mui/icons-material/Password";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import LoadingButton from "@mui/lab/LoadingButton";
 // API
 import { useVerifyApi } from "../../API/useVerifyApi";
 // PhoneNumberContext
 import { usePhoneNumber } from "../../Contexts/PhoneNumberContext";
 
 export default function Verify() {
+  // Add overflow: hidden to body when component mounts
+  React.useEffect(() => {
+    document.body.style.overflow = "hidden";
+
+    // Cleanup function to remove the style when component unmounts
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
   const { phoneNumber, setPhoneNumber } = usePhoneNumber();
 
   // handle submit
@@ -23,16 +34,24 @@ export default function Verify() {
 
   const { mutate, isPending } = useVerifyApi();
 
-  const handleChange = (e) => {
-    const otp = e.target.value;
+  // const handleChange = (e) => {
+  //   const otp = e.target.value;
 
-    // Check if otp has a length of 5 characters
-    if (otp.length === 4) {
-      const data = new FormData(formRef.current);
-      // Append phoneNumber to the FormData
-      data.append("phoneNumber", phoneNumber);
-      mutate(data);
-    }
+  //   // Check if otp has a length of 5 characters
+  //   if (otp.length === 4) {
+  //     const data = new FormData(formRef.current);
+  //     // Append phoneNumber to the FormData
+  //     data.append("phoneNumber", phoneNumber);
+  //     mutate(data);
+  //   }
+  // };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const data = new FormData(formRef.current);
+    // Append phoneNumber to the FormData
+    data.append("phoneNumber", phoneNumber);
+    mutate(data);
   };
 
   return !phoneNumber ? (
@@ -84,6 +103,7 @@ export default function Verify() {
         </Typography>
 
         <Box
+          onSubmit={handleSubmit}
           ref={formRef}
           component="form"
           noValidate
@@ -92,21 +112,38 @@ export default function Verify() {
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <TextField
-                onChange={handleChange}
+                // onChange={handleChange}
+                dir="ltr"
                 autoFocus
                 fullWidth
                 name="otp"
                 label="كود التحقق"
-                type="tel"
+                type="number"
                 required
                 disabled={isPending}
                 InputLabelProps={{
                   className: "custom-label-rtl",
                 }}
-                inputProps={{ maxLength: 4 }}
+                InputProps={{
+                  classes: {
+                    input: "hide-arrows", // Apply the custom class here
+                  },
+                }}
+                // inputProps={{ maxLength: 4 }}
               />
             </Grid>
           </Grid>
+
+          <LoadingButton
+            type="submit"
+            fullWidth
+            variant="contained"
+            disableRipple
+            loading={isPending}
+            sx={{ mt: 3, mb: 2, transition: "0.1s" }}
+          >
+            تحقق
+          </LoadingButton>
         </Box>
       </Box>
 

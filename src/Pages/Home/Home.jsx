@@ -8,6 +8,7 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import LinearProgress from "@mui/material/LinearProgress";
+import CircularProgress from "@mui/material/CircularProgress";
 // Api
 import useGetPoinsApi from "../../API/useGetPoinsApi";
 import useDownloadCardApi, {
@@ -45,9 +46,10 @@ export default function Home() {
   }, []);
 
   // Download pdf Card
-  const [isDownloading, setIsDownloading] = useState(false);
+  const [loadingDownload, setLoadingDownload] = useState({}); // Track loading state for download
+  const [loadingPreview, setLoadingPreview] = useState({}); // Track loading state for preview
   const handleDownloadCard = async (id) => {
-    setIsDownloading(true);
+    setLoadingDownload((prev) => ({ ...prev, [id]: true })); // Set loading for the specific card
     try {
       // Call the API to download the card
       const response = await fetchDownloadCard(id);
@@ -72,13 +74,13 @@ export default function Home() {
       console.error("Error downloading the card:", error);
       // Optionally, show an error message to the user
     } finally {
-      setIsDownloading(false);
+      setLoadingDownload((prev) => ({ ...prev, [id]: false })); // Reset loading for the specific card
     }
   };
 
   // Preview Card
   const handlePreviewCard = async (id) => {
-    setIsDownloading(true);
+    setLoadingPreview((prev) => ({ ...prev, [id]: true })); // Set loading for the specific card
     try {
       // Call the API to fetch the PDF data
       const response = await fetchDownloadCard(id);
@@ -95,7 +97,7 @@ export default function Home() {
       console.error("Error previewing the card:", error);
       // Optionally, show an error message to the user
     } finally {
-      setIsDownloading(false);
+      setLoadingPreview((prev) => ({ ...prev, [id]: false })); // Reset loading for the specific card
     }
   };
 
@@ -103,8 +105,7 @@ export default function Home() {
     <div dir="rtl" className={style.container}>
       {(fetchStatus === "fetching" ||
         pdfFileFetchStatus === "fetching" ||
-        isPending ||
-        isDownloading) && (
+        isPending) && (
         <div className={style.progressContainer}>
           <LinearProgress />
         </div>
@@ -210,17 +211,27 @@ export default function Home() {
               <CardActions sx={{ backgroundColor: "#fff" }}>
                 <Button
                   onClick={() => handlePreviewCard(card.id)}
-                  sx={{ color: "#1976d2" }}
+                  sx={{ color: "#1976d2", width: "88px" }}
                   size="small"
+                  disabled={loadingPreview[card.id]} // Disable button if loading
                 >
-                  معاينة التقرير
+                  {loadingPreview[card.id] ? (
+                    <CircularProgress size={22} color="inherit" />
+                  ) : (
+                    "معاينة التقرير"
+                  )}
                 </Button>
                 <Button
                   onClick={() => handleDownloadCard(card.id)}
                   sx={{ color: "#1976d2" }}
                   size="small"
+                  disabled={loadingDownload[card.id]} // Disable button if loading
                 >
-                  تحميل
+                  {loadingDownload[card.id] ? (
+                    <CircularProgress size={22} color="inherit" />
+                  ) : (
+                    "تحميل"
+                  )}
                 </Button>
               </CardActions>
             </Card>
