@@ -1,5 +1,3 @@
-// React router
-// import { Link as RouterLink } from "react-router-dom";
 // Mui
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
@@ -27,6 +25,20 @@ export default function SignUp() {
     ) {
       event.preventDefault();
     }
+  };
+
+  // Handle past or type num start with 0
+  const handleChange = (e) => {
+    let value = e.target.value;
+
+    // Remove leading '0' if present
+    if (value.startsWith("0")) {
+      value = value.slice(1);
+      toast.warn("لا داعي لإدخال 0 في بداية الرقم");
+    }
+
+    // Update the input value
+    e.target.value = value;
   };
 
   // handle submit
@@ -123,6 +135,7 @@ export default function SignUp() {
                 dir="ltr"
                 disabled={isPending}
                 onKeyPress={handleKeyPress}
+                onChange={handleChange}
                 InputLabelProps={{
                   className: "custom-label-rtl",
                 }}
@@ -131,7 +144,7 @@ export default function SignUp() {
                     <InputAdornment position="start">+966</InputAdornment>
                   ),
                 }}
-                inputProps={{ maxLength: 9 }}
+                placeholder="5xxxxxxxx"
               />
             </Grid>
           </Grid>
