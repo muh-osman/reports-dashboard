@@ -9,12 +9,15 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import LinearProgress from "@mui/material/LinearProgress";
 import CircularProgress from "@mui/material/CircularProgress";
+// Toastify
+import { toast } from "react-toastify";
 // Api
 import useGetPoinsApi from "../../API/useGetPoinsApi";
 import useDownloadCardApi, {
   fetchDownloadCard,
 } from "../../API/useDownloadCardApi";
 import { useGetAllCardsApi } from "../../API/useGetAllCardsApi";
+import useGetImgCardApi from "../../API/useGetImgCardApi";
 
 // Utility function to format date to dd/mm/yyyy
 const formatDate = (dateString) => {
@@ -32,7 +35,12 @@ export default function Home() {
   }, []);
 
   const { data: points, fetchStatus, isSuccess } = useGetPoinsApi();
-  const { mutate, data: cardsData, isPending } = useGetAllCardsApi();
+  const {
+    mutate,
+    data: cardsData,
+    isPending,
+    isSuccess: isGetAllCardsSuccess,
+  } = useGetAllCardsApi();
 
   const {
     data: pdfFile,
@@ -72,7 +80,7 @@ export default function Home() {
       document.body.removeChild(link);
     } catch (error) {
       console.error("Error downloading the card:", error);
-      // Optionally, show an error message to the user
+      toast.error(error.message);
     } finally {
       setLoadingDownload((prev) => ({ ...prev, [id]: false })); // Reset loading for the specific card
     }
@@ -92,25 +100,60 @@ export default function Home() {
       const url = window.URL.createObjectURL(blob);
 
       // Open the PDF in a new tab
-      window.open(url, "_blank");
+      // window.open(url, "_blank");
+      window.location.href = url;
     } catch (error) {
       console.error("Error previewing the card:", error);
-      // Optionally, show an error message to the user
+      toast.error(error.message);
     } finally {
       setLoadingPreview((prev) => ({ ...prev, [id]: false })); // Reset loading for the specific card
     }
   };
 
+  // imageCard
+  // Filter cards that imageCard to get there ids
+  const [ids, setIds] = useState([]);
+  useEffect(() => {
+    if (cardsData) {
+      const imageCardIds = isGetAllCardsSuccess
+        ? cardsData.filter((card) => card.includeImage).map((card) => card.id)
+        : [];
+
+      console.log(imageCardIds);
+      setIds(imageCardIds);
+    }
+  }, [cardsData]);
+  // Fetch imageCard data using useGetImgCardApi
+  // State to accumulate image card data
+  const [allImgCardData, setAllImgCardData] = useState([]);
+  const {
+    data: imgCardData,
+    fetchStatus: imgCardFetchStatus,
+    isSuccess: imgCardIsSuccess,
+  } = useGetImgCardApi(ids);
+
+  // Effect to accumulate image card data
+  useEffect(() => {
+    if (imgCardIsSuccess && imgCardData) {
+      setAllImgCardData((prevData) => [...prevData, ...imgCardData]);
+    }
+  }, [imgCardIsSuccess, imgCardData]);
+
+  // Log the accumulated image card data for debugging
+  console.log(allImgCardData);
+
   return (
     <div dir="rtl" className={style.container}>
       {(fetchStatus === "fetching" ||
         pdfFileFetchStatus === "fetching" ||
-        isPending) && (
+        isPending ||
+        imgCardFetchStatus === "fetching") && (
         <div className={style.progressContainer}>
           <LinearProgress />
         </div>
       )}
 
+      {/* Points */}
       <div className={style.points_container}>
         <div className={style.point_card}>
           <div>
@@ -139,12 +182,127 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Cards */}
       <h5 className={style.last_reports_title}>تقاريري</h5>
       <Divider sx={{ marginBottom: "18px" }} />
 
       <div className={style.reports_cards_container}>
         {cardsData && cardsData.length > 0 ? (
-          cardsData.map((card) => (
+          cardsData
+            .filter((card) => card.includeImage === false)
+            .map((card) => (
+              <Card
+                key={card.id}
+                sx={{ width: 300, backgroundColor: "#f5f5f5" }}
+              >
+                <CardContent>
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    component="div"
+                    style={{ fontSize: "14px" }}
+                  >
+                    التاريخ: {formatDate(card.createdDate)}
+                  </Typography>
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    component="div"
+                    style={{ fontSize: "14px" }}
+                  >
+                    رقم الكرت: {card.id}
+                  </Typography>
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    component="div"
+                    style={{ fontSize: "14px" }}
+                  >
+                    الشركة المصنعة: {card.carManufacturerNameAr}
+                  </Typography>
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    component="div"
+                    style={{ fontSize: "14px" }}
+                  >
+                    ماركة السيارة: {card.carModelNameAr}
+                  </Typography>
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    component="div"
+                    style={{ fontSize: "14px" }}
+                  >
+                    رقم اللوحة: {card.plateNumber}
+                  </Typography>
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    component="div"
+                    style={{ fontSize: "14px" }}
+                  >
+                    الفرع: {card.branchNameAr}
+                  </Typography>
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    component="div"
+                    style={{ fontSize: "14px" }}
+                  >
+                    نوع الخدمة:{" "}
+                    {card.servicesListNameAr.length > 0
+                      ? card.servicesListNameAr.join(", ")
+                      : "غير محدد"}
+                  </Typography>
+                </CardContent>
+
+                <CardActions sx={{ backgroundColor: "#fff" }}>
+                  <Button
+                    onClick={() => handlePreviewCard(card.id)}
+                    sx={{ color: "#1976d2", width: "88px" }}
+                    size="small"
+                    disabled={loadingPreview[card.id]} // Disable button if loading
+                  >
+                    {loadingPreview[card.id] ? (
+                      <CircularProgress size={22} color="inherit" />
+                    ) : (
+                      "معاينة التقرير"
+                    )}
+                  </Button>
+                  <Button
+                    onClick={() => handleDownloadCard(card.id)}
+                    sx={{ color: "#1976d2" }}
+                    size="small"
+                    disabled={loadingDownload[card.id]} // Disable button if loading
+                  >
+                    {loadingDownload[card.id] ? (
+                      <CircularProgress size={22} color="inherit" />
+                    ) : (
+                      "تحميل"
+                    )}
+                  </Button>
+                </CardActions>
+              </Card>
+            ))
+        ) : (
+          <Typography
+            variant="h6"
+            component="div"
+            style={{ textAlign: "center", margin: "20px", color: "#757575" }}
+          >
+            جاري تحميل التقارير ..
+          </Typography>
+        )}
+      </div>
+
+      {/* Img Cards */}
+      {/* <h5 className={style.last_reports_title}>تقاريري المصورة</h5>
+      <Divider sx={{ marginBottom: "18px" }} />
+
+      <div className={style.reports_cards_container}>
+        {allImgCardData && allImgCardData.length > 0 ? (
+          allImgCardData.map((card) => (
             <Card key={card.id} sx={{ width: 300, backgroundColor: "#f5f5f5" }}>
               <CardContent>
                 <Typography
@@ -240,12 +398,12 @@ export default function Home() {
           <Typography
             variant="h6"
             component="div"
-            style={{ textAlign: "center", margin: "20px" }}
+            style={{ textAlign: "center", margin: "20px", color: "#757575" }}
           >
-            جاري تحميل التقارير ..
+            لا يوجد تقارير
           </Typography>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }
