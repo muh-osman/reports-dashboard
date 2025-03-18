@@ -1,20 +1,20 @@
+import style from "./SignUp.module.scss";
 // Mui
 import * as React from "react";
-import Avatar from "@mui/material/Avatar";
 import TextField from "@mui/material/TextField";
-// import Link from "@mui/material/Link";
+import { Link } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import LoadingButton from "@mui/lab/LoadingButton";
-import Copyright from "../../Components/Copyright";
 import InputAdornment from "@mui/material/InputAdornment";
 // API
 import { useAskCodeApi } from "../../API/useAskCodeApi";
 // Toastify
 import { toast } from "react-toastify";
+//
+import logo from "../../Assets/Images/logo.png";
 
 export default function SignUp() {
   // Allow only digits (0-9) and control keys (backspace, delete, etc.)
@@ -74,94 +74,117 @@ export default function SignUp() {
   };
 
   return (
-    <Container
-      dir="rtl"
-      component="main"
-      maxWidth="xs"
-      sx={{
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Box>
-        <Avatar
-          sx={{
-            margin: "auto",
-            marginBottom: "8px",
-            bgcolor: "#e0e0e0",
-            color: "#174545",
-          }}
+    <div style={{ backgroundColor: "#f0f1f3" }}>
+      <div className={style.top_circle_header}>
+        <img src={logo} alt="cashif logo" />
+      </div>
+      <div className={style.introCurve}>
+        <svg
+          style={{ width: "100%", height: "auto" }}
+          viewBox="0 0 1920 74"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <ExitToAppIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5" sx={{ textAlign: "center" }}>
-          تسجيل الدخول
-        </Typography>
+          <path
+            d="M0 0H1920V0.96521C1920 0.96521 1335.71 74 960 74C584.29 74 0 0.96521 0 0.96521V0Z"
+            fill="#174545"
+          />
+        </svg>
+      </div>
 
-        <Typography
+      <div className={style.container}>
+        <Container
           dir="rtl"
-          component="h5"
-          variant="h5"
-          sx={{
-            textAlign: "center",
-            color: "#00000099",
-            fontSize: "0.875rem",
-            marginTop: "9px",
-            marginBottom: "32px",
-          }}
+          component="main"
+          maxWidth="xs"
+          className={style.box}
         >
-          للحصول على تقرير الفحص استخدم رقم الجوال المسجل في التقرير
-        </Typography>
-
-        <Box
-          onSubmit={handleSubmit}
-          ref={formRef}
-          component="form"
-          noValidate
-          sx={{ mt: 3 }}
-        >
-          <Grid container spacing={3}>
-            <Grid item xs={12} sx={{ minWidth: { xs: "auto", md: "396px" } }}>
-              <TextField
-                fullWidth
-                label="رقم الجوال"
-                name="phoneNumber"
-                type="tel"
-                autoFocus
-                required
-                dir="ltr"
-                disabled={isPending}
-                onKeyPress={handleKeyPress}
-                onChange={handleChange}
-                InputLabelProps={{
-                  className: "custom-label-rtl",
-                }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">+966</InputAdornment>
-                  ),
-                }}
-                placeholder="5xxxxxxxx"
-              />
-            </Grid>
-          </Grid>
-
-          <LoadingButton
-            type="submit"
-            fullWidth
-            variant="contained"
-            disableRipple
-            loading={isPending}
-            sx={{ mt: 3, mb: 2, transition: "0.1s" }}
+          <Typography
+            sx={{
+              marginTop: "16px",
+              // marginBottom: "32px",
+              textAlign: "center",
+            }}
+            component="h1"
+            variant="h5"
           >
-            متابعة
-          </LoadingButton>
-        </Box>
-      </Box>
-      <Copyright sx={{ mt: 5 }} />
-    </Container>
+            تسجيل الدخول
+          </Typography>
+
+          <Box
+            sx={{
+              // border: "1px solid #f0f1f3",
+              padding: "16px",
+              borderRadius: "9px",
+            }}
+          >
+            <Box
+              onSubmit={handleSubmit}
+              ref={formRef}
+              component="form"
+              noValidate
+              sx={{ mt: 3 }}
+            >
+              <Grid container spacing={3}>
+                <Grid
+                  item
+                  xs={12}
+                  sx={{ minWidth: { xs: "auto", md: "396px" } }}
+                >
+                  <TextField
+                    fullWidth
+                    label="رقم الجوال"
+                    name="phoneNumber"
+                    type="tel"
+                    autoFocus
+                    required
+                    dir="ltr"
+                    disabled={isPending}
+                    onKeyPress={handleKeyPress}
+                    onChange={handleChange}
+                    InputLabelProps={{
+                      className: "custom-label-rtl",
+                    }}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">+966</InputAdornment>
+                      ),
+                    }}
+                    placeholder="5xxxxxxxx"
+                  />
+                </Grid>
+              </Grid>
+
+              <LoadingButton
+                type="submit"
+                fullWidth
+                variant="contained"
+                disableRipple
+                loading={isPending}
+                sx={{ mt: 3, mb: 2, transition: "0.1s" }}
+              >
+                ارسال الرمز
+              </LoadingButton>
+            </Box>
+          </Box>
+
+          <Typography
+            dir="rtl"
+            component="h5"
+            variant="h5"
+            sx={{
+              textAlign: "center",
+              color: "#00000099",
+              fontSize: "0.875rem",
+              marginTop: "9px",
+              marginBottom: "9px",
+            }}
+          >
+            ليس لديك حساب؟{" "}
+            <Link to={`${process.env.PUBLIC_URL}/signup`}>انشئ حساب</Link>
+          </Typography>
+        </Container>
+      </div>
+    </div>
   );
 }
