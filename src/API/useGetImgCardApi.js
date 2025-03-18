@@ -9,10 +9,10 @@ export const fetchImgCard = async (id) => {
   return res.data;
 };
 
-export default function useGetImgCardApi(ids) {
+export default function useGetImgCardApi(id) {
   return useQuery({
-    queryKey: ["imgCard", ids],
-    queryFn: () => Promise.all(ids.map((id) => fetchImgCard(id))), // Fetch for all ids
-    enabled: ids && ids.length > 0, // Only run the query if ids is not empty
+    queryKey: ["imgCard", id],
+    queryFn: () => fetchImgCard(id),
+    enabled: !!id, // Only run the query if id is truthy
   });
 }
