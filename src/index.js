@@ -8,8 +8,6 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import ScopedCssBaseline from "@mui/material/ScopedCssBaseline";
 // Phone number context
 import { PhoneNumberProvider } from "./Contexts/PhoneNumberContext";
-// Loged out context
-import { LogedOutProvider } from "./Contexts/LogedOutContext";
 // Toastify
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -49,11 +47,9 @@ root.render(
       <QueryClientProvider client={qc}>
         <ToastContainer />
         <ScopedCssBaseline>
-          <LogedOutProvider>
-            <PhoneNumberProvider>
-              <App />
-            </PhoneNumberProvider>
-          </LogedOutProvider>
+          <PhoneNumberProvider>
+            <App />
+          </PhoneNumberProvider>
         </ScopedCssBaseline>
       </QueryClientProvider>
     </CookiesProvider>

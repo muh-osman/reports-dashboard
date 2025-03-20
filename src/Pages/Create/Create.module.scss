@@ -1,0 +1,80 @@
+.top_circle_header {
+  width: 100%;
+  height: 100px;
+  background-color: #174545;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    padding-top: 47px;
+    width: 90px;
+    position: relative;
+
+    @media (max-width: 900px) {
+      width: 65px;
+      padding-top: 16px;
+    }
+  }
+}
+
+.introCurve {
+  line-height: 0;
+  img {
+    width: 100%;
+  }
+}
+
+//
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  margin-top: 16px;
+
+  @media (max-width: 655px) {
+    flex-direction: column;
+    gap: 32px;
+  }
+  @media (max-width: 525px) {
+    margin-top: 16px;
+  }
+}
+
+.hero_img_box {
+  width: 350px;
+  //   background-color: blue;
+  svg {
+    // width: 100px;
+  }
+}
+
+.cards_box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 32px;
+
+  .box {
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 9px;
+    color: #174545;
+    padding: 16px;
+    text-decoration: none;
+    width: 250px;
+    height: 100px;
+    transition: 0.2s;
+    // box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px,
+    //   rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+
+    &:hover {
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px,
+        rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+    }
+  }
+}
