@@ -38,6 +38,11 @@ body {
   -moz-appearance: textfield; /* Firefox */
 }
 
+a {
+  -webkit-tap-highlight-color: transparent; /* Remove the blue highlight on tap */
+  user-select: none; /* Optional: Prevent text selection */
+}
+
 /*  */
 
 /* Mobile Navbar */
@@ -179,3 +184,5 @@ nav.mob-phone-nav {
 .navigation ul li:nth-child(5).act ~ .indicat {
   transform: translateX(calc(70px * 4));
 }
+
+/*  */
