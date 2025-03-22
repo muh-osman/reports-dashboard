@@ -16,7 +16,7 @@ import { useAskCodeApi } from "../../API/useAskCodeApi";
 // Toastify
 import { toast } from "react-toastify";
 //
-import logo from "../../Assets/Images/logo.png";
+import logo from "../../Assets/Images/logo.webp";
 
 export default function SignUp() {
 

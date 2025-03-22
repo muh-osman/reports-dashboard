@@ -21,9 +21,11 @@ export default function useGetPoinsApi() {
   ]);
 
   const phoneNumber = cookies.phoneNumber;
+  const token = cookies.token;
 
   return useQuery({
     queryKey: ["points", phoneNumber],
     queryFn: () => fetchPoints(phoneNumber),
+    enabled: !!token, // Only run the query if the token exists
   });
 }

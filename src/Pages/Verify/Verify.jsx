@@ -1,6 +1,6 @@
 import style from "./Verify.module.scss";
 //
-import logo from "../../Assets/Images/logo.png";
+import logo from "../../Assets/Images/logo.webp";
 // React router
 import { Link, Navigate } from "react-router-dom";
 // Mui

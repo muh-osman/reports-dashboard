@@ -1,24 +1,33 @@
 import style from "./Reports.module.scss";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 // MUI
 import Divider from "@mui/material/Divider";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import LinearProgress from "@mui/material/LinearProgress";
 import CircularProgress from "@mui/material/CircularProgress";
-// MUI icons
+import { Box } from "@mui/material";
+// MUI Icons
 import PhotoLibraryIcon from "@mui/icons-material/PhotoLibrary";
+import DownloadIcon from "@mui/icons-material/Download";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import MinorCrashIcon from "@mui/icons-material/MinorCrash";
+import ContentPasteSearchIcon from "@mui/icons-material/ContentPasteSearch";
+import StyleIcon from "@mui/icons-material/Style";
 // Toastify
 import { toast } from "react-toastify";
+// Cookies
+import { useCookies } from "react-cookie";
 // Api
 import useGetPoinsApi from "../../API/useGetPoinsApi";
+import { useGetAllCardsApi } from "../../API/useGetAllCardsApi";
 import useDownloadCardApi, {
   fetchDownloadCard,
 } from "../../API/useDownloadCardApi";
-import { useGetAllCardsApi } from "../../API/useGetAllCardsApi";
 import useGetImgCardApi, { fetchImgCard } from "../../API/useGetImgCardApi";
 
 // Utility function to format date to dd/mm/yyyy
@@ -31,6 +40,11 @@ const formatDate = (dateString) => {
 };
 
 export default function Reports() {
+  // Cookies
+  const [cookies, setCookie] = useCookies(["token"]);
+
+  const [isHovered, setIsHovered] = useState(false);
+
   useEffect(() => {
     // Scroll to the top of the page
     window.scrollTo(0, 0);
@@ -45,9 +59,11 @@ export default function Reports() {
   } = useGetAllCardsApi();
 
   useEffect(() => {
-    // Get all cards data
-    mutate();
-  }, []);
+    // Get all cards data only if token exists
+    if (cookies.token) {
+      mutate();
+    }
+  }, [cookies.token]);
 
   // Download pdf Card
   const [loadingDownload, setLoadingDownload] = useState({});
@@ -119,11 +135,11 @@ export default function Reports() {
 
   return (
     <div dir="rtl" className={style.container}>
-      {/* {(fetchStatus === "fetching" || isPending) && (
+      {(fetchStatus === "fetching" || isPending) && (
         <div className={style.progressContainer}>
           <LinearProgress />
         </div>
-      )} */}
+      )}
 
       {/* Points */}
       <div className={style.points_container}>
@@ -158,127 +174,155 @@ export default function Reports() {
       <h5 className={style.last_reports_title}>تقاريري</h5>
       <Divider sx={{ marginBottom: "18px" }} />
 
-      <div className={style.reports_cards_container}>
-        {cardsData && cardsData.length > 0 ? (
-          cardsData.map((card) => (
-            <Card
-              key={card.id}
-              sx={{
-                width: 300,
-                backgroundColor: "#f5f5f5",
-                position: "relative",
-              }}
-            >
-              {card.includeImage && (
-                <PhotoLibraryIcon
-                  style={{
-                    position: "absolute",
-                    top: 16,
-                    left: 16,
-                  }}
-                />
-              )}
-              <CardContent>
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="div"
-                  style={{ fontSize: "14px" }}
-                >
-                  التاريخ: {formatDate(card.createdDate)}
-                </Typography>
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="div"
-                  style={{ fontSize: "14px" }}
-                >
-                  رقم الكرت: {card.id}
-                </Typography>
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="div"
-                  style={{ fontSize: "14px" }}
-                >
-                  الشركة المصنعة: {card.carManufacturerNameAr}
-                </Typography>
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="div"
-                  style={{ fontSize: "14px" }}
-                >
-                  ماركة السيارة: {card.carModelNameAr}
-                </Typography>
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="div"
-                  style={{ fontSize: "14px" }}
-                >
-                  رقم اللوحة: {card.plateNumber}
-                </Typography>
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="div"
-                  style={{ fontSize: "14px" }}
-                >
-                  الفرع: {card.branchNameAr}
-                </Typography>
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="div"
-                  style={{ fontSize: "14px" }}
-                >
-                  نوع الخدمة:{" "}
-                  {card.servicesListNameAr.length > 0
-                    ? card.servicesListNameAr.join(", ")
-                    : "غير محدد"}
-                </Typography>
-              </CardContent>
-
-              <CardActions sx={{ backgroundColor: "#fff" }}>
-                <Button
-                  onClick={() => handlePreviewCard(card.id, card.includeImage)}
-                  sx={{ color: "#1976d2", width: "88px" }}
-                  size="small"
-                  disabled={loadingPreview[card.id]} // Disable button if loading
-                >
-                  {loadingPreview[card.id] ? (
-                    <CircularProgress size={22} color="inherit" />
-                  ) : (
-                    "معاينة التقرير"
-                  )}
-                </Button>
-
-                <Button
-                  onClick={() => handleDownloadCard(card.id, card.includeImage)}
-                  sx={{ color: "#1976d2" }}
-                  size="small"
-                  disabled={loadingDownload[card.id]} // Disable button if loading
-                >
-                  {loadingDownload[card.id] ? (
-                    <CircularProgress size={22} color="inherit" />
-                  ) : (
-                    "تحميل"
-                  )}
-                </Button>
-              </CardActions>
-            </Card>
-          ))
-        ) : (
-          <Typography
-            variant="h6"
-            component="div"
-            style={{ textAlign: "center", margin: "20px", color: "#757575" }}
+      {!cookies.token ? (
+        <Typography
+          variant="h6"
+          component="div"
+          style={{ textAlign: "center", margin: "20px", color: "#757575" }}
+        >
+          يرجى{" "}
+          <Link
+            to={`${process.env.PUBLIC_URL}/login`}
+            style={{
+              color: "#1976d2",
+              textDecoration: isHovered ? "underline" : "none",
+            }}
+            onMouseOver={() => setIsHovered(true)}
+            onMouseOut={() => setIsHovered(false)}
           >
-            جاري تحميل التقارير ..
-          </Typography>
-        )}
-      </div>
+            تسجيل الدخول
+          </Link>{" "}
+          لعرض التقارير
+        </Typography>
+      ) : (
+        <div className={style.reports_cards_container}>
+          {cardsData && cardsData.length > 0 ? (
+            cardsData.map((card) => (
+              <Card
+                key={card.id}
+                sx={{
+                  width: { xs: "100%", sm: 300 },
+                  position: "relative",
+                  borderRadius: "9px",
+                  boxShadow: "none",
+                }}
+              >
+                {card.includeImage && (
+                  <PhotoLibraryIcon
+                    style={{
+                      position: "absolute",
+                      top: 16,
+                      left: 16,
+                    }}
+                  />
+                )}
+                <CardContent>
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    gap={1}
+                    marginBottom={"9px"}
+                  >
+                    <MinorCrashIcon style={{ color: "#000000de" }} />
+                    <Typography
+                      variant="h5"
+                      component="div"
+                      style={{ fontSize: "14px" }}
+                    >
+                      {card.carManufacturerNameAr}
+                    </Typography>
+                  </Box>
+
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    gap={1}
+                    marginBottom={"9px"}
+                  >
+                    <StyleIcon style={{ color: "#000000de" }} />
+                    <Typography
+                      variant="h5"
+                      component="div"
+                      style={{ fontSize: "14px" }}
+                    >
+                      {card.carModelNameAr}
+                    </Typography>
+                  </Box>
+
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    gap={1}
+                    marginBottom={"9px"}
+                  >
+                    <ContentPasteSearchIcon style={{ color: "#000000de" }} />
+                    <Typography
+                      variant="h5"
+                      component="div"
+                      style={{ fontSize: "14px" }}
+                    >
+                      {card.servicesListNameAr.length > 0
+                        ? card.servicesListNameAr.join(", ")
+                        : "غير محدد"}
+                    </Typography>
+                  </Box>
+
+                  <Box display="flex" alignItems="center" gap={1}>
+                    <CalendarMonthIcon style={{ color: "#000000de" }} />
+                    <Typography
+                      variant="h5"
+                      component="div"
+                      style={{ fontSize: "14px" }}
+                    >
+                      {formatDate(card.createdDate)}
+                    </Typography>
+                  </Box>
+                </CardContent>
+
+                <Divider />
+
+                <CardActions dir="ltr" sx={{ backgroundColor: "#fff" }}>
+                  {/* <Button
+            onClick={() => handlePreviewCard(card.id, card.includeImage)}
+            sx={{ color: "#1976d2", width: "88px" }}
+            size="small"
+            disabled={loadingPreview[card.id]} // Disable button if loading
+          >
+            {loadingPreview[card.id] ? (
+              <CircularProgress size={22} color="inherit" />
+            ) : (
+              "معاينة التقرير"
+            )}
+          </Button> */}
+
+                  <IconButton
+                    onClick={() =>
+                      handleDownloadCard(card.id, card.includeImage)
+                    }
+                    sx={{ color: "#1976d2" }}
+                    size="small"
+                    disabled={loadingDownload[card.id]} // Disable button if loading
+                  >
+                    {loadingDownload[card.id] ? (
+                      <CircularProgress size={24} color="inherit" />
+                    ) : (
+                      <DownloadIcon />
+                    )}
+                  </IconButton>
+                </CardActions>
+              </Card>
+            ))
+          ) : (
+            <Typography
+              variant="h6"
+              component="div"
+              style={{ textAlign: "center", margin: "20px", color: "#757575" }}
+            >
+              جاري تحميل التقارير ..
+            </Typography>
+          )}
+        </div>
+      )}
     </div>
   );
 }

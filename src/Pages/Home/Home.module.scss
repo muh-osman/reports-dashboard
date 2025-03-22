@@ -1,11 +1,6 @@
 .container {
   padding: 32px;
-  padding-top: 200px;
-  padding-bottom: 102px;
-
-  @media (max-width: 1400px) {
-    padding-top: 183px;
-  }
+  padding-bottom: 124px;
 
   @media (max-width: 550px) {
     padding: 16px;
@@ -19,7 +14,7 @@
   background-color: #fff;
   border-radius: 9px;
   text-align: center;
-  width: 600px;
+  width: 400px;
 
   @media (max-width: 550px) {
     width: 100%;

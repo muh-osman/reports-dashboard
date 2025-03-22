@@ -22,7 +22,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 // Logo
-import logo from "../Assets/Images/logo.png";
+import logo from "../Assets/Images/logo.webp";
 // Cookies
 import { useCookies } from "react-cookie";
 
@@ -58,7 +58,8 @@ function HomeLayout() {
     removeCookie("username", { path: "/dashboard" });
     removeCookie("token", { path: "/dashboard" });
 
-    navigate(`${process.env.PUBLIC_URL}/home`);
+    // Refresh the page after logout
+    window.location.reload();
   };
   const login = () => {
     handleClose();
@@ -111,15 +112,7 @@ function HomeLayout() {
 
   return (
     <div style={{ backgroundColor: "#f0f1f3" }}>
-      <div
-        style={{
-          position: "fixed",
-          top: "0",
-          left: "0",
-          right: "0",
-          zIndex: "999",
-        }}
-      >
+      <div className={style.header}>
         <div className={style.top_circle_header}>
           <Link to={`${process.env.PUBLIC_URL}/`}>
             <img src={logo} alt="cashif logo" />

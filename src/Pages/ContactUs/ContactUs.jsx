@@ -11,6 +11,7 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 import EmailIcon from "@mui/icons-material/Email";
 import { Box, Typography } from "@mui/material";
+import CardContent from "@mui/material/CardContent";
 // Images
 import alqadisia from "../../Assets/Images/alqadisia.jpg";
 import alshifa from "../../Assets/Images/alshifa.jpg";
@@ -46,13 +47,17 @@ export default function ContactUs() {
             boxShadow: "none",
           }}
         >
-          <CardHeader title="الرياض - معارض القادسية" />
           <CardMedia
             component="img"
             height="194"
             image={alqadisia}
             alt="كاشف لفحص السيارات"
           />
+          <CardContent sx={{ paddingBottom: "0px" }}>
+            <Typography variant="h5" component="div">
+              الرياض - معارض القادسية
+            </Typography>
+          </CardContent>
 
           <CardActions disableSpacing>
             <IconButton
@@ -88,13 +93,18 @@ export default function ContactUs() {
             boxShadow: "none",
           }}
         >
-          <CardHeader title="الرياض - معارض الشفا" />
           <CardMedia
             component="img"
             height="194"
             image={alshifa}
             alt="كاشف لفحص السيارات"
           />
+
+          <CardContent sx={{ paddingBottom: "0px" }}>
+            <Typography variant="h5" component="div">
+              الرياض - معارض الشفا
+            </Typography>
+          </CardContent>
 
           <CardActions disableSpacing>
             <IconButton
@@ -130,13 +140,18 @@ export default function ContactUs() {
             boxShadow: "none",
           }}
         >
-          <CardHeader title="الدمام - معارض الدمام" />
           <CardMedia
             component="img"
             height="194"
             image={damam}
             alt="كاشف لفحص السيارات"
           />
+
+          <CardContent sx={{ paddingBottom: "0px" }}>
+            <Typography variant="h5" component="div">
+              الدمام - معارض الدمام
+            </Typography>
+          </CardContent>
 
           <CardActions disableSpacing>
             <IconButton
@@ -172,13 +187,18 @@ export default function ContactUs() {
             boxShadow: "none",
           }}
         >
-          <CardHeader title="جدة - معارض جدة" />
           <CardMedia
             component="img"
             height="194"
             image={jeddah}
             alt="كاشف لفحص السيارات"
           />
+
+          <CardContent sx={{ paddingBottom: "0px" }}>
+            <Typography variant="h5" component="div">
+              جدة - معارض جدة
+            </Typography>
+          </CardContent>
 
           <CardActions disableSpacing>
             <IconButton

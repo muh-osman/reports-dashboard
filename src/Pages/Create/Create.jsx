@@ -2,7 +2,7 @@ import style from "./Create.module.scss";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 //
-import logo from "../../Assets/Images/logo.png";
+import logo from "../../Assets/Images/logo.webp";
 import signUp from "../../Assets/Images/sign-up.svg";
 //
 import MotionWrapper from "../../Utils/MotionWrapper";
@@ -82,7 +82,7 @@ export default function Create() {
             >
               لديك حساب؟{" "}
               <Link
-                to={`${process.env.PUBLIC_URL}/`}
+                to={`${process.env.PUBLIC_URL}/login`}
                 style={{ color: "#1976d2" }}
               >
                 تسجيل دخول

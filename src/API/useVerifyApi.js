@@ -64,7 +64,7 @@ export const useVerifyApi = () => {
           });
 
           // Navigate to reports
-          navigate(`${process.env.PUBLIC_URL}/home`, { replace: true });
+          navigate(`${process.env.PUBLIC_URL}/reports`, { replace: true });
         } catch (error) {
           console.error("Failed to decode token:", error);
         }
