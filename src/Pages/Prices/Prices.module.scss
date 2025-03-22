@@ -12,8 +12,24 @@
 .box {
   width: 45%;
   margin: auto;
+  // background-color: #fff;
+  // border-radius: 9px;
+  // padding: 16px;
 
   @media (max-width: 550px) {
     width: 100%;
+  }
+}
+
+//
+.progressContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+
+  span {
+    height: 2px !important;
   }
 }

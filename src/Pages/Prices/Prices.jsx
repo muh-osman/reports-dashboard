@@ -1,16 +1,16 @@
 import style from "./Prices.module.scss";
 // MUI
 import * as React from "react";
-import PropTypes from "prop-types";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import Paper from "@mui/material/Paper";
-import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
-import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import { debounce } from "@mui/material/utils";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
+import LoadingButton from "@mui/lab/LoadingButton";
+import LinearProgress from "@mui/material/LinearProgress";
+// API
+import useSearchApi from "../../API/useSearchApi";
+import useGetPricesApi from "../../API/useGetPricesApi";
 
 const marks = [
   {
@@ -87,151 +87,126 @@ const marks = [
   },
 ];
 
-function CustomPaper(props) {
-  return <Paper {...props}>{props.children}</Paper>;
-}
-
-CustomPaper.propTypes = {
-  children: PropTypes.node,
-};
-
-const fetchCarModels = debounce(async (input, callback) => {
-  try {
-    const response = await fetch(
-      "https://cashif.online/back-end/public/api/car-models/limited-general-search",
-      {
-        method: "POST", // Set the method to POST
-        headers: {
-          "Content-Type": "application/json", // Set the content type
-        },
-        body: JSON.stringify({ search: input }), // Include the input in the request body if needed
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-
-    const data = await response.json();
-
-    // Assuming the API returns an array of car models
-    const filteredModels = data.carModels.filter((model) =>
-      model.model_name.toLowerCase().includes(input.toLowerCase())
-    );
-
-    callback(
-      filteredModels.map((model) => ({
-        id: model.id,
-        description: model.model_name,
-      }))
-    );
-  } catch (error) {
-    console.error("Error fetching car models:", error);
-    callback([]); // Return an empty array on error
-  }
-}, 400);
-
 export default function Prices() {
-  const [value, setValue] = React.useState(null);
-  const [inputValue, setInputValue] = React.useState("");
-  const [options, setOptions] = React.useState([]);
-  const inputRef = React.useRef(null); // Create a ref for the TextField
-
+  //
+  const inputRef = React.useRef(null);
   React.useEffect(() => {
-    if (inputValue === "") {
-      setOptions([]);
-      return;
-    }
-
-    fetchCarModels(inputValue, (results) => {
-      setOptions(results);
-    });
-  }, [inputValue]);
-
-  React.useEffect(() => {
-    // Focus the TextField when the component mounts
     if (inputRef.current) {
       inputRef.current.focus();
     }
   }, []);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
+  //
+  const [trigger, setTrigger] = React.useState(false);
+  //
+  const { data: models, fetchStatus, isSuccess } = useSearchApi();
+  //
+  const [selectedModelId, setSelectedModelId] = React.useState(null);
+  const handleModelChange = (event, newValue) => {
+    setTrigger(false);
     if (newValue) {
-      console.log("Selected Car ID:", newValue.id); // Log the ID of the selected car
+      setSelectedModelId(newValue.id); // Set the selected model ID
+      console.log("Selected Model ID:", newValue.id); // Log the selected model ID
+    } else {
+      setSelectedModelId(null); // Reset if no model is selected
+    }
+  };
+
+  //
+  const [selectedYear, setSelectedYear] = React.useState(2018); // State to hold the selected year
+  const handleYearChange = (event, newValue) => {
+    setTrigger(false);
+    setSelectedYear(newValue); // Update the selected year
+    console.log("Selected Year:", newValue); // Log the selected year
+  };
+
+  const {
+    data: prices,
+    fetchStatus: pricesFetchStatus,
+    isSuccess: isFetchPricesSuccess,
+  } = useGetPricesApi(selectedModelId, selectedYear, trigger);
+
+  const handleSubmit = () => {
+    if (selectedModelId && selectedYear) {
+      setTrigger(true);
+    } else {
+      console.log("Please select a model and year.");
+      alert("Please select a model and year.");
     }
   };
 
   return (
     <div className={style.container}>
+      {fetchStatus === "fetching" && (
+        <div className={style.progressContainer}>
+          <LinearProgress />
+        </div>
+      )}
+
       <Typography
         variant="h6"
         component="div"
-        style={{ textAlign: "center", margin: "20px", color: "#757575" }}
+        style={{
+          textAlign: "center",
+          margin: "20px",
+          marginTop: "8px",
+          color: "#757575",
+        }}
       >
-        ابحث عن اسم سيارتك
+        ابحث عن اسم سيارتك, واختر سنة الصنع
       </Typography>
 
       <div className={style.box}>
         <Autocomplete
           dir="auto"
-          getOptionLabel={(option) => option.description}
-          options={options}
-          autoComplete
-          includeInputInList
-          filterSelectedOptions
-          value={value}
-          noOptionsText="لا يوجد خيارات"
-          onChange={handleChange} // Use the handleChange function
-          onInputChange={(event, newInputValue) => {
-            setInputValue(newInputValue);
-          }}
-          isOptionEqualToValue={(option, value) =>
-            option.description === value.description
-          } // Custom equality check
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Search"
-              fullWidth
-              inputRef={inputRef}
-            />
-          )}
+          sx={{ backgroundColor: "#fff" }}
+          ref={inputRef}
+          disablePortal
+          onChange={handleModelChange} // Add the onChange handler
+          options={isSuccess ? models.carModels : []}
+          getOptionLabel={(option) => option.model_name}
+          renderInput={(params) => <TextField {...params} label="Search" />}
+          // Use a unique key for each option
           renderOption={(props, option) => (
-            <li {...props}>
-              <Grid container sx={{ alignItems: "center" }}>
-                <Grid sx={{ display: "flex", width: 44 }}>
-                  <DirectionsCarIcon sx={{ color: "text.secondary" }} />
-                </Grid>
-                <Grid
-                  sx={{ width: "calc(100% - 44px)", wordWrap: "break-word" }}
-                >
-                  <Typography variant="body1">{option.description}</Typography>
-                </Grid>
-              </Grid>
+            <li {...props} key={option.id}>
+              {" "}
+              {/* Use option.id as the key */}
+              {option.model_name}
             </li>
           )}
-          PaperComponent={CustomPaper}
         />
 
-        <Box sx={{ width: "80%", margin: "auto", marginTop: "32px" }}>
-          <Typography
+        <Box sx={{ width: "85%", margin: "auto", marginTop: "28px" }}>
+          {/* <Typography
             variant="h6"
             component="div"
             style={{ textAlign: "center", margin: "auto", color: "#757575" }}
           >
             سنة الصنع
-          </Typography>
+          </Typography> */}
           <Slider
             aria-label="سنة الصنع"
-            defaultValue={2018}
+            value={selectedYear} // Set the value of the slider to the selected year
+            onChange={handleYearChange} // Add the onChange handler
             valueLabelDisplay="auto"
-            shiftStep={1}
             step={1}
             marks={marks}
             min={2009}
             max={2026}
           />
+        </Box>
+
+        <Box sx={{ marginTop: "32px", textAlign: "center" }}>
+          <LoadingButton
+            sx={{ maxWidth: "300px" }}
+            fullWidth
+            type="submit"
+            variant="contained"
+            disableRipple
+            loading={pricesFetchStatus === "fetching"} // Show loading state
+            onClick={handleSubmit} // Call handleSubmit on button click
+          >
+            بحث
+          </LoadingButton>
         </Box>
       </div>
     </div>

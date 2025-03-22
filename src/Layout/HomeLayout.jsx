@@ -90,10 +90,13 @@ function HomeLayout() {
       `${process.env.PUBLIC_URL}/`,
       `${process.env.PUBLIC_URL}/prices`,
       `${process.env.PUBLIC_URL}/falak`,
-    ];
+    ].map((path) => path.replace(/\/$/, "")); // Normalize paths by removing trailing slashes
+
+    // Normalize the current path
+    const currentPath = location.pathname.replace(/\/$/, ""); // Remove trailing slash from current path
 
     // Check if the current path is not in the list of paths
-    if (!paths.includes(location.pathname)) {
+    if (!paths.includes(currentPath)) {
       // Remove 'act' class from all <li> tags
       listRefs.current.forEach((item) => item.classList.remove("act"));
       // Hide the indicator
@@ -103,7 +106,7 @@ function HomeLayout() {
     } else {
       // If the current path is in the list, set the active class
       indicat.current.style.display = "block";
-      const index = paths.findIndex((path) => path === location.pathname);
+      const index = paths.findIndex((path) => path === currentPath);
       if (index !== -1) {
         activeLink(index);
       }
