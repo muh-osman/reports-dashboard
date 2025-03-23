@@ -44,6 +44,10 @@
 .hero_img_box {
   width: 350px;
   //   background-color: blue;
+
+  @media (max-width: 525px) {
+    width: 250px;
+  }
   svg {
     // width: 100px;
   }
