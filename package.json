@@ -1,6 +1,5 @@
 {
   "name": "cashif-reports-dashboard",
-  "homepage": "https://cashif.cc/dashboard",
   "version": "0.5.5",
   "private": true,
   "dependencies": {

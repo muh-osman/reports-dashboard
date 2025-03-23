@@ -92,6 +92,9 @@ const marks = [
   },
 ];
 
+const TrueIcon = `<svg fill="#25d366" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" /></svg>`;
+const FalseIcon = `<svg class="wrong-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"></path></svg>`;
+
 export default function Prices() {
   //
   const inputRef = React.useRef(null);
@@ -121,7 +124,7 @@ export default function Prices() {
   const handleYearChange = (event, newValue) => {
     setTrigger(false);
     setSelectedYear(newValue); // Update the selected year
-    // console.log("Selected Year:", newValue); // Log the selected year
+    console.log("Selected Year:", newValue); // Log the selected year
   };
 
   const handleSubmit = () => {
@@ -295,16 +298,9 @@ export default function Prices() {
                     <h5>تشمل فحص:</h5>
                     <ul className="list-unstyled mt-3 mb-4">
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         المحرك
                         <Tooltip
                           title="فحص الأداء، مستوى الزيت، والصوت"
@@ -317,16 +313,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         ناقل الحركة
                         <Tooltip
                           title="اختبار سلاسة التبديل والأداء"
@@ -339,16 +328,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         الدفرنس
                         <Tooltip
                           title="فحص الأصوات والتسربات"
@@ -361,16 +343,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         ميكانيكا أسفل السيارة
                         <Tooltip
                           dir="rtl"
@@ -385,16 +360,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         الكمبيوتر والحساسات
                         <Tooltip
                           title="استخدام أجهزة التشخيص لفحص الأنظمة الإلكترونية"
@@ -407,16 +375,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         الهيكل الداخلي
                         <Tooltip
                           title="التحقق من شاص السيارة: الصدمات، الصدأ، اللحامات، نقاط التثبيت، والاتصالات الميكانيكية لضمان السلامة الهيكلية والسيارة"
@@ -429,16 +390,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         تجربة السيارة
                         <Tooltip
                           title="تجربة القيادة للتحقق من الأداء العام"
@@ -451,16 +405,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="wrong-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 384 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: FalseIcon }}
+                        ></span>{" "}
                         الهيكل الخارجي
                         <Tooltip
                           title="فحص البودي، الدهان، الصدمات، والخدوش"
@@ -473,16 +420,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="wrong-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 384 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: FalseIcon }}
+                        ></span>{" "}
                         الوسائد الهوائية
                         <Tooltip
                           title="التحقق من سلامة وعمل الوسائد الهوائية (الايرباق)"
@@ -495,16 +435,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="wrong-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 384 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: FalseIcon }}
+                        ></span>{" "}
                         الديكورات الداخلية
                         <Tooltip
                           title="فحص سلامة المقاعد والأزرار والأجهزة الداخلية"
@@ -517,16 +450,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="wrong-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 384 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: FalseIcon }}
+                        ></span>{" "}
                         المزايا المخصصة للسيارة
                         <Tooltip
                           title="التحقق من نظام الملاحة، الكاميرات، والمستشعرات. وغيرها"
@@ -539,16 +465,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="wrong-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 384 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: FalseIcon }}
+                        ></span>{" "}
                         الملحقات الخارجية للسيارة
                         <Tooltip
                           title="فحص المرايا والأضواء الخارجية"
@@ -561,16 +480,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="wrong-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 384 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: FalseIcon }}
+                        ></span>{" "}
                         الزجاج
                         <Tooltip
                           title="التحقق من سلامة الزجاج"
@@ -583,16 +495,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="wrong-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 384 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: FalseIcon }}
+                        ></span>{" "}
                         الكفرات والجنوط
                         <Tooltip
                           title="فحص تآكل الكفرات وتوازن الجنوط"
@@ -605,16 +510,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="wrong-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 384 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: FalseIcon }}
+                        ></span>{" "}
                         الشمعات والأسطبات
                         <Tooltip
                           title="فحص عمل وسلامة الشمعات والأسطبات"
@@ -690,16 +588,9 @@ export default function Prices() {
                     <h5>تشمل فحص:</h5>
                     <ul className="list-unstyled mt-3 mb-4">
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         المحرك
                         <Tooltip
                           title="فحص الأداء، مستوى الزيت، والصوت"
@@ -712,16 +603,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         ناقل الحركة
                         <Tooltip
                           title="اختبار سلاسة التبديل والأداء"
@@ -734,16 +618,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         الدفرنس
                         <Tooltip
                           title="فحص الأصوات والتسربات"
@@ -756,16 +633,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         ميكانيكا أسفل السيارة
                         <Tooltip
                           dir="rtl"
@@ -780,16 +650,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         الكمبيوتر والحساسات
                         <Tooltip
                           title="استخدام أجهزة التشخيص لفحص الأنظمة الإلكترونية"
@@ -802,16 +665,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         الهيكل الداخلي
                         <Tooltip
                           title="التحقق من شاص السيارة: الصدمات، الصدأ، اللحامات، نقاط التثبيت، والاتصالات الميكانيكية لضمان السلامة الهيكلية والسيارة"
@@ -824,16 +680,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         تجربة السيارة
                         <Tooltip
                           title="تجربة القيادة للتحقق من الأداء العام"
@@ -846,16 +695,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         الهيكل الخارجي
                         <Tooltip
                           title="فحص البودي، الدهان، الصدمات، والخدوش"
@@ -868,16 +710,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         الوسائد الهوائية
                         <Tooltip
                           title="التحقق من سلامة وعمل الوسائد الهوائية (الايرباق)"
@@ -890,16 +725,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="wrong-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 384 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: FalseIcon }}
+                        ></span>{" "}
                         الديكورات الداخلية
                         <Tooltip
                           title="فحص سلامة المقاعد والأزرار والأجهزة الداخلية"
@@ -912,16 +740,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="wrong-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 384 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: FalseIcon }}
+                        ></span>{" "}
                         المزايا المخصصة للسيارة
                         <Tooltip
                           title="التحقق من نظام الملاحة، الكاميرات، والمستشعرات. وغيرها"
@@ -934,16 +755,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="wrong-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 384 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: FalseIcon }}
+                        ></span>{" "}
                         الملحقات الخارجية للسيارة
                         <Tooltip
                           title="فحص المرايا والأضواء الخارجية"
@@ -956,16 +770,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="wrong-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 384 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: FalseIcon }}
+                        ></span>{" "}
                         الزجاج
                         <Tooltip
                           title="التحقق من سلامة الزجاج"
@@ -978,16 +785,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="wrong-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 384 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: FalseIcon }}
+                        ></span>{" "}
                         الكفرات والجنوط
                         <Tooltip
                           title="فحص تآكل الكفرات وتوازن الجنوط"
@@ -1000,16 +800,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="wrong-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 384 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: FalseIcon }}
+                        ></span>{" "}
                         الشمعات والأسطبات
                         <Tooltip
                           title="فحص عمل وسلامة الشمعات والأسطبات"
@@ -1157,16 +950,9 @@ export default function Prices() {
                     <h5>تشمل فحص:</h5>
                     <ul className="list-unstyled mt-3 mb-4">
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         المحرك
                         <Tooltip
                           title="فحص الأداء، مستوى الزيت، والصوت"
@@ -1179,16 +965,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         ناقل الحركة
                         <Tooltip
                           title="اختبار سلاسة التبديل والأداء"
@@ -1201,16 +980,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         الدفرنس
                         <Tooltip
                           title="فحص الأصوات والتسربات"
@@ -1223,16 +995,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         ميكانيكا أسفل السيارة
                         <Tooltip
                           dir="rtl"
@@ -1247,16 +1012,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         الكمبيوتر والحساسات
                         <Tooltip
                           title="استخدام أجهزة التشخيص لفحص الأنظمة الإلكترونية"
@@ -1269,16 +1027,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         الهيكل الداخلي
                         <Tooltip
                           title="التحقق من شاص السيارة: الصدمات، الصدأ، اللحامات، نقاط التثبيت، والاتصالات الميكانيكية لضمان السلامة الهيكلية والسيارة"
@@ -1291,16 +1042,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         تجربة السيارة
                         <Tooltip
                           title="تجربة القيادة للتحقق من الأداء العام"
@@ -1313,16 +1057,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         الهيكل الخارجي
                         <Tooltip
                           title="فحص البودي، الدهان، الصدمات، والخدوش"
@@ -1335,16 +1072,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         الوسائد الهوائية
                         <Tooltip
                           title="التحقق من سلامة وعمل الوسائد الهوائية (الايرباق)"
@@ -1357,16 +1087,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         الديكورات الداخلية
                         <Tooltip
                           title="فحص سلامة المقاعد والأزرار والأجهزة الداخلية"
@@ -1379,16 +1102,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         المزايا المخصصة للسيارة
                         <Tooltip
                           title="التحقق من نظام الملاحة، الكاميرات، والمستشعرات. وغيرها"
@@ -1401,16 +1117,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         الملحقات الخارجية للسيارة
                         <Tooltip
                           title="فحص المرايا والأضواء الخارجية"
@@ -1423,16 +1132,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         الزجاج
                         <Tooltip
                           title="التحقق من سلامة الزجاج"
@@ -1445,16 +1147,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         الكفرات والجنوط
                         <Tooltip
                           title="فحص تآكل الكفرات وتوازن الجنوط"
@@ -1467,16 +1162,9 @@ export default function Prices() {
                         </Tooltip>
                       </li>
                       <li>
-                        <span>
-                          <svg
-                            className="true-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                          >
-                            {/*!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.*/}
-                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                          </svg>
-                        </span>{" "}
+                        <span
+                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                        ></span>{" "}
                         الشمعات والأسطبات
                         <Tooltip
                           title="فحص عمل وسلامة الشمعات والأسطبات"
