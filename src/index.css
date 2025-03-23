@@ -186,3 +186,294 @@ nav.mob-phone-nav {
 }
 
 /*  */
+
+/* Overlay */
+.title-box h2 {
+  text-align: center;
+  padding-top: 64px;
+  padding-bottom: 32px;
+}
+.overlay {
+  padding: 0px;
+  margin-bottom: 32px;
+  width: 100%;
+  background-color: #f0f1f3;
+  transition: 0.5s;
+
+  display: grid;
+  grid-template-rows: 0fr;
+  background-color: transparent;
+}
+
+.overlay > div {
+  overflow: hidden;
+}
+
+/* for test */
+.overlay {
+  /* grid-template-rows: 1fr !important; */
+}
+
+.overlay .card-header {
+  background-color: #174545;
+  color: #fff;
+  text-align: center;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+.card-header h4 {
+  font-size: 24px;
+}
+
+.pricing-card-title {
+  color: #174545;
+  font-size: 46px;
+  font-weight: 800;
+  margin-top: 24px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+
+.pricing-card-title svg {
+  width: 28px;
+}
+
+@media (max-width: 575px) {
+  .pricing-card-title svg {
+    width: 24px;
+  }
+}
+
+.overlay h5 {
+  color: #000;
+  border-bottom: 1px solid #000;
+  width: fit-content;
+  margin: auto;
+  margin-bottom: 8px;
+}
+.overlay li {
+  color: #757575;
+  line-height: 2.1;
+  font-size: 18px;
+  text-align: right;
+}
+
+.overlay li span svg {
+  width: 16px;
+  margin-left: 6px;
+}
+
+.true-icon {
+  fill: #25d366;
+}
+
+.wrong-icon {
+  fill: red;
+}
+
+.plane-box {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  gap: 16px;
+  margin-bottom: 0 !important;
+}
+
+@media (max-width: 550px) {
+  .plane-box {
+    gap: 64px;
+  }
+}
+
+.plane {
+  padding: 0;
+  width: 300px;
+  background-color: #fff;
+}
+
+.full-pane {
+  order: 2;
+}
+
+.main-plane {
+  order: 3;
+}
+
+.eng-pane {
+  order: 1;
+}
+
+@media (max-width: 550px) {
+  .full-pane {
+    order: 1;
+  }
+
+  .main-plane {
+    order: 2;
+  }
+
+  .eng-pane {
+    order: 3;
+  }
+}
+
+.plane ul {
+  list-style: none;
+}
+.card {
+  height: 100%;
+}
+
+.card-body {
+  padding: 16px;
+  padding-top: 0;
+}
+.card-body button {
+  margin-top: auto;
+}
+
+@media (max-width: 640px) {
+  .plane {
+    height: unset;
+  }
+}
+
+.crown-box {
+  position: relative;
+  overflow: hidden;
+}
+
+.crown-box::after {
+  position: absolute;
+  content: "خصم 20%";
+  top: 15px;
+  left: -50px;
+  width: 175px;
+  height: 47px;
+  font-size: 16px;
+  background-color: #d32f2f;
+  transform: rotate(315deg);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.seventy-discount {
+  position: relative;
+  overflow: hidden;
+}
+
+.seventy-discount::after {
+  position: absolute;
+  content: "خصم 50%";
+  top: 15px;
+  left: -50px;
+  width: 175px;
+  height: 47px;
+  font-size: 16px;
+  background-color: #d32f2f;
+  transform: rotate(315deg);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.text-warning {
+  display: none;
+  color: #e6d39c !important;
+  position: absolute;
+  top: 14px;
+  left: 138px;
+  z-index: 9999999999;
+  border-radius: 50px !important;
+}
+
+@media (min-width: 1116px) {
+  .eng {
+    height: 700.5;
+  }
+}
+
+.form-sub-title {
+  color: #777;
+  text-align: center;
+  font-size: 18px !important;
+  margin: auto;
+  margin-bottom: 32px;
+  margin-top: 32px;
+}
+
+.form-control::placeholder {
+  font-family: "mont-light";
+  font-size: 18px !important;
+  color: #999 !important;
+}
+
+.serv {
+  margin-top: 64px;
+  padding-bottom: 0px !important;
+}
+
+.serv h2 {
+  padding-bottom: 0px !important;
+  margin-top: 90px;
+}
+
+@media (max-width: 991px) {
+  .serv {
+    padding-bottom: 16px !important;
+  }
+
+  .serv h2 {
+    margin-bottom: 0px !important;
+    margin-top: 0px !important;
+  }
+}
+
+@media (max-width: 550px) {
+  .serv {
+    padding-top: 0 !important;
+    padding-block: 32px !important;
+    margin-bottom: 0px !important;
+    margin-top: 0px !important;
+  }
+
+  .serv h2 {
+    margin-bottom: 0px !important;
+    margin-top: 0px !important;
+  }
+}
+
+.ask-now {
+  background-color: #213941;
+  color: #fff;
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: none;
+  margin-top: 24px !important;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 16px;
+  display: block;
+  text-align: center;
+  text-decoration: none;
+}
+
+.rounded-3 {
+  border-radius: 9px;
+}
+
+.shadow-sm {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+/* End Overlay (plans) */
