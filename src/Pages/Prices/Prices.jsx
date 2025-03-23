@@ -6,11 +6,12 @@ import Autocomplete from "@mui/material/Autocomplete";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
-import LoadingButton from "@mui/lab/LoadingButton";
 import LinearProgress from "@mui/material/LinearProgress";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import InfoIcon from "@mui/icons-material/Info";
+import SearchIcon from "@mui/icons-material/Search";
+import { CircularProgress } from "@mui/material";
 // Toastify
 import { toast } from "react-toastify";
 // API
@@ -96,8 +97,13 @@ const TrueIcon = `<svg fill="#25d366" xmlns="http://www.w3.org/2000/svg" viewBox
 const FalseIcon = `<svg class="wrong-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"></path></svg>`;
 
 export default function Prices() {
+  React.useEffect(() => {
+    // Scroll to the top of the page
+    window.scrollTo(0, 0);
+  }, []);
   //
   const inputRef = React.useRef(null);
+  const overlay = React.useRef(null);
   React.useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
@@ -110,6 +116,7 @@ export default function Prices() {
   //
   const [selectedModelId, setSelectedModelId] = React.useState(null);
   const handleModelChange = (event, newValue) => {
+    overlay.current.style.gridTemplateRows = "0fr";
     setTrigger(false);
     if (newValue) {
       setSelectedModelId(newValue.id); // Set the selected model ID
@@ -122,17 +129,10 @@ export default function Prices() {
   //
   const [selectedYear, setSelectedYear] = React.useState(2018); // State to hold the selected year
   const handleYearChange = (event, newValue) => {
+    overlay.current.style.gridTemplateRows = "0fr";
     setTrigger(false);
     setSelectedYear(newValue); // Update the selected year
-    console.log("Selected Year:", newValue); // Log the selected year
-  };
-
-  const handleSubmit = () => {
-    if (selectedModelId && selectedYear) {
-      setTrigger(true);
-    } else {
-      toast.warn("الرجاء تحديد الموديل وسنة الصنع");
-    }
+    // console.log("Selected Year:", newValue); // Log the selected year
   };
 
   const {
@@ -163,6 +163,30 @@ export default function Prices() {
   // console.log(prices[0]?.prices[0].price);
   // console.log(prices[0]?.prices[1].price);
   // console.log(prices[0]?.prices[2].price);
+
+  const handleSubmit = () => {
+    if (selectedModelId && selectedYear) {
+      setTrigger(true);
+    } else {
+      toast.warn("الرجاء تحديد الموديل وسنة الصنع");
+    }
+  };
+
+  React.useEffect(() => {
+    if (isFetchPricesSuccess) {
+      // overlay.current.style.padding = "16px";
+      overlay.current.style.gridTemplateRows = "1fr";
+
+      // Wait for the layout to be updated before scrolling
+      setTimeout(() => {
+        overlay.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+          inline: "nearest",
+        });
+      }, 100);
+    }
+  }, [isFetchPricesSuccess]);
 
   return (
     <div className={style.container}>
@@ -226,26 +250,23 @@ export default function Prices() {
         </Box>
 
         <Box sx={{ marginTop: "32px", textAlign: "center" }}>
-          <LoadingButton
-            sx={{ maxWidth: "300px" }}
-            fullWidth
-            type="submit"
-            variant="contained"
-            disableRipple
-            loading={pricesFetchStatus === "fetching"} // Show loading state
-            onClick={handleSubmit} // Call handleSubmit on button click
+          <IconButton
+            sx={{ backgroundColor: "#0000000a" }}
+            size="large"
+            onClick={handleSubmit}
+            disabled={pricesFetchStatus === "fetching"} // Disable button while loading
           >
-            بحث
-          </LoadingButton>
+            {pricesFetchStatus === "fetching" ? (
+              <CircularProgress size={46} /> // Show loading spinner
+            ) : (
+              <SearchIcon sx={{ fontSize: "46px" }} />
+            )}
+          </IconButton>
         </Box>
       </div>
 
       <Box dir="rtl">
-        <div
-          className="overlay"
-          id="overlay"
-          style={{ padding: 16, gridTemplateRows: "1fr" }}
-        >
+        <div className="overlay" ref={overlay} id="overlay">
           <div>
             <div className="title-box">
               <h2>اختر الباقة المناسبة</h2>
