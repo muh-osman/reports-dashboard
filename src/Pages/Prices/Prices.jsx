@@ -190,11 +190,11 @@ export default function Prices() {
 
   return (
     <div className={style.container}>
-      {fetchStatus === "fetching" && (
+      {/* {fetchStatus === "fetching" && (
         <div className={style.progressContainer}>
           <LinearProgress />
         </div>
-      )}
+      )} */}
 
       <Typography
         variant="h6"
@@ -206,7 +206,7 @@ export default function Prices() {
           color: "#757575",
         }}
       >
-        ابحث عن اسم سيارتك, واختر سنة الصنع
+        ابحث عن اسم سيارتك
       </Typography>
 
       <div className={style.box}>

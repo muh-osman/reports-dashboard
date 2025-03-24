@@ -13,9 +13,9 @@ export default function Falak() {
 
       {
               !cookies.token ? (
-                <h1>qwe</h1>
+                <h1>Falek</h1>
                 ) : (
-                <h1>zxc</h1>
+                <h1>Falek</h1>
               )
       }
 
