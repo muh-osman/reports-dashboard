@@ -1,6 +1,6 @@
 {
   "name": "cashif-reports-dashboard",
-  "version": "0.5.5",
+  "version": "0.6.5",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.4",
