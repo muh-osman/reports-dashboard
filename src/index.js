@@ -15,6 +15,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { CookiesProvider } from "react-cookie";
 // React query
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+// PWM
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 // Create a client
 const qc = new QueryClient({
@@ -61,3 +63,7 @@ root.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+
+// Register the service worker
+serviceWorkerRegistration.register();

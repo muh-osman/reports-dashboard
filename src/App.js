@@ -21,6 +21,7 @@ import Home from "./Pages/Home/Home";
 import Prices from "./Pages/Prices/Prices";
 import Booking from "./Pages/Booking/Booking";
 
+
 export default function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(

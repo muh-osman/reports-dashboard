@@ -8,6 +8,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import PhoneIcon from "@mui/icons-material/Phone";
 import TranslateIcon from "@mui/icons-material/Translate";
 import LoginIcon from "@mui/icons-material/Login";
+import SystemUpdateIcon from "@mui/icons-material/SystemUpdate";
 //
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
@@ -27,6 +28,39 @@ import logo from "../Assets/Images/logo.webp";
 import { useCookies } from "react-cookie";
 
 function HomeLayout() {
+  // PWM Notification
+  const [deferredPrompt, setDeferredPrompt] = React.useState(null);
+
+  React.useEffect(() => {
+    const handleBeforeInstallPrompt = (event) => {
+      event.preventDefault();
+      setDeferredPrompt(event);
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt
+      );
+    };
+  }, []);
+
+  const handleInstallClick = () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === "accepted") {
+          console.log("User accepted the A2HS prompt");
+        } else {
+          console.log("User dismissed the A2HS prompt");
+        }
+        setDeferredPrompt(null);
+      });
+    }
+  };
+
   // Controll the positin of drop down menue
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -179,6 +213,16 @@ function HomeLayout() {
               </ListItemIcon>
               <ListItemText>اتصل بنا</ListItemText>
             </MenuItem>
+
+            {deferredPrompt && (
+              <MenuItem onClick={handleInstallClick}>
+                <ListItemIcon>
+                  <SystemUpdateIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>تثبيت كتطبيق PWA</ListItemText>
+              </MenuItem>
+            )}
+
             <Divider />
 
             {cookies.token ? (
