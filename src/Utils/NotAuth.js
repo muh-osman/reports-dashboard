@@ -3,11 +3,11 @@ import { Outlet, Navigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 
 export default function Auth() {
-  const [cookies, setCookie] = useCookies(["token"]);
+  const [cookies, setCookie] = useCookies(["tokenApp"]);
 
-  // console.log(cookies.token);
+  // console.log(cookies.tokenApp);
 
-  return !cookies.token ? (
+  return !cookies.tokenApp ? (
     <Outlet />
   ) : (
     <Navigate to={`${process.env.PUBLIC_URL}/reports`} />

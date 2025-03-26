@@ -33,3 +33,12 @@
     height: 2px !important;
   }
 }
+
+//
+.search_btn {
+  background-color: #0000000a !important;
+
+  &:hover {
+    background-color: #d5d5d5 !important;
+  }
+}

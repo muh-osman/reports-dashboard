@@ -41,7 +41,7 @@ const formatDate = (dateString) => {
 
 export default function Reports() {
   // Cookies
-  const [cookies, setCookie] = useCookies(["token"]);
+  const [cookies, setCookie] = useCookies(["tokenApp"]);
 
   const [isHovered, setIsHovered] = useState(false);
 
@@ -60,10 +60,10 @@ export default function Reports() {
 
   useEffect(() => {
     // Get all cards data only if token exists
-    if (cookies.token) {
+    if (cookies.tokenApp) {
       mutate();
     }
-  }, [cookies.token]);
+  }, [cookies.tokenApp]);
 
   // Download pdf Card
   const [loadingDownload, setLoadingDownload] = useState({});
@@ -174,7 +174,7 @@ export default function Reports() {
       <h5 className={style.last_reports_title}>تقاريري</h5>
       <Divider sx={{ marginBottom: "18px" }} />
 
-      {!cookies.token ? (
+      {!cookies.tokenApp ? (
         <Typography
           variant="h6"
           component="div"

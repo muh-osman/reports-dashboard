@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 export const useGetAllCardsApi = () => {
   // Cookies
   const [cookies, setCookie, removeCookie] = useCookies([
-    "token",
+    "tokenApp",
     "username",
     "userId",
     "phoneNumber",

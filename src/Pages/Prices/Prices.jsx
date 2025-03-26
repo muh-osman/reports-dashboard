@@ -251,15 +251,15 @@ export default function Prices() {
 
         <Box sx={{ marginTop: "32px", textAlign: "center" }}>
           <IconButton
-            sx={{ backgroundColor: "#0000000a" }}
             size="large"
             onClick={handleSubmit}
             disabled={pricesFetchStatus === "fetching"} // Disable button while loading
+            className={style.search_btn}
           >
             {pricesFetchStatus === "fetching" ? (
               <CircularProgress size={46} /> // Show loading spinner
             ) : (
-              <SearchIcon sx={{ fontSize: "46px" }} />
+              <SearchIcon sx={{ fontSize: "46px", color: "#174545" }} />
             )}
           </IconButton>
         </Box>

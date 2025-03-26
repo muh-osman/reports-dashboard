@@ -53,5 +53,5 @@ export default function App() {
     )
   );
 
-  return <RouterProvider router={router} basename="/dashboard" />;
+  return <RouterProvider router={router} basename="/zxc" />;
 }

@@ -8,3 +8,38 @@
     padding-bottom: 110px;
   }
 }
+
+//
+.datePickerContainer {
+  margin-top: 8px;
+  width: 100%;
+}
+//
+.description {
+  margin-top: 16px;
+  padding: 16px;
+  background-color: #fff;
+  border-radius: 4px;
+  border: 1px solid #0000003b;
+  color: #757575;
+}
+
+// Reprots cards
+.last_appointment_title {
+  margin-top: 55px;
+  margin-bottom: 12px;
+  padding: 3px 9px;
+  // background-color: #f5f5f5;
+  width: fit-content;
+  border-radius: 6px;
+  font-weight: 600;
+  margin-left: auto;
+}
+
+.appointment_cards_container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}

@@ -4,15 +4,12 @@ import API from "./Api";
 // Cookies
 import { useCookies } from "react-cookie";
 
-export const fetchPoints = async (phoneNumber) => {
-  const res = await API.get(
-    `api/ClientPoint/GetClientPoints?clienttPhoneNumber=${phoneNumber}`
-  );
+export const fetchServices = async () => {
+  const res = await API.get(`api/Service/GetAllByServiceArea/1`);
   return res.data;
 };
 
-export default function useGetPoinsApi() {
-
+export default function useGetServices() {
   const [cookies, setCookie, removeCookie] = useCookies([
     "tokenApp",
     "username",
@@ -20,12 +17,11 @@ export default function useGetPoinsApi() {
     "phoneNumber",
   ]);
 
-  const phoneNumber = cookies.phoneNumber;
   const token = cookies.tokenApp;
 
   return useQuery({
-    queryKey: ["points", phoneNumber],
-    queryFn: () => fetchPoints(phoneNumber),
+    queryKey: ["Services", token],
+    queryFn: fetchServices,
     enabled: !!token, // Only run the query if the token exists
   });
 }

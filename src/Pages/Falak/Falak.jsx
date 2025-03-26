@@ -5,14 +5,14 @@ import { useCookies } from "react-cookie";
 
 export default function Falak() {
     // Cookies
-    const [cookies, setCookie] = useCookies(["token"]);
+    const [cookies, setCookie] = useCookies(["tokenApp"]);
 
 
   return (
     <div className={style.container}>
 
       {
-              !cookies.token ? (
+              !cookies.tokenApp ? (
                 <h1>Falek</h1>
                 ) : (
                 <h1>Falek</h1>

@@ -4,7 +4,9 @@ import * as React from "react";
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 // MUI Icons
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
+import IosShareIcon from "@mui/icons-material/IosShare";
 import PhoneIcon from "@mui/icons-material/Phone";
 import TranslateIcon from "@mui/icons-material/Translate";
 import LoginIcon from "@mui/icons-material/Login";
@@ -22,17 +24,32 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
 // Logo
 import logo from "../Assets/Images/logo.webp";
+import boldLogo from "../Assets/Images/boldLogo.png";
 // Cookies
 import { useCookies } from "react-cookie";
 
 function HomeLayout() {
+  // Check if devics iPhone
+  const [isIOS, setIsIOS] = React.useState(false);
+  React.useEffect(() => {
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    setIsIOS(/iphone|ipad|ipod/.test(userAgent));
+  }, []);
+
+  const [openIosModal, setOpenIosModal] = React.useState(false);
+  const handleIosModalOpen = () => setOpenIosModal(true);
+  const handleIosModalClose = () => setOpenIosModal(false);
+
   // PWM Notification
   const [deferredPrompt, setDeferredPrompt] = React.useState(null);
 
   React.useEffect(() => {
     const handleBeforeInstallPrompt = (event) => {
+      // console.log(event);
       event.preventDefault();
       setDeferredPrompt(event);
     };
@@ -79,7 +96,7 @@ function HomeLayout() {
 
   // Logout
   const [cookies, setCookie, removeCookie] = useCookies([
-    "token",
+    "tokenApp",
     "username",
     "userId",
     "phoneNumber",
@@ -87,10 +104,10 @@ function HomeLayout() {
 
   const logout = () => {
     handleClose();
-    removeCookie("userId", { path: "/dashboard" });
-    removeCookie("phoneNumber", { path: "/dashboard" });
-    removeCookie("username", { path: "/dashboard" });
-    removeCookie("token", { path: "/dashboard" });
+    removeCookie("userId", { path: "/zxc" });
+    removeCookie("phoneNumber", { path: "/zxc" });
+    removeCookie("username", { path: "/zxc" });
+    removeCookie("tokenApp", { path: "/zxc" });
 
     // Refresh the page after logout
     window.location.reload();
@@ -164,7 +181,11 @@ function HomeLayout() {
             onClick={handleClick}
           >
             <IconButton>
-              <MoreVertIcon sx={{ color: "#fff", fontSize: "32px" }} />
+              {cookies.tokenApp ? (
+                <AccountCircleIcon sx={{ color: "#fff", fontSize: "44px" }} />
+              ) : (
+                <MoreVertIcon sx={{ color: "#fff", fontSize: "32px" }} />
+              )}
             </IconButton>
           </Tooltip>
         </div>
@@ -223,9 +244,18 @@ function HomeLayout() {
               </MenuItem>
             )}
 
+            {isIOS && (
+              <MenuItem onClick={handleIosModalOpen}>
+                <ListItemIcon>
+                  <SystemUpdateIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>تثبيت كتطبيق PWA</ListItemText>
+              </MenuItem>
+            )}
+
             <Divider />
 
-            {cookies.token ? (
+            {cookies.tokenApp ? (
               <MenuItem onClick={logout}>
                 <ListItemIcon>
                   <LogoutIcon fontSize="small" />
@@ -243,6 +273,60 @@ function HomeLayout() {
           </MenuList>
         </Paper>
       </Popover>
+
+      {/* IOS Modal */}
+      <Modal
+        open={openIosModal}
+        onClose={handleIosModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          dir="rtl"
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            borderRadius: "9px",
+            boxShadow: 24,
+            p: 4,
+            textAlign: "center",
+            width: "361px",
+            background: "rgba(255, 255, 255, 0.57)",
+            borderRadius: "16px",
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+            backdropFilter: "blur(8.5px)",
+            border: "1px solid rgba(255, 255, 255, 0.3)",
+          }}
+        >
+          <div
+            style={{
+              width: "75px",
+              margin: "auto",
+              marginBottom: "32px",
+              borderRadius: "9px",
+              overflow: "hidden",
+              aspectRatio: "1 / 1",
+            }}
+          >
+            <img style={{ width: "100%" }} src={boldLogo} alt="cashif logo" />
+          </div>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            تثبيت كتطبيق PWA
+          </Typography>
+          <Typography
+            id="modal-modal-description"
+            sx={{ mt: 2, color: "#3e3e3e" }}
+          >
+            لتثبيت التطبيق قم بالضغط على زر "المشاركة"{" "}
+            <IosShareIcon sx={{ color: "#174545" }} /> ثم اختر "اضافة الى الشاشة
+            الرئيسية"
+          </Typography>
+        </Box>
+      </Modal>
 
       {/* Outlet */}
       <Box component="main">
