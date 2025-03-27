@@ -20,6 +20,7 @@ import ContactUs from "./Pages/ContactUs/ContactUs";
 import Home from "./Pages/Home/Home";
 import Prices from "./Pages/Prices/Prices";
 import Booking from "./Pages/Booking/Booking";
+import EditBooking from "./Pages/EditBooking/EditBooking";
 
 
 export default function App() {
@@ -44,6 +45,7 @@ export default function App() {
           <Route path={`${process.env.PUBLIC_URL}/falak`} element={<Falak />} />
           <Route path={`${process.env.PUBLIC_URL}/prices`} element={<Prices />} />
           <Route path={`${process.env.PUBLIC_URL}/booking`} element={<Booking />} />
+          <Route path={`${process.env.PUBLIC_URL}/edit-booking/:id`} element={<EditBooking />} />
           <Route path={`${process.env.PUBLIC_URL}/contact`} element={<ContactUs />} />
         </Route>
         {/* End protected route */}

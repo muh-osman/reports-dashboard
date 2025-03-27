@@ -11,6 +11,7 @@ import Typography from "@mui/material/Typography";
 import LinearProgress from "@mui/material/LinearProgress";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Box } from "@mui/material";
+import Tooltip from "@mui/material/Tooltip";
 // MUI Icons
 import PhotoLibraryIcon from "@mui/icons-material/PhotoLibrary";
 import DownloadIcon from "@mui/icons-material/Download";
@@ -197,92 +198,97 @@ export default function Reports() {
       ) : (
         <div className={style.reports_cards_container}>
           {cardsData && cardsData.length > 0 ? (
-            cardsData.map((card) => (
-              <Card
-                key={card.id}
-                sx={{
-                  width: { xs: "100%", sm: 300 },
-                  position: "relative",
-                  borderRadius: "9px",
-                  boxShadow: "none",
-                }}
-              >
-                {card.includeImage && (
-                  <PhotoLibraryIcon
-                    style={{
-                      position: "absolute",
-                      top: 16,
-                      left: 16,
-                    }}
-                  />
-                )}
-                <CardContent>
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    gap={1}
-                    marginBottom={"9px"}
-                  >
-                    <MinorCrashIcon style={{ color: "#000000de" }} />
-                    <Typography
-                      variant="h5"
-                      component="div"
-                      style={{ fontSize: "14px" }}
+            cardsData
+              .slice()
+              .reverse()
+              .map((card) => (
+                <Card
+                  key={card.id}
+                  sx={{
+                    width: { xs: "100%", sm: 300 },
+                    position: "relative",
+                    borderRadius: "9px",
+                    boxShadow: "none",
+                  }}
+                >
+                  {card.includeImage && (
+                    <Tooltip title="تقرير مصور">
+                      <PhotoLibraryIcon
+                        style={{
+                          position: "absolute",
+                          top: 16,
+                          left: 16,
+                        }}
+                      />
+                    </Tooltip>
+                  )}
+                  <CardContent>
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      gap={1}
+                      marginBottom={"9px"}
                     >
-                      {card.carManufacturerNameAr}
-                    </Typography>
-                  </Box>
+                      <MinorCrashIcon style={{ color: "#000000de" }} />
+                      <Typography
+                        variant="h5"
+                        component="div"
+                        style={{ fontSize: "14px" }}
+                      >
+                        {card.carManufacturerNameAr}
+                      </Typography>
+                    </Box>
 
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    gap={1}
-                    marginBottom={"9px"}
-                  >
-                    <StyleIcon style={{ color: "#000000de" }} />
-                    <Typography
-                      variant="h5"
-                      component="div"
-                      style={{ fontSize: "14px" }}
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      gap={1}
+                      marginBottom={"9px"}
                     >
-                      {card.carModelNameAr}
-                    </Typography>
-                  </Box>
+                      <StyleIcon style={{ color: "#000000de" }} />
+                      <Typography
+                        variant="h5"
+                        component="div"
+                        style={{ fontSize: "14px" }}
+                      >
+                        {card.carModelNameAr}
+                      </Typography>
+                    </Box>
 
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    gap={1}
-                    marginBottom={"9px"}
-                  >
-                    <ContentPasteSearchIcon style={{ color: "#000000de" }} />
-                    <Typography
-                      variant="h5"
-                      component="div"
-                      style={{ fontSize: "14px" }}
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      gap={1}
+                      marginBottom={"9px"}
                     >
-                      {card.servicesListNameAr.length > 0
-                        ? card.servicesListNameAr.join(", ")
-                        : "غير محدد"}
-                    </Typography>
-                  </Box>
+                      <ContentPasteSearchIcon style={{ color: "#000000de" }} />
+                      <Typography
+                        variant="h5"
+                        component="div"
+                        style={{ fontSize: "14px" }}
+                      >
+                        {card.servicesListNameAr.length > 0
+                          ? card.servicesListNameAr.join(", ")
+                          : "غير محدد"}
+                      </Typography>
+                    </Box>
 
-                  <Box display="flex" alignItems="center" gap={1}>
-                    <CalendarMonthIcon style={{ color: "#000000de" }} />
-                    <Typography
-                      variant="h5"
-                      component="div"
-                      style={{ fontSize: "14px" }}
-                    >
-                      {formatDate(card.createdDate)}
-                    </Typography>
-                  </Box>
-                </CardContent>
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <CalendarMonthIcon style={{ color: "#000000de" }} />
+                      <Typography
+                        variant="h5"
+                        component="div"
+                        style={{ fontSize: "14px" }}
+                      >
+                        {formatDate(card.createdDate)}
+                      </Typography>
+                    </Box>
+                  </CardContent>
 
-                <Divider />
+                  <Divider />
 
-                <CardActions dir="ltr" sx={{ backgroundColor: "#fff" }}>
-                  {/* <Button
+                  <CardActions dir="ltr" sx={{ backgroundColor: "#fdfefe" }}>
+                    {/* <Button
             onClick={() => handlePreviewCard(card.id, card.includeImage)}
             sx={{ color: "#1976d2", width: "88px" }}
             size="small"
@@ -295,23 +301,25 @@ export default function Reports() {
             )}
           </Button> */}
 
-                  <IconButton
-                    onClick={() =>
-                      handleDownloadCard(card.id, card.includeImage)
-                    }
-                    sx={{ color: "#1976d2" }}
-                    size="small"
-                    disabled={loadingDownload[card.id]} // Disable button if loading
-                  >
-                    {loadingDownload[card.id] ? (
-                      <CircularProgress size={24} color="inherit" />
-                    ) : (
-                      <DownloadIcon />
-                    )}
-                  </IconButton>
-                </CardActions>
-              </Card>
-            ))
+                    <Tooltip title="تحميل">
+                      <IconButton
+                        onClick={() =>
+                          handleDownloadCard(card.id, card.includeImage)
+                        }
+                        sx={{ color: "#1976d2" }}
+                        size="small"
+                        disabled={loadingDownload[card.id]} // Disable button if loading
+                      >
+                        {loadingDownload[card.id] ? (
+                          <CircularProgress size={24} color="inherit" />
+                        ) : (
+                          <DownloadIcon />
+                        )}
+                      </IconButton>
+                    </Tooltip>
+                  </CardActions>
+                </Card>
+              ))
           ) : (
             <Typography
               variant="h6"

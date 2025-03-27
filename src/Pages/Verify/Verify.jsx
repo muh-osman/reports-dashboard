@@ -5,7 +5,7 @@ import logo from "../../Assets/Images/logo.webp";
 import { Link, Navigate } from "react-router-dom";
 // Mui
 import * as React from "react";
-import Avatar from "@mui/material/Avatar";
+// import Avatar from "@mui/material/Avatar";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";

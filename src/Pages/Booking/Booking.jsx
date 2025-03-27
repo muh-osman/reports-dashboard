@@ -1,6 +1,5 @@
 import style from "./Booking.module.scss";
 import { Link, useNavigate } from "react-router-dom";
-
 // MUI
 import * as React from "react";
 import Box from "@mui/material/Box";
@@ -13,21 +12,20 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
-import Button from "@mui/material/Button";
-
+import CircularProgress from "@mui/material/CircularProgress";
+import Tooltip from "@mui/material/Tooltip";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import IconButton from "@mui/material/IconButton";
+import { LoadingButton } from "@mui/lab";
 // MUI Icons
-import PhotoLibraryIcon from "@mui/icons-material/PhotoLibrary";
-import DownloadIcon from "@mui/icons-material/Download";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import MinorCrashIcon from "@mui/icons-material/MinorCrash";
-import ContentPasteSearchIcon from "@mui/icons-material/ContentPasteSearch";
-import StyleIcon from "@mui/icons-material/Style";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import LocationOnIcon from '@mui/icons-material/LocationOn';
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 //
 import dayjs from "dayjs";
 // Cookies
@@ -37,6 +35,8 @@ import useGetAllBranchesApi from "../../API/useGetAllBranchesApi";
 import useGetAllManufacturerApi from "../../API/useGetAllManufacturerApi";
 import useGetServices from "../../API/useGetServices";
 import useGetAppointmentApi from "../../API/useGetAppointmentApi";
+import { useDeleteAppointmentApi } from "../../API/useDeleteAppointmentApi";
+import { usePostApoinmentFormApi } from "../../API/usePostApoinmentFormApi";
 
 export default function Booking() {
   React.useEffect(() => {
@@ -55,7 +55,7 @@ export default function Booking() {
   //
   const [isHovered, setIsHovered] = React.useState(false);
   // Cookies
-  const [cookies, setCookie] = useCookies(["tokenApp"]);
+  const [cookies, setCookie] = useCookies(["tokenApp", "userId"]);
   //
   const navigate = useNavigate();
   const navToLoginPage = () => {
@@ -156,8 +156,44 @@ export default function Booking() {
       year: "2010",
     },
     {
-      id: 1,
-      year: "أقدم",
+      id: 2009,
+      year: "2009",
+    },
+    {
+      id: 2008,
+      year: "2008",
+    },
+    {
+      id: 2007,
+      year: "2007",
+    },
+    {
+      id: 2006,
+      year: "2006",
+    },
+    {
+      id: 2005,
+      year: "2005",
+    },
+    {
+      id: 2004,
+      year: "2004",
+    },
+    {
+      id: 2003,
+      year: "2003",
+    },
+    {
+      id: 2002,
+      year: "2002",
+    },
+    {
+      id: 2001,
+      year: "2001",
+    },
+    {
+      id: 2000,
+      year: "2000",
     },
   ];
 
@@ -188,7 +224,7 @@ export default function Booking() {
   // Date
   const [date, setDate] = React.useState(null);
 
-  // Date
+  // Time
   const [time, setTime] = React.useState(null);
 
   // Services
@@ -200,6 +236,76 @@ export default function Booking() {
   const selectedService = allServices?.find(
     (service) => service.id === parseInt(selectedServiceId)
   );
+
+  // Submit Apoinment form
+  const {
+    mutate: PostApoinmentFormMutate,
+    isPending: isPostApoinmentFormMutatePending,
+    isSuccess: isPostApoinmentFormMutateSuccess,
+  } = usePostApoinmentFormApi();
+
+  const submitForm = () => {
+    // Format the date and time using dayjs
+    let dateAfterFormat = date
+      ? dayjs(date).format("YYYY-MM-DDTHH:mm:ss.SSSSSS")
+      : null;
+    let timeAfterFormat = time ? dayjs(time).format("HH:mm:ss") : null;
+    const data = {
+      clientId: cookies.userId,
+      check_Place: 1,
+      branchId: selectedBranch,
+      carManufacturerId: selectedManufacturer,
+      year: selectedYear,
+      check_Date: dateAfterFormat,
+      check_Time: timeAfterFormat,
+      check_Time2: timeAfterFormat,
+      servicesList: [selectedServiceId],
+      totalCost: selectedService?.pricing,
+    };
+
+    PostApoinmentFormMutate(data);
+  };
+
+  React.useEffect(() => {
+    if (isPostApoinmentFormMutateSuccess) {
+      setSelectedServiceId("");
+      setTime(null);
+      setDate(null);
+      setSelectedYear("");
+      setSelectedManufacturer("");
+      setSelectedBranch("");
+      setSelectedLocation(0);
+
+      window.scrollTo(0, 0);
+    }
+  }, [isPostApoinmentFormMutateSuccess]);
+
+  // Delete Apoinment
+  const {
+    mutate: deleteApoinmentMutate,
+    data: deleteApoinmentData,
+    isPending: isDeleteApoinmentPending,
+    isSuccess: isDeleteApoinmentSuccess,
+  } = useDeleteAppointmentApi();
+  const [loadingDelete, setLoadingDelete] = React.useState({});
+
+  let handleDeleteApoinment = (id) => {
+    const isConfirmed = window.confirm("هل أنت متأكد من حذف الموعد؟");
+    if (isConfirmed) {
+      setLoadingDelete((prev) => ({ ...prev, [id]: true })); // Set loading for the specific card
+      deleteApoinmentMutate(id, {
+        onSettled: () => {
+          // Reset loading state regardless of success or error
+          setLoadingDelete((prev) => ({ ...prev, [id]: false }));
+        },
+      });
+    }
+  };
+
+  // Go to Edit Appoinment Page
+  let handleEditApoinment = (id) => {
+    navigate(`${process.env.PUBLIC_URL}/edit-booking/${id}`);
+  };
 
   return (
     <div className={style.container}>
@@ -279,7 +385,7 @@ export default function Booking() {
           )}
 
           {/* الشركة المصنعة */}
-          {cookies.tokenApp && (
+          {cookies.tokenApp && selectedBranch && (
             <TextField
               sx={{ backgroundColor: "#fff", marginTop: "16px" }}
               dir="rtl"
@@ -310,7 +416,7 @@ export default function Booking() {
           )}
 
           {/*  سنة الصنع */}
-          {cookies.tokenApp && (
+          {cookies.tokenApp && selectedManufacturer && (
             <TextField
               sx={{ backgroundColor: "#fff", marginTop: "16px" }}
               dir="rtl"
@@ -337,8 +443,8 @@ export default function Booking() {
           )}
 
           {/* تاريخ */}
-          {cookies.tokenApp && (
-            <div dir="ltr" className={style.datePickerContainer}>
+          {cookies.tokenApp && selectedYear && (
+            <div dir="rtl" className={style.datePickerContainer}>
               <LocalizationProvider
                 dateAdapter={AdapterDayjs}
                 adapterLocale="en"
@@ -346,7 +452,7 @@ export default function Booking() {
                 <DemoContainer components={["DatePicker"]}>
                   <MobileDatePicker
                     fullWidth
-                    dir="ltr"
+                    dir="rtl"
                     sx={{ backgroundColor: "#fff", width: "100%" }}
                     label="* تاريخ الفحص"
                     format="DD/MM/YYYY"
@@ -361,8 +467,8 @@ export default function Booking() {
           )}
 
           {/* الوقت */}
-          {cookies.tokenApp && (
-            <div dir="ltr" className={style.datePickerContainer}>
+          {cookies.tokenApp && selectedYear && (
+            <div dir="rtl" className={style.datePickerContainer}>
               <LocalizationProvider
                 dateAdapter={AdapterDayjs}
                 adapterLocale="en"
@@ -370,7 +476,7 @@ export default function Booking() {
                 <DemoContainer components={["DatePicker"]}>
                   <MobileTimePicker
                     fullWidth
-                    dir="ltr"
+                    dir="rtl"
                     sx={{ backgroundColor: "#fff", width: "100%" }}
                     label="* وقت الفحص"
                     // format=""
@@ -394,7 +500,7 @@ export default function Booking() {
           )}
 
           {/*  نوع الخدمة */}
-          {cookies.tokenApp && (
+          {cookies.tokenApp && time && date && (
             <>
               <TextField
                 sx={{ backgroundColor: "#fff", marginTop: "16px" }}
@@ -421,7 +527,7 @@ export default function Booking() {
               </TextField>
 
               {/* Display the descriptionAr of the selected service */}
-              {selectedServiceId && (
+              {cookies.tokenApp && selectedServiceId && (
                 <div className={style.description}>
                   {selectedService && (
                     <pre>{selectedService.descriptionAr}</pre>
@@ -431,13 +537,19 @@ export default function Booking() {
             </>
           )}
 
-          {cookies.tokenApp && (
-            <Button style={{ marginTop: "32px" }} variant="contained">
+          {/* Button */}
+          {cookies.tokenApp && selectedServiceId && (
+            <LoadingButton
+              onClick={submitForm}
+              style={{ marginTop: "32px" }}
+              variant="contained"
+              loading={isPostApoinmentFormMutatePending}
+            >
               حجز{" "}
               <span style={{ paddingRight: "9px" }}>
                 ({selectedService?.pricing} ريال تقريبا)
               </span>
-            </Button>
+            </LoadingButton>
           )}
         </FormControl>
       </Box>
@@ -469,110 +581,110 @@ export default function Booking() {
       ) : (
         <div dir="rtl" className={style.appointment_cards_container}>
           {allAppointment && allAppointment.length > 0 ? (
-            allAppointment.map((card) => (
-              <Card
-                key={card.id}
-                sx={{
-                  width: { xs: "100%", sm: 300 },
-                  position: "relative",
-                  borderRadius: "9px",
-                  boxShadow: "none",
-                }}
-              >
-                <CardContent>
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    gap={1}
-                    marginBottom={"9px"}
-                  >
-                    <LocationOnIcon style={{ color: "#000000de" }} />
-                    <Typography
-                      variant="h5"
-                      component="div"
-                      style={{ fontSize: "14px" }}
+            allAppointment
+              .slice()
+              .reverse()
+              .map((card) => (
+                <Card
+                  key={card.id}
+                  sx={{
+                    width: { xs: "100%", sm: 300 },
+                    position: "relative",
+                    borderRadius: "9px",
+                    boxShadow: "none",
+                  }}
+                >
+                  <CardContent>
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      gap={1}
+                      marginBottom={"9px"}
                     >
-                      {card.branchNameAr}
-                    </Typography>
-                  </Box>
+                      <LocationOnIcon style={{ color: "#000000de" }} />
+                      <Typography
+                        variant="h5"
+                        component="div"
+                        style={{ fontSize: "14px" }}
+                      >
+                        {card.branchNameAr}
+                      </Typography>
+                    </Box>
 
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    gap={1}
-                    marginBottom={"9px"}
-                  >
-                    <MinorCrashIcon style={{ color: "#000000de" }} />
-                    <Typography
-                      variant="h5"
-                      component="div"
-                      style={{ fontSize: "14px" }}
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      gap={1}
+                      marginBottom={"9px"}
                     >
-                      {card.carManufacturerNameAr}
-                    </Typography>
-                  </Box>
+                      <MinorCrashIcon style={{ color: "#000000de" }} />
+                      <Typography
+                        variant="h5"
+                        component="div"
+                        style={{ fontSize: "14px" }}
+                      >
+                        {card.carManufacturerNameAr}
+                      </Typography>
+                    </Box>
 
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    gap={1}
-                    marginBottom={"9px"}
-                  >
-                    <AccessTimeIcon style={{ color: "#000000de" }} />
-                    <Typography
-                      variant="h5"
-                      component="div"
-                      style={{ fontSize: "14px" }}
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      gap={1}
+                      marginBottom={"9px"}
                     >
-                      {card.check_Time}
-                    </Typography>
-                  </Box>
+                      <AccessTimeIcon style={{ color: "#000000de" }} />
+                      <Typography
+                        variant="h5"
+                        component="div"
+                        style={{ fontSize: "14px" }}
+                      >
+                        {card.check_Time}
+                      </Typography>
+                    </Box>
 
-                  <Box display="flex" alignItems="center" gap={1}>
-                    <CalendarMonthIcon style={{ color: "#000000de" }} />
-                    <Typography
-                      variant="h5"
-                      component="div"
-                      style={{ fontSize: "14px" }}
-                    >
-                      {formatDate(card.check_Date)}
-                    </Typography>
-                  </Box>
-                </CardContent>
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <CalendarMonthIcon style={{ color: "#000000de" }} />
+                      <Typography
+                        variant="h5"
+                        component="div"
+                        style={{ fontSize: "14px" }}
+                      >
+                        {formatDate(card.check_Date)}
+                      </Typography>
+                    </Box>
+                  </CardContent>
 
-                <Divider />
+                  <Divider />
 
-                <CardActions dir="ltr" sx={{ backgroundColor: "#fff" }}>
-                  {/* <Button
-          onClick={() => handlePreviewCard(card.id, card.includeImage)}
-          sx={{ color: "#1976d2", width: "88px" }}
-          size="small"
-          disabled={loadingPreview[card.id]} // Disable button if loading
-        >
-          {loadingPreview[card.id] ? (
-            <CircularProgress size={22} color="inherit" />
-          ) : (
-            "معاينة التقرير"
-          )}
-        </Button> */}
+                  <CardActions dir="ltr" sx={{ backgroundColor: "#fdfefe" }}>
+                    <Tooltip title="حذف">
+                      <IconButton
+                        onClick={() => handleDeleteApoinment(card.id)}
+                        color="error"
+                        size="small"
+                        disabled={loadingDelete[card.id]} // Disable button if loading
+                      >
+                        {loadingDelete[card.id] ? (
+                          <CircularProgress size={24} color="inherit" />
+                        ) : (
+                          <DeleteIcon />
+                        )}
+                      </IconButton>
+                    </Tooltip>
 
-                  {/* <IconButton
-                    onClick={() =>
-                      handleDownloadCard(card.id, card.includeImage)
-                    }
-                    sx={{ color: "#1976d2" }}
-                    size="small"
-                    disabled={loadingDownload[card.id]} // Disable button if loading
-                  >
-                    {loadingDownload[card.id] ? (
-                      <CircularProgress size={24} color="inherit" />
-                    ) : (
-                      <DownloadIcon />
-                    )}
-                  </IconButton> */}
-                </CardActions>
-              </Card>
-            ))
+                    <Tooltip title="تعديل">
+                      <IconButton
+                        onClick={() => handleEditApoinment(card.id)}
+                        sx={{ color: "#1976d2" }}
+                        size="small"
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </CardActions>
+                </Card>
+              ))
           ) : (
             <Typography
               dir="rtl"
@@ -580,7 +692,7 @@ export default function Booking() {
               component="div"
               style={{ textAlign: "center", margin: "20px", color: "#757575" }}
             >
-              جاري تحميل التقارير ..
+              جاري تحميل الحجوزات ..
             </Typography>
           )}
         </div>
