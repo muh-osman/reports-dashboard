@@ -333,7 +333,7 @@ export default function Booking() {
             label="مكان الفحص"
             value={selectedLocation}
             onChange={handleSelectedLocationChange}
-            // disabled={}
+            disabled={isPostApoinmentFormMutatePending}
           >
             <MenuItem dir="rtl" value={0}>
               فحص داخل الفرع
@@ -350,7 +350,7 @@ export default function Booking() {
               select
               label="الفرع"
               value=""
-              // disabled={}
+              disabled={isPostApoinmentFormMutatePending}
             >
               <MenuItem onClick={navToLoginPage} dir="rtl" value={"notAuth"}>
                 يرجى تسجيل الدخول لحجز موعد
@@ -368,7 +368,7 @@ export default function Booking() {
               label="الفرع"
               value={selectedBranch}
               onChange={handleBranchChange}
-              // disabled={}
+              disabled={isPostApoinmentFormMutatePending}
             >
               {allBranches && allBranches.length > 0 ? (
                 allBranches.map((branch) => (
@@ -395,7 +395,7 @@ export default function Booking() {
               label="الشركة المصنعة"
               value={selectedManufacturer}
               onChange={handleManufacturerChange}
-              // disabled={}
+              disabled={isPostApoinmentFormMutatePending}
             >
               {allManufacturers && allManufacturers.length > 0 ? (
                 allManufacturers.map((Manufacturer) => (
@@ -426,7 +426,7 @@ export default function Booking() {
               label="سنة الصنع"
               value={selectedYear}
               onChange={handleYearChange}
-              // disabled={}
+              disabled={isPostApoinmentFormMutatePending}
             >
               {years && years.length > 0 ? (
                 years.map((year) => (
@@ -442,61 +442,67 @@ export default function Booking() {
             </TextField>
           )}
 
-          {/* تاريخ */}
-          {cookies.tokenApp && selectedYear && (
-            <div dir="rtl" className={style.datePickerContainer}>
-              <LocalizationProvider
-                dateAdapter={AdapterDayjs}
-                adapterLocale="en"
-              >
-                <DemoContainer components={["DatePicker"]}>
-                  <MobileDatePicker
-                    fullWidth
-                    dir="rtl"
-                    sx={{ backgroundColor: "#fff", width: "100%" }}
-                    label="* تاريخ الفحص"
-                    format="DD/MM/YYYY"
-                    value={date}
-                    onChange={(newValue) => setDate(newValue)}
-                    minDate={dayjs()}
-                    required
-                  />
-                </DemoContainer>
-              </LocalizationProvider>
-            </div>
-          )}
+          <div className={style.date_and_time_container}>
+            {/* تاريخ */}
+            {cookies.tokenApp && selectedYear && (
+              <div dir="rtl" className={style.datePickerContainer}>
+                <LocalizationProvider
+                  dateAdapter={AdapterDayjs}
+                  adapterLocale="en"
+                >
+                  <DemoContainer components={["MobileDatePicker"]}>
+                    <MobileDatePicker
+                      fullWidth
+                      dir="rtl"
+                      sx={{ backgroundColor: "#fff", width: "100%" }}
+                      label="* تاريخ الفحص"
+                      format="DD/MM/YYYY"
+                      value={date}
+                      onChange={(newValue) => setDate(newValue)}
+                      minDate={dayjs()}
+                      required
+                      disabled={isPostApoinmentFormMutatePending}
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+              </div>
+            )}
 
-          {/* الوقت */}
+            {/* الوقت */}
+            {cookies.tokenApp && selectedYear && (
+              <div dir="rtl" className={style.datePickerContainer}>
+                <LocalizationProvider
+                  dateAdapter={AdapterDayjs}
+                  adapterLocale="en"
+                >
+                  <DemoContainer components={["MobileTimePicker"]}>
+                    <MobileTimePicker
+                      fullWidth
+                      dir="rtl"
+                      sx={{ backgroundColor: "#fff", width: "100%" }}
+                      label="* وقت الفحص"
+                      // format=""
+                      value={time}
+                      onChange={(newValue) => setTime(newValue)}
+                      required
+                      disabled={isPostApoinmentFormMutatePending}
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+              </div>
+            )}
+          </div>
           {cookies.tokenApp && selectedYear && (
-            <div dir="rtl" className={style.datePickerContainer}>
-              <LocalizationProvider
-                dateAdapter={AdapterDayjs}
-                adapterLocale="en"
-              >
-                <DemoContainer components={["DatePicker"]}>
-                  <MobileTimePicker
-                    fullWidth
-                    dir="rtl"
-                    sx={{ backgroundColor: "#fff", width: "100%" }}
-                    label="* وقت الفحص"
-                    // format=""
-                    value={time}
-                    onChange={(newValue) => setTime(newValue)}
-                    required
-                  />
-                </DemoContainer>
-              </LocalizationProvider>
-              <p
-                dir="rtl"
-                style={{
-                  fontSize: "14px",
-                  padding: "3px 3px 0 0",
-                  color: "#757575",
-                }}
-              >
-                اختيار الوقت (من التاسعة صباحا وحتى التاسعة مساءً)
-              </p>
-            </div>
+            <p
+              dir="rtl"
+              style={{
+                fontSize: "14px",
+                padding: "3px 3px 0 0",
+                color: "#757575",
+              }}
+            >
+              اختيار الوقت (من التاسعة صباحاً وحتى التاسعة مساءً)
+            </p>
           )}
 
           {/*  نوع الخدمة */}
@@ -511,7 +517,7 @@ export default function Booking() {
                 label="نوع الخدمة"
                 value={selectedServiceId}
                 onChange={handleServicesChange}
-                // disabled={}
+                disabled={isPostApoinmentFormMutatePending}
               >
                 {allServices && allServices.length > 0 ? (
                   allServices.map((service) => (

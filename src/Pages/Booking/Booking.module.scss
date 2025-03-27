@@ -10,6 +10,16 @@
 }
 
 //
+.date_and_time_container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+
+  div {
+    min-width: auto !important;
+  }
+}
 .datePickerContainer {
   margin-top: 8px;
   width: 100%;
