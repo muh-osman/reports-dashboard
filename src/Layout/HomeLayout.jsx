@@ -146,8 +146,13 @@ function HomeLayout() {
     // Normalize the current path
     const currentPath = location.pathname.replace(/\/$/, ""); // Remove trailing slash from current path
 
-    // Check if the current path is not in the list of paths
-    if (!paths.includes(currentPath)) {
+    // Check if the current path starts with '/falak'
+    const isFalakPath = currentPath.startsWith(
+      `${process.env.PUBLIC_URL}/falak`
+    );
+
+    // If the current path is not in the list of paths and not a falak path
+    if (!paths.includes(currentPath) && !isFalakPath) {
       // Remove 'act' class from all <li> tags
       listRefs.current.forEach((item) => item.classList.remove("act"));
       // Hide the indicator
@@ -155,11 +160,19 @@ function HomeLayout() {
         indicat.current.style.display = "none";
       }
     } else {
-      // If the current path is in the list, set the active class
+      // If the current path is in the list or is a falak path, set the active class
       indicat.current.style.display = "block";
       const index = paths.findIndex((path) => path === currentPath);
       if (index !== -1) {
         activeLink(index);
+      } else if (isFalakPath) {
+        // If it's a falak sub-path, set the active class for falak
+        const falakIndex = paths.findIndex(
+          (path) => path === `${process.env.PUBLIC_URL}/falak`
+        );
+        if (falakIndex !== -1) {
+          activeLink(falakIndex);
+        }
       }
     }
   }, [location]);
@@ -346,8 +359,16 @@ function HomeLayout() {
             >
               <Link to={`${process.env.PUBLIC_URL}/falak`}>
                 <span className="icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                  {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                     <path d="M480 32c0-12.9-7.8-24.6-19.8-29.6s-25.7-2.2-34.9 6.9L381.7 53c-48 48-113.1 75-181 75l-8.7 0-32 0-96 0c-35.3 0-64 28.7-64 64l0 96c0 35.3 28.7 64 64 64l0 128c0 17.7 14.3 32 32 32l64 0c17.7 0 32-14.3 32-32l0-128 8.7 0c67.9 0 133 27 181 75l43.6 43.6c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6l0-147.6c18.6-8.8 32-32.5 32-60.4s-13.4-51.6-32-60.4L480 32zm-64 76.7L416 240l0 131.3C357.2 317.8 280.5 288 200.7 288l-8.7 0 0-96 8.7 0c79.8 0 156.5-29.8 215.3-83.3z" />
+                  </svg> */}
+
+                  <svg
+                    style={{ width: "44px" }}
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 640 512"
+                  >
+                    <path d="M323.4 85.2l-96.8 78.4c-16.1 13-19.2 36.4-7 53.1c12.9 17.8 38 21.3 55.3 7.8l99.3-77.2c7-5.4 17-4.2 22.5 2.8s4.2 17-2.8 22.5l-20.9 16.2L512 316.8 512 128l-.7 0-3.9-2.5L434.8 79c-15.3-9.8-33.2-15-51.4-15c-21.8 0-43 7.5-60 21.2zm22.8 124.4l-51.7 40.2C263 274.4 217.3 268 193.7 235.6c-22.2-30.5-16.6-73.1 12.7-96.8l83.2-67.3c-11.6-4.9-24.1-7.4-36.8-7.4C234 64 215.7 69.6 200 80l-72 48 0 224 28.2 0 91.4 83.4c19.6 17.9 49.9 16.5 67.8-3.1c5.5-6.1 9.2-13.2 11.1-20.6l17 15.6c19.5 17.9 49.9 16.6 67.8-2.9c4.5-4.9 7.8-10.6 9.9-16.5c19.4 13 45.8 10.3 62.1-7.5c17.9-19.5 16.6-49.9-2.9-67.8l-134.2-123zM16 128c-8.8 0-16 7.2-16 16L0 352c0 17.7 14.3 32 32 32l32 0c17.7 0 32-14.3 32-32l0-224-80 0zM48 320a16 16 0 1 1 0 32 16 16 0 1 1 0-32zM544 128l0 224c0 17.7 14.3 32 32 32l32 0c17.7 0 32-14.3 32-32l0-208c0-8.8-7.2-16-16-16l-80 0zm32 208a16 16 0 1 1 32 0 16 16 0 1 1 -32 0z" />
                   </svg>
                 </span>
                 <span className="text-mob-nav">فالك</span>

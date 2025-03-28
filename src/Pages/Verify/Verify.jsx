@@ -143,6 +143,7 @@ export default function Verify() {
                   fullWidth
                   variant="contained"
                   disableRipple
+                  size="large"
                   loading={isPending}
                   sx={{ mt: 3, mb: 2, transition: "0.1s" }}
                 >

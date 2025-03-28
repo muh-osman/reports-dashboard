@@ -21,6 +21,9 @@ import Home from "./Pages/Home/Home";
 import Prices from "./Pages/Prices/Prices";
 import Booking from "./Pages/Booking/Booking";
 import EditBooking from "./Pages/EditBooking/EditBooking";
+import Conditions from "./Pages/Conditions/Conditions";
+import HowWorks from "./Pages/HowWorks/HowWorks";
+import Marketer from "./Pages/Marketer/Marketer";
 
 
 export default function App() {
@@ -41,8 +44,12 @@ export default function App() {
         {/* Start protected route */}
         <Route element={<HomeLayout />}>
           <Route index element={<Home />} />
-          <Route path={`${process.env.PUBLIC_URL}/reports`} element={<Reports />} />
           <Route path={`${process.env.PUBLIC_URL}/falak`} element={<Falak />} />
+          <Route path={`${process.env.PUBLIC_URL}/falak/conditions`} element={<Conditions />} />
+          <Route path={`${process.env.PUBLIC_URL}/falak/how-works`} element={<HowWorks />} />
+          <Route path={`${process.env.PUBLIC_URL}/falak/marketer`} element={<Marketer />} />
+
+          <Route path={`${process.env.PUBLIC_URL}/reports`} element={<Reports />} />
           <Route path={`${process.env.PUBLIC_URL}/prices`} element={<Prices />} />
           <Route path={`${process.env.PUBLIC_URL}/booking`} element={<Booking />} />
           <Route path={`${process.env.PUBLIC_URL}/edit-booking/:id`} element={<EditBooking />} />

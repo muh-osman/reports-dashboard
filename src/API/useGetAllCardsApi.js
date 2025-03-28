@@ -1,37 +1,33 @@
-import { useMutation } from "@tanstack/react-query";
-// API base
+import { useQuery } from "@tanstack/react-query";
 import API from "./Api";
-// Cookies
 import { useCookies } from "react-cookie";
-// Toastify
 import { toast } from "react-toastify";
 
 export const useGetAllCardsApi = () => {
-  // Cookies
-  const [cookies, setCookie, removeCookie] = useCookies([
+  const [cookies] = useCookies([
     "tokenApp",
     "username",
     "userId",
     "phoneNumber",
   ]);
 
-  return useMutation({
-    mutationFn: async () => {
+  return useQuery({
+    queryKey: ["cards", cookies.userId], // Unique key for the query
+    queryFn: async () => {
       const res = await API.post(
         `api/Card/GetCardbyClientId?id=${cookies.userId}`
       );
       return res.data;
     },
 
+    enabled: !!cookies.tokenApp, // Only run the query if tokenApp exists
     onSuccess: (responseData) => {
-    //   console.log(responseData);
+      // Handle success
     },
-
     onError: (err) => {
       console.error(err);
       const errorMessage =
         err?.response?.data?.message || err?.message || "An error occurred";
-      // Toastify
       toast.error(errorMessage);
     },
   });

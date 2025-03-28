@@ -23,22 +23,36 @@
   @media (max-width: 950px) {
     width: 100%;
     padding: 16px;
-    padding-top: 32px;
-  }
-
-  .not_auth_img {
-    width: fit-content;
-    margin: auto;
+    padding-top: 16px;
   }
 
   h1 {
-    text-align: center;
     margin-bottom: 16px;
     margin-top: 16px;
   }
 
   p {
-    margin-bottom: 16px;
+    margin-bottom: 32px;
     color: #757575;
+  }
+
+  ul {
+    margin-top: 16px;
+    padding-right: 16px;
+    list-style-position: outside;
+  }
+
+  li {
+    color: #757575;
+    margin-bottom: 8px;
+  }
+
+  h6 {
+    font-size: 16px;
+    margin-top: 24px;
+  }
+
+  label {
+    margin: 0;
   }
 }

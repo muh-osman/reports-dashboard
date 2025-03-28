@@ -549,6 +549,7 @@ export default function Booking() {
               onClick={submitForm}
               style={{ marginTop: "32px" }}
               variant="contained"
+              size="large"
               loading={isPostApoinmentFormMutatePending}
             >
               حجز{" "}

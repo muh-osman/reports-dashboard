@@ -535,6 +535,7 @@ export default function EditBooking() {
                 onClick={submitEditForm}
                 style={{ marginTop: "32px" }}
                 variant="contained"
+                size="large"
                 loading={isPending}
               >
                 تعديل{" "}
