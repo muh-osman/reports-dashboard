@@ -2,7 +2,7 @@ import { Outlet, Navigate } from "react-router-dom";
 // Cookies
 import { useCookies } from "react-cookie";
 
-export default function Auth() {
+export default function NotAuth() {
   const [cookies, setCookie] = useCookies(["tokenApp"]);
 
   // console.log(cookies.tokenApp);

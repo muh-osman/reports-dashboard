@@ -9,7 +9,7 @@ import { useCookies } from "react-cookie";
 
 export const useEditAppointmentApi = (id) => {
   // Cookies
-  const [cookies, setCookie, removeCookie] = useCookies([
+  const [cookies, setCookie] = useCookies([
     "tokenApp",
     "username",
     "userId",

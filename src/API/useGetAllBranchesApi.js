@@ -10,7 +10,7 @@ export const fetchBranches = async () => {
 };
 
 export default function useGetAllBranchesApi() {
-  const [cookies, setCookie, removeCookie] = useCookies([
+  const [cookies, setCookie] = useCookies([
     "tokenApp",
     "username",
     "userId",

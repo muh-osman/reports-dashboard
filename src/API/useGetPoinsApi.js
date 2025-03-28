@@ -13,7 +13,7 @@ export const fetchPoints = async (phoneNumber) => {
 
 export default function useGetPoinsApi() {
 
-  const [cookies, setCookie, removeCookie] = useCookies([
+  const [cookies, setCookie] = useCookies([
     "tokenApp",
     "username",
     "userId",

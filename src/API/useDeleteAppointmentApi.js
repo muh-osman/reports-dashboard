@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 
 export const useDeleteAppointmentApi = () => {
   // Cookies
-  const [cookies, setCookie, removeCookie] = useCookies([
+  const [cookies, setCookie] = useCookies([
     "tokenApp",
     "username",
     "userId",

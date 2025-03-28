@@ -44,6 +44,7 @@ export default function App() {
         {/* Start protected route */}
         <Route element={<HomeLayout />}>
           <Route index element={<Home />} />
+
           <Route path={`${process.env.PUBLIC_URL}/falak`} element={<Falak />} />
           <Route path={`${process.env.PUBLIC_URL}/falak/conditions`} element={<Conditions />} />
           <Route path={`${process.env.PUBLIC_URL}/falak/how-works`} element={<HowWorks />} />

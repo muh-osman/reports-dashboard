@@ -32,8 +32,23 @@
     margin-top: 16px;
   }
 
+  h3 {
+    margin-top: 32px;
+  }
+
   p {
     margin-bottom: 16px;
     color: #757575;
+  }
+
+  ol {
+    margin-top: 16px;
+    padding-right: 16px;
+    list-style-position: outside;
+  }
+
+  li {
+    color: #757575;
+    margin-bottom: 8px;
   }
 }

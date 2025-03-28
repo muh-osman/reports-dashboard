@@ -1,5 +1,5 @@
 import style from "./Falak.module.scss";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 // Cookies
 import { useCookies } from "react-cookie";
 // MUI
@@ -13,21 +13,25 @@ export default function Falak() {
   }, []);
 
   // Cookies
-  const [cookies, setCookie] = useCookies(["tokenApp"]);
+  const [cookies, setCookie] = useCookies([
+    "tokenApp",
+    "pageOne",
+    "pageTwo",
+    "pageThree",
+  ]);
 
-  // Page One localStorage status
-  const navigate = useNavigate();
-  React.useEffect(() => {
-    const isPageOneSeen = localStorage.getItem("pageOne");
-    if (isPageOneSeen === "seen") {
-      navigate(`${process.env.PUBLIC_URL}/falak/conditions`, { replace: true });
-    }
-  }, []);
-
+  // Page status
   const pageOne = () => {
-    localStorage.setItem("pageOne", "seen");
-    navigate(`${process.env.PUBLIC_URL}/falak/conditions`, { replace: true });
+    setCookie("pageOne", "true", {
+      path: "/zxc",
+      expires: new Date(Date.now() + 10 * 365 * 24 * 60 * 60 * 1000),
+    });
   };
+
+  // If pageOne cookie is set, navigate to conditions page
+  if (cookies.pageOne) {
+    return <Navigate to={`${process.env.PUBLIC_URL}/falak/conditions`} />;
+  }
 
   return (
     <div dir="rtl" className={style.container}>

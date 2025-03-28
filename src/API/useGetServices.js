@@ -10,7 +10,7 @@ export const fetchServices = async () => {
 };
 
 export default function useGetServices() {
-  const [cookies, setCookie, removeCookie] = useCookies([
+  const [cookies, setCookie] = useCookies([
     "tokenApp",
     "username",
     "userId",

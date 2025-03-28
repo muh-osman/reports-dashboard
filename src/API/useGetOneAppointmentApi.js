@@ -10,7 +10,7 @@ export const fetchOneAppointment = async (id) => {
 };
 
 export default function useGetOneAppointmentApi(id) {
-  const [cookies, setCookie, removeCookie] = useCookies([
+  const [cookies, setCookie] = useCookies([
     "tokenApp",
     "username",
     "userId",

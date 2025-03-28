@@ -1,37 +1,36 @@
 import style from "./HowWorks.module.scss";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 // Cookies
 import { useCookies } from "react-cookie";
 // MUI
 import * as React from "react";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
 
 export default function HowWorks() {
   React.useEffect(() => {
     // Scroll to the top of the page
     window.scrollTo(0, 0);
   }, []);
-  //
-  const [isHovered, setIsHovered] = React.useState(false);
   // Cookies
-  const [cookies, setCookie] = useCookies(["tokenApp"]);
+  const [cookies, setCookie] = useCookies([
+    "tokenApp",
+    "pageOne",
+    "pageTwo",
+    "pageThree",
+  ]);
 
-  // Page One localStorage status
-  const navigate = useNavigate();
-  React.useEffect(() => {
-    const isPageThreeSeen = localStorage.getItem("pageThree");
-    if (isPageThreeSeen === "seen") {
-      navigate(`${process.env.PUBLIC_URL}/falak/marketer`, { replace: true });
-    }
-  }, []);
-
+  // Page status
   const pageThree = () => {
-    localStorage.setItem("pageThree", "seen");
-    navigate(`${process.env.PUBLIC_URL}/falak/marketer`, { replace: true });
+    setCookie("pageThree", "true", {
+      path: "/zxc",
+      expires: new Date(Date.now() + 10 * 365 * 24 * 60 * 60 * 1000),
+    });
   };
+
+  // If pageThree cookie is set, navigate to marketer page
+  if (cookies.pageThree) {
+    return <Navigate to={`${process.env.PUBLIC_URL}/falak/marketer`} />;
+  }
 
   return (
     <div dir="rtl" className={style.container}>
@@ -52,15 +51,23 @@ export default function HowWorks() {
               كل عملية حجز تتم باستخدام الكود.
             </p>
 
-            <h6>كيفية العمل:</h6>
+            <h3>كيفية العمل:</h3>
             <div>
               <ol>
-                <li>استخدم الصورة والكود للترويج عبر منصاتك الإلكترونية.</li>
                 <li>
-                  شارك مع جمهورك بأن الكود يتيح لهم خصم 20% عند حجز خدمة فحص
-                  السيارات.
+                  <span style={{ fontWeight: "bold" }}>
+                    استخدم الصورة والكود
+                  </span>{" "}
+                  للترويج عبر منصاتك الإلكترونية.
                 </li>
-                <li>احصل على عمولة 10% عن كل حجز يتم باستخدام كودك.</li>
+                <li>
+                  <span style={{ fontWeight: "bold" }}>شارك مع جمهورك</span> بأن
+                  الكود يتيح لهم خصم 20% عند حجز خدمة فحص السيارات.
+                </li>
+                <li>
+                  <span style={{ fontWeight: "bold" }}>احصل على عمولة 10%</span>{" "}
+                  عن كل حجز يتم باستخدام كودك.
+                </li>
               </ol>
             </div>
 

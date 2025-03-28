@@ -10,7 +10,7 @@ export const fetchManufacturers = async () => {
 };
 
 export default function useGetAllManufacturerApi() {
-  const [cookies, setCookie, removeCookie] = useCookies([
+  const [cookies, setCookie] = useCookies([
     "tokenApp",
     "username",
     "userId",

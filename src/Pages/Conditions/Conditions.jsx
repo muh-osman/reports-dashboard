@@ -1,5 +1,5 @@
 import style from "./Conditions.module.scss";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 // Cookies
 import { useCookies } from "react-cookie";
 // MUI
@@ -17,7 +17,12 @@ export default function Conditions() {
   //
   const [isHovered, setIsHovered] = React.useState(false);
   // Cookies
-  const [cookies, setCookie] = useCookies(["tokenApp"]);
+  const [cookies, setCookie] = useCookies([
+    "tokenApp",
+    "pageOne",
+    "pageTwo",
+    "pageThree",
+  ]);
 
   // State to manage the checkbox value
   const [checked, setChecked] = React.useState(false);
@@ -25,19 +30,18 @@ export default function Conditions() {
     setChecked(event.target.checked);
   };
 
-  // Page One localStorage status
-  const navigate = useNavigate();
-  React.useEffect(() => {
-    const isPageTwoSeen = localStorage.getItem("pageTwo");
-    if (isPageTwoSeen === "seen") {
-      navigate(`${process.env.PUBLIC_URL}/falak/how-works`, { replace: true });
-    }
-  }, []);
-
+  // Page status
   const pageTwo = () => {
-    localStorage.setItem("pageTwo", "seen");
-    navigate(`${process.env.PUBLIC_URL}/falak/how-works`, { replace: true });
+    setCookie("pageTwo", "true", {
+      path: "/zxc",
+      expires: new Date(Date.now() + 10 * 365 * 24 * 60 * 60 * 1000),
+    });
   };
+
+  // If pageTwo cookie is set, navigate to how-works page
+  if (cookies.pageTwo) {
+    return <Navigate to={`${process.env.PUBLIC_URL}/falak/how-works`} />;
+  }
 
   return (
     <div dir="rtl" className={style.container}>
