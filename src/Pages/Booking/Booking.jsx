@@ -316,7 +316,9 @@ export default function Booking() {
           textAlign: "center",
           margin: "20px",
           marginTop: "8px",
-          color: "#757575",
+          marginBottom: "24px",
+          fontSize: "32px",
+          fontWeight: "bold",
         }}
       >
         احجز موعد

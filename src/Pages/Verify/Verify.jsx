@@ -161,7 +161,7 @@ export default function Verify() {
             >
               لم يصلك الرمز؟{" "}
               <Link
-                to={`${process.env.PUBLIC_URL}/`}
+                to={`${process.env.PUBLIC_URL}/login`}
                 style={{ color: "#1976d2" }}
               >
                 إعادة طلب

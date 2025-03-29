@@ -331,7 +331,8 @@ export default function EditBooking() {
               textAlign: "center",
               margin: "20px",
               marginTop: "8px",
-              color: "#757575",
+              fontSize: "32px",
+              fontWeight: "bold",
             }}
           >
             تعديل الحجز

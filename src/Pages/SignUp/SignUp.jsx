@@ -19,7 +19,6 @@ import { toast } from "react-toastify";
 import logo from "../../Assets/Images/logo.webp";
 
 export default function SignUp() {
-
   // Allow only digits (0-9) and control keys (backspace, delete, etc.)
   const handleKeyPress = (event) => {
     if (
@@ -63,7 +62,8 @@ export default function SignUp() {
       phoneNumber.length > 9 ||
       isNaN(phoneNumber)
     ) {
-      toast.warn("Enter a valid phone number");
+      toast.warn("أدخل رقم هاتف صالح");
+
       return;
     }
 
@@ -170,7 +170,7 @@ export default function SignUp() {
                   loading={isPending}
                   sx={{ mt: 3, mb: 2, transition: "0.1s" }}
                 >
-                  ارسال الرمز
+                  إرسال الرمز
                 </LoadingButton>
               </Box>
             </Box>

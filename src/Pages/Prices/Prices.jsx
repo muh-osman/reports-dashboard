@@ -203,7 +203,9 @@ export default function Prices() {
           textAlign: "center",
           margin: "20px",
           marginTop: "8px",
-          color: "#757575",
+          // color: "#757575",
+          fontSize: "24px",
+          fontWeight: "bold",
         }}
       >
         ابحث عن اسم سيارتك
