@@ -24,6 +24,7 @@ import EditBooking from "./Pages/EditBooking/EditBooking";
 import Conditions from "./Pages/Conditions/Conditions";
 import HowWorks from "./Pages/HowWorks/HowWorks";
 import Marketer from "./Pages/Marketer/Marketer";
+import Transfer from "./Pages/Transfer/Transfer";
 
 
 export default function App() {
@@ -49,6 +50,7 @@ export default function App() {
           <Route path={`${process.env.PUBLIC_URL}/falak/conditions`} element={<Conditions />} />
           <Route path={`${process.env.PUBLIC_URL}/falak/how-works`} element={<HowWorks />} />
           <Route path={`${process.env.PUBLIC_URL}/falak/marketer`} element={<Marketer />} />
+          <Route path={`${process.env.PUBLIC_URL}/falak/transfer`} element={<Transfer />} />
 
           <Route path={`${process.env.PUBLIC_URL}/reports`} element={<Reports />} />
           <Route path={`${process.env.PUBLIC_URL}/prices`} element={<Prices />} />
