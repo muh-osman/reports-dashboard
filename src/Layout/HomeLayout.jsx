@@ -184,6 +184,7 @@ function HomeLayout() {
           <Link to={`${process.env.PUBLIC_URL}/`}>
             <img src={logo} alt="cashif logo" />
           </Link>
+
           <Tooltip
             title="المزيد"
             className={style.three_dots}
@@ -202,6 +203,7 @@ function HomeLayout() {
             </IconButton>
           </Tooltip>
         </div>
+
         <div className={style.introCurve}>
           <svg
             style={{ width: "100%", height: "auto" }}

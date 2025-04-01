@@ -2,7 +2,7 @@ import style from "./Verify.module.scss";
 //
 import logo from "../../Assets/Images/logo.webp";
 // React router
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 // Mui
 import * as React from "react";
 // import Avatar from "@mui/material/Avatar";
@@ -12,6 +12,9 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import LoadingButton from "@mui/lab/LoadingButton";
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 //
 import MotionWrapper from "../../Utils/MotionWrapper";
 // API
@@ -20,6 +23,11 @@ import { useVerifyApi } from "../../API/useVerifyApi";
 import { usePhoneNumber } from "../../Contexts/PhoneNumberContext";
 
 export default function Verify() {
+  //
+  const navigate = useNavigate();
+  const handleBack = () => {
+    navigate(`${process.env.PUBLIC_URL}/login`);
+  };
   const { phoneNumber, setPhoneNumber } = usePhoneNumber();
 
   // handle submit
@@ -48,27 +56,39 @@ export default function Verify() {
   };
 
   return !phoneNumber ? (
-    <Navigate to={`${process.env.PUBLIC_URL}/`} replace />
+    <Navigate to={`${process.env.PUBLIC_URL}/login`} replace />
   ) : (
     <div style={{ backgroundColor: "#f0f1f3" }}>
-      <div className={style.top_circle_header}>
-        <Link to={`${process.env.PUBLIC_URL}/`}>
-          <img src={logo} alt="cashif logo" />
-        </Link>
+      <div className={style.header}>
+        <div className={style.top_circle_header}>
+          <Link to={`${process.env.PUBLIC_URL}/`}>
+            <img src={logo} alt="cashif logo" />
+          </Link>
+          <Tooltip
+            title="عودة"
+            className={style.three_dots}
+            onClick={handleBack}
+          >
+            <IconButton>
+              <ArrowBackIcon sx={{ color: "#fff", fontSize: "32px" }} />
+            </IconButton>
+          </Tooltip>
+        </div>
+        <div className={style.introCurve}>
+          <svg
+            style={{ width: "100%", height: "auto" }}
+            viewBox="0 0 1920 74"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M0 0H1920V0.96521C1920 0.96521 1335.71 74 960 74C584.29 74 0 0.96521 0 0.96521V0Z"
+              fill="#174545"
+            />
+          </svg>
+        </div>
       </div>
-      <div className={style.introCurve}>
-        <svg
-          style={{ width: "100%", height: "auto" }}
-          viewBox="0 0 1920 74"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M0 0H1920V0.96521C1920 0.96521 1335.71 74 960 74C584.29 74 0 0.96521 0 0.96521V0Z"
-            fill="#174545"
-          />
-        </svg>
-      </div>
+
       <MotionWrapper>
         <div className={style.container}>
           <Container

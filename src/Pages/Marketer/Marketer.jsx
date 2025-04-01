@@ -14,6 +14,8 @@ import { toast } from "react-toastify";
 import userImg from "../../Assets/Images/user.jpg";
 // Api
 import useGetMarketerApi from "../../API/useGetMarketerApi";
+// Component
+import CouponImages from "../../Components/CouponImages";
 
 export default function Marketer() {
   const navigate = useNavigate();
@@ -232,16 +234,11 @@ export default function Marketer() {
             </div>
           </div>
 
-          {/* History */}
-          <h5 className={style.last_reports_title}>السجل</h5>
+          {/* Images Downloader */}
+          <h5 className={style.last_reports_title}>حقيبة المسوق</h5>
           <Divider sx={{ marginBottom: "18px" }} />
-          <Typography
-            variant="h6"
-            component="div"
-            style={{ textAlign: "center", margin: "20px", color: "#757575" }}
-          >
-            لا يوجد بيانات
-          </Typography>
+
+          <CouponImages code={marketerData?.code || "-"} percent={20} />
         </>
       )}
     </div>

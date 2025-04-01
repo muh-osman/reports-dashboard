@@ -1,0 +1,58 @@
+main.zxc {
+  max-width: 550px;
+  height: 100%;
+  padding: 16px;
+  background-color: #fff;
+  position: relative;
+  border-radius: 9px;
+  margin: auto;
+
+  .img_box {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    font-weight: 900;
+    text-align: center;
+  }
+
+  img {
+    width: 100%;
+  }
+
+  .up_text {
+    position: absolute;
+    top: 25px;
+  }
+
+  .down_text {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    color: #000;
+    border-radius: 9px;
+    gap: 4px;
+    border: 2px dashed #ffffff;
+    padding: 3px;
+
+    h1 {
+      font-size: 32px;
+      background-color: #fff;
+      padding: 0px 16px;
+      border-top-right-radius: 6px;
+      border-bottom-right-radius: 6px;
+    }
+
+    .sale {
+      background-color: #fff;
+      border-top-left-radius: 6px;
+      border-bottom-left-radius: 6px;
+      p {
+        font-size: 16px;
+        padding: 0px 8px;
+        width: 100%;
+      }
+    }
+  }
+}

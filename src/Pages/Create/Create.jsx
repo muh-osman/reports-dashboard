@@ -1,6 +1,6 @@
 import style from "./Create.module.scss";
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 //
 import logo from "../../Assets/Images/logo.webp";
 import signUp from "../../Assets/Images/sign-up.svg";
@@ -8,34 +8,57 @@ import signUp from "../../Assets/Images/sign-up.svg";
 import MotionWrapper from "../../Utils/MotionWrapper";
 // MUI
 import Typography from "@mui/material/Typography";
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 // MUI Icons
 import PersonIcon from "@mui/icons-material/Person";
 import ApartmentIcon from "@mui/icons-material/Apartment";
 
 export default function Create() {
+  //
+  const navigate = useNavigate();
+  const handleBack = () => {
+    navigate(`${process.env.PUBLIC_URL}/login`);
+  };
 
   return (
     <div style={{ backgroundColor: "#f0f1f3" }}>
-      <div className={style.top_circle_header}>
-        <Link to={`${process.env.PUBLIC_URL}/`}>
-          <img src={logo} alt="cashif logo" />
-        </Link>
-      </div>
-      <div className={style.introCurve}>
-        <svg
-          style={{ width: "100%", height: "auto" }}
-          viewBox="0 0 1920 74"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M0 0H1920V0.96521C1920 0.96521 1335.71 74 960 74C584.29 74 0 0.96521 0 0.96521V0Z"
-            fill="#174545"
-          />
-        </svg>
+      <div className={style.header}>
+        <div className={style.top_circle_header}>
+          <Link to={`${process.env.PUBLIC_URL}/`}>
+            <img src={logo} alt="cashif logo" />
+          </Link>
+
+          <Tooltip
+            title="عودة"
+            className={style.three_dots}
+            onClick={handleBack}
+          >
+            <IconButton>
+              <ArrowBackIcon sx={{ color: "#fff", fontSize: "32px" }} />
+            </IconButton>
+          </Tooltip>
+        </div>
+        <div className={style.introCurve}>
+          <svg
+            style={{ width: "100%", height: "auto" }}
+            viewBox="0 0 1920 74"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M0 0H1920V0.96521C1920 0.96521 1335.71 74 960 74C584.29 74 0 0.96521 0 0.96521V0Z"
+              fill="#174545"
+            />
+          </svg>
+        </div>
       </div>
 
       <MotionWrapper>
+
+        <div className={style.main_container}>
+
         <Typography
           sx={{
             marginTop: "32px",
@@ -90,6 +113,9 @@ export default function Create() {
             </Typography>
           </div>
         </div>
+
+        </div>
+
       </MotionWrapper>
     </div>
   );
