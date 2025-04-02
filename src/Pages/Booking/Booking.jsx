@@ -62,29 +62,14 @@ export default function Booking() {
     navigate(`${process.env.PUBLIC_URL}/login`);
   };
   // Branches
-  const {
-    data: allBranches,
-    fetchBranchesStatus,
-    isBranchesSuccess,
-  } = useGetAllBranchesApi();
+  const { data: allBranches } = useGetAllBranchesApi();
   // Manufacturers
-  const {
-    data: allManufacturers,
-    fetchManufacturersStatus,
-    isManufacturersSuccess,
-  } = useGetAllManufacturerApi();
+  const { data: allManufacturers } = useGetAllManufacturerApi();
   // Services
-  const {
-    data: allServices,
-    fetchServicesStatus,
-    isServicesSuccess,
-  } = useGetServices();
+  const { data: allServices } = useGetServices();
   // Appointment
-  const {
-    data: allAppointment,
-    fetchAppointmentStatus,
-    isAppointmentSuccess,
-  } = useGetAppointmentApi();
+  const { data: allAppointment, fetchStatus: fetchAppointmentStatus } =
+    useGetAppointmentApi();
 
   const years = [
     {
@@ -281,12 +266,7 @@ export default function Booking() {
   }, [isPostApoinmentFormMutateSuccess]);
 
   // Delete Apoinment
-  const {
-    mutate: deleteApoinmentMutate,
-    data: deleteApoinmentData,
-    isPending: isDeleteApoinmentPending,
-    isSuccess: isDeleteApoinmentSuccess,
-  } = useDeleteAppointmentApi();
+  const { mutate: deleteApoinmentMutate } = useDeleteAppointmentApi();
   const [loadingDelete, setLoadingDelete] = React.useState({});
 
   let handleDeleteApoinment = (id) => {
@@ -538,7 +518,12 @@ export default function Booking() {
               {cookies.tokenApp && selectedServiceId && (
                 <div className={style.description}>
                   {selectedService && (
-                    <pre>{selectedService.descriptionAr}</pre>
+                    <pre>
+                      {selectedService?.descriptionAr?.replace(
+                        /(\d+)[.-]\s*/g,
+                        "$1. "
+                      )}
+                    </pre>
                   )}
                 </div>
               )}
@@ -701,7 +686,9 @@ export default function Booking() {
               component="div"
               style={{ textAlign: "center", margin: "20px", color: "#757575" }}
             >
-              جاري تحميل الحجوزات ..
+              {fetchAppointmentStatus === "fetching"
+                ? "جاري التحميل.."
+                : "لا يوجد حجوزات"}
             </Typography>
           )}
         </div>

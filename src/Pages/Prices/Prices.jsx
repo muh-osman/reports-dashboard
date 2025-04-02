@@ -208,7 +208,7 @@ export default function Prices() {
           fontWeight: "bold",
         }}
       >
-        ابحث عن اسم سيارتك
+        ضع نوع سيارتك
       </Typography>
 
       <div className={style.box}>
@@ -232,13 +232,13 @@ export default function Prices() {
         />
 
         <Box sx={{ width: "85%", margin: "auto", marginTop: "28px" }}>
-          {/* <Typography
+          <Typography
             variant="h6"
             component="div"
             style={{ textAlign: "center", margin: "auto", color: "#757575" }}
           >
-            سنة الصنع
-          </Typography> */}
+            اختر سنة الصنع
+          </Typography>
           <Slider
             aria-label="سنة الصنع"
             value={selectedYear} // Set the value of the slider to the selected year

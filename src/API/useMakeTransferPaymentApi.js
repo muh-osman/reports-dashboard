@@ -34,8 +34,8 @@ export const useMakeTransferPaymentApi = () => {
     onSuccess: (responseData) => {
       toast.success("تم ارسال الطلب");
 
-      //   qc.invalidateQueries(["PaymentHistory", clientId]); // This will refetch the appointments
-      //   navigate(`${process.env.PUBLIC_URL}/falak/marketer`, { replace: true });
+      qc.invalidateQueries(["PaymentHistory", clientId]); // This will refetch the appointments
+      navigate(`${process.env.PUBLIC_URL}/falak/marketer`, { replace: true });
     },
 
     onError: (err) => {

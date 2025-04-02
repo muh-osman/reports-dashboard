@@ -50,7 +50,7 @@ export default function Reports() {
   }, []);
 
   const { data: points } = useGetPoinsApi();
-  const { data: cardsData } = useGetAllCardsApi();
+  const { data: cardsData, fetchStatus: fetchCardStatus } = useGetAllCardsApi();
 
   // Download pdf Card
   const [loadingDownload, setLoadingDownload] = useState({});
@@ -269,7 +269,9 @@ export default function Reports() {
               component="div"
               style={{ textAlign: "center", margin: "20px", color: "#757575" }}
             >
-              جاري تحميل التقارير ..
+              {fetchCardStatus === "fetching"
+                ? "جاري التحميل.."
+                : "لا يوجد تقارير"}
             </Typography>
           )}
         </div>
