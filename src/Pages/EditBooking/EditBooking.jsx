@@ -21,7 +21,6 @@ import dayjs from "dayjs";
 import useGetAllBranchesApi from "../../API/useGetAllBranchesApi";
 import useGetAllManufacturerApi from "../../API/useGetAllManufacturerApi";
 import useGetServices from "../../API/useGetServices";
-// import useGetOneAppointmentApi from "../../API/useGetOneAppointmentApi";
 import { useEditAppointmentApi } from "../../API/useEditAppointmentApi";
 import useGetAppointmentApi from "../../API/useGetAppointmentApi";
 
@@ -63,12 +62,6 @@ export default function EditBooking() {
     fetchServicesStatus,
     isServicesSuccess,
   } = useGetServices();
-  // Get One Appointment before edit
-  // const {
-  //   data: oneAppointmentData,
-  //   fetchStatus,
-  //   isSuccess,
-  // } = useGetOneAppointmentApi(id);
 
   // Get All Appointment before edit
   const {

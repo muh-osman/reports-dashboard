@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import userImg from "../../Assets/Images/user.jpg";
 // Api
 import useGetMarketerApi from "../../API/useGetMarketerApi";
+import useMarketerSettingsApi from "../../API/useMarketerSettingsApi";
 // Component
 import CouponImages from "../../Components/CouponImages";
 
@@ -34,6 +35,7 @@ export default function Marketer() {
 
   // Marketer Data
   const { data: marketerData } = useGetMarketerApi();
+  const { data: MarketerSettings } = useMarketerSettingsApi();
   // console.log(marketerData);
 
   // If pageOne cookie is Not set, navigate to falak page
@@ -171,9 +173,12 @@ export default function Marketer() {
               </div>
 
               <div className={style.money_card_footer}>
-                <h3>نسبة العمولة 10%</h3>
+                <h3>
+                  نسبة العمولة{" "}
+                  {MarketerSettings?.marketerCommissionPercentage || 0}%
+                </h3>
                 <h3 style={{ backgroundColor: "#3887d5", color: "#fff" }}>
-                  نسبة الخصم 20%
+                  نسبة الخصم {MarketerSettings?.codeDiscountPercentage || 0}%
                 </h3>
               </div>
             </div>
@@ -221,9 +226,9 @@ export default function Marketer() {
                     sx={{ width: "50%" }}
                     variant="outlined"
                     component={Link}
-                    to={`${process.env.PUBLIC_URL}/falak/marketer`}
+                    to={`${process.env.PUBLIC_URL}/falak/history`}
                   >
-                    الإعدادات
+                    السجل
                   </Button>
                 </div>
               </div>
@@ -238,7 +243,10 @@ export default function Marketer() {
           <h5 className={style.last_reports_title}>حقيبة المسوق</h5>
           <Divider sx={{ marginBottom: "18px" }} />
 
-          <CouponImages code={marketerData?.code || "-"} percent={20} />
+          <CouponImages
+            code={marketerData?.code || "-"}
+            percent={MarketerSettings?.codeDiscountPercentage || 0}
+          />
         </>
       )}
     </div>

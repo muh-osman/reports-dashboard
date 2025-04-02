@@ -4,12 +4,12 @@ import API from "./Api";
 // Cookies
 import { useCookies } from "react-cookie";
 
-export const fetchOneAppointment = async (id) => {
-  const res = await API.get(`api/Appointment/${id}`);
+export const fetchMarketerSettings = async () => {
+  const res = await API.get(`api/MarketerSettings`);
   return res.data;
 };
 
-export default function useGetOneAppointmentApi(id) {
+export default function useMarketerSettingsApi() {
   const [cookies, setCookie] = useCookies([
     "tokenApp",
     "username",
@@ -18,10 +18,11 @@ export default function useGetOneAppointmentApi(id) {
   ]);
 
   const token = cookies.tokenApp;
+  const userId = cookies.userId;
 
   return useQuery({
-    queryKey: ["OneAppointment", id],
-    queryFn: () => fetchOneAppointment(id),
-    enabled: !!token, // Only run the query if the token exists
+    queryKey: ["MarketerSettings", userId],
+    queryFn: fetchMarketerSettings,
+    enabled: !!token, // Only run the query if token is truthy
   });
 }
