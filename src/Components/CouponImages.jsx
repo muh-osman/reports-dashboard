@@ -7,15 +7,49 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import Snackbar from "@mui/material/Snackbar";
 // IMG
 import imgOne from "../Assets/Images/1.jpg";
 import imgTwo from "../Assets/Images/2.jpg";
 import imgThree from "../Assets/Images/3.jpg";
+//
+import {
+  EmailShareButton,
+  FacebookShareButton,
+  FacebookMessengerShareButton,
+  LinkedinShareButton,
+  TelegramShareButton,
+  ThreadsShareButton,
+  TwitterShareButton,
+  WhatsappShareButton,
+  EmailIcon,
+  FacebookIcon,
+  FacebookMessengerIcon,
+  LinkedinIcon,
+  TelegramIcon,
+  ThreadsIcon,
+  TwitterIcon,
+  WhatsappIcon,
+} from "react-share";
 
 export default function CouponImages({ code, percent }) {
   const [allImages, setAllImages] = useState([imgThree, imgTwo, imgOne]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [oneImage, setOneImage] = useState(allImages[0]);
+
+  // Bio data with text
+  const bioData = [
+    {
+      text: "السيارة المستعملة قرار كبير، والفحص هو الخطوة الأهم. تأكد من حالتها قبل الشراء لتجنب المفاجآت.\n#كاشف_لفحص_السيارات",
+    },
+    {
+      text: "المظهر لحاله ما يكفي، فحص السيارة يكشف حقيقتها قبل الشراء.\n#كاشف_لفحص_السيارات",
+    },
+    {
+      text: "لا تدفع ثمن العيوب، الفحص يكشف الحقيقة. افحص السيارة المستعملة قبل الشراء واتخذ قرارك بثقة.\n#كاشف_لفحص_السيارات",
+    },
+  ];
 
   //
   function nextBtn() {
@@ -52,6 +86,26 @@ export default function CouponImages({ code, percent }) {
       });
   }, [ref]);
 
+  // Copy Button
+  const [open, setOpen] = useState(false);
+
+  const handleClick = () => {
+    navigator.clipboard.writeText(bioData[currentIndex]?.text);
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+  //
+
+  const title = bioData[currentIndex]?.text;
+  const shareUrl = " ";
+
   return (
     <main className={style.zxc}>
       <div ref={ref} className={style.img_box}>
@@ -67,6 +121,48 @@ export default function CouponImages({ code, percent }) {
             <p>%{percent}</p>
           </div>
         </div>
+      </div>
+
+      <div className={style.bio}>
+        <p>{bioData[currentIndex]?.text}</p>
+        <button onClick={handleClick}>
+          <ContentCopyIcon />
+        </button>
+      </div>
+
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={open}
+        autoHideDuration={2000}
+        onClose={handleClose}
+        message="تم النسخ"
+      />
+
+      <div className={style.share_btn}>
+        <EmailShareButton url={shareUrl} subject={title}>
+          <EmailIcon size={32} round />
+        </EmailShareButton>
+        <FacebookShareButton url={shareUrl} quote={title}>
+          <FacebookIcon size={32} round />
+        </FacebookShareButton>
+        <FacebookMessengerShareButton url={shareUrl} appId="YOUR_APP_ID">
+          <FacebookMessengerIcon size={32} round />
+        </FacebookMessengerShareButton>
+        <LinkedinShareButton url={shareUrl}>
+          <LinkedinIcon size={32} round />
+        </LinkedinShareButton>
+        <TelegramShareButton url={shareUrl}>
+          <TelegramIcon size={32} round />
+        </TelegramShareButton>
+        <ThreadsShareButton url={shareUrl}>
+          <ThreadsIcon size={32} round />
+        </ThreadsShareButton>
+        <TwitterShareButton url={shareUrl} title={title}>
+          <TwitterIcon size={32} round />
+        </TwitterShareButton>
+        <WhatsappShareButton url={shareUrl} title={title}>
+          <WhatsappIcon size={32} round />
+        </WhatsappShareButton>
       </div>
 
       <Stack

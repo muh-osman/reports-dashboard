@@ -11,7 +11,8 @@ export default function History() {
   const [cookies, setCookie] = useCookies(["tokenApp", "userId"]);
 
   // History
-  const { data: paymentHistory } = useGetPaymentHistoryApi(cookies.userId);
+  const { data: paymentHistory, fetchStatus: fetchHistoryStatus } =
+    useGetPaymentHistoryApi(cookies.userId);
 
   return !cookies.tokenApp ? (
     <Navigate to={`${process.env.PUBLIC_URL}/falak/marketer`} replace />
@@ -41,7 +42,9 @@ export default function History() {
           component="div"
           style={{ textAlign: "center", margin: "20px", color: "#757575" }}
         >
-          لا يوجد بيانات
+          {fetchHistoryStatus === "fetching"
+            ? "جاري التحميل.."
+            : "لا يوجد بيانات"}
         </Typography>
       )}
     </div>

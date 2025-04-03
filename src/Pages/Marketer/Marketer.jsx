@@ -184,7 +184,7 @@ export default function Marketer() {
                     />
                     <CircularProgress
                       variant="determinate"
-                      value={(marketerData?.points / 200) * 100}
+                      value={Math.min((marketerData?.points / 200) * 100, 100)}
                       size={100}
                       thickness={6}
                       sx={{
@@ -253,7 +253,7 @@ export default function Marketer() {
                   vertical: "top",
                   horizontal: isSmallScreen ? "center" : "right",
                 }}
-                disableScrollLock={true}
+                disableScrollLock={false}
               >
                 <Paper sx={{ maxWidth: "100%" }}>
                   <MenuList>

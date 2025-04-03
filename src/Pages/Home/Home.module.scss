@@ -9,31 +9,13 @@
   }
 }
 
-.card {
-  padding: 32px;
-  background-color: #fff;
-  border-radius: 9px;
-  text-align: center;
-  width: 400px;
+.header_box {
+  h1{
 
-  @media (max-width: 550px) {
-    width: 100%;
   }
 
-  .img_box {
-    // width: 333px;
-    margin: auto;
-
-    img {
-      width: 100%;
-    }
-  }
-
-  h3 {
-    margin-bottom: 16px;
-  }
-
-  p {
+  h3{
+    text-align: center;
     color: #757575;
   }
 }

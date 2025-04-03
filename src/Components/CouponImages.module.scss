@@ -66,3 +66,45 @@ main.zxc {
     }
   }
 }
+
+.bio {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  padding: 16px;
+  height: fit-content;
+  min-height: 104px;
+  border-radius: 6px;
+  background-color: #f0f1f3;
+  color: #757575;
+  position: relative;
+
+  button {
+    cursor: pointer;
+    // border: 1px solid #174545;
+    border: none;
+    border-radius: 3px;
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    padding: 3px;
+    // background-color: #fff;
+
+    &:hover svg {
+      fill: #0c2525;
+    }
+
+    svg {
+      vertical-align: middle;
+      fill: #174545;
+    }
+  }
+}
+
+.share_btn {
+  display: flex;
+  justify-content: space-around;
+
+  svg {
+    vertical-align: middle;
+  }
+}

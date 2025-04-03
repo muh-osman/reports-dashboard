@@ -109,7 +109,7 @@ export default function ContactUs() {
           <CardActions disableSpacing>
             <IconButton
               aria-label="الموقع"
-              href="https://maps.app.goo.gl/EXwyqvoEvLnxCrzu5"
+              href="https://maps.app.goo.gl/pXCnG7RPXJ2CDLqe7?g_st=aw"
               target="_blank"
               rel="noopener noreferrer"
             >

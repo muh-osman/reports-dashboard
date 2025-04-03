@@ -62,19 +62,22 @@ export default function Transfer() {
       return;
     }
 
-    const data = {
-      // id: 0,
-      marketerId: cookies.userId,
-      point: amount,
-      tranferPaymentTypeId: selectedPaymentType,
-      accountNumber: accountNumber,
-      // actionBy: 0,
-      // actionDate: "2025-05-01T23:29:00.259Z",
-      // rejectReason: "string",
-      // status: 0,
-    };
+    if (checkIfPaymentRequestIsValid) {
+      const data = {
+        // id: 0,
+        // marketerId: cookies.userId,
+        marketerId: 1,
+        point: +amount,
+        tranferPaymentTypeId: selectedPaymentType,
+        accountNumber: accountNumber,
+        // actionBy: 0,
+        actionDate: new Date().toISOString(),
+        // rejectReason: "string",
+        // status: 0,
+      };
 
-    mutate(data);
+      mutate(data);
+    }
   };
 
   return !cookies.tokenApp ? (
