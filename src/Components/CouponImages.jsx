@@ -15,20 +15,14 @@ import imgTwo from "../Assets/Images/2.jpg";
 import imgThree from "../Assets/Images/3.jpg";
 //
 import {
-  EmailShareButton,
   FacebookShareButton,
   FacebookMessengerShareButton,
-  LinkedinShareButton,
   TelegramShareButton,
-  ThreadsShareButton,
   TwitterShareButton,
   WhatsappShareButton,
-  EmailIcon,
   FacebookIcon,
   FacebookMessengerIcon,
-  LinkedinIcon,
   TelegramIcon,
-  ThreadsIcon,
   TwitterIcon,
   WhatsappIcon,
 } from "react-share";
@@ -41,13 +35,13 @@ export default function CouponImages({ code, percent }) {
   // Bio data with text
   const bioData = [
     {
-      text: "السيارة المستعملة قرار كبير، والفحص هو الخطوة الأهم. تأكد من حالتها قبل الشراء لتجنب المفاجآت.\n#كاشف_لفحص_السيارات",
+      text: "السيارة المستعملة قرار كبير، والفحص هو الخطوة الأهم. تأكد من حالتها قبل الشراء لتجنب المفاجآت.",
     },
     {
-      text: "المظهر لحاله ما يكفي، فحص السيارة يكشف حقيقتها قبل الشراء.\n#كاشف_لفحص_السيارات",
+      text: "المظهر لحاله ما يكفي، فحص السيارة يكشف حقيقتها قبل الشراء.",
     },
     {
-      text: "لا تدفع ثمن العيوب، الفحص يكشف الحقيقة. افحص السيارة المستعملة قبل الشراء واتخذ قرارك بثقة.\n#كاشف_لفحص_السيارات",
+      text: "لا تدفع ثمن العيوب، الفحص يكشف الحقيقة. افحص السيارة المستعملة قبل الشراء واتخذ قرارك بثقة.",
     },
   ];
 
@@ -104,7 +98,8 @@ export default function CouponImages({ code, percent }) {
   //
 
   const title = bioData[currentIndex]?.text;
-  const shareUrl = " ";
+  const shareUrl = `\nكود الخصم: ${code}\nhttps://cashif.cc\n#كاشف_لفحص_السيارات
+  `;
 
   return (
     <main className={style.zxc}>
@@ -139,24 +134,15 @@ export default function CouponImages({ code, percent }) {
       />
 
       <div className={style.share_btn}>
-        <EmailShareButton url={shareUrl} subject={title}>
-          <EmailIcon size={32} round />
-        </EmailShareButton>
         <FacebookShareButton url={shareUrl} quote={title}>
           <FacebookIcon size={32} round />
         </FacebookShareButton>
         <FacebookMessengerShareButton url={shareUrl} appId="YOUR_APP_ID">
           <FacebookMessengerIcon size={32} round />
         </FacebookMessengerShareButton>
-        <LinkedinShareButton url={shareUrl}>
-          <LinkedinIcon size={32} round />
-        </LinkedinShareButton>
         <TelegramShareButton url={shareUrl}>
           <TelegramIcon size={32} round />
         </TelegramShareButton>
-        <ThreadsShareButton url={shareUrl}>
-          <ThreadsIcon size={32} round />
-        </ThreadsShareButton>
         <TwitterShareButton url={shareUrl} title={title}>
           <TwitterIcon size={32} round />
         </TwitterShareButton>

@@ -177,169 +177,184 @@ function HomeLayout() {
     }
   }, [location]);
 
+  // Hide header in Home page
+  // Normalize the pathname by removing the trailing slash
+  const normalizedPath = location.pathname.replace(/\/$/, "");
+  const isHomePage = normalizedPath === `${process.env.PUBLIC_URL}`;
+
   return (
     <div style={{ backgroundColor: "#f0f1f3" }}>
-      <div className={style.header}>
-        <div className={style.top_circle_header}>
-          <Link to={`${process.env.PUBLIC_URL}/`}>
-            <img src={logo} alt="cashif logo" />
-          </Link>
+      {!isHomePage && (
+        <>
+          <div className={style.header}>
+            <div className={style.top_circle_header}>
+              <Link to={`${process.env.PUBLIC_URL}/`}>
+                <img src={logo} alt="cashif logo" />
+              </Link>
 
-          <Tooltip
-            title="المزيد"
-            className={style.three_dots}
-            id="basic-button"
-            aria-controls={open ? "basic-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-            onClick={handleClick}
-          >
-            <IconButton>
-              {cookies.tokenApp ? (
-                <AccountCircleIcon sx={{ color: "#fff", fontSize: "44px" }} />
-              ) : (
-                <MoreVertIcon sx={{ color: "#fff", fontSize: "32px" }} />
-              )}
-            </IconButton>
-          </Tooltip>
-        </div>
+              <Tooltip
+                title="المزيد"
+                className={style.three_dots}
+                id="basic-button"
+                aria-controls={open ? "basic-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? "true" : undefined}
+                onClick={handleClick}
+              >
+                <IconButton>
+                  {cookies.tokenApp ? (
+                    <AccountCircleIcon
+                      sx={{ color: "#fff", fontSize: "44px" }}
+                    />
+                  ) : (
+                    <MoreVertIcon sx={{ color: "#fff", fontSize: "32px" }} />
+                  )}
+                </IconButton>
+              </Tooltip>
+            </div>
 
-        <div className={style.introCurve}>
-          <svg
-            style={{ width: "100%", height: "auto" }}
-            viewBox="0 0 1920 74"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M0 0H1920V0.96521C1920 0.96521 1335.71 74 960 74C584.29 74 0 0.96521 0 0.96521V0Z"
-              fill="#174545"
-            />
-          </svg>
-        </div>
-      </div>
-
-      <Popover
-        dir="rtl"
-        id="basic-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: isSmallScreen ? "center" : "left",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: isSmallScreen ? "center" : "right",
-        }}
-        disableScrollLock={true}
-      >
-        <Paper sx={{ maxWidth: "100%" }}>
-          <MenuList>
-            <MenuItem onClick={handleClose}>
-              <ListItemIcon>
-                <TranslateIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>English</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={contact}>
-              <ListItemIcon>
-                <PhoneIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>اتصل بنا</ListItemText>
-            </MenuItem>
-
-            {deferredPrompt && (
-              <MenuItem onClick={handleInstallClick}>
-                <ListItemIcon>
-                  <SystemUpdateIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>تثبيت كتطبيق PWA</ListItemText>
-              </MenuItem>
-            )}
-
-            {isIOS && (
-              <MenuItem onClick={handleIosModalOpen}>
-                <ListItemIcon>
-                  <SystemUpdateIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>تثبيت كتطبيق PWA</ListItemText>
-              </MenuItem>
-            )}
-
-            <Divider />
-
-            {cookies.tokenApp ? (
-              <MenuItem onClick={logout}>
-                <ListItemIcon>
-                  <LogoutIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>تسجيل الخروج</ListItemText>
-              </MenuItem>
-            ) : (
-              <MenuItem onClick={login}>
-                <ListItemIcon>
-                  <LoginIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>تسجيل الدخول</ListItemText>
-              </MenuItem>
-            )}
-          </MenuList>
-        </Paper>
-      </Popover>
-
-      {/* IOS Modal */}
-      <Modal
-        open={openIosModal}
-        onClose={handleIosModalClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box
-          dir="rtl"
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: "background.paper",
-            borderRadius: "9px",
-            boxShadow: 24,
-            p: 4,
-            textAlign: "center",
-            width: "361px",
-            borderRadius: "16px",
-            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
-            backgroundColor: "#fff",
-          }}
-        >
-          <div
-            style={{
-              width: "75px",
-              margin: "auto",
-              marginBottom: "32px",
-              borderRadius: "9px",
-              overflow: "hidden",
-              aspectRatio: "1 / 1",
-            }}
-          >
-            <img style={{ width: "100%" }} src={boldLogo} alt="cashif logo" />
+            <div className={style.introCurve}>
+              <svg
+                style={{ width: "100%", height: "auto" }}
+                viewBox="0 0 1920 74"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M0 0H1920V0.96521C1920 0.96521 1335.71 74 960 74C584.29 74 0 0.96521 0 0.96521V0Z"
+                  fill="#174545"
+                />
+              </svg>
+            </div>
           </div>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            تثبيت كتطبيق PWA
-          </Typography>
-          <Typography
-            id="modal-modal-description"
-            sx={{ mt: 2, color: "#3e3e3e" }}
+
+          <Popover
+            dir="rtl"
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: isSmallScreen ? "center" : "left",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: isSmallScreen ? "center" : "right",
+            }}
+            disableScrollLock={true}
           >
-            لتثبيت التطبيق قم بالضغط على زر "المشاركة"{" "}
-            <IosShareIcon sx={{ color: "#174545" }} /> ثم اختر "اضافة الى الشاشة
-            الرئيسية"
-          </Typography>
-        </Box>
-      </Modal>
+            <Paper sx={{ maxWidth: "100%" }}>
+              <MenuList>
+                <MenuItem onClick={handleClose}>
+                  <ListItemIcon>
+                    <TranslateIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>English</ListItemText>
+                </MenuItem>
+                <MenuItem onClick={contact}>
+                  <ListItemIcon>
+                    <PhoneIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>اتصل بنا</ListItemText>
+                </MenuItem>
+
+                {deferredPrompt && (
+                  <MenuItem onClick={handleInstallClick}>
+                    <ListItemIcon>
+                      <SystemUpdateIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>تثبيت كتطبيق PWA</ListItemText>
+                  </MenuItem>
+                )}
+
+                {isIOS && (
+                  <MenuItem onClick={handleIosModalOpen}>
+                    <ListItemIcon>
+                      <SystemUpdateIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>تثبيت كتطبيق PWA</ListItemText>
+                  </MenuItem>
+                )}
+
+                <Divider />
+
+                {cookies.tokenApp ? (
+                  <MenuItem onClick={logout}>
+                    <ListItemIcon>
+                      <LogoutIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>تسجيل الخروج</ListItemText>
+                  </MenuItem>
+                ) : (
+                  <MenuItem onClick={login}>
+                    <ListItemIcon>
+                      <LoginIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>تسجيل الدخول</ListItemText>
+                  </MenuItem>
+                )}
+              </MenuList>
+            </Paper>
+          </Popover>
+
+          {/* IOS Modal */}
+          <Modal
+            open={openIosModal}
+            onClose={handleIosModalClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box
+              dir="rtl"
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: 400,
+                bgcolor: "background.paper",
+                borderRadius: "9px",
+                boxShadow: 24,
+                p: 4,
+                textAlign: "center",
+                width: "361px",
+                borderRadius: "16px",
+                boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+                backgroundColor: "#fff",
+              }}
+            >
+              <div
+                style={{
+                  width: "75px",
+                  margin: "auto",
+                  marginBottom: "32px",
+                  borderRadius: "9px",
+                  overflow: "hidden",
+                  aspectRatio: "1 / 1",
+                }}
+              >
+                <img
+                  style={{ width: "100%" }}
+                  src={boldLogo}
+                  alt="cashif logo"
+                />
+              </div>
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                تثبيت كتطبيق PWA
+              </Typography>
+              <Typography
+                id="modal-modal-description"
+                sx={{ mt: 2, color: "#3e3e3e" }}
+              >
+                لتثبيت التطبيق قم بالضغط على زر "المشاركة"{" "}
+                <IosShareIcon sx={{ color: "#174545" }} /> ثم اختر "اضافة الى
+                الشاشة الرئيسية"
+              </Typography>
+            </Box>
+          </Modal>
+        </>
+      )}
 
       {/* Outlet */}
       <Box component="main">

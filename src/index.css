@@ -1,3 +1,24 @@
+@font-face {
+  font-family: "mont-bold";
+  src: url(./Assets/fonts/ArbFONTS-Montserrat-Arabic-Bold.ttf);
+}
+@font-face {
+  font-family: "mont-medium";
+  src: url(./Assets/fonts/ArbFONTS-Montserrat-Arabic-Medium.ttf);
+}
+@font-face {
+  font-family: "mont-reg";
+  src: url(./Assets/fonts/ArbFONTS-Montserrat-Arabic-Regular.ttf);
+}
+@font-face {
+  font-family: "mont-light";
+  src: url(./Assets/fonts/ArbFONTS-Montserrat-Arabic-Light.ttf);
+}
+@font-face {
+  font-family: "mont-semi";
+  src: url(./Assets/fonts/ArbFONTS-Montserrat-Arabic-SemiBold.ttf);
+}
+
 :root {
   color-scheme: only light;
 }
@@ -19,6 +40,11 @@ body {
   font-style: normal;
   font-variation-settings: "slnt" 0;
   background-color: #f0f1f3;
+  overflow-x: hidden;
+}
+
+html {
+  overflow-x: hidden;
 }
 
 /* inputs label RTL*/
