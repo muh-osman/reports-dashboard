@@ -1,4 +1,5 @@
 import style from "./Prices.module.scss";
+import { useLocation } from "react-router-dom";
 // MUI
 import * as React from "react";
 import TextField from "@mui/material/TextField";
@@ -6,7 +7,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
-import LinearProgress from "@mui/material/LinearProgress";
+// import LinearProgress from "@mui/material/LinearProgress";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import InfoIcon from "@mui/icons-material/Info";
@@ -97,6 +98,10 @@ const TrueIcon = `<svg fill="#25d366" xmlns="http://www.w3.org/2000/svg" viewBox
 const FalseIcon = `<svg class="wrong-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"></path></svg>`;
 
 export default function Prices() {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const checkit = queryParams.get("checkit") === "true"; // Returns (boolean)
+  //
   React.useEffect(() => {
     // Scroll to the top of the page
     window.scrollTo(0, 0);
@@ -275,295 +280,298 @@ export default function Prices() {
             </div>
             <div className="plane-box">
               {/* المحركات */}
-              <div className="col plane eng-pane dis rounded-3 shadow-sm">
-                <div className="card mb-4 card-price eng">
-                  <div className="card-header py-3">
-                    <h4 className="my-0 fw-normal">المحركات</h4>
-                  </div>
-                  <div className="card-body">
-                    <h1
-                      id="engain-price"
-                      className="card-title pricing-card-title"
-                    >
-                      {engainPrice}
-                      <svg
-                        id="Layer_1"
-                        data-name="Layer 1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 1124.14 1256.39"
+              {!checkit && (
+                <div className="col plane eng-pane dis rounded-3 shadow-sm">
+                  <div className="card mb-4 card-price eng">
+                    <div className="card-header py-3">
+                      <h4 className="my-0 fw-normal">المحركات</h4>
+                    </div>
+                    <div className="card-body">
+                      <h1
+                        id="engain-price"
+                        className="card-title pricing-card-title"
                       >
-                        <defs>
-                          <style
-                            dangerouslySetInnerHTML={{
-                              __html:
-                                "\n      .cls-1 {\n        fill: #174545;\n      }\n    ",
-                            }}
+                        {engainPrice}
+                        <svg
+                          id="Layer_1"
+                          data-name="Layer 1"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 1124.14 1256.39"
+                        >
+                          <defs>
+                            <style
+                              dangerouslySetInnerHTML={{
+                                __html:
+                                  "\n      .cls-1 {\n        fill: #174545;\n      }\n    ",
+                              }}
+                            />
+                          </defs>
+                          <path
+                            className="cls-1"
+                            d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z"
                           />
-                        </defs>
-                        <path
-                          className="cls-1"
-                          d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z"
-                        />
-                        <path
-                          className="cls-1"
-                          d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z"
-                        />
-                      </svg>
-                    </h1>
-                    <h3
-                      id="old-price-a"
-                      style={{
-                        marginTop: "-12px",
-                        fontSize: 16,
-                        color: "#d32f2f",
-                      }}
-                    />
-                    <h5>تشمل فحص:</h5>
-                    <ul className="list-unstyled mt-3 mb-4">
-                      <li>
-                        <span
-                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
-                        ></span>{" "}
-                        المحرك
-                        <Tooltip
-                          title="فحص الأداء، مستوى الزيت، والصوت"
-                          arrow
-                          enterTouchDelay={0}
-                        >
-                          <IconButton>
-                            <InfoIcon sx={{ fontSize: "16px" }} />
-                          </IconButton>
-                        </Tooltip>
-                      </li>
-                      <li>
-                        <span
-                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
-                        ></span>{" "}
-                        ناقل الحركة
-                        <Tooltip
-                          title="اختبار سلاسة التبديل والأداء"
-                          arrow
-                          enterTouchDelay={0}
-                        >
-                          <IconButton>
-                            <InfoIcon sx={{ fontSize: "16px" }} />
-                          </IconButton>
-                        </Tooltip>
-                      </li>
-                      <li>
-                        <span
-                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
-                        ></span>{" "}
-                        الدفرنس
-                        <Tooltip
-                          title="فحص الأصوات والتسربات"
-                          arrow
-                          enterTouchDelay={0}
-                        >
-                          <IconButton>
-                            <InfoIcon sx={{ fontSize: "16px" }} />
-                          </IconButton>
-                        </Tooltip>
-                      </li>
-                      <li>
-                        <span
-                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
-                        ></span>{" "}
-                        ميكانيكا أسفل السيارة
-                        <Tooltip
-                          dir="rtl"
-                          title="فحص ميكانيكا أسفل السيارة: الأجزاء المتحركة: فحص الأجزاء المتحركة والتأكد من عدم وجود تلف أو تآكل
+                          <path
+                            className="cls-1"
+                            d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z"
+                          />
+                        </svg>
+                      </h1>
+                      <h3
+                        id="old-price-a"
+                        style={{
+                          marginTop: "-12px",
+                          fontSize: 16,
+                          color: "#d32f2f",
+                        }}
+                      />
+                      <h5>تشمل فحص:</h5>
+                      <ul className="list-unstyled mt-3 mb-4">
+                        <li>
+                          <span
+                            dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                          ></span>{" "}
+                          المحرك
+                          <Tooltip
+                            title="فحص الأداء، مستوى الزيت، والصوت"
+                            arrow
+                            enterTouchDelay={0}
+                          >
+                            <IconButton>
+                              <InfoIcon sx={{ fontSize: "16px" }} />
+                            </IconButton>
+                          </Tooltip>
+                        </li>
+                        <li>
+                          <span
+                            dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                          ></span>{" "}
+                          ناقل الحركة
+                          <Tooltip
+                            title="اختبار سلاسة التبديل والأداء"
+                            arrow
+                            enterTouchDelay={0}
+                          >
+                            <IconButton>
+                              <InfoIcon sx={{ fontSize: "16px" }} />
+                            </IconButton>
+                          </Tooltip>
+                        </li>
+                        <li>
+                          <span
+                            dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                          ></span>{" "}
+                          الدفرنس
+                          <Tooltip
+                            title="فحص الأصوات والتسربات"
+                            arrow
+                            enterTouchDelay={0}
+                          >
+                            <IconButton>
+                              <InfoIcon sx={{ fontSize: "16px" }} />
+                            </IconButton>
+                          </Tooltip>
+                        </li>
+                        <li>
+                          <span
+                            dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                          ></span>{" "}
+                          ميكانيكا أسفل السيارة
+                          <Tooltip
+                            dir="rtl"
+                            title="فحص ميكانيكا أسفل السيارة: الأجزاء المتحركة: فحص الأجزاء المتحركة والتأكد من عدم وجود تلف أو تآكل
 الهيكل السفلي: التحقق من عدم وجود أي صدأ أو تلف في الهيكل السفلي"
-                          arrow
-                          enterTouchDelay={0}
-                        >
-                          <IconButton>
-                            <InfoIcon sx={{ fontSize: "16px" }} />
-                          </IconButton>
-                        </Tooltip>
-                      </li>
-                      <li>
-                        <span
-                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
-                        ></span>{" "}
-                        الكمبيوتر والحساسات
-                        <Tooltip
-                          title="استخدام أجهزة التشخيص لفحص الأنظمة الإلكترونية"
-                          arrow
-                          enterTouchDelay={0}
-                        >
-                          <IconButton>
-                            <InfoIcon sx={{ fontSize: "16px" }} />
-                          </IconButton>
-                        </Tooltip>
-                      </li>
-                      <li>
-                        <span
-                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
-                        ></span>{" "}
-                        الهيكل الداخلي
-                        <Tooltip
-                          title="التحقق من شاص السيارة: الصدمات، الصدأ، اللحامات، نقاط التثبيت، والاتصالات الميكانيكية لضمان السلامة الهيكلية والسيارة"
-                          arrow
-                          enterTouchDelay={0}
-                        >
-                          <IconButton>
-                            <InfoIcon sx={{ fontSize: "16px" }} />
-                          </IconButton>
-                        </Tooltip>
-                      </li>
-                      <li>
-                        <span
-                          dangerouslySetInnerHTML={{ __html: TrueIcon }}
-                        ></span>{" "}
-                        تجربة السيارة
-                        <Tooltip
-                          title="تجربة القيادة للتحقق من الأداء العام"
-                          arrow
-                          enterTouchDelay={0}
-                        >
-                          <IconButton>
-                            <InfoIcon sx={{ fontSize: "16px" }} />
-                          </IconButton>
-                        </Tooltip>
-                      </li>
-                      <li>
-                        <span
-                          dangerouslySetInnerHTML={{ __html: FalseIcon }}
-                        ></span>{" "}
-                        الهيكل الخارجي
-                        <Tooltip
-                          title="فحص البودي، الدهان، الصدمات، والخدوش"
-                          arrow
-                          enterTouchDelay={0}
-                        >
-                          <IconButton>
-                            <InfoIcon sx={{ fontSize: "16px" }} />
-                          </IconButton>
-                        </Tooltip>
-                      </li>
-                      <li>
-                        <span
-                          dangerouslySetInnerHTML={{ __html: FalseIcon }}
-                        ></span>{" "}
-                        الوسائد الهوائية
-                        <Tooltip
-                          title="التحقق من سلامة وعمل الوسائد الهوائية (الايرباق)"
-                          arrow
-                          enterTouchDelay={0}
-                        >
-                          <IconButton>
-                            <InfoIcon sx={{ fontSize: "16px" }} />
-                          </IconButton>
-                        </Tooltip>
-                      </li>
-                      <li>
-                        <span
-                          dangerouslySetInnerHTML={{ __html: FalseIcon }}
-                        ></span>{" "}
-                        الديكورات الداخلية
-                        <Tooltip
-                          title="فحص سلامة المقاعد والأزرار والأجهزة الداخلية"
-                          arrow
-                          enterTouchDelay={0}
-                        >
-                          <IconButton>
-                            <InfoIcon sx={{ fontSize: "16px" }} />
-                          </IconButton>
-                        </Tooltip>
-                      </li>
-                      <li>
-                        <span
-                          dangerouslySetInnerHTML={{ __html: FalseIcon }}
-                        ></span>{" "}
-                        المزايا المخصصة للسيارة
-                        <Tooltip
-                          title="التحقق من نظام الملاحة، الكاميرات، والمستشعرات. وغيرها"
-                          arrow
-                          enterTouchDelay={0}
-                        >
-                          <IconButton>
-                            <InfoIcon sx={{ fontSize: "16px" }} />
-                          </IconButton>
-                        </Tooltip>
-                      </li>
-                      <li>
-                        <span
-                          dangerouslySetInnerHTML={{ __html: FalseIcon }}
-                        ></span>{" "}
-                        الملحقات الخارجية للسيارة
-                        <Tooltip
-                          title="فحص المرايا والأضواء الخارجية"
-                          arrow
-                          enterTouchDelay={0}
-                        >
-                          <IconButton>
-                            <InfoIcon sx={{ fontSize: "16px" }} />
-                          </IconButton>
-                        </Tooltip>
-                      </li>
-                      <li>
-                        <span
-                          dangerouslySetInnerHTML={{ __html: FalseIcon }}
-                        ></span>{" "}
-                        الزجاج
-                        <Tooltip
-                          title="التحقق من سلامة الزجاج"
-                          arrow
-                          enterTouchDelay={0}
-                        >
-                          <IconButton>
-                            <InfoIcon sx={{ fontSize: "16px" }} />
-                          </IconButton>
-                        </Tooltip>
-                      </li>
-                      <li>
-                        <span
-                          dangerouslySetInnerHTML={{ __html: FalseIcon }}
-                        ></span>{" "}
-                        الكفرات والجنوط
-                        <Tooltip
-                          title="فحص تآكل الكفرات وتوازن الجنوط"
-                          arrow
-                          enterTouchDelay={0}
-                        >
-                          <IconButton>
-                            <InfoIcon sx={{ fontSize: "16px" }} />
-                          </IconButton>
-                        </Tooltip>
-                      </li>
-                      <li>
-                        <span
-                          dangerouslySetInnerHTML={{ __html: FalseIcon }}
-                        ></span>{" "}
-                        الشمعات والأسطبات
-                        <Tooltip
-                          title="فحص عمل وسلامة الشمعات والأسطبات"
-                          arrow
-                          enterTouchDelay={0}
-                        >
-                          <IconButton>
-                            <InfoIcon sx={{ fontSize: "16px" }} />
-                          </IconButton>
-                        </Tooltip>
-                      </li>
-                    </ul>
-                    <a
-                      aria-label="Ask now Button"
-                      id="plane-one"
-                      className="ask-now"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href={`https://cashif.cc/pay/?plan=محركات&year_id=${
-                        selectedYear >= 2015 ? 2 : 1
-                      }&car_model_id=${selectedModelId}&price_id=2`}
-                    >
-                      أطلب الأن
-                    </a>
+                            arrow
+                            enterTouchDelay={0}
+                          >
+                            <IconButton>
+                              <InfoIcon sx={{ fontSize: "16px" }} />
+                            </IconButton>
+                          </Tooltip>
+                        </li>
+                        <li>
+                          <span
+                            dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                          ></span>{" "}
+                          الكمبيوتر والحساسات
+                          <Tooltip
+                            title="استخدام أجهزة التشخيص لفحص الأنظمة الإلكترونية"
+                            arrow
+                            enterTouchDelay={0}
+                          >
+                            <IconButton>
+                              <InfoIcon sx={{ fontSize: "16px" }} />
+                            </IconButton>
+                          </Tooltip>
+                        </li>
+                        <li>
+                          <span
+                            dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                          ></span>{" "}
+                          الهيكل الداخلي
+                          <Tooltip
+                            title="التحقق من شاص السيارة: الصدمات، الصدأ، اللحامات، نقاط التثبيت، والاتصالات الميكانيكية لضمان السلامة الهيكلية والسيارة"
+                            arrow
+                            enterTouchDelay={0}
+                          >
+                            <IconButton>
+                              <InfoIcon sx={{ fontSize: "16px" }} />
+                            </IconButton>
+                          </Tooltip>
+                        </li>
+                        <li>
+                          <span
+                            dangerouslySetInnerHTML={{ __html: TrueIcon }}
+                          ></span>{" "}
+                          تجربة السيارة
+                          <Tooltip
+                            title="تجربة القيادة للتحقق من الأداء العام"
+                            arrow
+                            enterTouchDelay={0}
+                          >
+                            <IconButton>
+                              <InfoIcon sx={{ fontSize: "16px" }} />
+                            </IconButton>
+                          </Tooltip>
+                        </li>
+                        <li>
+                          <span
+                            dangerouslySetInnerHTML={{ __html: FalseIcon }}
+                          ></span>{" "}
+                          الهيكل الخارجي
+                          <Tooltip
+                            title="فحص البودي، الدهان، الصدمات، والخدوش"
+                            arrow
+                            enterTouchDelay={0}
+                          >
+                            <IconButton>
+                              <InfoIcon sx={{ fontSize: "16px" }} />
+                            </IconButton>
+                          </Tooltip>
+                        </li>
+                        <li>
+                          <span
+                            dangerouslySetInnerHTML={{ __html: FalseIcon }}
+                          ></span>{" "}
+                          الوسائد الهوائية
+                          <Tooltip
+                            title="التحقق من سلامة وعمل الوسائد الهوائية (الايرباق)"
+                            arrow
+                            enterTouchDelay={0}
+                          >
+                            <IconButton>
+                              <InfoIcon sx={{ fontSize: "16px" }} />
+                            </IconButton>
+                          </Tooltip>
+                        </li>
+                        <li>
+                          <span
+                            dangerouslySetInnerHTML={{ __html: FalseIcon }}
+                          ></span>{" "}
+                          الديكورات الداخلية
+                          <Tooltip
+                            title="فحص سلامة المقاعد والأزرار والأجهزة الداخلية"
+                            arrow
+                            enterTouchDelay={0}
+                          >
+                            <IconButton>
+                              <InfoIcon sx={{ fontSize: "16px" }} />
+                            </IconButton>
+                          </Tooltip>
+                        </li>
+                        <li>
+                          <span
+                            dangerouslySetInnerHTML={{ __html: FalseIcon }}
+                          ></span>{" "}
+                          المزايا المخصصة للسيارة
+                          <Tooltip
+                            title="التحقق من نظام الملاحة، الكاميرات، والمستشعرات. وغيرها"
+                            arrow
+                            enterTouchDelay={0}
+                          >
+                            <IconButton>
+                              <InfoIcon sx={{ fontSize: "16px" }} />
+                            </IconButton>
+                          </Tooltip>
+                        </li>
+                        <li>
+                          <span
+                            dangerouslySetInnerHTML={{ __html: FalseIcon }}
+                          ></span>{" "}
+                          الملحقات الخارجية للسيارة
+                          <Tooltip
+                            title="فحص المرايا والأضواء الخارجية"
+                            arrow
+                            enterTouchDelay={0}
+                          >
+                            <IconButton>
+                              <InfoIcon sx={{ fontSize: "16px" }} />
+                            </IconButton>
+                          </Tooltip>
+                        </li>
+                        <li>
+                          <span
+                            dangerouslySetInnerHTML={{ __html: FalseIcon }}
+                          ></span>{" "}
+                          الزجاج
+                          <Tooltip
+                            title="التحقق من سلامة الزجاج"
+                            arrow
+                            enterTouchDelay={0}
+                          >
+                            <IconButton>
+                              <InfoIcon sx={{ fontSize: "16px" }} />
+                            </IconButton>
+                          </Tooltip>
+                        </li>
+                        <li>
+                          <span
+                            dangerouslySetInnerHTML={{ __html: FalseIcon }}
+                          ></span>{" "}
+                          الكفرات والجنوط
+                          <Tooltip
+                            title="فحص تآكل الكفرات وتوازن الجنوط"
+                            arrow
+                            enterTouchDelay={0}
+                          >
+                            <IconButton>
+                              <InfoIcon sx={{ fontSize: "16px" }} />
+                            </IconButton>
+                          </Tooltip>
+                        </li>
+                        <li>
+                          <span
+                            dangerouslySetInnerHTML={{ __html: FalseIcon }}
+                          ></span>{" "}
+                          الشمعات والأسطبات
+                          <Tooltip
+                            title="فحص عمل وسلامة الشمعات والأسطبات"
+                            arrow
+                            enterTouchDelay={0}
+                          >
+                            <IconButton>
+                              <InfoIcon sx={{ fontSize: "16px" }} />
+                            </IconButton>
+                          </Tooltip>
+                        </li>
+                      </ul>
+                      <a
+                        aria-label="Ask now Button"
+                        id="plane-one"
+                        className="ask-now"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href={`https://cashif.cc/${
+                          checkit ? "check-it/receipt" : "pay"
+                        }/?plan=محركات&year_id=${
+                          selectedYear >= 2015 ? 2 : 1
+                        }&car_model_id=${selectedModelId}&price_id=2`}
+                      >
+                        أطلب الأن
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
-
+              )}
               {/* الأساسي */}
               <div className="col plane main-plane dis rounded-3 shadow-sm">
                 <div className="card mb-4 card-price">
@@ -844,7 +852,9 @@ export default function Prices() {
                       className="ask-now"
                       target="_blank"
                       rel="noopener noreferrer"
-                      href={`https://cashif.cc/pay/?plan=أساسي&year_id=${
+                      href={`https://cashif.cc/${
+                        checkit ? "check-it/receipt" : "pay"
+                      }/?plan=أساسي&year_id=${
                         selectedYear >= 2015 ? 2 : 1
                       }&car_model_id=${selectedModelId}&price_id=1`}
                     >
@@ -1206,7 +1216,9 @@ export default function Prices() {
                       className="ask-now"
                       target="_blank"
                       rel="noopener noreferrer"
-                      href={`https://cashif.cc/pay/?plan=شامل&year_id=${
+                      href={`https://cashif.cc/${
+                        checkit ? "check-it/receipt" : "pay"
+                      }/?plan=شامل&year_id=${
                         selectedYear >= 2015 ? 2 : 1
                       }&car_model_id=${selectedModelId}&price_id=0`}
                     >

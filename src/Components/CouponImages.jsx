@@ -9,23 +9,34 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Snackbar from "@mui/material/Snackbar";
+import { Box, Grid, IconButton, Tooltip } from "@mui/material";
+//
+import {
+  X as XIcon,
+  WhatsApp as WhatsAppIcon,
+  CameraAlt as SnapchatIcon,
+  MusicNote as TikTokIcon,
+  Instagram as InstagramIcon,
+  Telegram as TelegramIcon,
+  Facebook as FacebookIcon,
+} from "@mui/icons-material";
 // IMG
 import imgOne from "../Assets/Images/1.jpg";
 import imgTwo from "../Assets/Images/2.jpg";
 import imgThree from "../Assets/Images/3.jpg";
 //
-import {
-  FacebookShareButton,
-  FacebookMessengerShareButton,
-  TelegramShareButton,
-  TwitterShareButton,
-  WhatsappShareButton,
-  FacebookIcon,
-  FacebookMessengerIcon,
-  TelegramIcon,
-  TwitterIcon,
-  WhatsappIcon,
-} from "react-share";
+// import {
+//   FacebookShareButton,
+//   FacebookMessengerShareButton,
+//   TelegramShareButton,
+//   TwitterShareButton,
+//   WhatsappShareButton,
+//   FacebookIcon,
+//   FacebookMessengerIcon,
+//   TelegramIcon,
+//   TwitterIcon,
+//   WhatsappIcon,
+// } from "react-share";
 
 export default function CouponImages({ code, percent }) {
   const [allImages, setAllImages] = useState([imgThree, imgTwo, imgOne]);
@@ -35,13 +46,22 @@ export default function CouponImages({ code, percent }) {
   // Bio data with text
   const bioData = [
     {
-      text: "السيارة المستعملة قرار كبير، والفحص هو الخطوة الأهم. تأكد من حالتها قبل الشراء لتجنب المفاجآت.",
+      text: `السيارة المستعملة قرار كبير، والفحص هو الخطوة الأهم. تأكد من حالتها قبل الشراء لتجنب المفاجآت.
+  كود الخصم: ${code}
+  https://cashif.cc
+  #كاشف_لفحص_السيارات`,
     },
     {
-      text: "المظهر لحاله ما يكفي، فحص السيارة يكشف حقيقتها قبل الشراء.",
+      text: `المظهر لحاله ما يكفي، فحص السيارة يكشف حقيقتها قبل الشراء.
+  كود الخصم: ${code}
+  https://cashif.cc
+  #كاشف_لفحص_السيارات`,
     },
     {
-      text: "لا تدفع ثمن العيوب، الفحص يكشف الحقيقة. افحص السيارة المستعملة قبل الشراء واتخذ قرارك بثقة.",
+      text: `لا تدفع ثمن العيوب، الفحص يكشف الحقيقة. افحص السيارة المستعملة قبل الشراء واتخذ قرارك بثقة.
+  كود الخصم: ${code}
+  https://cashif.cc
+  #كاشف_لفحص_السيارات`,
     },
   ];
 
@@ -83,8 +103,10 @@ export default function CouponImages({ code, percent }) {
   // Copy Button
   const [open, setOpen] = useState(false);
 
+  let post = bioData[currentIndex]?.text;
+
   const handleClick = () => {
-    navigator.clipboard.writeText(bioData[currentIndex]?.text);
+    navigator.clipboard.writeText(post);
     setOpen(true);
   };
 
@@ -95,11 +117,81 @@ export default function CouponImages({ code, percent }) {
 
     setOpen(false);
   };
+
   //
 
-  const title = bioData[currentIndex]?.text;
-  const shareUrl = `\nكود الخصم: ${code}\nhttps://cashif.cc\n#كاشف_لفحص_السيارات
-  `;
+  const sharePlatforms = [
+    {
+      name: "X (Twitter)",
+      icon: <XIcon />,
+      color: "#757575",
+      onClick: () =>
+        window.open(
+          `https://twitter.com/intent/tweet?text=${encodeURIComponent(post)}`,
+          "_blank"
+        ),
+    },
+    {
+      name: "WhatsApp",
+      icon: <WhatsAppIcon />,
+      color: "#757575",
+      onClick: () =>
+        window.open(
+          `https://wa.me/?text=${encodeURIComponent(post)}`,
+          "_blank"
+        ),
+    },
+    {
+      name: "Snapchat",
+      icon: <SnapchatIcon />,
+      color: "#757575",
+      onClick: () => {
+        // Snapchat doesn't have a direct share URL, so we use the Web Share API
+        if (navigator.share) {
+          navigator.share({ text: post }).catch(console.error);
+        } else {
+          window.open("https://www.snapchat.com/", "_blank");
+        }
+      },
+    },
+    {
+      name: "TikTok",
+      icon: <TikTokIcon />,
+      color: "#757575",
+      onClick: () => window.open("https://www.tiktok.com/", "_blank"),
+    },
+    {
+      name: "Instagram",
+      icon: <InstagramIcon />,
+      color: "#757575",
+      onClick: () => window.open("https://www.instagram.com/", "_blank"),
+    },
+    {
+      name: "Telegram",
+      icon: <TelegramIcon />,
+      color: "#757575",
+      onClick: () =>
+        window.open(
+          `https://t.me/share/url?text=${encodeURIComponent(post)}`,
+          "_blank"
+        ),
+    },
+    {
+      name: "Facebook",
+      icon: <FacebookIcon />,
+      color: "#757575",
+      onClick: () => {
+        // Facebook requires a URL, but we can use a blank placeholder if needed
+        const placeholderUrl = "https://www.cashif.cc/"; // or just ""
+        window.open(
+          `https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(
+            post
+          )}&u=${encodeURIComponent(placeholderUrl)}`,
+          "_blank"
+        );
+      },
+    },
+  ];
 
   return (
     <main className={style.zxc}>
@@ -119,7 +211,7 @@ export default function CouponImages({ code, percent }) {
       </div>
 
       <div className={style.bio}>
-        <p>{bioData[currentIndex]?.text}</p>
+        <p style={{ whiteSpace: "pre-line" }}>{post}</p>
         <button onClick={handleClick}>
           <ContentCopyIcon />
         </button>
@@ -133,23 +225,32 @@ export default function CouponImages({ code, percent }) {
         message="تم النسخ"
       />
 
-      <div className={style.share_btn}>
-        <FacebookShareButton url={shareUrl} quote={title}>
-          <FacebookIcon size={32} round />
-        </FacebookShareButton>
-        <FacebookMessengerShareButton url={shareUrl} appId="YOUR_APP_ID">
-          <FacebookMessengerIcon size={32} round />
-        </FacebookMessengerShareButton>
-        <TelegramShareButton url={shareUrl}>
-          <TelegramIcon size={32} round />
-        </TelegramShareButton>
-        <TwitterShareButton url={shareUrl} title={title}>
-          <TwitterIcon size={32} round />
-        </TwitterShareButton>
-        <WhatsappShareButton url={shareUrl} title={title}>
-          <WhatsappIcon size={32} round />
-        </WhatsappShareButton>
-      </div>
+      <div className={style.share_btn}></div>
+
+      <Box>
+        <Grid container sx={{ justifyContent: "space-evenly" }}>
+          {sharePlatforms.map((platform) => (
+            <Grid item key={platform.name}>
+              <Tooltip title={platform.name}>
+                <IconButton
+                  aria-label={`Share on ${platform.name}`}
+                  onClick={platform.onClick}
+                  sx={{
+                    backgroundColor: platform.color,
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: platform.color,
+                      opacity: 0.9,
+                    },
+                  }}
+                >
+                  {platform.icon}
+                </IconButton>
+              </Tooltip>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
 
       <Stack
         dir="ltr"

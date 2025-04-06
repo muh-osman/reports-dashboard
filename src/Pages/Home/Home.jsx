@@ -29,8 +29,7 @@ import boldLogo from "../../Assets/Images/boldLogo.png";
 // Cookies
 import { useCookies } from "react-cookie";
 // Video
-import Plyr from "plyr-react";
-import "plyr-react/plyr.css";
+import ReactPlayer from "react-player";
 import myVideo from "../../Assets/videos/cashif.mp4";
 import myVideoPoster from "../../Assets/videos/cashif.jpg";
 
@@ -131,30 +130,17 @@ export default function Home() {
     navigate(`${process.env.PUBLIC_URL}/contact`);
   };
 
-  // Video
-  const videoSrc = {
-    type: "video",
-    sources: [
-      {
-        src: myVideo, // Local or remote URL
-        type: "video/mp4",
-      },
-    ],
-    // Optional: Add poster (thumbnail)
-    poster: myVideoPoster,
-  };
-
   return (
     <div dir="rtl" className={style.container}>
       <div className="home-father">
         {/* <!--Start intro section--> */}
         <section className="intro-section">
-          {/* <div className="circle circle-top"></div>
+          <div className="circle circle-top"></div>
           <div className="circle circle-top-left"></div>
           <div className="circle circle-top-right"></div>
           <div className="circle large-circle"></div>
           <div className="circle xs-circle1"></div>
-          <div className="circle xs-circle"></div> */}
+          <div className="circle xs-circle"></div>
 
           <div className="container p-0">
             <div className="intro-content">
@@ -336,6 +322,7 @@ export default function Home() {
             data-aos-duration="500"
             data-aos-delay="100"
             className="aos-init aos-animate"
+            style={{ paddingTop: "60px" }}
           >
             من هو كاشف ؟
           </h2>
@@ -347,24 +334,18 @@ export default function Home() {
           data-aos-delay="300"
         >
           <div className="container">
-            <div className="video-box">
-              <Plyr
-                source={videoSrc}
-                options={{
-                  controls: [
-                    "play-large", // The large play button in the center
-                    "play", // Play/pause playback
-                    "progress", // The progress bar and scrubber
-                    "current-time", // The current time of playback
-                    "mute", // Toggle mute
-                    "volume", // Volume control
-                    "captions", // Toggle captions
-                    "settings", // Settings menu
-                    "pip", // Picture-in-picture (currently Safari only)
-                    "airplay", // Airplay (currently Safari only)
-                    "fullscreen", // Toggle fullscreen
-                  ],
-                }}
+            <div
+              className="video-box"
+              style={{ display: "flex", justifyContent: "center" }}
+            >
+              <ReactPlayer
+                url={myVideo} // Local video path
+                controls={true} // Show play/pause controls
+                width="100%" // Responsive width
+                height="auto" // Adjust height automatically
+                // height="500px"
+                light={myVideoPoster}
+                style={{ aspectRatio: "16 / 9" }}
               />
             </div>
           </div>
@@ -552,7 +533,7 @@ export default function Home() {
                     </li>
                   </ul>
                   <Link
-                    to={`${process.env.PUBLIC_URL}/prices`}
+                    to={`${process.env.PUBLIC_URL}/prices?checkit=true`}
                     className="ask-now-serv mt-4 text-center"
                   >
                     أطلب الأن
@@ -1065,7 +1046,6 @@ export default function Home() {
                 </div>
               </div>
             </div> */}
-
           </div>
         </footer>
         {/* <!--end footer section--> */}

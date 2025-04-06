@@ -72,7 +72,7 @@ main.zxc {
   margin-bottom: 16px;
   padding: 16px;
   height: fit-content;
-  min-height: 104px;
+  min-height: 176px;
   border-radius: 6px;
   background-color: #f0f1f3;
   color: #757575;
@@ -97,14 +97,5 @@ main.zxc {
       vertical-align: middle;
       fill: #174545;
     }
-  }
-}
-
-.share_btn {
-  display: flex;
-  justify-content: space-around;
-
-  svg {
-    vertical-align: middle;
   }
 }
