@@ -117,7 +117,7 @@ export default function Prices() {
   //
   const [trigger, setTrigger] = React.useState(false);
   //
-  const { data: models, fetchStatus, isSuccess } = useSearchApi();
+  const { data: models, isSuccess } = useSearchApi();
   //
   const [selectedModelId, setSelectedModelId] = React.useState(null);
   const handleModelChange = (event, newValue) => {
@@ -213,7 +213,7 @@ export default function Prices() {
           fontWeight: "bold",
         }}
       >
-        ضع نوع سيارتك
+        ضع نوع السيارة
       </Typography>
 
       <div className={style.box}>

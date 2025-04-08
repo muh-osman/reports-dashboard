@@ -116,3 +116,54 @@
     height: 2px !important;
   }
 }
+
+
+// Condetion and term modal
+.terms_box {
+  background-color: #fff;
+  border-radius: 9px;
+  margin: auto;
+  text-align: right;
+
+  @media (max-width: 950px) {
+    width: 100%;
+  }
+
+  h1 {
+    margin-bottom: 16px;
+    margin-top: 0px;
+  }
+
+  p {
+    margin-bottom: 32px;
+    color: #757575;
+    font-size: 14px;
+    text-align: right;
+  }
+
+  ul {
+    margin-top: 16px;
+    padding-right: 24px;
+    list-style-position: outside;
+  }
+
+  li {
+    color: #757575;
+    margin-bottom: 8px;
+    font-size: 14px;
+    text-align: right;
+  }
+
+  h6 {
+    font-size: 16px;
+    margin-top: 24px;
+  }
+
+  label {
+    margin: 0;
+
+    span {
+      font-size: 14px;
+    }
+  }
+}

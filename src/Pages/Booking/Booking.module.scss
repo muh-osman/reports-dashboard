@@ -53,3 +53,15 @@
   justify-content: center;
   gap: 24px;
 }
+
+//
+.autocomplete_input {
+  label + div {
+    padding-right: 32px !important;
+  }
+
+  input {
+    direction: rtl !important;
+    padding-right: 0 !important;
+  }
+}

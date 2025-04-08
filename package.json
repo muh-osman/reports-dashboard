@@ -1,7 +1,7 @@
 {
   "name": "cashif-reports-dashboard",
   "homepage": "https://cashif.cc/zxc",
-  "version": "1.0.4",
+  "version": "1.0.7",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.4",

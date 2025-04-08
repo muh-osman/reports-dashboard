@@ -150,8 +150,6 @@ export default function Companies() {
 
             <Box
               sx={{
-                // border: "1px solid #f0f1f3",
-                // padding: "16px",
                 borderRadius: "9px",
               }}
             >

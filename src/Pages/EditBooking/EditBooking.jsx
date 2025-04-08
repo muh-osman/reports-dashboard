@@ -1,5 +1,5 @@
 import style from "./EditBooking.module.scss";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 // Cookies
 import { useCookies } from "react-cookie";
 // MUI
@@ -15,6 +15,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
 import { LoadingButton } from "@mui/lab";
+import Autocomplete from "@mui/material/Autocomplete";
 //
 import dayjs from "dayjs";
 // API
@@ -36,39 +37,15 @@ export default function EditBooking() {
   // Cookies
   const [cookies, setCookie] = useCookies(["tokenApp", "userId"]);
 
-  // Utility function to format date to dd/mm/yyyy
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
   // Branches
-  const {
-    data: allBranches,
-    fetchBranchesStatus,
-    isBranchesSuccess,
-  } = useGetAllBranchesApi();
+  const { data: allBranches } = useGetAllBranchesApi();
   // Manufacturers
-  const {
-    data: allManufacturers,
-    fetchManufacturersStatus,
-    isManufacturersSuccess,
-  } = useGetAllManufacturerApi();
+  const { data: allManufacturers } = useGetAllManufacturerApi();
   // Services
-  const {
-    data: allServices,
-    fetchServicesStatus,
-    isServicesSuccess,
-  } = useGetServices();
+  const { data: allServices } = useGetServices();
 
   // Get All Appointment before edit
-  const {
-    data: allAppointment,
-    fetchAppointmentStatus,
-    isAppointmentSuccess,
-  } = useGetAppointmentApi();
+  const { data: allAppointment } = useGetAppointmentApi();
 
   // Filter appointments based on the provided id to get spacific appointment
   const oneAppointmentData = allAppointment?.find(
@@ -186,12 +163,6 @@ export default function EditBooking() {
     },
   ];
 
-  // Location Of Inspection
-  // const [selectedLocation, setSelectedLocation] = React.useState(0);
-  // const handleSelectedLocationChange = (event) => {
-  //   setSelectedLocation(event.target.value);
-  // };
-
   // Branches
   const [selectedBranch, setSelectedBranch] = React.useState("");
   const handleBranchChange = (event) => {
@@ -206,8 +177,12 @@ export default function EditBooking() {
 
   // Manufacturers
   const [selectedManufacturer, setSelectedManufacturer] = React.useState("");
-  const handleManufacturerChange = (event) => {
-    setSelectedManufacturer(event.target.value);
+  const handleManufacturerChange = (event, newValue) => {
+    if (newValue) {
+      setSelectedManufacturer(newValue.id);
+    } else {
+      setSelectedManufacturer(null);
+    }
   };
 
   React.useEffect(() => {
@@ -254,7 +229,7 @@ export default function EditBooking() {
   // Services
   const [selectedServiceId, setSelectedServiceId] = React.useState("");
   const handleServicesChange = (event) => {
-    setSelectedServiceId(event.target.value);
+    setSelectedServiceId([event.target.value]);
   };
 
   // Find the selected service based on the selectedServiceId
@@ -333,24 +308,7 @@ export default function EditBooking() {
           <Box sx={{ minWidth: 120, maxWidth: "400px", margin: "auto" }}>
             {/*  مكان الفحص */}
             <FormControl fullWidth dir="rtl">
-              {/* <TextField
-            sx={{ backgroundColor: "#fff" }}
-            dir="rtl"
-            required
-            fullWidth
-            select
-            label="مكان الفحص"
-            value={selectedLocation}
-            onChange={handleSelectedLocationChange}
-            disabled={isPending || isSuccess}
-          >
-            <MenuItem dir="rtl" value={0}>
-              فحص داخل الفرع
-            </MenuItem>
-          </TextField> */}
-
               {/* الفرع  */}
-
               <TextField
                 sx={{ backgroundColor: "#fff", marginTop: "16px" }}
                 dir="rtl"
@@ -376,33 +334,37 @@ export default function EditBooking() {
               </TextField>
 
               {/* الشركة المصنعة */}
-              <TextField
+              <Autocomplete
+                className={style.autocomplete_input}
+                dir="ltr"
                 sx={{ backgroundColor: "#fff", marginTop: "16px" }}
-                dir="rtl"
-                required
-                fullWidth
-                select
-                label="الشركة المصنعة"
-                value={selectedManufacturer}
-                onChange={handleManufacturerChange}
-                disabled={isPending || isSuccess}
-              >
-                {allManufacturers && allManufacturers.length > 0 ? (
-                  allManufacturers.map((Manufacturer) => (
-                    <MenuItem
-                      dir="rtl"
-                      key={Manufacturer.id}
-                      value={Manufacturer.id}
-                    >
-                      {Manufacturer.nameAr}
-                    </MenuItem>
-                  ))
-                ) : (
-                  <MenuItem dir="rtl" value="">
-                    جاري التحميل..
-                  </MenuItem>
+                disablePortal
+                onChange={handleManufacturerChange} // Add the onChange handler
+                options={allManufacturers ? allManufacturers : []}
+                getOptionLabel={(option) => option.nameAr}
+                value={
+                  allManufacturers?.find(
+                    (manufacturer) => manufacturer.id === selectedManufacturer
+                  ) || null
+                }
+                renderInput={(params) => (
+                  <TextField {...params} label="الشركة المصنعة" />
                 )}
-              </TextField>
+                // Use a unique key for each option
+                renderOption={(props, option) => (
+                  <li dir="rtl" {...props} key={option.id}>
+                    {option.nameAr}
+                  </li>
+                )}
+                disabled={isPending || isSuccess}
+                clearOnBlur={false}
+                clearIcon={null}
+                noOptionsText={
+                  allManufacturers === null
+                    ? "جاري التحميل..."
+                    : "لا توجد خيارات متاحة"
+                }
+              />
 
               {/*  سنة الصنع */}
               <TextField
@@ -519,7 +481,12 @@ export default function EditBooking() {
               {selectedServiceId && (
                 <div className={style.description}>
                   {selectedService && (
-                    <pre>{selectedService.descriptionAr}</pre>
+                    <pre>
+                      {selectedService?.descriptionAr?.replace(
+                        /(\d+)[.-]\s*/g,
+                        "$1. "
+                      )}
+                    </pre>
                   )}
                 </div>
               )}

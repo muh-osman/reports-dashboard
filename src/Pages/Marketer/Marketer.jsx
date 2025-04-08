@@ -293,8 +293,6 @@ export default function Marketer() {
                       md: 750, // width for medium and larger screens
                     },
                     bgcolor: "background.paper",
-                    borderRadius: "9px",
-                    boxShadow: 24,
                     p: {
                       xs: 2,
                       md: 4,
@@ -402,8 +400,6 @@ export default function Marketer() {
                       md: 750, // width for medium and larger screens
                     },
                     bgcolor: "background.paper",
-                    borderRadius: "9px",
-                    boxShadow: 24,
                     p: {
                       xs: 2,
                       md: 4,

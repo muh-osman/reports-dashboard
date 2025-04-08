@@ -19,6 +19,7 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import IconButton from "@mui/material/IconButton";
 import { LoadingButton } from "@mui/lab";
+import Autocomplete from "@mui/material/Autocomplete";
 // MUI Icons
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import MinorCrashIcon from "@mui/icons-material/MinorCrash";
@@ -50,7 +51,7 @@ export default function Booking() {
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
     const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
+    return `${year}/${month}/${day}`;
   };
   //
   const [isHovered, setIsHovered] = React.useState(false);
@@ -182,12 +183,6 @@ export default function Booking() {
     },
   ];
 
-  // Location Of Inspection
-  const [selectedLocation, setSelectedLocation] = React.useState(0);
-  const handleSelectedLocationChange = (event) => {
-    setSelectedLocation(event.target.value);
-  };
-
   // Branches
   const [selectedBranch, setSelectedBranch] = React.useState("");
   const handleBranchChange = (event) => {
@@ -196,8 +191,12 @@ export default function Booking() {
 
   // Manufacturers
   const [selectedManufacturer, setSelectedManufacturer] = React.useState("");
-  const handleManufacturerChange = (event) => {
-    setSelectedManufacturer(event.target.value);
+  const handleManufacturerChange = (event, newValue) => {
+    if (newValue) {
+      setSelectedManufacturer(newValue.id);
+    } else {
+      setSelectedManufacturer(null);
+    }
   };
 
   // Years
@@ -259,7 +258,6 @@ export default function Booking() {
       setSelectedYear("");
       setSelectedManufacturer("");
       setSelectedBranch("");
-      setSelectedLocation(0);
 
       window.scrollTo(0, 0);
     }
@@ -306,22 +304,6 @@ export default function Booking() {
       <Box sx={{ minWidth: 120, maxWidth: "400px", margin: "auto" }}>
         {/*  مكان الفحص */}
         <FormControl fullWidth dir="rtl">
-          {/* <TextField
-            sx={{ backgroundColor: "#fff" }}
-            dir="rtl"
-            required
-            fullWidth
-            select
-            label="مكان الفحص"
-            value={selectedLocation}
-            onChange={handleSelectedLocationChange}
-            disabled={isPostApoinmentFormMutatePending}
-          >
-            <MenuItem dir="rtl" value={0}>
-              فحص داخل الفرع
-            </MenuItem>
-          </TextField> */}
-
           {/* الفرع  */}
           {!cookies.tokenApp && (
             <TextField
@@ -368,33 +350,32 @@ export default function Booking() {
 
           {/* الشركة المصنعة */}
           {cookies.tokenApp && selectedBranch && (
-            <TextField
+            <Autocomplete
+              className={style.autocomplete_input}
+              dir="ltr"
               sx={{ backgroundColor: "#fff", marginTop: "16px" }}
-              dir="rtl"
-              required
-              fullWidth
-              select
-              label="الشركة المصنعة"
-              value={selectedManufacturer}
-              onChange={handleManufacturerChange}
-              disabled={isPostApoinmentFormMutatePending}
-            >
-              {allManufacturers && allManufacturers.length > 0 ? (
-                allManufacturers.map((Manufacturer) => (
-                  <MenuItem
-                    dir="rtl"
-                    key={Manufacturer.id}
-                    value={Manufacturer.id}
-                  >
-                    {Manufacturer.nameAr}
-                  </MenuItem>
-                ))
-              ) : (
-                <MenuItem dir="rtl" value="">
-                  جاري التحميل..
-                </MenuItem>
+              disablePortal
+              onChange={handleManufacturerChange} // Add the onChange handler
+              options={allManufacturers ? allManufacturers : []}
+              getOptionLabel={(option) => option.nameAr}
+              renderInput={(params) => (
+                <TextField {...params} label="الشركة المصنعة" />
               )}
-            </TextField>
+              // Use a unique key for each option
+              renderOption={(props, option) => (
+                <li dir="rtl" {...props} key={option.id}>
+                  {option.nameAr}
+                </li>
+              )}
+              disabled={isPostApoinmentFormMutatePending}
+              clearOnBlur={false}
+              clearIcon={null}
+              noOptionsText={
+                allManufacturers === null
+                  ? "جاري التحميل..."
+                  : "لا توجد خيارات متاحة"
+              }
+            />
           )}
 
           {/*  سنة الصنع */}
@@ -629,11 +610,18 @@ export default function Booking() {
                     >
                       <AccessTimeIcon style={{ color: "#000000de" }} />
                       <Typography
+                        dir="ltr"
                         variant="h5"
                         component="div"
                         style={{ fontSize: "14px" }}
                       >
-                        {card.check_Time}
+                        {new Date(
+                          `1970-01-01T${card.check_Time}`
+                        ).toLocaleTimeString("en-US", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: true,
+                        })}
                       </Typography>
                     </Box>
 

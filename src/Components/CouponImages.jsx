@@ -1,5 +1,5 @@
 import style from "./CouponImages.module.scss";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useRef, useCallback } from "react";
 // npm install --save html-to-image --legacy-peer-deps
 import { toPng } from "html-to-image"; //html-to-image library
 // MUI
