@@ -2,17 +2,19 @@ import { useQuery } from "@tanstack/react-query";
 // API
 import API from "./Api";
 
-export const fetchCheckIfPaymentRequestIsValid = async (userId) => {
+export const fetchCheckIfPaymentRequestIsValid = async (marketerId) => {
   const res = await API.get(
-    `api/TransferRequests/CheckWattingRequest?marketerId=${userId}`
+    `api/TransferRequests/CheckWattingRequest?marketerId=${marketerId}`
   );
   return res.data;
 };
 
-export default function useCheckIfPaymentRequestIsValidApi(userId) {
+export default function useCheckIfPaymentRequestIsValidApi(marketerId) {
   return useQuery({
-    queryKey: ["CheckIfPaymentRequestIsValid", userId],
-    queryFn: () => fetchCheckIfPaymentRequestIsValid(userId),
-    enabled: !!userId, // Only run the query if token is truthy
+    queryKey: ["CheckIfPaymentRequestIsValid", marketerId],
+    queryFn: () => fetchCheckIfPaymentRequestIsValid(marketerId),
+    enabled: !!marketerId, // Only run the query if token is truthy
+    staleTime: 0, // Data is stale immediately
+    refetchOnMount: true, // Always refetch when component mounts
   });
 }

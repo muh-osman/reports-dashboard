@@ -4,7 +4,7 @@ import API from "./Api";
 
 export const fetchPaymentHistory = async (userId) => {
   const res = await API.get(
-    `api/TransferRequests/GetByMarketerId?marketerId=${userId}`
+    `api/TransferRequests/GetByMarketerId?clientId=${userId}`
   );
   return res.data;
 };

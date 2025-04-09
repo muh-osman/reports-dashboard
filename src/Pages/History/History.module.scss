@@ -8,3 +8,18 @@
     padding-bottom: 110px;
   }
 }
+
+.card_box {
+  background-color: #fff;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  div {
+    display: flex;
+    gap: 8px;
+  }
+}

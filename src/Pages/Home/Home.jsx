@@ -30,8 +30,226 @@ import boldLogo from "../../Assets/Images/boldLogo.png";
 import { useCookies } from "react-cookie";
 // Video
 import ReactPlayer from "react-player";
-import myVideo from "../../Assets/videos/cashif.mp4";
 import myVideoPoster from "../../Assets/videos/cashif.jpg";
+// Images
+import logo from "../../Assets/Images/logo.webp";
+import x1 from "../../Assets/Images/x1.webp";
+import x2 from "../../Assets/Images/x2.webp";
+import x3 from "../../Assets/Images/x3.webp";
+import x4 from "../../Assets/Images/x4.webp";
+import x5 from "../../Assets/Images/x5.webp";
+import x6 from "../../Assets/Images/x6.webp";
+import x7 from "../../Assets/Images/x7.webp";
+import x8 from "../../Assets/Images/x8.webp";
+import x9 from "../../Assets/Images/x9.webp";
+import x10 from "../../Assets/Images/x10.webp";
+import x11 from "../../Assets/Images/x11.webp";
+import x12 from "../../Assets/Images/x12.webp";
+
+//
+const externalLinkSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-box-arrow-up-right" viewBox="0 0 16 16"><path fillRule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"></path><path fillRule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"></path></svg>`;
+
+// component for servicens section
+const ServiceCard = ({ service }) => {
+  return (
+    <div className="col-lg-6 col-md-6 col-12 serv-container additional-style">
+      <div className="service-card d-flex flex-column h-100">
+        <div className="service-img">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox={service.svgViewBox}>
+            <path d={service.svgPath}></path>
+          </svg>
+        </div>
+        <h4>{service.title}</h4>
+        <p dangerouslySetInnerHTML={{ __html: service.description }}></p>
+        <ul>
+          {service.features.map((feature, index) => (
+            <li key={index}>
+              <span>
+                <svg
+                  className="SvgIcon-root MuiSvgIcon-fontSizeMedium css-119a5lz"
+                  focusable="false"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  data-testid="VerifiedUserIcon"
+                >
+                  <path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"></path>
+                </svg>
+              </span>
+              <span>{feature}</span>
+            </li>
+          ))}
+        </ul>
+        <Link
+          to={`${process.env.PUBLIC_URL}${service.link}`}
+          className="ask-now-serv mt-4 text-center"
+        >
+          أطلب الأن
+        </Link>
+      </div>
+    </div>
+  );
+};
+
+const services = [
+  {
+    title: "فحص الشراء",
+    svgViewBox: "0 0 256 512",
+    svgPath:
+      "M160 64c0-11.8-6.5-22.6-16.9-28.2s-23-5-32.8 1.6l-96 64C-.5 111.2-4.4 131 5.4 145.8s29.7 18.7 44.4 8.9L96 123.8V416H32c-17.7 0-32 14.3-32 32s14.3 32 32 32h96 96c17.7 0 32-14.3 32-32s-14.3-32-32-32H160V64z",
+    description:
+      "فحص جميع أجزاء المركبة المستعملة لمعرفة واكتشاف الأعطال والعيوب قبل اتخاذ قرار الشراء.",
+    features: [
+      "فحص اجزاء السيارة",
+      "تجربة السيارة ميدانًيا",
+      "تقرير مفصل عن حالة السيارة",
+      "نقاط ومكافئات",
+    ],
+    link: "/prices",
+  },
+  {
+    title: "خدمة مخدوم",
+    svgViewBox: "0 0 320 512",
+    svgPath:
+      "M142.9 96c-21.5 0-42.2 8.5-57.4 23.8L54.6 150.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L40.2 74.5C67.5 47.3 104.4 32 142.9 32C223 32 288 97 288 177.1c0 38.5-15.3 75.4-42.5 102.6L109.3 416H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-12.9 0-24.6-7.8-29.6-19.8s-2.2-25.7 6.9-34.9L200.2 234.5c15.2-15.2 23.8-35.9 23.8-57.4c0-44.8-36.3-81.1-81.1-81.1z",
+    description: `في حال وجدت سيارة للبيع في <u>الرياض، جدة، أو الدمام</u> وأنت خارج هذه المدن، مركز كاشف يقوم بفحص شامل ودقيق للسيارة، مع تسهيل إجراءات نقل الملكية والتأمين.`,
+    features: [
+      "حضور مالك السيارة لأحد فروع كاشف",
+      "إجراء فحص شامل ودقيق للسيارة",
+      "تحميل تقرير الفحص عبر موقعنا",
+      "إتمام نقل الملكية والتأمين بكل سهولة",
+    ],
+    link: "/prices?checkit=true",
+  },
+];
+//
+
+// Inspection parts
+const inspectionSteps = [
+  {
+    id: 1,
+    img: x1,
+    alt: "Vehicle data registration logo",
+    text: "تسجيل بيانات المركبة",
+  },
+  {
+    id: 2,
+    img: x2,
+    alt: "Engine and transmission mechanics inspection logo",
+    text: "فحص ميكانيكا المحرك والقير",
+  },
+  {
+    id: 3,
+    img: x3,
+    alt: "Computer checking of sensors logo",
+    text: "فحص الحساسات بالكمبيوتر",
+  },
+  {
+    id: 4,
+    img: x4,
+    alt: "Airbag safety check logo",
+    text: "فحص سلامة الوسائد الهوائية",
+  },
+  {
+    id: 5,
+    img: x5,
+    alt: "Mechanical inspection of the undercarriage logo",
+    text: "فحص ميكانيكا أسفل السيارة",
+  },
+  {
+    id: 6,
+    img: x6,
+    alt: "Checking oils, fluids and leaks logo",
+    text: "فحص الزيوت والسوائل والتسريبات",
+  },
+  {
+    id: 7,
+    img: x7,
+    alt: "Inspect brake and suspension systems logo",
+    text: "فحص أنظمة الفرامل والتعليق",
+  },
+  {
+    id: 8,
+    img: x8,
+    alt: "Chassis and plumbing inspection logo",
+    text: "فحص الهيكل والسمكرة",
+  },
+  {
+    id: 9,
+    img: x9,
+    alt: "Inspection of decoration and interior logo",
+    text: "فحص الديكور والداخلية",
+  },
+  {
+    id: 10,
+    img: x10,
+    alt: "Tire safety inspection logo",
+    text: "فحص سلامة الإطارات",
+  },
+  {
+    id: 11,
+    img: x11,
+    alt: "Test the vehicle on the road logo",
+    text: "تجربة المركبة على الطريق",
+  },
+  {
+    id: 12,
+    img: x12,
+    alt: "Print the report and explain it logo",
+    text: "طباعة التقرير وشرحه",
+  },
+];
+const firstGroup = inspectionSteps.slice(0, 6);
+const secondGroup = inspectionSteps.slice(6);
+//
+
+// Why Deal with US
+const boxItems = [
+  {
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+        <path d="M173.8 5.5c11-7.3 25.4-7.3 36.4 0L228 17.2c6 3.9 13 5.8 20.1 5.4l21.3-1.3c13.2-.8 25.6 6.4 31.5 18.2l9.6 19.1c3.2 6.4 8.4 11.5 14.7 14.7L344.5 83c11.8 5.9 19 18.3 18.2 31.5l-1.3 21.3c-.4 7.1 1.5 14.2 5.4 20.1l11.8 17.8c7.3 11 7.3 25.4 0 36.4L366.8 228c-3.9 6-5.8 13-5.4 20.1l1.3 21.3c.8 13.2-6.4 25.6-18.2 31.5l-19.1 9.6c-6.4 3.2-11.5 8.4-14.7 14.7L301 344.5c-5.9 11.8-18.3 19-31.5 18.2l-21.3-1.3c-7.1-.4-14.2 1.5-20.1 5.4l-17.8 11.8c-11 7.3-25.4 7.3-36.4 0L156 366.8c-6-3.9-13-5.8-20.1-5.4l-21.3 1.3c-13.2 .8-25.6-6.4-31.5-18.2l-9.6-19.1c-3.2-6.4-8.4-11.5-14.7-14.7L39.5 301c-11.8-5.9-19-18.3-18.2-31.5l1.3-21.3c.4-7.1-1.5-14.2-5.4-20.1L5.5 210.2c-7.3-11-7.3-25.4 0-36.4L17.2 156c3.9-6 5.8-13 5.4-20.1l-1.3-21.3c-.8-13.2 6.4-25.6 18.2-31.5l19.1-9.6C65 70.2 70.2 65 73.4 58.6L83 39.5c5.9-11.8 18.3-19 31.5-18.2l21.3 1.3c7.1 .4 14.2-1.5 20.1-5.4L173.8 5.5zM272 192a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM1.3 441.8L44.4 339.3c.2 .1 .3 .2 .4 .4l9.6 19.1c11.7 23.2 36 37.3 62 35.8l21.3-1.3c.2 0 .5 0 .7 .2l17.8 11.8c5.1 3.3 10.5 5.9 16.1 7.7l-37.6 89.3c-2.3 5.5-7.4 9.2-13.3 9.7s-11.6-2.2-14.8-7.2L74.4 455.5l-56.1 8.3c-5.7 .8-11.4-1.5-15-6s-4.3-10.7-2.1-16zm248 60.4L211.7 413c5.6-1.8 11-4.3 16.1-7.7l17.8-11.8c.2-.1 .4-.2 .7-.2l21.3 1.3c26 1.5 50.3-12.6 62-35.8l9.6-19.1c.1-.2 .2-.3 .4-.4l43.2 102.5c2.2 5.3 1.4 11.4-2.1 16s-9.3 6.9-15 6l-56.1-8.3-32.2 49.2c-3.2 5-8.9 7.7-14.8 7.2s-11-4.3-13.3-9.7z"></path>
+      </svg>
+    ),
+    title: "ضمان صحة التقارير",
+    description:
+      "التزامًا بالجودة والموثوقية, نقدم ضمانًا لسلامة وصحة نتائج تقاريرنا في فحص السيارات",
+  },
+  {
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <path d="M280 24c0-13.3-10.7-24-24-24s-24 10.7-24 24v80c0 13.3 10.7 24 24 24s24-10.7 24-24V24zM185.8 224H326.2c6.8 0 12.8 4.3 15.1 10.6L360.3 288H151.7l19.1-53.4c2.3-6.4 8.3-10.6 15.1-10.6zm-75.3-10.9L82.2 292.4C62.1 300.9 48 320.8 48 344v40 64 32c0 17.7 14.3 32 32 32H96c17.7 0 32-14.3 32-32V448H384v32c0 17.7 14.3 32 32 32h16c17.7 0 32-14.3 32-32V448 384 344c0-23.2-14.1-43.1-34.2-51.6l-28.3-79.3C390.1 181.3 360 160 326.2 160H185.8c-33.8 0-64 21.3-75.3 53.1zM128 344a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm232 24a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zM39 39c-9.4 9.4-9.4 24.6 0 33.9l48 48c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9L73 39c-9.4-9.4-24.6-9.4-33.9 0zm400 0L391 87c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l48-48c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0z"></path>
+      </svg>
+    ),
+    title: "فحص جميع السيارات",
+    description:
+      "نفحص جميع أنواع السيارات الكبيرة والصغيرة سواء كانت تعمل بالبنزين أو الكهرباء بدقة تامة",
+  },
+  {
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+        <path d="M400 0L176 0c-26.5 0-48.1 21.8-47.1 48.2c.2 5.3 .4 10.6 .7 15.8L24 64C10.7 64 0 74.7 0 88c0 92.6 33.5 157 78.5 200.7c44.3 43.1 98.3 64.8 138.1 75.8c23.4 6.5 39.4 26 39.4 45.6c0 20.9-17 37.9-37.9 37.9L192 448c-17.7 0-32 14.3-32 32s14.3 32 32 32l192 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-26.1 0C337 448 320 431 320 410.1c0-19.6 15.9-39.2 39.4-45.6c39.9-11 93.9-32.7 138.2-75.8C542.5 245 576 180.6 576 88c0-13.3-10.7-24-24-24L446.4 64c.3-5.2 .5-10.4 .7-15.8C448.1 21.8 426.5 0 400 0zM48.9 112l84.4 0c9.1 90.1 29.2 150.3 51.9 190.6c-24.9-11-50.8-26.5-73.2-48.3c-32-31.1-58-76-63-142.3zM464.1 254.3c-22.4 21.8-48.3 37.3-73.2 48.3c22.7-40.3 42.8-100.5 51.9-190.6l84.4 0c-5.1 66.3-31.1 111.2-63 142.3z"></path>
+      </svg>
+    ),
+    title: "نقاط ولاء للعملاء",
+    description:
+      "كل زيارة لمركز كاشف تحصل على رصيد مجاني تستفيد منه في الفحص القادم",
+  },
+  {
+    icon: (
+      <svg
+        aria-hidden="true"
+        className="e-font-icon-svg e-fas-star"
+        viewBox="0 0 576 512"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"></path>
+      </svg>
+    ),
+    title: "خبرة اكثر من 10+",
+    description:
+      "تمتد خبرتنا لأكثر من 12 عامًا في فحص السيارات حيث نتميز بدقة الفحص والتقارير بشكل استثنائي",
+  },
+];
 
 export default function Home() {
   React.useEffect(() => {
@@ -89,7 +307,6 @@ export default function Home() {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   //
   const navigate = useNavigate();
-  // const location = useLocation();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -144,16 +361,8 @@ export default function Home() {
 
           <div className="container p-0">
             <div className="intro-content">
-              <div
-                className="logo-img aos-init aos-animate"
-                data-aos="fade-up"
-                data-aos-duration="500"
-                data-aos-delay="200"
-              >
-                <img
-                  src="https://cashif.cc/wp-content/themes/cashif_theme/assets/images/logo.webp"
-                  alt="Cashif logo"
-                />
+              <div className="logo-img">
+                <img src={logo} alt="Cashif logo" />
               </div>
               <div className="discount-details">
                 <h6>
@@ -314,33 +523,19 @@ export default function Home() {
 
         {/* <!--Start Video Section--> */}
         <div className="title-box">
-          <h2
-            data-aos="fade-up"
-            data-aos-duration="500"
-            data-aos-delay="100"
-            className="aos-init aos-animate"
-            style={{ paddingTop: "60px" }}
-          >
-            من هو كاشف ؟
-          </h2>
+          <h2 style={{ paddingTop: "60px" }}>من هو كاشف ؟</h2>
         </div>
-        <section
-          className="video-container aos-init aos-animate"
-          data-aos="fade-up"
-          data-aos-duration="500"
-          data-aos-delay="300"
-        >
+        <section className="video-container">
           <div className="container">
             <div
               className="video-box"
               style={{ display: "flex", justifyContent: "center" }}
             >
               <ReactPlayer
-                url={myVideo} // Local video path
+                url="https://cashif.cc/wp-content/themes/cashif_theme/assets/videos/cashif.mp4"
                 controls={true} // Show play/pause controls
                 width="100%" // Responsive width
                 height="auto" // Adjust height automatically
-                // height="500px"
                 light={myVideoPoster}
                 style={{ aspectRatio: "16 / 9" }}
               />
@@ -351,192 +546,14 @@ export default function Home() {
 
         {/* <!-- Start Our Services Section --> */}
         <div className="title-box">
-          <h2
-            data-aos="fade-up"
-            data-aos-duration="500"
-            data-aos-delay="100"
-            className="aos-init aos-animate"
-          >
-            خدماتنا
-          </h2>
+          <h2>خدماتنا</h2>
         </div>
         <section className="services-section">
           <div className="container">
             <div className="row justify-content-center">
-              <div
-                className="col-lg-6 col-md-6 col-12 serv-container aos-init aos-animate additional-style"
-                data-aos="fade-up"
-                data-aos-duration="500"
-                data-aos-delay="300"
-              >
-                <div className="service-card d-flex flex-column h-100">
-                  <div className="service-img">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 256 512"
-                    >
-                      <path d="M160 64c0-11.8-6.5-22.6-16.9-28.2s-23-5-32.8 1.6l-96 64C-.5 111.2-4.4 131 5.4 145.8s29.7 18.7 44.4 8.9L96 123.8V416H32c-17.7 0-32 14.3-32 32s14.3 32 32 32h96 96c17.7 0 32-14.3 32-32s-14.3-32-32-32H160V64z"></path>
-                    </svg>
-                  </div>
-                  <h4>فحص الشراء</h4>
-                  <p>
-                    فحص جميع أجزاء المركبة المستعملة لمعرفة واكتشاف الأعطال
-                    والعيوب قبل اتخاذ قرار الشراء.
-                  </p>
-                  <ul>
-                    <li>
-                      <span>
-                        <svg
-                          className="SvgIcon-root MuiSvgIcon-fontSizeMedium css-119a5lz"
-                          focusable="false"
-                          aria-hidden="true"
-                          viewBox="0 0 24 24"
-                          data-testid="VerifiedUserIcon"
-                        >
-                          <path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"></path>
-                        </svg>
-                      </span>
-                      <span>فحص اجزاء السيارة</span>
-                    </li>
-                    <li>
-                      <span>
-                        <svg
-                          className="SvgIcon-root MuiSvgIcon-fontSizeMedium css-119a5lz"
-                          focusable="false"
-                          aria-hidden="true"
-                          viewBox="0 0 24 24"
-                          data-testid="VerifiedUserIcon"
-                        >
-                          <path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"></path>
-                        </svg>
-                      </span>
-                      <span>تجربة السيارة ميدانًيا</span>
-                    </li>
-                    <li>
-                      <span>
-                        <svg
-                          className="SvgIcon-root MuiSvgIcon-fontSizeMedium css-119a5lz"
-                          focusable="false"
-                          aria-hidden="true"
-                          viewBox="0 0 24 24"
-                          data-testid="VerifiedUserIcon"
-                        >
-                          <path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"></path>
-                        </svg>
-                      </span>
-                      <span>تقرير مفصل عن حالة السيارة</span>
-                    </li>
-                    <li>
-                      <span>
-                        <svg
-                          className="SvgIcon-root MuiSvgIcon-fontSizeMedium css-119a5lz"
-                          focusable="false"
-                          aria-hidden="true"
-                          viewBox="0 0 24 24"
-                          data-testid="VerifiedUserIcon"
-                        >
-                          <path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"></path>
-                        </svg>
-                      </span>
-                      <span>نقاط ومكافئات</span>
-                    </li>
-                  </ul>
-                  <Link
-                    to={`${process.env.PUBLIC_URL}/prices`}
-                    className="ask-now-serv mt-4 text-center"
-                  >
-                    أطلب الأن
-                  </Link>
-                </div>
-              </div>
-
-              <div
-                className="col-lg-6 col-md-6 col-12 serv-container aos-init aos-animate additional-style"
-                data-aos="fade-up"
-                data-aos-duration="500"
-                data-aos-delay="300"
-              >
-                <div className="service-card d-flex flex-column h-100">
-                  <div className="service-img">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 320 512"
-                    >
-                      <path d="M142.9 96c-21.5 0-42.2 8.5-57.4 23.8L54.6 150.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L40.2 74.5C67.5 47.3 104.4 32 142.9 32C223 32 288 97 288 177.1c0 38.5-15.3 75.4-42.5 102.6L109.3 416H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-12.9 0-24.6-7.8-29.6-19.8s-2.2-25.7 6.9-34.9L200.2 234.5c15.2-15.2 23.8-35.9 23.8-57.4c0-44.8-36.3-81.1-81.1-81.1z"></path>
-                    </svg>
-                  </div>
-                  <h4>خدمة مخدوم</h4>
-                  <p>
-                    في حال وجدت سيارة للبيع في <u>الرياض، جدة، أو الدمام</u>{" "}
-                    وأنت خارج هذه المدن، مركز كاشف يقوم بفحص شامل ودقيق للسيارة،
-                    مع تسهيل إجراءات نقل الملكية والتأمين.
-                  </p>
-                  <ul>
-                    <li>
-                      <span>
-                        <svg
-                          className="SvgIcon-root MuiSvgIcon-fontSizeMedium css-119a5lz"
-                          focusable="false"
-                          aria-hidden="true"
-                          viewBox="0 0 24 24"
-                          data-testid="VerifiedUserIcon"
-                        >
-                          <path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"></path>
-                        </svg>
-                      </span>
-                      <span>حضور مالك السيارة لأحد فروع كاشف</span>
-                    </li>
-                    <li>
-                      <span>
-                        <svg
-                          className="SvgIcon-root MuiSvgIcon-fontSizeMedium css-119a5lz"
-                          focusable="false"
-                          aria-hidden="true"
-                          viewBox="0 0 24 24"
-                          data-testid="VerifiedUserIcon"
-                        >
-                          <path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"></path>
-                        </svg>
-                      </span>
-                      <span>إجراء فحص شامل ودقيق للسيارة</span>
-                    </li>
-                    <li>
-                      <span>
-                        <svg
-                          className="SvgIcon-root MuiSvgIcon-fontSizeMedium css-119a5lz"
-                          focusable="false"
-                          aria-hidden="true"
-                          viewBox="0 0 24 24"
-                          data-testid="VerifiedUserIcon"
-                        >
-                          <path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"></path>
-                        </svg>
-                      </span>
-                      <span>تحميل تقرير الفحص عبر موقعنا</span>
-                    </li>
-                    <li>
-                      <span>
-                        <svg
-                          className="SvgIcon-root MuiSvgIcon-fontSizeMedium css-119a5lz"
-                          focusable="false"
-                          aria-hidden="true"
-                          viewBox="0 0 24 24"
-                          data-testid="VerifiedUserIcon"
-                        >
-                          <path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"></path>
-                        </svg>
-                      </span>
-                      <span>إتمام نقل الملكية والتأمين بكل سهولة</span>
-                    </li>
-                  </ul>
-                  <Link
-                    to={`${process.env.PUBLIC_URL}/prices?checkit=true`}
-                    className="ask-now-serv mt-4 text-center"
-                  >
-                    أطلب الأن
-                  </Link>
-                </div>
-              </div>
+              {services.map((service, index) => (
+                <ServiceCard key={index} service={service} />
+              ))}
             </div>
           </div>
         </section>
@@ -544,125 +561,29 @@ export default function Home() {
 
         {/* <!-- Start inspection stage section --> */}
         <div className="title-box">
-          <h2
-            data-aos="fade-up"
-            data-aos-duration="500"
-            data-aos-delay="100"
-            className="aos-init aos-animate"
-          >
-            أجزاء ومراحل الفحص
-          </h2>
+          <h2>أجزاء ومراحل الفحص</h2>
         </div>
-        <div
-          className="cont aos-init aos-animate"
-          data-aos="fade-up"
-          data-aos-duration="500"
-          data-aos-delay="300"
-        >
+        <div className="cont">
           <div dir="rtl" className="price_box">
             <div className="g_one">
               <ul id="first_ul">
-                <li className="u_padd">
-                  <img
-                    className="stages-img"
-                    src="https://cashif.cc/wp-content/themes/cashif_theme/assets/images/x1.webp"
-                    alt="Vehicle data registration logo"
-                  />
-                  تسجيل بيانات المركبة
-                </li>
-                <li className="u_padd">
-                  <img
-                    className="stages-img"
-                    src="https://cashif.cc/wp-content/themes/cashif_theme/assets/images/x2.webp"
-                    alt="Engine and transmission mechanics inspection logo"
-                  />
-                  فحص ميكانيكا المحرك والقير
-                </li>
-                <li className="u_padd">
-                  <img
-                    className="stages-img"
-                    src="https://cashif.cc/wp-content/themes/cashif_theme/assets/images/x3.webp"
-                    alt="Computer checking of sensors logo"
-                  />
-                  فحص الحساسات بالكمبيوتر
-                </li>
-                <li className="u_padd">
-                  <img
-                    className="stages-img"
-                    src="https://cashif.cc/wp-content/themes/cashif_theme/assets/images/x4.webp"
-                    alt="Airbag safety check logo"
-                  />
-                  فحص سلامة الوسائد الهوائية
-                </li>
-                <li className="u_padd">
-                  <img
-                    className="stages-img"
-                    src="https://cashif.cc/wp-content/themes/cashif_theme/assets/images/x5.webp"
-                    alt="Mechanical inspection of the undercarriage logo"
-                  />
-                  فحص ميكانيكا أسفل السيارة
-                </li>
-                <li className="u_padd">
-                  <img
-                    className="stages-img"
-                    src="https://cashif.cc/wp-content/themes/cashif_theme/assets/images/x6.webp"
-                    alt="Checking oils, fluids and leaks logo"
-                  />
-                  فحص الزيوت والسوائل والتسريبات
-                </li>
+                {firstGroup.map((step) => (
+                  <li key={step.id} className="u_padd">
+                    <img className="stages-img" src={step.img} alt={step.alt} />
+                    {step.text}
+                  </li>
+                ))}
               </ul>
             </div>
 
             <div className="g_two">
               <ul id="second_ul">
-                <li className="u_padd">
-                  <img
-                    className="stages-img"
-                    src="https://cashif.cc/wp-content/themes/cashif_theme/assets/images/x7.webp"
-                    alt="Inspect brake and suspension systems logo"
-                  />
-                  فحص أنظمة الفرامل والتعليق
-                </li>
-                <li className="u_padd">
-                  <img
-                    className="stages-img"
-                    src="https://cashif.cc/wp-content/themes/cashif_theme/assets/images/x8.webp"
-                    alt="Chassis and plumbing inspection logo"
-                  />
-                  فحص الهيكل والسمكرة
-                </li>
-                <li className="u_padd">
-                  <img
-                    className="stages-img"
-                    src="https://cashif.cc/wp-content/themes/cashif_theme/assets/images/x9.webp"
-                    alt="Inspection of decoration and interior logo"
-                  />
-                  فحص الديكور والداخلية
-                </li>
-                <li className="u_padd">
-                  <img
-                    className="stages-img"
-                    src="https://cashif.cc/wp-content/themes/cashif_theme/assets/images/x10.webp"
-                    alt="Tire safety inspection logo"
-                  />
-                  فحص سلامة الإطارات
-                </li>
-                <li className="u_padd">
-                  <img
-                    className="stages-img"
-                    src="https://cashif.cc/wp-content/themes/cashif_theme/assets/images/x11.webp"
-                    alt="Test the vehicle on the road logo"
-                  />
-                  تجربة المركبة على الطريق
-                </li>
-                <li className="u_padd">
-                  <img
-                    className="stages-img"
-                    src="https://cashif.cc/wp-content/themes/cashif_theme/assets/images/x12.webp"
-                    alt="Print the report and explain it logo"
-                  />
-                  طباعة التقرير وشرحه
-                </li>
+                {secondGroup.map((step) => (
+                  <li key={step.id} className="u_padd">
+                    <img className="stages-img" src={step.img} alt={step.alt} />
+                    {step.text}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
@@ -671,75 +592,17 @@ export default function Home() {
 
         {/* <!-- Start why deal with us section --> */}
         <div className="title-box">
-          <h2
-            data-aos="fade-up"
-            data-aos-duration="500"
-            data-aos-delay="100"
-            className="aos-init aos-animate"
-          >
-            لماذا تتعامل معنا ؟
-          </h2>
+          <h2>لماذا تتعامل معنا ؟</h2>
         </div>
         <section className="why-we-container">
-          <div
-            className="why-we-boxs aos-init aos-animate"
-            data-aos="fade-up"
-            data-aos-duration="500"
-            data-aos-delay="300"
-          >
-            <div className="how-we-box">
-              <div>
-                <svg
-                  aria-hidden="true"
-                  className="e-font-icon-svg e-fas-star"
-                  viewBox="0 0 576 512"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"></path>
-                </svg>
+          <div className="why-we-boxs">
+            {boxItems.map((item, index) => (
+              <div className="how-we-box" key={index}>
+                <div>{item.icon}</div>
+                <h2>{item.title}</h2>
+                <p>{item.description}</p>
               </div>
-              <h2>خبرة اكثر من 10+</h2>
-              <p>
-                تمتد خبرتنا لأكثر من 12 عامًا في فحص السيارات حيث نتميز بدقة
-                الفحص والتقارير بشكل استثنائي
-              </p>
-            </div>
-            <div className="how-we-box">
-              <div>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                  <path d="M280 24c0-13.3-10.7-24-24-24s-24 10.7-24 24v80c0 13.3 10.7 24 24 24s24-10.7 24-24V24zM185.8 224H326.2c6.8 0 12.8 4.3 15.1 10.6L360.3 288H151.7l19.1-53.4c2.3-6.4 8.3-10.6 15.1-10.6zm-75.3-10.9L82.2 292.4C62.1 300.9 48 320.8 48 344v40 64 32c0 17.7 14.3 32 32 32H96c17.7 0 32-14.3 32-32V448H384v32c0 17.7 14.3 32 32 32h16c17.7 0 32-14.3 32-32V448 384 344c0-23.2-14.1-43.1-34.2-51.6l-28.3-79.3C390.1 181.3 360 160 326.2 160H185.8c-33.8 0-64 21.3-75.3 53.1zM128 344a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm232 24a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zM39 39c-9.4 9.4-9.4 24.6 0 33.9l48 48c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9L73 39c-9.4-9.4-24.6-9.4-33.9 0zm400 0L391 87c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l48-48c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0z"></path>
-                </svg>
-              </div>
-              <h2>فحص جميع السيارات</h2>
-              <p>
-                نفحص جميع أنواع السيارات الكبيرة والصغيرة سواء كانت تعمل
-                بالبنزين أو الكهرباء بدقة تامة
-              </p>
-            </div>
-            <div className="how-we-box">
-              <div>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                  <path d="M400 0L176 0c-26.5 0-48.1 21.8-47.1 48.2c.2 5.3 .4 10.6 .7 15.8L24 64C10.7 64 0 74.7 0 88c0 92.6 33.5 157 78.5 200.7c44.3 43.1 98.3 64.8 138.1 75.8c23.4 6.5 39.4 26 39.4 45.6c0 20.9-17 37.9-37.9 37.9L192 448c-17.7 0-32 14.3-32 32s14.3 32 32 32l192 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-26.1 0C337 448 320 431 320 410.1c0-19.6 15.9-39.2 39.4-45.6c39.9-11 93.9-32.7 138.2-75.8C542.5 245 576 180.6 576 88c0-13.3-10.7-24-24-24L446.4 64c.3-5.2 .5-10.4 .7-15.8C448.1 21.8 426.5 0 400 0zM48.9 112l84.4 0c9.1 90.1 29.2 150.3 51.9 190.6c-24.9-11-50.8-26.5-73.2-48.3c-32-31.1-58-76-63-142.3zM464.1 254.3c-22.4 21.8-48.3 37.3-73.2 48.3c22.7-40.3 42.8-100.5 51.9-190.6l84.4 0c-5.1 66.3-31.1 111.2-63 142.3z"></path>
-                </svg>
-              </div>
-              <h2>نقاط ولاء للعملاء</h2>
-              <p>
-                كل زيارة لمركز كاشف تحصل على رصيد مجاني تستفيد منه في الفحص
-                القادم
-              </p>
-            </div>
-            <div className="how-we-box">
-              <div>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                  <path d="M173.8 5.5c11-7.3 25.4-7.3 36.4 0L228 17.2c6 3.9 13 5.8 20.1 5.4l21.3-1.3c13.2-.8 25.6 6.4 31.5 18.2l9.6 19.1c3.2 6.4 8.4 11.5 14.7 14.7L344.5 83c11.8 5.9 19 18.3 18.2 31.5l-1.3 21.3c-.4 7.1 1.5 14.2 5.4 20.1l11.8 17.8c7.3 11 7.3 25.4 0 36.4L366.8 228c-3.9 6-5.8 13-5.4 20.1l1.3 21.3c.8 13.2-6.4 25.6-18.2 31.5l-19.1 9.6c-6.4 3.2-11.5 8.4-14.7 14.7L301 344.5c-5.9 11.8-18.3 19-31.5 18.2l-21.3-1.3c-7.1-.4-14.2 1.5-20.1 5.4l-17.8 11.8c-11 7.3-25.4 7.3-36.4 0L156 366.8c-6-3.9-13-5.8-20.1-5.4l-21.3 1.3c-13.2 .8-25.6-6.4-31.5-18.2l-9.6-19.1c-3.2-6.4-8.4-11.5-14.7-14.7L39.5 301c-11.8-5.9-19-18.3-18.2-31.5l1.3-21.3c.4-7.1-1.5-14.2-5.4-20.1L5.5 210.2c-7.3-11-7.3-25.4 0-36.4L17.2 156c3.9-6 5.8-13 5.4-20.1l-1.3-21.3c-.8-13.2 6.4-25.6 18.2-31.5l19.1-9.6C65 70.2 70.2 65 73.4 58.6L83 39.5c5.9-11.8 18.3-19 31.5-18.2l21.3 1.3c7.1 .4 14.2-1.5 20.1-5.4L173.8 5.5zM272 192a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM1.3 441.8L44.4 339.3c.2 .1 .3 .2 .4 .4l9.6 19.1c11.7 23.2 36 37.3 62 35.8l21.3-1.3c.2 0 .5 0 .7 .2l17.8 11.8c5.1 3.3 10.5 5.9 16.1 7.7l-37.6 89.3c-2.3 5.5-7.4 9.2-13.3 9.7s-11.6-2.2-14.8-7.2L74.4 455.5l-56.1 8.3c-5.7 .8-11.4-1.5-15-6s-4.3-10.7-2.1-16zm248 60.4L211.7 413c5.6-1.8 11-4.3 16.1-7.7l17.8-11.8c.2-.1 .4-.2 .7-.2l21.3 1.3c26 1.5 50.3-12.6 62-35.8l9.6-19.1c.1-.2 .2-.3 .4-.4l43.2 102.5c2.2 5.3 1.4 11.4-2.1 16s-9.3 6.9-15 6l-56.1-8.3-32.2 49.2c-3.2 5-8.9 7.7-14.8 7.2s-11-4.3-13.3-9.7z"></path>
-                </svg>
-              </div>
-              <h2>ضمان صحة التقارير</h2>
-              <p>
-                التزامًا بالجودة والموثوقية, نقدم ضمانًا لسلامة وصحة نتائج
-                تقاريرنا في فحص السيارات
-              </p>
-            </div>
+            ))}
           </div>
         </section>
         {/* <!-- End why deal with us section --> */}
@@ -750,10 +613,7 @@ export default function Home() {
             <div className="row">
               <div className="col-xl-3 col-lg-6 col-md-12 col-12">
                 <div className="footer-logo-img">
-                  <img
-                    src="https://cashif.cc/wp-content/themes/cashif_theme/assets/images/logo.webp"
-                    alt="Cashif logo"
-                  />
+                  <img src={logo} alt="Cashif logo" />
                 </div>
 
                 <p className="footer-intro">
@@ -837,90 +697,42 @@ export default function Home() {
                         <li>
                           <a href="https://maps.app.goo.gl/MiFGsgakfo62on7u8">
                             الرياض - القادسية{" "}
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              fill="currentColor"
-                              className="bi bi-box-arrow-up-right"
-                              viewBox="0 0 16 16"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"
-                              ></path>
-                              <path
-                                fillRule="evenodd"
-                                d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"
-                              ></path>
-                            </svg>
+                            <span
+                              dangerouslySetInnerHTML={{
+                                __html: externalLinkSvg,
+                              }}
+                            ></span>
                           </a>
                         </li>
 
                         <li>
                           <a href="https://maps.app.goo.gl/pXCnG7RPXJ2CDLqe7?g_st=aw">
                             الرياض - الشفا{" "}
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              fill="currentColor"
-                              className="bi bi-box-arrow-up-right"
-                              viewBox="0 0 16 16"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"
-                              ></path>
-                              <path
-                                fillRule="evenodd"
-                                d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"
-                              ></path>
-                            </svg>
+                            <span
+                              dangerouslySetInnerHTML={{
+                                __html: externalLinkSvg,
+                              }}
+                            ></span>
                           </a>
                         </li>
                         <li>
                           <a href="https://maps.app.goo.gl/9UiHq4kW7Mjh1Aik8">
                             الدمام{" "}
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              fill="currentColor"
-                              className="bi bi-box-arrow-up-right"
-                              viewBox="0 0 16 16"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"
-                              ></path>
-                              <path
-                                fillRule="evenodd"
-                                d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"
-                              ></path>
-                            </svg>
+                            <span
+                              dangerouslySetInnerHTML={{
+                                __html: externalLinkSvg,
+                              }}
+                            ></span>
                           </a>
                         </li>
                         <li>
                           <a href="https://maps.app.goo.gl/697yXkaS4o6kYsos8">
                             جدة{" "}
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              fill="currentColor"
-                              className="bi bi-box-arrow-up-right"
-                              viewBox="0 0 16 16"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"
-                              ></path>
-                              <path
-                                fillRule="evenodd"
-                                d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"
-                              ></path>
-                            </svg>
+                            <span
+                              dangerouslySetInnerHTML={{
+                                __html: externalLinkSvg,
+                              }}
+                            ></span>
                           </a>
                         </li>
                       </ul>
@@ -981,68 +793,6 @@ export default function Home() {
                 </div>
               </div>
             </div>
-
-            {/* <div
-              className="rights-section mt-0"
-              style={{ justifyContent: "space-between" }}
-            >
-              <div className="rights-info">
-                <p className="m-0 mt-4">جميع الحقوق محفوظة © 2025 مركز كاشف</p>
-              </div>
-
-              <div
-                className="sponsors mb-0"
-                style={{ marginTop: "25px", gap: "9px", flexWrap: "wrap" }}
-              >
-                <div className="sponsor-logo m-0">
-                  <img
-                    src="https://cashif.cc/wp-content/themes/cashif_theme/assets/images/mada.svg"
-                    alt="mada"
-                  />
-                </div>
-
-                <div className="sponsor-logo m-0">
-                  <img
-                    src="https://cashif.cc/wp-content/themes/cashif_theme/assets/images/pay.svg"
-                    alt="pay"
-                  />
-                </div>
-
-                <div className="sponsor-logo m-0">
-                  <img
-                    src="https://cashif.cc/wp-content/themes/cashif_theme/assets/images/visa.svg"
-                    alt="visa"
-                  />
-                </div>
-
-                <div className="sponsor-logo m-0">
-                  <img
-                    src="https://cashif.cc/wp-content/themes/cashif_theme/assets/images/mastercard.svg"
-                    alt="mastercard"
-                  />
-                </div>
-
-                <div
-                  className="sponsor-logo m-0"
-                  style={{ backgroundColor: "#fff", borderRadius: "6px" }}
-                >
-                  <img
-                    src="https://cashif.cc/wp-content/themes/cashif_theme/assets/images/tamara-logo.svg"
-                    alt="tamara"
-                  />
-                </div>
-
-                <div
-                  className="sponsor-logo m-0"
-                  style={{ backgroundColor: "#fff", borderRadius: "6px" }}
-                >
-                  <img
-                    src="https://cashif.cc/wp-content/themes/cashif_theme/assets/images/tabby.png"
-                    alt="tabby"
-                  />
-                </div>
-              </div>
-            </div> */}
           </div>
         </footer>
         {/* <!--end footer section--> */}

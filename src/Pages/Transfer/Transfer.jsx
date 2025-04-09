@@ -15,6 +15,8 @@ import { useCookies } from "react-cookie";
 import useGetPaymentTypesApi from "../../API/useGetPaymentTypesApi";
 import useCheckIfPaymentRequestIsValidApi from "../../API/useCheckIfPaymentRequestIsValidApi";
 import { useMakeTransferPaymentApi } from "../../API/useMakeTransferPaymentApi";
+import useGetMarketerApi from "../../API/useGetMarketerApi";
+import useGetLastPaymentApi from "../../API/useGetLastPaymentApi";
 
 export default function Transfer() {
   React.useEffect(() => {
@@ -37,15 +39,23 @@ export default function Transfer() {
     setAccountNumber(event.target.value);
   };
 
+  // Get Last Payment
+  const { data: lastPayment, isSuccess } = useGetLastPaymentApi();
+  React.useEffect(() => {
+    setAccountNumber(lastPayment?.accountNumber || "");
+  }, [isSuccess]);
+
   // Amount
   const [amount, setAmount] = React.useState(200);
   const handleAmountChange = (event) => {
     setAmount(event.target.value);
   };
 
+  // Get Marketer Id
+  const { data: marketerData } = useGetMarketerApi();
   // Check If Payment RequestIs Valid
   const { data: checkIfPaymentRequestIsValid } =
-    useCheckIfPaymentRequestIsValidApi(cookies.userId);
+    useCheckIfPaymentRequestIsValidApi(marketerData?.id);
 
   // Handle Submit
   const { mutate, isPending } = useMakeTransferPaymentApi();
@@ -65,8 +75,7 @@ export default function Transfer() {
     if (checkIfPaymentRequestIsValid) {
       const data = {
         // id: 0,
-        // marketerId: cookies.userId,
-        marketerId: 1,
+        marketerId: marketerData.id,
         point: +amount,
         tranferPaymentTypeId: selectedPaymentType,
         accountNumber: accountNumber,
@@ -115,7 +124,7 @@ export default function Transfer() {
           label="آلية الدفع"
           value={selectedPaymentType}
           onChange={handlePaymentTypeChange}
-          disabled={isPending}
+          disabled={isPending || !checkIfPaymentRequestIsValid}
         >
           {paymentTypes && paymentTypes.length > 0 ? (
             paymentTypes.map((type) => (
@@ -139,7 +148,7 @@ export default function Transfer() {
           dir="ltr"
           value={accountNumber}
           onChange={handleAccountNumberChange}
-          disabled={isPending}
+          disabled={isPending || !checkIfPaymentRequestIsValid}
         />
 
         <TextField
@@ -151,7 +160,7 @@ export default function Transfer() {
           dir="ltr"
           value={amount}
           onChange={handleAmountChange}
-          disabled={isPending}
+          disabled={isPending || !checkIfPaymentRequestIsValid}
         />
 
         <LoadingButton
@@ -162,6 +171,7 @@ export default function Transfer() {
           size="large"
           sx={{ mt: 3, mb: 2, transition: "0.1s" }}
           loading={isPending}
+          disabled={!checkIfPaymentRequestIsValid}
         >
           إرسال الطلب
         </LoadingButton>

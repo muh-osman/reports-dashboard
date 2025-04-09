@@ -31,7 +31,6 @@ export const useCreateMarketerApi = (id) => {
 
     onSuccess: (responseData) => {
       //   qc.invalidateQueries(["Marketer", clientId]); // This will refetch the appointments
-
       //   navigate(`${process.env.PUBLIC_URL}/falak/marketer`, { replace: true });
     },
 
