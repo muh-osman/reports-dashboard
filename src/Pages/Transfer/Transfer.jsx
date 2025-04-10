@@ -173,7 +173,9 @@ export default function Transfer() {
           loading={isPending}
           disabled={!checkIfPaymentRequestIsValid}
         >
-          إرسال الطلب
+          {checkIfPaymentRequestIsValid
+            ? "إرسال الطلب"
+            : "يرجى انتظار الموافقة على الطلب السابق"}
         </LoadingButton>
       </Box>
     </div>

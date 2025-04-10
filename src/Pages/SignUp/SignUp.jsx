@@ -12,8 +12,6 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-//
-import MotionWrapper from "../../Utils/MotionWrapper";
 // API
 import { useAskCodeApi } from "../../API/useAskCodeApi";
 // Toastify
@@ -116,105 +114,103 @@ export default function SignUp() {
         </div>
       </div>
 
-      <MotionWrapper>
-        <div className={style.container}>
-          <Container
-            dir="rtl"
-            component="main"
-            maxWidth="xs"
-            className={style.box}
+      <div className={style.container}>
+        <Container
+          dir="rtl"
+          component="main"
+          maxWidth="xs"
+          className={style.box}
+        >
+          <Typography
+            sx={{
+              marginTop: "16px",
+              // marginBottom: "32px",
+              textAlign: "center",
+            }}
+            component="h1"
+            variant="h5"
           >
-            <Typography
-              sx={{
-                marginTop: "16px",
-                // marginBottom: "32px",
-                textAlign: "center",
-              }}
-              component="h1"
-              variant="h5"
-            >
-              تسجيل الدخول
-            </Typography>
+            تسجيل الدخول
+          </Typography>
 
+          <Box
+            sx={{
+              borderRadius: "9px",
+            }}
+          >
             <Box
-              sx={{
-                borderRadius: "9px",
-              }}
+              onSubmit={handleSubmit}
+              ref={formRef}
+              component="form"
+              noValidate
+              sx={{ mt: 3 }}
             >
-              <Box
-                onSubmit={handleSubmit}
-                ref={formRef}
-                component="form"
-                noValidate
-                sx={{ mt: 3 }}
-              >
-                <Grid container spacing={3}>
-                  <Grid
-                    item
-                    xs={12}
-                    sx={{ minWidth: { xs: "auto", md: "396px" } }}
-                  >
-                    <TextField
-                      fullWidth
-                      label="رقم الجوال"
-                      name="phoneNumber"
-                      type="tel"
-                      autoFocus
-                      required
-                      dir="ltr"
-                      disabled={isPending}
-                      onKeyPress={handleKeyPress}
-                      onChange={handleChange}
-                      InputLabelProps={{
-                        className: "custom-label-rtl",
-                      }}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">+966</InputAdornment>
-                        ),
-                      }}
-                      placeholder="5xxxxxxxx"
-                    />
-                  </Grid>
-                </Grid>
-
-                <LoadingButton
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  disableRipple
-                  size="large"
-                  loading={isPending}
-                  sx={{ mt: 3, mb: 2, transition: "0.1s" }}
+              <Grid container spacing={3}>
+                <Grid
+                  item
+                  xs={12}
+                  sx={{ minWidth: { xs: "auto", md: "396px" } }}
                 >
-                  إرسال الرمز
-                </LoadingButton>
-              </Box>
-            </Box>
+                  <TextField
+                    fullWidth
+                    label="رقم الجوال"
+                    name="phoneNumber"
+                    type="tel"
+                    autoFocus
+                    required
+                    dir="ltr"
+                    disabled={isPending}
+                    onKeyPress={handleKeyPress}
+                    onChange={handleChange}
+                    InputLabelProps={{
+                      className: "custom-label-rtl",
+                    }}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">+966</InputAdornment>
+                      ),
+                    }}
+                    placeholder="5xxxxxxxx"
+                  />
+                </Grid>
+              </Grid>
 
-            <Typography
-              dir="rtl"
-              component="h5"
-              variant="h5"
-              sx={{
-                textAlign: "center",
-                color: "#00000099",
-                fontSize: "0.875rem",
-                marginTop: "8px",
-                marginBottom: "9px",
-              }}
-            >
-              ليس لديك حساب؟{" "}
-              <Link
-                to={`${process.env.PUBLIC_URL}/signup`}
-                style={{ color: "#1976d2" }}
+              <LoadingButton
+                type="submit"
+                fullWidth
+                variant="contained"
+                disableRipple
+                size="large"
+                loading={isPending}
+                sx={{ mt: 3, mb: 2, transition: "0.1s" }}
               >
-                إنشاء حساب
-              </Link>
-            </Typography>
-          </Container>
-        </div>
-      </MotionWrapper>
+                إرسال الرمز
+              </LoadingButton>
+            </Box>
+          </Box>
+
+          <Typography
+            dir="rtl"
+            component="h5"
+            variant="h5"
+            sx={{
+              textAlign: "center",
+              color: "#00000099",
+              fontSize: "0.875rem",
+              marginTop: "8px",
+              marginBottom: "9px",
+            }}
+          >
+            ليس لديك حساب؟{" "}
+            <Link
+              to={`${process.env.PUBLIC_URL}/signup`}
+              style={{ color: "#1976d2" }}
+            >
+              إنشاء حساب
+            </Link>
+          </Typography>
+        </Container>
+      </div>
     </div>
   );
 }

@@ -1,11 +1,12 @@
-import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 // API base
 import API from "./Api";
 // Cookies
 import { useCookies } from "react-cookie";
+//
+import { toast } from "react-toastify";
 
-export const useCreateMarketerApi = (id) => {
+export const useCreateMarketerApi = () => {
   // Cookies
   const [cookies, setCookie] = useCookies([
     "tokenApp",
@@ -14,8 +15,6 @@ export const useCreateMarketerApi = (id) => {
     "phoneNumber",
   ]);
   const clientId = cookies.userId;
-  //
-  const navigate = useNavigate();
 
   const qc = useQueryClient();
 
@@ -30,8 +29,8 @@ export const useCreateMarketerApi = (id) => {
     },
 
     onSuccess: (responseData) => {
-      //   qc.invalidateQueries(["Marketer", clientId]); // This will refetch the appointments
-      //   navigate(`${process.env.PUBLIC_URL}/falak/marketer`, { replace: true });
+      qc.invalidateQueries(["Marketer", clientId]); // This will refetch
+      qc.invalidateQueries(["MarketerSettings", clientId]); // This will refetch
     },
 
     onError: (err) => {

@@ -3,8 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 //
 import logo from "../../Assets/Images/logo.webp";
 import signUp from "../../Assets/Images/sign-up.svg";
-//
-import MotionWrapper from "../../Utils/MotionWrapper";
 // MUI
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
@@ -54,10 +52,7 @@ export default function Create() {
         </div>
       </div>
 
-      <MotionWrapper>
-
-        <div className={style.main_container}>
-
+      <div className={style.main_container}>
         <Typography
           sx={{
             marginTop: "32px",
@@ -112,10 +107,7 @@ export default function Create() {
             </Typography>
           </div>
         </div>
-
-        </div>
-
-      </MotionWrapper>
+      </div>
     </div>
   );
 }

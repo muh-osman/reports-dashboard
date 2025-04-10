@@ -11,9 +11,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-//
-import MotionWrapper from "../../Utils/MotionWrapper";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 // API
 import { useCreateIndividualsAccountApi } from "../../API/useCreateIndividualsAccountApi";
 // Toastify
@@ -122,105 +120,103 @@ export default function Individuals() {
         </div>
       </div>
 
-      <MotionWrapper>
-        <div className={style.container}>
-          <Container
-            dir="rtl"
-            component="main"
-            maxWidth="xs"
-            className={style.box}
+      <div className={style.container}>
+        <Container
+          dir="rtl"
+          component="main"
+          maxWidth="xs"
+          className={style.box}
+        >
+          <Typography
+            sx={{
+              marginTop: "16px",
+              // marginBottom: "32px",
+              textAlign: "center",
+            }}
+            component="h1"
+            variant="h5"
           >
-            <Typography
-              sx={{
-                marginTop: "16px",
-                // marginBottom: "32px",
-                textAlign: "center",
-              }}
-              component="h1"
-              variant="h5"
-            >
-              حساب أفراد
-            </Typography>
+            حساب أفراد
+          </Typography>
 
+          <Box
+            sx={{
+              // border: "1px solid #f0f1f3",
+              // padding: "16px",
+              borderRadius: "9px",
+            }}
+          >
             <Box
-              sx={{
-                // border: "1px solid #f0f1f3",
-                // padding: "16px",
-                borderRadius: "9px",
-              }}
+              onSubmit={handleSubmit}
+              ref={formRef}
+              component="form"
+              noValidate
+              sx={{ mt: 3 }}
             >
-              <Box
-                onSubmit={handleSubmit}
-                ref={formRef}
-                component="form"
-                noValidate
-                sx={{ mt: 3 }}
-              >
-                <Grid container spacing={3}>
-                  <Grid
-                    item
-                    xs={12}
-                    sx={{ minWidth: { xs: "auto", md: "396px" } }}
-                  >
-                    <TextField
-                      fullWidth
-                      label="الاسم"
-                      name="name"
-                      type="text"
-                      autoFocus
-                      required
-                      dir="auto"
-                      disabled={isPending}
-                      InputLabelProps={{
-                        className: "custom-label-rtl",
-                      }}
-                    />
-                  </Grid>
-
-                  <Grid
-                    item
-                    xs={12}
-                    sx={{ minWidth: { xs: "auto", md: "396px" } }}
-                  >
-                    <TextField
-                      fullWidth
-                      label="رقم الجوال"
-                      name="phoneNumber"
-                      type="tel"
-                      required
-                      dir="ltr"
-                      disabled={isPending}
-                      onKeyPress={handleKeyPress}
-                      onChange={handlPhoneNumbereChange}
-                      InputLabelProps={{
-                        className: "custom-label-rtl",
-                      }}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">+966</InputAdornment>
-                        ),
-                      }}
-                      placeholder="5xxxxxxxx"
-                    />
-                  </Grid>
+              <Grid container spacing={3}>
+                <Grid
+                  item
+                  xs={12}
+                  sx={{ minWidth: { xs: "auto", md: "396px" } }}
+                >
+                  <TextField
+                    fullWidth
+                    label="الاسم"
+                    name="name"
+                    type="text"
+                    autoFocus
+                    required
+                    dir="auto"
+                    disabled={isPending}
+                    InputLabelProps={{
+                      className: "custom-label-rtl",
+                    }}
+                  />
                 </Grid>
 
-                <LoadingButton
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  disableRipple
-                  size="large"
-                  loading={isPending}
-                  sx={{ mt: 3, mb: 2, transition: "0.1s" }}
+                <Grid
+                  item
+                  xs={12}
+                  sx={{ minWidth: { xs: "auto", md: "396px" } }}
                 >
-                  إنشاء
-                </LoadingButton>
-              </Box>
+                  <TextField
+                    fullWidth
+                    label="رقم الجوال"
+                    name="phoneNumber"
+                    type="tel"
+                    required
+                    dir="ltr"
+                    disabled={isPending}
+                    onKeyPress={handleKeyPress}
+                    onChange={handlPhoneNumbereChange}
+                    InputLabelProps={{
+                      className: "custom-label-rtl",
+                    }}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">+966</InputAdornment>
+                      ),
+                    }}
+                    placeholder="5xxxxxxxx"
+                  />
+                </Grid>
+              </Grid>
+
+              <LoadingButton
+                type="submit"
+                fullWidth
+                variant="contained"
+                disableRipple
+                size="large"
+                loading={isPending}
+                sx={{ mt: 3, mb: 2, transition: "0.1s" }}
+              >
+                إنشاء
+              </LoadingButton>
             </Box>
-          </Container>
-        </div>
-      </MotionWrapper>
+          </Box>
+        </Container>
+      </div>
     </div>
   );
 }

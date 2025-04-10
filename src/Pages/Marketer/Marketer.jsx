@@ -24,7 +24,6 @@ import WorkIcon from "@mui/icons-material/Work";
 import Modal from "@mui/material/Modal";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
-
 //
 import { toast } from "react-toastify";
 // Image
@@ -32,6 +31,7 @@ import userImg from "../../Assets/Images/user.jpg";
 // Api
 import useGetMarketerApi from "../../API/useGetMarketerApi";
 import useMarketerSettingsApi from "../../API/useMarketerSettingsApi";
+import { useCreateMarketerApi } from "../../API/useCreateMarketerApi";
 // Component
 import CouponImages from "../../Components/CouponImages";
 
@@ -48,6 +48,7 @@ export default function Marketer() {
     "pageOne",
     "pageTwo",
     "pageThree",
+    "userId",
   ]);
 
   // info icon
@@ -75,9 +76,35 @@ export default function Marketer() {
     setOpenCondetionAndTermsModal(false);
 
   // Marketer Data
-  const { data: marketerData } = useGetMarketerApi();
+  const { data: marketerData, isError: isGetMarketerError } =
+    useGetMarketerApi();
   const { data: MarketerSettings } = useMarketerSettingsApi();
   // console.log(marketerData);
+
+  // Create Marketer if Get Marketer Faild
+  const { mutate: createMarketer } = useCreateMarketerApi();
+
+  React.useEffect(() => {
+    if (isGetMarketerError) {
+      // Generate random code (1 letter + 3 numbers)
+      const randomLetter = String.fromCharCode(
+        65 + Math.floor(Math.random() * 26)
+      );
+      const randomNumbers = Array.from({ length: 3 }, () =>
+        Math.floor(Math.random() * 10)
+      ).join("");
+      const randomCode = randomLetter + randomNumbers;
+      const data = {
+        // id: 0,
+        // code: randomCode,
+        // points: 0,
+        clientId: cookies.userId,
+        // cardCountFromSite: 0,
+        isActive: true,
+      };
+      createMarketer(data);
+    }
+  }, [isGetMarketerError]);
 
   // If pageOne cookie is Not set, navigate to falak page
   if (!cookies.pageOne && cookies.tokenApp) {

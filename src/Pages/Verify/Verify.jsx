@@ -15,8 +15,6 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-//
-import MotionWrapper from "../../Utils/MotionWrapper";
 // API
 import { useVerifyApi } from "../../API/useVerifyApi";
 // PhoneNumberContext
@@ -89,107 +87,105 @@ export default function Verify() {
         </div>
       </div>
 
-      <MotionWrapper>
-        <div className={style.container}>
-          <Container
-            dir="rtl"
-            component="main"
-            maxWidth="xs"
-            className={style.box}
-            // sx={{
-            //   display: "flex",
-            //   flexDirection: "column",
-            //   alignItems: "center",
-            //   justifyContent: "center",
-            // }}
-          >
-            <Box sx={{ width: "100%" }}>
-              <Typography
-                dir="ltr"
-                component="h1"
-                variant="h5"
-                sx={{ textAlign: "center", paddingTop: "16px" }}
-              >
-                {phoneNumber}
-              </Typography>
-
-              <Typography
-                dir="rtl"
-                component="h5"
-                variant="h5"
-                sx={{
-                  textAlign: "center",
-                  color: "#00000099",
-                  fontSize: "0.875rem",
-                }}
-              >
-                أرسلنا رسالة الى رقمك تحوي كود التحقق
-              </Typography>
-
-              <Box
-                onSubmit={handleSubmit}
-                ref={formRef}
-                component="form"
-                noValidate
-                sx={{ minWidth: { xs: "auto" }, mt: 3 }}
-              >
-                <Grid container spacing={3}>
-                  <Grid item xs={12}>
-                    <TextField
-                      // onChange={handleChange}
-                      dir="ltr"
-                      autoFocus
-                      fullWidth
-                      name="otp"
-                      label="كود التحقق"
-                      type="number"
-                      required
-                      disabled={isPending}
-                      InputLabelProps={{
-                        className: "custom-label-rtl",
-                      }}
-                      InputProps={{
-                        classes: {
-                          input: "hide-arrows", // Apply the custom class here
-                        },
-                      }}
-                      // inputProps={{ maxLength: 4 }}
-                    />
-                  </Grid>
-                </Grid>
-
-                <LoadingButton
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  disableRipple
-                  size="large"
-                  loading={isPending}
-                  sx={{ mt: 3, mb: 2, transition: "0.1s" }}
-                >
-                  تحقق
-                </LoadingButton>
-              </Box>
-            </Box>
+      <div className={style.container}>
+        <Container
+          dir="rtl"
+          component="main"
+          maxWidth="xs"
+          className={style.box}
+          // sx={{
+          //   display: "flex",
+          //   flexDirection: "column",
+          //   alignItems: "center",
+          //   justifyContent: "center",
+          // }}
+        >
+          <Box sx={{ width: "100%" }}>
+            <Typography
+              dir="ltr"
+              component="h1"
+              variant="h5"
+              sx={{ textAlign: "center", paddingTop: "16px" }}
+            >
+              {phoneNumber}
+            </Typography>
 
             <Typography
-              sx={{ mt: 1 }}
-              dir="auto"
-              variant="body2"
-              color="text.secondary"
-              align="center"
+              dir="rtl"
+              component="h5"
+              variant="h5"
+              sx={{
+                textAlign: "center",
+                color: "#00000099",
+                fontSize: "0.875rem",
+              }}
             >
-              لم يصلك الرمز؟{" "}
-              <Link
-                to={`${process.env.PUBLIC_URL}/login`}
-                style={{ color: "#1976d2" }}
-              >
-                إعادة طلب
-              </Link>
+              أرسلنا رسالة الى رقمك تحوي كود التحقق
             </Typography>
-          </Container>
-        </div>
-      </MotionWrapper>
+
+            <Box
+              onSubmit={handleSubmit}
+              ref={formRef}
+              component="form"
+              noValidate
+              sx={{ minWidth: { xs: "auto" }, mt: 3 }}
+            >
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <TextField
+                    // onChange={handleChange}
+                    dir="ltr"
+                    autoFocus
+                    fullWidth
+                    name="otp"
+                    label="كود التحقق"
+                    type="number"
+                    required
+                    disabled={isPending}
+                    InputLabelProps={{
+                      className: "custom-label-rtl",
+                    }}
+                    InputProps={{
+                      classes: {
+                        input: "hide-arrows", // Apply the custom class here
+                      },
+                    }}
+                    // inputProps={{ maxLength: 4 }}
+                  />
+                </Grid>
+              </Grid>
+
+              <LoadingButton
+                type="submit"
+                fullWidth
+                variant="contained"
+                disableRipple
+                size="large"
+                loading={isPending}
+                sx={{ mt: 3, mb: 2, transition: "0.1s" }}
+              >
+                تحقق
+              </LoadingButton>
+            </Box>
+          </Box>
+
+          <Typography
+            sx={{ mt: 1 }}
+            dir="auto"
+            variant="body2"
+            color="text.secondary"
+            align="center"
+          >
+            لم يصلك الرمز؟{" "}
+            <Link
+              to={`${process.env.PUBLIC_URL}/login`}
+              style={{ color: "#1976d2" }}
+            >
+              إعادة طلب
+            </Link>
+          </Typography>
+        </Container>
+      </div>
     </div>
   );
 }
