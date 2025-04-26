@@ -22,6 +22,8 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import MinorCrashIcon from "@mui/icons-material/MinorCrash";
 import ContentPasteSearchIcon from "@mui/icons-material/ContentPasteSearch";
 import StyleIcon from "@mui/icons-material/Style";
+import InfoIcon from "@mui/icons-material/Info";
+import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 // Toastify
 import { toast } from "react-toastify";
 // Cookies
@@ -31,6 +33,17 @@ import useGetPoinsApi from "../../API/useGetPoinsApi";
 import { useGetAllCardsApi } from "../../API/useGetAllCardsApi";
 import { fetchDownloadCard } from "../../API/useDownloadCardApi";
 import { fetchImgCard } from "../../API/useGetImgCardApi";
+// NumberFlow
+import NumberFlow from "@number-flow/react";
+// MUI Table
+import { styled } from "@mui/material/styles";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 
 // Utility function to format date to dd/mm/yyyy
 const formatDate = (dateString) => {
@@ -41,17 +54,49 @@ const formatDate = (dateString) => {
   return `${year}/${month}/${day}`;
 };
 
+// MUI Table
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  "&:last-child td, &:last-child th": {
+    border: 0,
+  },
+}));
+
+function createData(name, calories, fat, carbs, clr) {
+  return { name, calories, fat, carbs, clr };
+}
+
+const rows = [
+  createData("برونزي", 1, 100, 5, "#E69546"),
+  createData("فضي", 101, 250, 6, "#D4D4D4"),
+  createData("ذهبي", 251, 500, 7, "#FFDF00"),
+  createData("بلاتيني", 501, 850, 8, "#E5E4E2"),
+  createData("نخبة", 851, 100000, 10, "#000000"),
+];
+
 export default function Reports() {
+  useEffect(() => {
+    // Scroll to the top of the page
+    window.scrollTo(0, 0);
+  }, []);
+
   // Cookies
   const [cookies, setCookie] = useCookies(["tokenApp"]);
   const [temporaryCookie, setTemporaryCookie] = useState([]);
 
   const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    // Scroll to the top of the page
-    window.scrollTo(0, 0);
-  }, []);
 
   const { data: points } = useGetPoinsApi();
   const { data: cardsData, fetchStatus: fetchCardStatus } = useGetAllCardsApi();
@@ -85,7 +130,8 @@ export default function Reports() {
     setChecked(false); // Reset terms and condetions checkbox
 
     // Check if NOT accepted terms before
-    if (!cookies[`card-${id}`] && !temporaryCookie[`card-${id}`]) {
+    // if (!cookies[`card-${id}`] && !temporaryCookie[`card-${id}`]) {
+    if (false) {
       handleCondetionAndTermsModalOpen(id, includeImage); // Open terms modal
     } else {
       try {
@@ -131,7 +177,7 @@ export default function Reports() {
     setLoadingDownload((prev) => ({ ...prev, [currentCardId]: true })); // Set loading for the specific card
 
     setCookie(`card-${currentCardId}`, "true", {
-      path: "/zxc",
+      path: "/dashboard",
       expires: new Date(Date.now() + 10 * 365 * 24 * 60 * 60 * 1000),
     });
 
@@ -176,36 +222,254 @@ export default function Reports() {
     }
   };
 
+  // Change color
+  const getClientColor = () => {
+    switch (points?.clientTypeAr) {
+      case "برونزي":
+        return "#E69546"; // برونزي
+      case "فضي":
+        return "#D4D4D4"; // فضي
+      case "ذهبي":
+        return "#FFDF00"; // ذهبي
+      case "بلاتيني":
+        return "#E5E4E2"; // بلاتيني
+      case "نخبة":
+        return "#000000"; // بنفسجي (للمستوى نخبة)
+      default:
+        return "#fff"; // لون افتراضي إذا لم يتطابق أي نوع
+    }
+  };
+
+  // Handle calculateProgress Value
+  // First, let's create a function to calculate the progress value based on points and client type
+  const calculateProgressValue = (pointsData) => {
+    if (!pointsData) return 0;
+
+    const { points, clientTypeAr } = pointsData;
+    const currentPoints = points || 0;
+
+    // Define the minimum points required for each level
+    const levelRequirements = {
+      إفتراضي: 0,
+      برونزي: 1,
+      فضي: 101,
+      ذهبي: 251,
+      بلاتيني: 501,
+      نخبة: 851,
+    };
+
+    // Get current level and next level requirements
+    const currentLevel = clientTypeAr || "إفتراضي";
+    const currentLevelPoints = levelRequirements[currentLevel];
+    const nextLevel = getNextLevel(currentLevel);
+    const nextLevelPoints = nextLevel
+      ? levelRequirements[nextLevel]
+      : levelRequirements["نخبة"];
+
+    // If user is at the highest level (نخبة), show 100%
+    if (!nextLevel) return 100;
+
+    // Calculate progress towards next level
+    const pointsNeededForNextLevel = nextLevelPoints - currentLevelPoints;
+    const pointsAchievedTowardsNextLevel = currentPoints - currentLevelPoints;
+
+    // Calculate percentage (capped at 100)
+    const progress = Math.min(
+      Math.round(
+        (pointsAchievedTowardsNextLevel / pointsNeededForNextLevel) * 100
+      ),
+      100
+    );
+
+    return progress;
+  };
+
+  // Helper function to get the next level
+  const getNextLevel = (currentLevel) => {
+    const levels = ["إفتراضي", "برونزي", "فضي", "ذهبي", "بلاتيني", "نخبة"];
+    const currentIndex = levels.indexOf(currentLevel);
+    return currentIndex < levels.length - 1 ? levels[currentIndex + 1] : null;
+  };
+
+  // Modal
+  const [isClientTypesModalOpen, setisClientTypesModalOpen] = useState(false);
+  const handleOpenClientTypesModal = () => setisClientTypesModalOpen(true);
+  const handleClientTypesModalClose = () => setisClientTypesModalOpen(false);
+
   return (
     <div dir="rtl" className={style.container}>
       {/* Points */}
-      <div className={style.points_container}>
-        <div className={style.point_card}>
-          <div>
-            <h2 style={{ backgroundColor: "#873fe5" }}>
-              {points && points.points !== undefined ? points.points : 0}
-            </h2>
-          </div>
-          <div>
-            <h3>رصيد النقاط الحالي</h3>
-            <p>كل نقطة تساوي ريال واحد</p>
-          </div>
-        </div>
 
-        <div className={style.point_card}>
-          <div>
-            <h2 style={{ backgroundColor: "#696969" }}>
-              {points && points.pointsConsumed !== undefined
-                ? points.pointsConsumed
-                : 0}
-            </h2>
+      <div className={style.points_container}>
+        <div className={style.money_card_container}>
+          <div className={style.money_card_header}>
+            <div>
+              <h3>رصيد النقاط</h3>
+              <p style={{ fontSize: "14px" }}>كل نقطة تساوي ريال واحد</p>
+              {/* <h1>
+                {points && points.points !== undefined ? points.points : 0}{" "}
+              </h1> */}
+              <h1>
+                <NumberFlow
+                  value={points?.points || 0}
+                  duration={1500}
+                  delay={0}
+                  ease="outExpo"
+                  formattingFn={(value) => Math.floor(value).toLocaleString()}
+                />
+              </h1>
+            </div>
+
+            <div>
+              <Box position="relative" display="inline-flex">
+                <CircularProgress
+                  variant="determinate"
+                  value={100}
+                  size={150}
+                  thickness={6}
+                  sx={{
+                    color: "#3887d5",
+                    position: "absolute",
+                  }}
+                />
+                <CircularProgress
+                  variant="determinate"
+                  value={calculateProgressValue(points)}
+                  size={150}
+                  thickness={6}
+                  sx={{
+                    color: getClientColor,
+                    borderRadius: "10px",
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                  }}
+                >
+                  <h3 style={{ textAlign: "center", color: getClientColor() }}>
+                    الرتبة
+                  </h3>
+                  <h3 style={{ textAlign: "center", color: getClientColor() }}>
+                    {points && points.clientTypeAr !== undefined
+                      ? points.clientTypeAr
+                      : "."}
+                  </h3>
+                  {/* Adjust size and color as needed */}
+                </div>
+              </Box>
+            </div>
           </div>
-          <div>
-            <h3>مجموع النقاط المستخدمة</h3>
-            <p>جميع النقاط التي تم استخدامها من حسابك</p>
+
+          <div className={style.money_card_footer}>
+            <Tooltip
+              title="جميع النقاط التي تم استخدامها من حسابك"
+              arrow
+              enterTouchDelay={0}
+            >
+              <h3>
+                مجموع النقاط المستخدمة{" "}
+                {points && points.pointsConsumed !== undefined
+                  ? points.pointsConsumed
+                  : 0}
+              </h3>
+            </Tooltip>
+          </div>
+
+          <div className={style.info_icon}>
+            <IconButton onClick={handleOpenClientTypesModal}>
+              <InfoIcon sx={{ color: "#fff" }} />
+            </IconButton>
           </div>
         </div>
       </div>
+
+      {/* Client types modal */}
+      <Modal
+        open={isClientTypesModalOpen}
+        onClose={handleClientTypesModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          dir="rtl"
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: {
+              xs: 361, // width for small screens
+              md: 750, // width for medium and larger screens
+            },
+            bgcolor: "background.paper",
+            p: {
+              xs: 2,
+              md: 4,
+            },
+            textAlign: "center",
+            borderRadius: "16px",
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+            backgroundColor: "#fff",
+            maxHeight: "80vh", // Set a maximum height for the modal
+            overflowY: "auto", // Enable vertical scrolling
+            overflowX: "hidden", // Prevent horizontal scrolling
+          }}
+        >
+          <div className={style.table_box}>
+            <div>
+              <h1>فئات العملاء:</h1>
+
+              <TableContainer component={Paper}>
+                <Table dir="rtl" aria-label="customized table">
+                  <TableHead>
+                    <TableRow>
+                      <StyledTableCell align="center">الرتبة</StyledTableCell>
+                      <StyledTableCell align="center">
+                        الحد الأدنى للنقاط
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        الحد الأعلى للنقاط
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        نسبة النقاط
+                      </StyledTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {rows.map((row) => (
+                      <StyledTableRow key={row.name}>
+                        <StyledTableCell
+                          align="center"
+                          component="th"
+                          scope="row"
+                        >
+                          {row.name}{" "}
+                          <WorkspacePremiumIcon
+                            sx={{ verticalAlign: "middle", color: row.clr }}
+                          />
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          {row.calories}
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          {row.fat}
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          {row.carbs}
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
+          </div>
+        </Box>
+      </Modal>
 
       {/* Cards */}
       <h5 className={style.last_reports_title}>تقاريري</h5>

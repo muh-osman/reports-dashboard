@@ -26,6 +26,7 @@ import HowWorks from "./Pages/HowWorks/HowWorks";
 import Marketer from "./Pages/Marketer/Marketer";
 import Transfer from "./Pages/Transfer/Transfer";
 import History from "./Pages/History/History";
+import AcceptedNumbers from "./Utils/AcceptedNumbers";
 
 
 export default function App() {
@@ -47,12 +48,15 @@ export default function App() {
         <Route element={<HomeLayout />}>
           <Route index element={<Home />} />
 
-          <Route path={`${process.env.PUBLIC_URL}/falak`} element={<Falak />} />
-          <Route path={`${process.env.PUBLIC_URL}/falak/conditions`} element={<Conditions />} />
-          <Route path={`${process.env.PUBLIC_URL}/falak/how-works`} element={<HowWorks />} />
-          <Route path={`${process.env.PUBLIC_URL}/falak/marketer`} element={<Marketer />} />
-          <Route path={`${process.env.PUBLIC_URL}/falak/transfer`} element={<Transfer />} />
-          <Route path={`${process.env.PUBLIC_URL}/falak/history`} element={<History />} />
+          <Route element={<AcceptedNumbers />}>
+              <Route path={`${process.env.PUBLIC_URL}/falak`} element={<Falak />} />
+              <Route path={`${process.env.PUBLIC_URL}/falak/conditions`} element={<Conditions />} />
+              <Route path={`${process.env.PUBLIC_URL}/falak/how-works`} element={<HowWorks />} />
+              <Route path={`${process.env.PUBLIC_URL}/falak/marketer`} element={<Marketer />} />
+
+              <Route path={`${process.env.PUBLIC_URL}/falak/transfer`} element={<Transfer />} />
+              <Route path={`${process.env.PUBLIC_URL}/falak/history`} element={<History />} />
+          </Route>
 
           <Route path={`${process.env.PUBLIC_URL}/reports`} element={<Reports />} />
           <Route path={`${process.env.PUBLIC_URL}/prices`} element={<Prices />} />
@@ -67,5 +71,5 @@ export default function App() {
     )
   );
 
-  return <RouterProvider router={router} basename="/zxc" />;
+  return <RouterProvider router={router} basename="/dashboard" />;
 }

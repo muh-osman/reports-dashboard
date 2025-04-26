@@ -117,7 +117,6 @@
   }
 }
 
-
 // Condetion and term modal
 .terms_box {
   background-color: #fff;
@@ -164,6 +163,82 @@
 
     span {
       font-size: 14px;
+    }
+  }
+}
+
+//
+
+//  money card container
+.money_card_container {
+  width: fit-content;
+  border-radius: 9px;
+  background-color: #0b6bcb;
+  color: #fff;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  position: relative;
+
+  @media (max-width: 1000px) {
+    width: 100%;
+    padding: 16px;
+  }
+
+  .money_card_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 64px;
+
+    @media (max-width: 550px) {
+      gap: unset;
+    }
+  }
+
+  h1 {
+    font-size: 44px;
+    width: fit-content;
+  }
+
+  p {
+    color: #c7dff7;
+  }
+
+  .money_card_footer {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+
+    h3 {
+      font-size: 16px;
+      padding: 4px 12px;
+      color: #0b6bcb;
+      background-color: #fff;
+      border-radius: 4px;
+      font-weight: 600;
+      text-align: center;
+      width: 100%;
+      white-space: nowrap;
+    }
+  }
+
+  .info_icon {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+  }
+}
+
+.table_box {
+  h1 {
+    margin-bottom: 32px;
+
+    @media (max-width: 550px) {
+      margin-bottom: 16px;
     }
   }
 }

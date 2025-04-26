@@ -1,5 +1,5 @@
 {
-  "version": "2.0.7",
+  "version": "4.5.9",
   "short_name": "Cashif",
   "name": "Cashif",
   "icons": [
@@ -45,10 +45,10 @@
       "purpose": "maskable"
     }
   ],
-  "start_url": "/zxc",
+  "start_url": "/dashboard",
   "scope": "/",
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff",
-  "id": "/zxc"
+  "id": "/dashboard"
 }

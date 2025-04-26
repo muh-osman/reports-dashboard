@@ -1,12 +1,12 @@
-import style from "./Falak.module.scss";
-import { Link, Navigate } from "react-router-dom";
+import style from "./Soon.module.scss";
+import { Link } from "react-router-dom";
 // Cookies
 import { useCookies } from "react-cookie";
 // MUI
 import * as React from "react";
 import Button from "@mui/material/Button";
 
-export default function Falak() {
+export default function Soon() {
   React.useEffect(() => {
     // Scroll to the top of the page
     window.scrollTo(0, 0);
@@ -14,21 +14,6 @@ export default function Falak() {
 
   // Cookies
   const [cookies, setCookie] = useCookies(["tokenApp", "userId"]);
-  const [pageOneInState, setPageOneInState] = React.useState(false);
-
-  // Page status
-  const pageOne = () => {
-    setCookie(`pageOne-${cookies.userId}`, "true", {
-      path: "/dashboard",
-      expires: new Date(Date.now() + 10 * 365 * 24 * 60 * 60 * 1000),
-    });
-    setPageOneInState(true);
-  };
-
-  // If pageOne cookie is set, navigate to conditions page
-  if (cookies[`pageOne-${cookies.userId}`] || pageOneInState) {
-    return <Navigate to={`${process.env.PUBLIC_URL}/falak/conditions`} />;
-  }
 
   return (
     <div dir="rtl" className={style.container}>
@@ -80,9 +65,9 @@ export default function Falak() {
               sx={{ marginTop: "30px" }}
               variant="contained"
               size="large"
-              onClick={pageOne}
+              disabled={true}
             >
-              انضم الآن
+              قريبا
             </Button>
           )}
         </div>

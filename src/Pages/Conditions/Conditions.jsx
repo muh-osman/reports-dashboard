@@ -17,12 +17,8 @@ export default function Conditions() {
   //
   const [isHovered, setIsHovered] = React.useState(false);
   // Cookies
-  const [cookies, setCookie] = useCookies([
-    "tokenApp",
-    "pageOne",
-    "pageTwo",
-    "pageThree",
-  ]);
+  const [cookies, setCookie] = useCookies(["tokenApp", "userId"]);
+  const [pageTwoInState, setPageTwoInState] = React.useState(false);
 
   // State to manage the checkbox value
   const [checked, setChecked] = React.useState(false);
@@ -32,14 +28,16 @@ export default function Conditions() {
 
   // Page status
   const pageTwo = () => {
-    setCookie("pageTwo", "true", {
-      path: "/zxc",
+    setCookie(`pageTwo-${cookies.userId}`, "true", {
+      path: "/dashboard",
       expires: new Date(Date.now() + 10 * 365 * 24 * 60 * 60 * 1000),
     });
+
+    setPageTwoInState(true);
   };
 
   // If pageTwo cookie is set, navigate to how-works page
-  if (cookies.pageTwo) {
+  if (cookies[`pageTwo-${cookies.userId}`] || pageTwoInState) {
     return <Navigate to={`${process.env.PUBLIC_URL}/falak/how-works`} />;
   }
 

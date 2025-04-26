@@ -47,19 +47,19 @@ export const useVerifyApi = () => {
 
           // Set values in cookies
           setCookie("username", username, {
-            path: "/zxc",
+            path: "/dashboard",
             expires: expirationDate,
           });
           setCookie("userId", userId, {
-            path: "/zxc",
+            path: "/dashboard",
             expires: expirationDate,
           });
           setCookie("phoneNumber", phoneNumber, {
-            path: "/zxc",
+            path: "/dashboard",
             expires: expirationDate,
           });
           setCookie("tokenApp", token, {
-            path: "/zxc",
+            path: "/dashboard",
             expires: expirationDate,
           });
 
@@ -73,10 +73,10 @@ export const useVerifyApi = () => {
 
     onError: (err) => {
       console.error(err);
-      removeCookie("userId", { path: "/zxc" });
-      removeCookie("username", { path: "/zxc" });
-      removeCookie("phoneNumber", { path: "/zxc" });
-      removeCookie("tokenApp", { path: "/zxc" });
+      removeCookie("userId", { path: "/dashboard" });
+      removeCookie("username", { path: "/dashboard" });
+      removeCookie("phoneNumber", { path: "/dashboard" });
+      removeCookie("tokenApp", { path: "/dashboard" });
       const errorMessage =
         err?.response?.data?.message || err?.message || "An error occurred";
       // Toastify

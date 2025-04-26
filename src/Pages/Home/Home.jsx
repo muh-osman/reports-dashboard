@@ -247,7 +247,7 @@ const boxItems = [
     ),
     title: "خبرة اكثر من 10+",
     description:
-      "تمتد خبرتنا لأكثر من 12 عامًا في فحص السيارات حيث نتميز بدقة الفحص والتقارير بشكل استثنائي",
+      "تمتد خبرتنا لأكثر من 12 عامًا في فحص السيارات حيث نتميز بدقة الفحص والتقارير",
   },
 ];
 
@@ -327,10 +327,10 @@ export default function Home() {
 
   const logout = () => {
     handleClose();
-    removeCookie("userId", { path: "/zxc" });
-    removeCookie("phoneNumber", { path: "/zxc" });
-    removeCookie("username", { path: "/zxc" });
-    removeCookie("tokenApp", { path: "/zxc" });
+    removeCookie("userId", { path: "/dashboard" });
+    removeCookie("phoneNumber", { path: "/dashboard" });
+    removeCookie("username", { path: "/dashboard" });
+    removeCookie("tokenApp", { path: "/dashboard" });
 
     // Refresh the page after logout
     window.location.reload();

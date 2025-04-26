@@ -1,4 +1,4 @@
-main.zxc {
+main.zxxc {
   max-width: 550px;
   height: 100%;
   padding: 16px;
@@ -13,10 +13,19 @@ main.zxc {
     justify-content: center;
     font-weight: 900;
     text-align: center;
-  }
 
-  img {
-    width: 100%;
+    // To get hight quality image
+    image-rendering: -moz-crisp-edges; /* Firefox */
+    image-rendering: -o-crisp-edges; /* Opera */
+    image-rendering: -webkit-optimize-contrast; /* Webkit (non-standard naming) */
+    image-rendering: crisp-edges;
+    -ms-interpolation-mode: nearest-neighbor; /* IE (non-standard property) */
+
+    img {
+      width: 100%;
+      height: auto;
+      max-width: 100%;
+    }
   }
 
   .up_text {
@@ -35,6 +44,11 @@ main.zxc {
     gap: 4px;
     border: 2px dashed #ffffff;
     padding: 3px;
+
+    @media (max-width: 550px) {
+      bottom: 3px;
+      right: 3px;
+    }
 
     h1 {
       font-size: 32px;

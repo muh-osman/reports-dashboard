@@ -42,17 +42,27 @@ export default function Transfer() {
   // Get Last Payment
   const { data: lastPayment, isSuccess } = useGetLastPaymentApi();
   React.useEffect(() => {
-    setAccountNumber(lastPayment?.accountNumber || "");
+    if (isSuccess) {
+      setAccountNumber(lastPayment?.accountNumber || "");
+    }
   }, [isSuccess]);
 
   // Amount
-  const [amount, setAmount] = React.useState(200);
+  const [amount, setAmount] = React.useState(0);
   const handleAmountChange = (event) => {
     setAmount(event.target.value);
   };
 
   // Get Marketer Id
-  const { data: marketerData } = useGetMarketerApi();
+  const { data: marketerData, isSuccess: isGetMarketerDataSuccess } =
+    useGetMarketerApi();
+
+  React.useEffect(() => {
+    if (isGetMarketerDataSuccess) {
+      setAmount(marketerData?.points || 0);
+    }
+  }, [isGetMarketerDataSuccess]);
+
   // Check If Payment RequestIs Valid
   const { data: checkIfPaymentRequestIsValid } =
     useCheckIfPaymentRequestIsValidApi(marketerData?.id);
@@ -72,6 +82,11 @@ export default function Transfer() {
       return;
     }
 
+    if (amount > marketerData.points) {
+      toast.warn("المبلغ المدخل أكبر من الرصيد المتاح في حسابك");
+      return;
+    }
+
     if (checkIfPaymentRequestIsValid) {
       const data = {
         // id: 0,
@@ -80,7 +95,7 @@ export default function Transfer() {
         tranferPaymentTypeId: selectedPaymentType,
         accountNumber: accountNumber,
         // actionBy: 0,
-        actionDate: new Date().toISOString(),
+        actionDate: null,
         // rejectReason: "string",
         // status: 0,
       };
@@ -162,6 +177,17 @@ export default function Transfer() {
           onChange={handleAmountChange}
           disabled={isPending || !checkIfPaymentRequestIsValid}
         />
+        <p
+          dir="rtl"
+          style={{
+            color: "#00000099",
+            fontSize: "15px",
+            marginRight: "3px",
+            marginTop: "9px",
+          }}
+        >
+          الرصيد المتاح للسحب {marketerData?.points} ريال
+        </p>
 
         <LoadingButton
           type="submit"

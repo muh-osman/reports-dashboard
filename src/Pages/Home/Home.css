@@ -2139,12 +2139,4 @@
       max-width: 50%;
     }
   }
-
-  /* col-xl-3 (large desktops) */
-  /* @media (min-width: 1200px) {
-    .col-xl-3 {
-      flex: 0 0 25%;
-      max-width: 25%;
-    }
-  } */
 }

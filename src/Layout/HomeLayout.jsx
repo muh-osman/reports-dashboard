@@ -104,10 +104,10 @@ function HomeLayout() {
 
   const logout = () => {
     handleClose();
-    removeCookie("userId", { path: "/zxc" });
-    removeCookie("phoneNumber", { path: "/zxc" });
-    removeCookie("username", { path: "/zxc" });
-    removeCookie("tokenApp", { path: "/zxc" });
+    removeCookie("userId", { path: "/dashboard" });
+    removeCookie("phoneNumber", { path: "/dashboard" });
+    removeCookie("username", { path: "/dashboard" });
+    removeCookie("tokenApp", { path: "/dashboard" });
 
     // Refresh the page after logout
     window.location.reload();

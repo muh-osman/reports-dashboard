@@ -34,6 +34,8 @@ import useMarketerSettingsApi from "../../API/useMarketerSettingsApi";
 import { useCreateMarketerApi } from "../../API/useCreateMarketerApi";
 // Component
 import CouponImages from "../../Components/CouponImages";
+// NumberFlow
+import NumberFlow from "@number-flow/react";
 
 export default function Marketer() {
   const navigate = useNavigate();
@@ -43,13 +45,7 @@ export default function Marketer() {
     window.scrollTo(0, 0);
   }, []);
   // Cookies
-  const [cookies, setCookie] = useCookies([
-    "tokenApp",
-    "pageOne",
-    "pageTwo",
-    "pageThree",
-    "userId",
-  ]);
+  const [cookies, setCookie] = useCookies(["tokenApp", "userId"]);
 
   // info icon
   // Controll the positin of drop down menue
@@ -86,14 +82,6 @@ export default function Marketer() {
 
   React.useEffect(() => {
     if (isGetMarketerError) {
-      // Generate random code (1 letter + 3 numbers)
-      const randomLetter = String.fromCharCode(
-        65 + Math.floor(Math.random() * 26)
-      );
-      const randomNumbers = Array.from({ length: 3 }, () =>
-        Math.floor(Math.random() * 10)
-      ).join("");
-      const randomCode = randomLetter + randomNumbers;
       const data = {
         // id: 0,
         // code: randomCode,
@@ -107,15 +95,15 @@ export default function Marketer() {
   }, [isGetMarketerError]);
 
   // If pageOne cookie is Not set, navigate to falak page
-  if (!cookies.pageOne && cookies.tokenApp) {
+  if (!cookies[`pageOne-${cookies.userId}`] && cookies.tokenApp) {
     return <Navigate to={`${process.env.PUBLIC_URL}/falak`} />;
   }
   // If pageTwo cookie is Not set, navigate to conditions page
-  if (!cookies.pageTwo && cookies.tokenApp) {
+  if (!cookies[`pageTwo-${cookies.userId}`] && cookies.tokenApp) {
     return <Navigate to={`${process.env.PUBLIC_URL}/falak/conditions`} />;
   }
   // If pageThree cookie is Not set, navigate to how-works page
-  if (!cookies.pageThree && cookies.tokenApp) {
+  if (!cookies[`pageThree-${cookies.userId}`] && cookies.tokenApp) {
     return <Navigate to={`${process.env.PUBLIC_URL}/falak/how-works`} />;
   }
 
@@ -182,7 +170,16 @@ export default function Marketer() {
                 <div>
                   <p>الرصيد الحالي</p>
                   <h1>
-                    {marketerData?.points || 0}{" "}
+                    {/* {marketerData?.points || 0}{" "} */}
+                    <NumberFlow
+                      value={marketerData?.points || 0}
+                      duration={1500}
+                      delay={0}
+                      ease="outExpo"
+                      formattingFn={(value) =>
+                        Math.floor(value).toLocaleString()
+                      }
+                    />{" "}
                     <span className={style.rial}>
                       <svg
                         data-name="Layer 1"
@@ -679,6 +676,11 @@ export default function Marketer() {
 
                 <div className={style.person_data_box}>
                   <div>
+                    <p>استخدام الكود</p>
+                    <h3>{marketerData?.cardCount || 0}</h3>
+                  </div>
+
+                  <div>
                     <p>الحالة</p>
                     <h3
                       style={{
@@ -687,11 +689,6 @@ export default function Marketer() {
                     >
                       {marketerData?.isActive ? "نشط" : "غير نشط"}
                     </h3>
-                  </div>
-
-                  <div>
-                    <p>استخدام الكود</p>
-                    <h3>{marketerData?.cardCount || 0}</h3>
                   </div>
 
                   <div>

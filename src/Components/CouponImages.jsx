@@ -1,5 +1,5 @@
 import style from "./CouponImages.module.scss";
-import { useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 // npm install --save html-to-image --legacy-peer-deps
 import { toPng } from "html-to-image"; //html-to-image library
 // MUI
@@ -9,6 +9,8 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { Box, Grid, IconButton, Tooltip } from "@mui/material";
+// Api
+import useGetAllMarketingPostsApi from "../API/useGetAllMarketingPostsApi";
 //
 import { toast } from "react-toastify";
 //
@@ -17,12 +19,9 @@ import {
   WhatsApp as WhatsAppIcon,
   Instagram as InstagramIcon,
   Telegram as TelegramIcon,
-  Facebook as FacebookIcon,
 } from "@mui/icons-material";
-// IMG
-import imgOne from "../Assets/Images/1.jpg";
-import imgTwo from "../Assets/Images/2.jpg";
-import imgThree from "../Assets/Images/3.jpg";
+// Image
+import palceholderImage from "../Assets/Images/skeleton-loading.gif";
 
 const SnapIcon = () => (
   <svg
@@ -51,31 +50,32 @@ const Tiktok = () => (
 );
 
 export default function CouponImages({ code, percent }) {
-  const [allImages, setAllImages] = useState([imgThree, imgTwo, imgOne]);
+  const [allImages, setAllImages] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [oneImage, setOneImage] = useState(allImages[0]);
+  const [oneImage, setOneImage] = useState([palceholderImage]);
 
-  // Bio data with text
-  const bioData = [
-    {
-      text: `السيارة المستعملة قرار كبير، والفحص هو الخطوة الأهم. تأكد من حالتها قبل الشراء لتجنب المفاجآت.
-  كود الخصم: ${code}
-  https://cashif.cc
-  #كاشف_لفحص_السيارات`,
-    },
-    {
-      text: `المظهر لحاله ما يكفي، فحص السيارة يكشف حقيقتها قبل الشراء.
-  كود الخصم: ${code}
-  https://cashif.cc
-  #كاشف_لفحص_السيارات`,
-    },
-    {
-      text: `لا تدفع ثمن العيوب، الفحص يكشف الحقيقة. افحص السيارة المستعملة قبل الشراء واتخذ قرارك بثقة.
-  كود الخصم: ${code}
-  https://cashif.cc
-  #كاشف_لفحص_السيارات`,
-    },
-  ];
+  // Api
+  const {
+    data: AllPosts,
+    isPending: isGetAllPostsPending,
+    isSuccess: isGetAllPostsSuccess,
+    fetchStatus: fetchAllPostsStatus,
+  } = useGetAllMarketingPostsApi();
+
+  const [allTitles, setAllTitles] = useState([]);
+  useEffect(() => {
+    if (isGetAllPostsSuccess && AllPosts?.data) {
+      const imageUrls = AllPosts.data.map((item) => item.image_data);
+      const titles = AllPosts.data.map((item) => item.title);
+
+      setAllImages(imageUrls);
+      setAllTitles(titles);
+
+      if (imageUrls.length > 0) {
+        setOneImage(imageUrls[0]);
+      }
+    }
+  }, [isGetAllPostsSuccess, AllPosts]);
 
   //
   function nextBtn() {
@@ -96,23 +96,32 @@ export default function CouponImages({ code, percent }) {
   //  Download Button
   const ref = useRef(null);
   const downloadImg = useCallback(() => {
-    if (ref.current === null) {
-      return;
-    }
+    const options = {
+      quality: 1, // Maximum quality (0-1)
+      pixelRatio: 2, // Double the resolution
+      // canvasWidth: ref.current.clientWidth * 2, // Double the width
+      // canvasHeight: ref.current.clientHeight * 2, // Double the height
+    };
 
-    toPng(ref.current, { cacheBust: true })
-      .then((dataUrl) => {
-        const link = document.createElement("a");
-        link.download = "meme.png";
-        link.href = dataUrl;
-        link.click();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (ref.current) {
+      toPng(ref.current, options)
+        .then((dataUrl) => {
+          const link = document.createElement("a");
+          link.download = "coupon-image.png"; // Set the name of the downloaded file
+          link.href = dataUrl; // Set the data URL as the href
+          link.click(); // Trigger the download
+        })
+        .catch((err) => {
+          console.error("Error generating image:", err);
+          toast.error("فشل تحميل الصورة");
+        });
+    }
   }, [ref]);
 
-  let post = bioData[currentIndex]?.text;
+  const post = `${allTitles[currentIndex] || ""}
+  كود الخصم: ${code}
+  https://cashif.cc
+  #كاشف_لفحص_السيارات`;
 
   const handleClick = () => {
     navigator.clipboard.writeText(post);
@@ -178,25 +187,20 @@ export default function CouponImages({ code, percent }) {
           "_blank"
         ),
     },
-    {
-      name: "Facebook",
-      icon: <FacebookIcon />,
-      color: "#757575",
-      onClick: () => {
-        // Facebook requires a URL, but we can use a blank placeholder if needed
-        const placeholderUrl = "https://www.cashif.cc/"; // or just ""
-        window.open(
-          `https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(
-            post
-          )}&u=${encodeURIComponent(placeholderUrl)}`,
-          "_blank"
-        );
-      },
-    },
   ];
 
+  if (!isGetAllPostsSuccess || !AllPosts?.data) {
+    return (
+      <main className={style.zxxc}>
+        <div className={style.img_box}>
+          <img src={palceholderImage} alt="cashif off" />
+        </div>
+      </main>
+    );
+  }
+
   return (
-    <main className={style.zxc}>
+    <main className={style.zxxc}>
       <div ref={ref} className={style.img_box}>
         <img id="img" src={oneImage} alt="cashif off" />
 

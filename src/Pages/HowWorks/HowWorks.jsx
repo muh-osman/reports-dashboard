@@ -12,23 +12,21 @@ export default function HowWorks() {
     window.scrollTo(0, 0);
   }, []);
   // Cookies
-  const [cookies, setCookie] = useCookies([
-    "tokenApp",
-    "pageOne",
-    "pageTwo",
-    "pageThree",
-  ]);
+  const [cookies, setCookie] = useCookies(["tokenApp", "userId"]);
+  const [pageThreeInState, setPageThreeInState] = React.useState(false);
 
   // Page status
   const pageThree = () => {
-    setCookie("pageThree", "true", {
-      path: "/zxc",
+    setCookie(`pageThree-${cookies.userId}`, "true", {
+      path: "/dashboard",
       expires: new Date(Date.now() + 10 * 365 * 24 * 60 * 60 * 1000),
     });
+
+    setPageThreeInState(true);
   };
 
   // If pageThree cookie is set, navigate to marketer page
-  if (cookies.pageThree) {
+  if (cookies[`pageThree-${cookies.userId}`] || pageThreeInState) {
     return <Navigate to={`${process.env.PUBLIC_URL}/falak/marketer`} />;
   }
 
@@ -84,7 +82,7 @@ export default function HowWorks() {
               size="large"
               to={`${process.env.PUBLIC_URL}/login`}
             >
-              استمرار
+              تسجيل دخول
             </Button>
           ) : (
             <Button

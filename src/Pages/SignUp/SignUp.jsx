@@ -1,8 +1,8 @@
 import style from "./SignUp.module.scss";
+import { Link, useNavigate } from "react-router-dom";
 // Mui
 import * as React from "react";
 import TextField from "@mui/material/TextField";
-import { Link, useNavigate } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -25,6 +25,7 @@ export default function SignUp() {
   const handleBack = () => {
     navigate(`${process.env.PUBLIC_URL}/`);
   };
+
   // Allow only digits (0-9) and control keys (backspace, delete, etc.)
   const handleKeyPress = (event) => {
     if (
