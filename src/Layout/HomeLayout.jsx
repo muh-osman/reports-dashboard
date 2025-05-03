@@ -6,11 +6,13 @@ import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
-import IosShareIcon from "@mui/icons-material/IosShare";
+// import IosShareIcon from "@mui/icons-material/IosShare";
 import PhoneIcon from "@mui/icons-material/Phone";
 import TranslateIcon from "@mui/icons-material/Translate";
 import LoginIcon from "@mui/icons-material/Login";
-import SystemUpdateIcon from "@mui/icons-material/SystemUpdate";
+// import SystemUpdateIcon from "@mui/icons-material/SystemUpdate";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import StoreIcon from "@mui/icons-material/Store";
 //
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
@@ -24,59 +26,59 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
-import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
+// import Typography from "@mui/material/Typography";
+// import Modal from "@mui/material/Modal";
 // Logo
 import logo from "../Assets/Images/logo.webp";
-import boldLogo from "../Assets/Images/boldLogo.png";
+// import boldLogo from "../Assets/Images/boldLogo.png";
 // Cookies
 import { useCookies } from "react-cookie";
 
 function HomeLayout() {
   // Check if devics iPhone
-  const [isIOS, setIsIOS] = React.useState(false);
-  React.useEffect(() => {
-    const userAgent = window.navigator.userAgent.toLowerCase();
-    setIsIOS(/iphone|ipad|ipod/.test(userAgent));
-  }, []);
+  // const [isIOS, setIsIOS] = React.useState(false);
+  // React.useEffect(() => {
+  //   const userAgent = window.navigator.userAgent.toLowerCase();
+  //   setIsIOS(/iphone|ipad|ipod/.test(userAgent));
+  // }, []);
 
-  const [openIosModal, setOpenIosModal] = React.useState(false);
-  const handleIosModalOpen = () => setOpenIosModal(true);
-  const handleIosModalClose = () => setOpenIosModal(false);
+  // const [openIosModal, setOpenIosModal] = React.useState(false);
+  // const handleIosModalOpen = () => setOpenIosModal(true);
+  // const handleIosModalClose = () => setOpenIosModal(false);
 
   // PWM Notification
-  const [deferredPrompt, setDeferredPrompt] = React.useState(null);
+  // const [deferredPrompt, setDeferredPrompt] = React.useState(null);
 
-  React.useEffect(() => {
-    const handleBeforeInstallPrompt = (event) => {
-      // console.log(event);
-      event.preventDefault();
-      setDeferredPrompt(event);
-    };
+  // React.useEffect(() => {
+  //   const handleBeforeInstallPrompt = (event) => {
+  //     // console.log(event);
+  //     event.preventDefault();
+  //     setDeferredPrompt(event);
+  //   };
 
-    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+  //   window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
 
-    return () => {
-      window.removeEventListener(
-        "beforeinstallprompt",
-        handleBeforeInstallPrompt
-      );
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener(
+  //       "beforeinstallprompt",
+  //       handleBeforeInstallPrompt
+  //     );
+  //   };
+  // }, []);
 
-  const handleInstallClick = () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === "accepted") {
-          console.log("User accepted the A2HS prompt");
-        } else {
-          console.log("User dismissed the A2HS prompt");
-        }
-        setDeferredPrompt(null);
-      });
-    }
-  };
+  // const handleInstallClick = () => {
+  //   if (deferredPrompt) {
+  //     deferredPrompt.prompt();
+  //     deferredPrompt.userChoice.then((choiceResult) => {
+  //       if (choiceResult.outcome === "accepted") {
+  //         console.log("User accepted the A2HS prompt");
+  //       } else {
+  //         console.log("User dismissed the A2HS prompt");
+  //       }
+  //       setDeferredPrompt(null);
+  //     });
+  //   }
+  // };
 
   // Controll the positin of drop down menue
   const theme = useTheme();
@@ -100,6 +102,7 @@ function HomeLayout() {
     "username",
     "userId",
     "phoneNumber",
+    "auth",
   ]);
 
   const logout = () => {
@@ -108,6 +111,7 @@ function HomeLayout() {
     removeCookie("phoneNumber", { path: "/dashboard" });
     removeCookie("username", { path: "/dashboard" });
     removeCookie("tokenApp", { path: "/dashboard" });
+    removeCookie("auth", { path: "/" });
 
     // Refresh the page after logout
     window.location.reload();
@@ -188,9 +192,9 @@ function HomeLayout() {
         <>
           <div className={style.header}>
             <div className={style.top_circle_header}>
-              <Link to={`${process.env.PUBLIC_URL}/`}>
+              <a href="https://cashif.cc/">
                 <img src={logo} alt="cashif logo" />
-              </Link>
+              </a>
 
               <Tooltip
                 title="المزيد"
@@ -254,28 +258,39 @@ function HomeLayout() {
                 </MenuItem>
                 <MenuItem onClick={contact}>
                   <ListItemIcon>
-                    <PhoneIcon fontSize="small" />
+                    <StoreIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>فروعنا</ListItemText>
+                </MenuItem>
+                <MenuItem
+                  onClick={() =>
+                    (window.location.href =
+                      "https://api.whatsapp.com/send?phone=966920019948&text=*اختر من القائمة الرئيسية*")
+                  }
+                >
+                  <ListItemIcon>
+                    <WhatsAppIcon fontSize="small" />
                   </ListItemIcon>
                   <ListItemText>اتصل بنا</ListItemText>
                 </MenuItem>
 
-                {deferredPrompt && (
+                {/* {deferredPrompt && (
                   <MenuItem onClick={handleInstallClick}>
                     <ListItemIcon>
                       <SystemUpdateIcon fontSize="small" />
                     </ListItemIcon>
                     <ListItemText>تثبيت كتطبيق PWA</ListItemText>
                   </MenuItem>
-                )}
+                )} */}
 
-                {isIOS && (
+                {/* {isIOS && (
                   <MenuItem onClick={handleIosModalOpen}>
                     <ListItemIcon>
                       <SystemUpdateIcon fontSize="small" />
                     </ListItemIcon>
                     <ListItemText>تثبيت كتطبيق PWA</ListItemText>
                   </MenuItem>
-                )}
+                )} */}
 
                 <Divider />
 
@@ -299,7 +314,7 @@ function HomeLayout() {
           </Popover>
 
           {/* IOS Modal */}
-          <Modal
+          {/* <Modal
             open={openIosModal}
             onClose={handleIosModalClose}
             aria-labelledby="modal-modal-title"
@@ -349,7 +364,7 @@ function HomeLayout() {
                 الشاشة الرئيسية"
               </Typography>
             </Box>
-          </Modal>
+          </Modal> */}
         </>
       )}
 
@@ -405,24 +420,24 @@ function HomeLayout() {
             </li>
 
             <li
-              className="list act"
+              className="list"
               aria-label="الرئيسية"
               title="الرئيسية"
               onClick={() => activeLink(2)}
               ref={(el) => (listRefs.current[2] = el)} // Assign ref
             >
-              <Link to={`${process.env.PUBLIC_URL}/`}>
+              <a href="https://cashif.cc/">
                 <span className="icon">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
                     <path d="M575.8 255.5c0 18-15 32.1-32 32.1l-32 0 .7 160.2c0 2.7-.2 5.4-.5 8.1l0 16.2c0 22.1-17.9 40-40 40l-16 0c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1L416 512l-24 0c-22.1 0-40-17.9-40-40l0-24 0-64c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32 14.3-32 32l0 64 0 24c0 22.1-17.9 40-40 40l-24 0-31.9 0c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2l-16 0c-22.1 0-40-17.9-40-40l0-112c0-.9 0-1.9 .1-2.8l0-69.7-32 0c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z" />
                   </svg>
                 </span>
                 <span className="text-mob-nav">الرئيسية</span>
-              </Link>
+              </a>
             </li>
 
             <li
-              className="list"
+              className="list act"
               aria-label="الأسعار"
               title="الأسعار"
               onClick={() => activeLink(3)}

@@ -59,9 +59,9 @@ export default function Verify() {
     <div style={{ backgroundColor: "#f0f1f3" }}>
       <div className={style.header}>
         <div className={style.top_circle_header}>
-          <Link to={`${process.env.PUBLIC_URL}/`}>
+          <a href="https://cashif.cc/">
             <img src={logo} alt="cashif logo" />
-          </Link>
+          </a>
           <Tooltip
             title="عودة"
             className={style.three_dots}

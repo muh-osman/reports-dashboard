@@ -191,81 +191,85 @@ export default function CouponImages({ code, percent }) {
 
   if (!isGetAllPostsSuccess || !AllPosts?.data) {
     return (
-      <main className={style.zxxc}>
-        <div className={style.img_box}>
-          <img src={palceholderImage} alt="cashif off" />
-        </div>
-      </main>
+      <div className={style.llc}>
+        <main className={style.zxxc}>
+          <div className={style.img_box}>
+            <img src={palceholderImage} alt="cashif off" />
+          </div>
+        </main>
+      </div>
     );
   }
 
   return (
-    <main className={style.zxxc}>
-      <div ref={ref} className={style.img_box}>
-        <img id="img" src={oneImage} alt="cashif off" />
+    <div className={style.llc}>
+      <main className={style.zxxc}>
+        <div ref={ref} className={style.img_box}>
+          <img id="img" src={oneImage} alt="cashif off" />
 
-        <div className={style.down_text}>
-          <div>
-            <h1>{code}</h1>
-          </div>
+          <div className={style.down_text}>
+            <div>
+              <h1>{code}</h1>
+            </div>
 
-          <div className={style.sale}>
-            <p>خصم</p>
-            <p>%{percent}</p>
+            <div className={style.sale}>
+              <p>خصم</p>
+              <p>%{percent}</p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className={style.bio}>
-        <p style={{ whiteSpace: "pre-line" }}>{post}</p>
-        <button onClick={handleClick}>
-          <ContentCopyIcon />
-        </button>
-      </div>
+        <div className={style.bio}>
+          <p style={{ whiteSpace: "pre-line" }}>{post}</p>
+          <button onClick={handleClick}>
+            <ContentCopyIcon />
+          </button>
+        </div>
 
-      <div className={style.share_btn}></div>
+        <div className={style.share_btn}></div>
 
-      <Box>
-        <Grid container sx={{ justifyContent: "space-evenly" }}>
-          {sharePlatforms.map((platform) => (
-            <Grid item key={platform.name}>
-              <Tooltip title={platform.name}>
-                <IconButton
-                  aria-label={`Share on ${platform.name}`}
-                  onClick={platform.onClick}
-                  sx={{
-                    backgroundColor: platform.color,
-                    color: "white",
-                    "&:hover": {
+        <Box>
+          <Grid container sx={{ justifyContent: "space-evenly" }}>
+            {sharePlatforms.map((platform) => (
+              <Grid item key={platform.name}>
+                <Tooltip title={platform.name}>
+                  <IconButton
+                    aria-label={`Share on ${platform.name}`}
+                    onClick={platform.onClick}
+                    sx={{
                       backgroundColor: platform.color,
-                      opacity: 0.9,
-                    },
-                  }}
-                >
-                  {platform.icon}
-                </IconButton>
-              </Tooltip>
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
+                      color: "white",
+                      "&:hover": {
+                        backgroundColor: platform.color,
+                        opacity: 0.9,
+                      },
+                    }}
+                  >
+                    {platform.icon}
+                  </IconButton>
+                </Tooltip>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
 
-      <Stack
-        dir="ltr"
-        spacing={2}
-        sx={{ paddingTop: "16px", paddingBottom: "16px" }}
-        direction="row"
-      >
-        <Button variant="outlined" onClick={nextBtn}>
-          <ArrowBackIosNewIcon />
-        </Button>
-        <Button variant="contained" sx={{ flex: 1 }} onClick={downloadImg}>
-          تحميل
-        </Button>
-        <Button variant="outlined" onClick={prevBtn}>
-          <ArrowForwardIosIcon />
-        </Button>
-      </Stack>
-    </main>
+        <Stack
+          dir="ltr"
+          spacing={2}
+          sx={{ paddingTop: "16px", paddingBottom: "16px" }}
+          direction="row"
+        >
+          <Button variant="outlined" onClick={nextBtn}>
+            <ArrowBackIosNewIcon />
+          </Button>
+          <Button variant="contained" sx={{ flex: 1 }} onClick={downloadImg}>
+            تحميل
+          </Button>
+          <Button variant="outlined" onClick={prevBtn}>
+            <ArrowForwardIosIcon />
+          </Button>
+        </Stack>
+      </main>
+    </div>
   );
 }

@@ -16,7 +16,7 @@ export default function Copyright(props) {
       <Link
         color="inherit"
         component={RouterLink}
-        to={`${process.env.PUBLIC_URL}/`}
+        href="https://cashif.cc/"
         onMouseOver={(e) => (e.target.style.color = "#7431fa")}
         onMouseOut={(e) => (e.target.style.color = "inherit")}
       >

@@ -27,7 +27,7 @@ export default function ContactUs() {
       <h1
         style={{ textAlign: "center", marginTop: "16px", marginBottom: "32px" }}
       >
-        اتصل بنا
+        فروعنا
       </h1>
       <Box
         sx={{

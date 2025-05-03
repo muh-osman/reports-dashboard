@@ -107,7 +107,11 @@ const ChecklistItem = ({ checked, text, tooltip }) => {
         dangerouslySetInnerHTML={{ __html: checked ? TrueIcon : FalseIcon }}
       ></span>{" "}
       {text}
-      <Tooltip title={tooltip} arrow enterTouchDelay={0}>
+      <Tooltip
+        title={<p style={{ direction: "rtl" }}>{tooltip}</p>}
+        arrow
+        enterTouchDelay={0}
+      >
         <IconButton>
           <InfoIcon sx={{ fontSize: "16px" }} />
         </IconButton>
@@ -185,17 +189,14 @@ const checklistItems = [
 export default function Prices() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const checkit = queryParams.get("checkit") === "true"; // Returns (boolean)
+  const [checkit, setCheckit] = React.useState(
+    queryParams.get("checkit") === "true"
+  );
   //
-  const inputRef = React.useRef(null);
   const overlay = React.useRef(null);
   React.useEffect(() => {
     // Scroll to the top of the page
     window.scrollTo(0, 0);
-
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
   }, []);
 
   //
@@ -283,14 +284,13 @@ export default function Prices() {
           fontWeight: "bold",
         }}
       >
-        ضع نوع السيارة
+        أدخل نوع السيارة
       </Typography>
 
       <div className={style.box}>
         <Autocomplete
           dir="rtl"
           sx={{ backgroundColor: "#fff" }}
-          ref={inputRef}
           disablePortal
           onChange={handleModelChange} // Add the onChange handler
           options={isSuccess ? models.carModels : []}
@@ -302,7 +302,30 @@ export default function Prices() {
               {option.model_name}
             </li>
           )}
-          noOptionsText={"جاري التحميل..."}
+          noOptionsText={
+            isSuccess ? (
+              <div
+                dir="rtl"
+                style={{ padding: "8px 16px", textAlign: "center" }}
+              >
+                <a
+                  href="https://wa.me/966920019948?text=استعلام عن موديل غير موجود"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: "#0b6bcb", textDecoration: "none" }}
+                >
+                  موديل غير موجود، اتصل بنا
+                </a>
+              </div>
+            ) : (
+              <div
+                dir="rtl"
+                style={{ padding: "8px 16px", textAlign: "center" }}
+              >
+                جاري التحميل...
+              </div>
+            )
+          }
         />
 
         <Box sx={{ width: "85%", margin: "auto", marginTop: "28px" }}>
@@ -349,57 +372,55 @@ export default function Prices() {
             </div>
             <div className="plane-box">
               {/* المحركات */}
-              {!checkit && (
-                <div className="col plane eng-pane dis rounded-3 shadow-sm">
-                  <div className="card mb-4 card-price eng">
-                    <div className="card-header py-3">
-                      <h4 className="my-0 fw-normal">المحركات</h4>
-                    </div>
-                    <div className="card-body">
-                      <h1
-                        id="engain-price"
-                        className="card-title pricing-card-title"
-                      >
-                        {engainPrice}
-                        <span dangerouslySetInnerHTML={{ __html: ryalIcon }} />
-                      </h1>
-                      <h3
-                        id="old-price-a"
-                        style={{
-                          marginTop: "-12px",
-                          fontSize: 16,
-                          color: "#d32f2f",
-                        }}
-                      ></h3>
-                      <h5>تشمل فحص:</h5>
-                      <ul className="list-unstyled mt-3 mb-4">
-                        {checklistItems.map((item, index) => (
-                          <ChecklistItem
-                            key={index}
-                            checked={index < 7} // First 7 items checked for engines plan
-                            text={item.text}
-                            tooltip={item.tooltip}
-                          />
-                        ))}
-                      </ul>
-                      <a
-                        aria-label="Ask now Button"
-                        id="plane-one"
-                        className="ask-now"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href={`https://cashif.cc/${
-                          checkit ? "check-it/receipt" : "pay"
-                        }/?plan=محركات&year_id=${
-                          selectedYear >= 2015 ? 2 : 1
-                        }&car_model_id=${selectedModelId}&price_id=2`}
-                      >
-                        أطلب الأن
-                      </a>
-                    </div>
+              <div className="col plane eng-pane dis rounded-3 shadow-sm">
+                <div className="card mb-4 card-price eng">
+                  <div className="card-header py-3">
+                    <h4 className="my-0 fw-normal">المحركات</h4>
+                  </div>
+                  <div className="card-body">
+                    <h1
+                      id="engain-price"
+                      className="card-title pricing-card-title"
+                    >
+                      {engainPrice}
+                      <span dangerouslySetInnerHTML={{ __html: ryalIcon }} />
+                    </h1>
+                    <h3
+                      id="old-price-a"
+                      style={{
+                        marginTop: "-12px",
+                        fontSize: 16,
+                        color: "#d32f2f",
+                      }}
+                    ></h3>
+                    <h5>تشمل فحص:</h5>
+                    <ul className="list-unstyled mt-3 mb-4">
+                      {checklistItems.map((item, index) => (
+                        <ChecklistItem
+                          key={index}
+                          checked={index < 7} // First 7 items checked for engines plan
+                          text={item.text}
+                          tooltip={item.tooltip}
+                        />
+                      ))}
+                    </ul>
+                    <a
+                      aria-label="Ask now Button"
+                      id="plane-one"
+                      className="ask-now"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={`https://cashif.cc/${
+                        checkit ? "check-it/receipt" : "pay"
+                      }/?plan=محركات&year_id=${
+                        selectedYear >= 2015 ? 2 : 1
+                      }&car_model_id=${selectedModelId}&price_id=2&full_year=${selectedYear}`}
+                    >
+                      أطلب الأن
+                    </a>
                   </div>
                 </div>
-              )}
+              </div>
 
               {/* الأساسي */}
               <div className="col plane main-plane dis rounded-3 shadow-sm">
@@ -444,7 +465,7 @@ export default function Prices() {
                         checkit ? "check-it/receipt" : "pay"
                       }/?plan=أساسي&year_id=${
                         selectedYear >= 2015 ? 2 : 1
-                      }&car_model_id=${selectedModelId}&price_id=1`}
+                      }&car_model_id=${selectedModelId}&price_id=1&full_year=${selectedYear}`}
                     >
                       أطلب الأن
                     </a>
@@ -525,7 +546,7 @@ export default function Prices() {
                         checkit ? "check-it/receipt" : "pay"
                       }/?plan=شامل&year_id=${
                         selectedYear >= 2015 ? 2 : 1
-                      }&car_model_id=${selectedModelId}&price_id=0`}
+                      }&car_model_id=${selectedModelId}&price_id=0&full_year=${selectedYear}`}
                     >
                       أطلب الأن
                     </a>

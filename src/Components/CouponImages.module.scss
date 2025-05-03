@@ -1,3 +1,9 @@
+.llc {
+  @media (max-width: 407px) {
+    margin-left: -16px;
+    margin-right: -16px;
+  }
+}
 main.zxxc {
   max-width: 550px;
   height: 100%;
@@ -6,6 +12,10 @@ main.zxxc {
   position: relative;
   border-radius: 9px;
   margin: auto;
+
+  @media (max-width: 620px) {
+    width: 360px;
+  }
 
   .img_box {
     position: relative;
@@ -46,8 +56,9 @@ main.zxxc {
     padding: 3px;
 
     @media (max-width: 550px) {
-      bottom: 3px;
-      right: 3px;
+      border: none;
+      bottom: 6px;
+      right: 7px;
     }
 
     h1 {
@@ -59,7 +70,7 @@ main.zxxc {
 
       @media (max-width: 550px) {
         font-size: 24px;
-        padding: 0px 8px;
+        padding: 0px 6px;
       }
     }
 
@@ -75,6 +86,7 @@ main.zxxc {
 
         @media (max-width: 550px) {
           font-size: 12px;
+          padding: 0px 6px;
         }
       }
     }

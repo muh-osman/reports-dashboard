@@ -16,7 +16,7 @@ import { CookiesProvider } from "react-cookie";
 // React query
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 // PWM
-import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+// import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 // Create a client
 const qc = new QueryClient({
@@ -66,4 +66,4 @@ reportWebVitals();
 
 
 // Register the service worker
-serviceWorkerRegistration.register();
+// serviceWorkerRegistration.register();

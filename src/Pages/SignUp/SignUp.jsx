@@ -23,7 +23,7 @@ export default function SignUp() {
   //
   const navigate = useNavigate();
   const handleBack = () => {
-    navigate(`${process.env.PUBLIC_URL}/`);
+    navigate(`${process.env.PUBLIC_URL}/reports`);
   };
 
   // Allow only digits (0-9) and control keys (backspace, delete, etc.)
@@ -87,9 +87,9 @@ export default function SignUp() {
     <div style={{ backgroundColor: "#f0f1f3" }}>
       <div className={style.header}>
         <div className={style.top_circle_header}>
-          <Link to={`${process.env.PUBLIC_URL}/`}>
+          <a href="https://cashif.cc/">
             <img src={logo} alt="cashif logo" />
-          </Link>
+          </a>
           <Tooltip
             title="عودة"
             className={style.three_dots}

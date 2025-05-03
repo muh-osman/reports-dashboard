@@ -27,6 +27,7 @@ import Marketer from "./Pages/Marketer/Marketer";
 import Transfer from "./Pages/Transfer/Transfer";
 import History from "./Pages/History/History";
 import AcceptedNumbers from "./Utils/AcceptedNumbers";
+import Logout from "./Pages/Logout/Logout";
 
 
 export default function App() {
@@ -63,6 +64,7 @@ export default function App() {
           <Route path={`${process.env.PUBLIC_URL}/booking`} element={<Booking />} />
           <Route path={`${process.env.PUBLIC_URL}/edit-booking/:id`} element={<EditBooking />} />
           <Route path={`${process.env.PUBLIC_URL}/contact`} element={<ContactUs />} />
+          <Route path={`${process.env.PUBLIC_URL}/logout`} element={<Logout />} />
         </Route>
         {/* End protected route */}
 

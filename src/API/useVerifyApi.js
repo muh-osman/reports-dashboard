@@ -18,6 +18,7 @@ export const useVerifyApi = () => {
     "username",
     "userId",
     "phoneNumber",
+    "auth",
   ]);
 
   return useMutation({
@@ -62,6 +63,10 @@ export const useVerifyApi = () => {
             path: "/dashboard",
             expires: expirationDate,
           });
+          setCookie("auth", "true", {
+            path: "/",
+            expires: expirationDate,
+          });
 
           // Navigate to reports
           navigate(`${process.env.PUBLIC_URL}/reports`, { replace: true });
@@ -77,6 +82,7 @@ export const useVerifyApi = () => {
       removeCookie("username", { path: "/dashboard" });
       removeCookie("phoneNumber", { path: "/dashboard" });
       removeCookie("tokenApp", { path: "/dashboard" });
+      removeCookie("auth", { path: "/" });
       const errorMessage =
         err?.response?.data?.message || err?.message || "An error occurred";
       // Toastify

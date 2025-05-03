@@ -335,11 +335,13 @@ export default function Booking() {
               disabled={isPostApoinmentFormMutatePending}
             >
               {allBranches && allBranches.length > 0 ? (
-                allBranches.map((branch) => (
-                  <MenuItem dir="rtl" key={branch.id} value={branch.id}>
-                    {branch.nameAr}
-                  </MenuItem>
-                ))
+                allBranches
+                  .filter((branch) => branch.nameAr !== "افتراضي") // Filter out branches with nameAr "افتراضي"
+                  .map((branch) => (
+                    <MenuItem dir="rtl" key={branch.id} value={branch.id}>
+                      {branch.nameAr}
+                    </MenuItem>
+                  ))
               ) : (
                 <MenuItem dir="rtl" value="">
                   جاري التحميل..
@@ -520,10 +522,11 @@ export default function Booking() {
               size="large"
               loading={isPostApoinmentFormMutatePending}
             >
-              حجز{" "}
+              حجز
+              {/* {" "}
               <span style={{ paddingRight: "9px" }}>
                 ({selectedService?.pricing} ريال تقريبا)
-              </span>
+              </span> */}
             </LoadingButton>
           )}
         </FormControl>
