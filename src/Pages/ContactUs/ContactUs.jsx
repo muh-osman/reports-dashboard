@@ -10,6 +10,9 @@ import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 import EmailIcon from "@mui/icons-material/Email";
 import { Box, Typography } from "@mui/material";
 import CardContent from "@mui/material/CardContent";
+// Lang
+import i18n from "../../i18n";
+import { useTranslation } from "react-i18next";
 // Images
 import alqadisia from "../../Assets/Images/alqadisia.jpg";
 import alshifa from "../../Assets/Images/alshifa.jpg";
@@ -21,15 +24,32 @@ export default function ContactUs() {
     // Scroll to the top of the page
     window.scrollTo(0, 0);
   }, []);
+  //
+  const { t } = useTranslation();
+  const [languageText, setLanguageText] = React.useState(i18n.language);
+  // Add language change listener
+  React.useEffect(() => {
+    const handleLanguageChange = (lng) => {
+      setLanguageText(lng);
+    };
+
+    i18n.on("languageChanged", handleLanguageChange);
+
+    // Cleanup function to remove the listener when component unmounts
+    return () => {
+      i18n.off("languageChanged", handleLanguageChange);
+    };
+  }, []);
 
   return (
     <div dir="rtl" className={style.container}>
       <h1
         style={{ textAlign: "center", marginTop: "16px", marginBottom: "32px" }}
       >
-        فروعنا
+        {t("ContactUs.ourBranches")}
       </h1>
       <Box
+        dir={languageText === "ar" ? "rtl" : "ltr"}
         sx={{
           display: "flex",
           flexWrap: "wrap",
@@ -53,7 +73,7 @@ export default function ContactUs() {
           />
           <CardContent sx={{ paddingBottom: "0px" }}>
             <Typography variant="h5" component="div">
-              الرياض - معارض القادسية
+              {t("ContactUs.RiyadhAlQadisiyah")}
             </Typography>
           </CardContent>
 
@@ -70,14 +90,26 @@ export default function ContactUs() {
             <IconButton aria-label="جوال" href="mailto:info@cashif.cc">
               <EmailIcon />
             </IconButton>
-            <Typography variant="body2" sx={{ marginLeft: 1 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                marginLeft: languageText === "ar" ? 1 : 0,
+                marginRight: languageText === "ar" ? 0 : 1,
+              }}
+            >
               info@cashif.cc
             </Typography>
 
             <IconButton aria-label="جوال" href="tel:920019948">
               <PhoneIphoneIcon />
             </IconButton>
-            <Typography variant="body2" sx={{ marginLeft: 1 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                marginLeft: languageText === "ar" ? 1 : 0,
+                marginRight: languageText === "ar" ? 0 : 1,
+              }}
+            >
               920019948
             </Typography>
           </CardActions>
@@ -100,7 +132,7 @@ export default function ContactUs() {
 
           <CardContent sx={{ paddingBottom: "0px" }}>
             <Typography variant="h5" component="div">
-              الرياض - معارض الشفا
+              {t("ContactUs.RiyadhAlShifa")}
             </Typography>
           </CardContent>
 
@@ -117,14 +149,26 @@ export default function ContactUs() {
             <IconButton aria-label="جوال" href="mailto:info@cashif.cc">
               <EmailIcon />
             </IconButton>
-            <Typography variant="body2" sx={{ marginLeft: 1 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                marginLeft: languageText === "ar" ? 1 : 0,
+                marginRight: languageText === "ar" ? 0 : 1,
+              }}
+            >
               info@cashif.cc
             </Typography>
 
             <IconButton aria-label="جوال" href="tel:920019948">
               <PhoneIphoneIcon />
             </IconButton>
-            <Typography variant="body2" sx={{ marginLeft: 1 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                marginLeft: languageText === "ar" ? 1 : 0,
+                marginRight: languageText === "ar" ? 0 : 1,
+              }}
+            >
               920019948
             </Typography>
           </CardActions>
@@ -147,7 +191,7 @@ export default function ContactUs() {
 
           <CardContent sx={{ paddingBottom: "0px" }}>
             <Typography variant="h5" component="div">
-              الدمام - معارض الدمام
+              {t("ContactUs.Dammam")}
             </Typography>
           </CardContent>
 
@@ -164,14 +208,26 @@ export default function ContactUs() {
             <IconButton aria-label="جوال" href="mailto:info@cashif.cc">
               <EmailIcon />
             </IconButton>
-            <Typography variant="body2" sx={{ marginLeft: 1 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                marginLeft: languageText === "ar" ? 1 : 0,
+                marginRight: languageText === "ar" ? 0 : 1,
+              }}
+            >
               info@cashif.cc
             </Typography>
 
             <IconButton aria-label="جوال" href="tel:920019948">
               <PhoneIphoneIcon />
             </IconButton>
-            <Typography variant="body2" sx={{ marginLeft: 1 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                marginLeft: languageText === "ar" ? 1 : 0,
+                marginRight: languageText === "ar" ? 0 : 1,
+              }}
+            >
               920019948
             </Typography>
           </CardActions>
@@ -194,7 +250,7 @@ export default function ContactUs() {
 
           <CardContent sx={{ paddingBottom: "0px" }}>
             <Typography variant="h5" component="div">
-              جدة - معارض جدة
+              {t("ContactUs.Jeddah")}
             </Typography>
           </CardContent>
 
@@ -211,14 +267,26 @@ export default function ContactUs() {
             <IconButton aria-label="جوال" href="mailto:info@cashif.cc">
               <EmailIcon />
             </IconButton>
-            <Typography variant="body2" sx={{ marginLeft: 1 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                marginLeft: languageText === "ar" ? 1 : 0,
+                marginRight: languageText === "ar" ? 0 : 1,
+              }}
+            >
               info@cashif.cc
             </Typography>
 
             <IconButton aria-label="جوال" href="tel:920019948">
               <PhoneIphoneIcon />
             </IconButton>
-            <Typography variant="body2" sx={{ marginLeft: 1 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                marginLeft: languageText === "ar" ? 1 : 0,
+                marginRight: languageText === "ar" ? 0 : 1,
+              }}
+            >
               920019948
             </Typography>
           </CardActions>

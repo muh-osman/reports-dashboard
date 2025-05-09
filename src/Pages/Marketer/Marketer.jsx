@@ -36,8 +36,27 @@ import { useCreateMarketerApi } from "../../API/useCreateMarketerApi";
 import CouponImages from "../../Components/CouponImages";
 // NumberFlow
 import NumberFlow from "@number-flow/react";
+// Lang
+import i18n from "../../i18n";
+import { useTranslation } from "react-i18next";
 
 export default function Marketer() {
+  const { t } = useTranslation();
+  const [languageText, setLanguageText] = React.useState(i18n.language);
+  // Add language change listener
+  React.useEffect(() => {
+    const handleLanguageChange = (lng) => {
+      setLanguageText(lng);
+    };
+
+    i18n.on("languageChanged", handleLanguageChange);
+
+    // Cleanup function to remove the listener when component unmounts
+    return () => {
+      i18n.off("languageChanged", handleLanguageChange);
+    };
+  }, []);
+  //
   const navigate = useNavigate();
   //
   React.useEffect(() => {
@@ -112,12 +131,15 @@ export default function Marketer() {
     if (marketerData?.points >= 200) {
       navigate(`${process.env.PUBLIC_URL}/falak/transfer`);
     } else {
-      toast.warn("الحد الأدنى لسحب الأرباح 200 ريال");
+      toast.warn(t("Marketer.minimumWithdrawalAmountIs200Riyals"));
     }
   };
 
   return (
-    <div dir="rtl" className={style.container}>
+    <div
+      dir={languageText === "ar" ? "rtl" : "ltr"}
+      className={style.container}
+    >
       {!cookies.tokenApp ? (
         <div className={style.not_auth_container}>
           <div className={style.not_auth_box}>
@@ -131,22 +153,14 @@ export default function Marketer() {
                   <path d="M323.4 85.2l-96.8 78.4c-16.1 13-19.2 36.4-7 53.1c12.9 17.8 38 21.3 55.3 7.8l99.3-77.2c7-5.4 17-4.2 22.5 2.8s4.2 17-2.8 22.5l-20.9 16.2L512 316.8 512 128l-.7 0-3.9-2.5L434.8 79c-15.3-9.8-33.2-15-51.4-15c-21.8 0-43 7.5-60 21.2zm22.8 124.4l-51.7 40.2C263 274.4 217.3 268 193.7 235.6c-22.2-30.5-16.6-73.1 12.7-96.8l83.2-67.3c-11.6-4.9-24.1-7.4-36.8-7.4C234 64 215.7 69.6 200 80l-72 48 0 224 28.2 0 91.4 83.4c19.6 17.9 49.9 16.5 67.8-3.1c5.5-6.1 9.2-13.2 11.1-20.6l17 15.6c19.5 17.9 49.9 16.6 67.8-2.9c4.5-4.9 7.8-10.6 9.9-16.5c19.4 13 45.8 10.3 62.1-7.5c17.9-19.5 16.6-49.9-2.9-67.8l-134.2-123zM16 128c-8.8 0-16 7.2-16 16L0 352c0 17.7 14.3 32 32 32l32 0c17.7 0 32-14.3 32-32l0-224-80 0zM48 320a16 16 0 1 1 0 32 16 16 0 1 1 0-32zM544 128l0 224c0 17.7 14.3 32 32 32l32 0c17.7 0 32-14.3 32-32l0-208c0-8.8-7.2-16-16-16l-80 0zm32 208a16 16 0 1 1 32 0 16 16 0 1 1 -32 0z" />
                 </svg>
               </div>
-              <h1>"فالك" للتسويق بالعمولة</h1>
+              <h1>{t("Marketer.title")}</h1>
+              <p>{t("Marketer.subTitleOne")}</p>
+              <p>{t("Marketer.subTitleTwo")}</p>
               <p>
-                برنامج "فالك" للتسويق بالعمولة هو منصة تتيح لك كمسوق فرصة ربح
-                المال بسهولة من خلال الترويج لخدمات مركز كاشف لفحص السيارات عبر
-                الإنترنت او من خلال التوصية المباشرة لدوائر المعارف والأصدقاء
-                والمقربين.
-              </p>
-              <p>
-                من خلال الانضمام إلى البرنامج، تحصل على "كود" تسويقي خاص بك
-                للترويج لمنتجات الفحص، وعندما يقوم الأشخاص بزيارة مراكز كاشف
-                لفحص السيارت والحصول على احد منتجات الفحص عبر "الكود"، تكسب
-                عمولة على كل عملية فحص.
-              </p>
-              <p>
-                انضم إلى "فالك" اليوم وابدأ رحلتك في عالم التسويق بالعمولة.{" "}
-                <span style={{ fontWeight: "bold" }}>وفالك التوفيق!</span>
+                {t("Marketer.subTitleThree")}{" "}
+                <span style={{ fontWeight: "bold" }}>
+                  {t("Marketer.subTitleFour")}
+                </span>
               </p>
             </div>
 
@@ -158,7 +172,7 @@ export default function Marketer() {
               size="large"
               to={`${process.env.PUBLIC_URL}/login`}
             >
-              انضم الآن
+              {t("Marketer.joinNow")}
             </Button>
           </div>
         </div>
@@ -168,8 +182,8 @@ export default function Marketer() {
             <div className={style.money_card_container}>
               <div className={style.money_card_header}>
                 <div>
-                  <p>الرصيد الحالي</p>
-                  <h1>
+                  <p>{t("Marketer.currentBalance")}</p>
+                  <h1 dir="rtl">
                     {/* {marketerData?.points || 0}{" "} */}
                     <NumberFlow
                       value={marketerData?.points || 0}
@@ -231,7 +245,6 @@ export default function Marketer() {
                           verticalAlign: "middle",
                         }}
                       />
-                      {/* Adjust size and color as needed */}
                     </div>
                   </Box>
                 </div>
@@ -239,18 +252,19 @@ export default function Marketer() {
 
               <div className={style.money_card_footer}>
                 <h3>
-                  نسبة العمولة{" "}
+                  {t("Marketer.commissionRate")}{" "}
                   {MarketerSettings?.marketerCommissionPercentage || 0}%
                 </h3>
                 <h3 style={{ backgroundColor: "#3887d5", color: "#fff" }}>
-                  نسبة الخصم {MarketerSettings?.codeDiscountPercentage || 0}%
+                  {t("Marketer.discountRate")}{" "}
+                  {MarketerSettings?.codeDiscountPercentage || 0}%
                 </h3>
               </div>
             </div>
 
             <div className={style.person_card_container}>
               <Tooltip
-                title="المزيد"
+                title={t("Marketer.more")}
                 className={style.infoIcon}
                 id="basic-button"
                 aria-controls={open ? "basic-menu" : undefined}
@@ -264,7 +278,7 @@ export default function Marketer() {
               </Tooltip>
 
               <Popover
-                dir="rtl"
+                dir={languageText === "ar" ? "rtl" : "ltr"}
                 id="basic-menu"
                 anchorEl={anchorEl}
                 open={open}
@@ -285,14 +299,16 @@ export default function Marketer() {
                       <ListItemIcon>
                         <WorkIcon fontSize="small" />
                       </ListItemIcon>
-                      <ListItemText>طريقة العمل</ListItemText>
+                      <ListItemText>{t("Marketer.howItWorks")}</ListItemText>
                     </MenuItem>
 
                     <MenuItem onClick={handleCondetionAndTermsModalOpen}>
                       <ListItemIcon>
                         <GavelIcon fontSize="small" />
                       </ListItemIcon>
-                      <ListItemText>الشروط والأحكام</ListItemText>
+                      <ListItemText>
+                        {t("Marketer.termsAndConditions")}
+                      </ListItemText>
                     </MenuItem>
                   </MenuList>
                 </Paper>
@@ -306,7 +322,7 @@ export default function Marketer() {
                 aria-describedby="modal-modal-description"
               >
                 <Box
-                  dir="rtl"
+                  dir={languageText === "ar" ? "rtl" : "ltr"}
                   sx={{
                     position: "absolute",
                     top: "50%",
@@ -342,64 +358,76 @@ export default function Marketer() {
 
                   <div>
                     <h1 style={{ fontSize: "24px", marginBottom: "10px" }}>
-                      نحن سعداء لانضمامك إلى برنامج "فالك"!
+                      {t("HowWorks.weAreExcitedToHaveYouJoinTheFalkProgram")}
                     </h1>
 
                     <p style={{ color: "#757575" }}>
-                      باستخدام الصورة التسويقية التي تحتوي على{" "}
-                      <span style={{ fontWeight: "bold" }}>كودك الخاص</span>،
-                      يمكنك الترويج لخدمة فحص السيارات.
+                      {t("HowWorks.usingMarketingImageThatContains")}{" "}
+                      <span style={{ fontWeight: "bold" }}>
+                        {t("HowWorks.yourOwnCode")}
+                      </span>
+                      {t("HowWorks.youCanPromoteYourCarInspectionService")}
                     </p>
                     <p style={{ color: "#757575" }}>
-                      الكود يمنح العملاء{" "}
-                      <span style={{ fontWeight: "bold" }}>خصم 20%</span>، بينما
-                      تحصل أنت على{" "}
-                      <span style={{ fontWeight: "bold" }}>عمولة 10%</span> عن
-                      كل عملية حجز تتم باستخدام الكود.
+                      {t("HowWorks.theCodeGivesCustomers")}{" "}
+                      <span style={{ fontWeight: "bold" }}>
+                        {t("HowWorks.TwinyDiscount")}
+                      </span>
+                      {t("HowWorks.whileYouGet")}{" "}
+                      <span style={{ fontWeight: "bold" }}>
+                        {t("HowWorks.tenPrecentCommission")}
+                      </span>{" "}
+                      {t("HowWorks.forEveryReservationMadeUsingTheCode")}
                     </p>
 
                     <div
+                      dir={languageText === "ar" ? "rtl" : "ltr"}
                       style={{
                         color: "#757575",
-                        textAlign: "right",
                         marginTop: "16px",
+                        ...(languageText === "ar"
+                          ? { textAlign: "right" }
+                          : { textAlign: "left" }),
                       }}
                     >
-                      <h3>كيفية العمل:</h3>
+                      <h3>{t("HowWorks.howToWork")}:</h3>
                       <div>
                         <ol
                           style={{
                             listStylePosition: "outside",
-                            paddingRight: "16px",
+                            ...(languageText === "ar"
+                              ? { paddingRight: 16 }
+                              : { paddingLeft: 16 }),
                           }}
                         >
                           <li>
                             <span style={{ fontWeight: "bold" }}>
-                              استخدم الصورة والكود
+                              {t("HowWorks.useImageAndCode")}
                             </span>{" "}
-                            للترويج عبر منصاتك الإلكترونية.
+                            {t("HowWorks.toPromoteThroughYourOnlinePlatforms")}
                           </li>
                           <li>
                             <span style={{ fontWeight: "bold" }}>
-                              شارك مع جمهورك
+                              {t("HowWorks.shareWithYourAudience")}
                             </span>{" "}
-                            بأن الكود يتيح لهم خصم 20% عند حجز خدمة فحص
-                            السيارات.
+                            {t(
+                              "HowWorks.theCodeGivesThemTwentPercentDiscountWhenBookingCarInspection"
+                            )}
                           </li>
                           <li>
                             <span style={{ fontWeight: "bold" }}>
-                              احصل على عمولة 10%
+                              {t("HowWorks.getTenPercentCommission")}
                             </span>{" "}
-                            عن كل حجز يتم باستخدام كودك.
+                            {t("HowWorks.forEveryReservationMadeUsingYourCode")}
                           </li>
                         </ol>
                       </div>
                     </div>
                     <p style={{ color: "#757575", marginTop: "16px" }}>
-                      انطلق في الترويج الآن وابدأ في جني الأرباح!
+                      {t("HowWorks.startPromotingNowAndStartMakingProfits")}
                     </p>
                     <p style={{ fontWeight: "bold", color: "#757575" }}>
-                      وفالك التوفيق!
+                      {t("HowWorks.goodLuckToYou")}
                     </p>
                   </div>
                 </Box>
@@ -411,9 +439,10 @@ export default function Marketer() {
                 onClose={handleCondetionAndTermsModalClose}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
+                dir={languageText === "ar" ? "rtl" : "ltr"}
               >
                 <Box
-                  dir="rtl"
+                  dir={languageText === "ar" ? "rtl" : "ltr"}
                   sx={{
                     position: "absolute",
                     top: "50%",
@@ -437,215 +466,166 @@ export default function Marketer() {
                     overflowX: "hidden", // Prevent horizontal scrolling
                   }}
                 >
-                  <div className={style.terms_box}>
+                  <div
+                    className={style.terms_box}
+                    style={
+                      languageText === "ar"
+                        ? { textAlign: "right" }
+                        : { textAlign: "left" }
+                    }
+                  >
                     <div>
-                      <h1>الشروط والأحكام:</h1>
-                      <p>
-                        فكرة التسويق بالعمولة هي فكرة تحت التجربة، وقد تكون
-                        قابلة للإيقاف أو التعديل في أي لحظة بناءً على تقييم
-                        الأداء ونتائج التجربة. نحرص على تقديم أفضل الحلول بما
-                        يتناسب مع أهدافنا المشتركة،
-                      </p>
+                      <h1>{t("Conditions.termsAndConditions")}:</h1>
+                      <p>{t("Conditions.termsHeader")}</p>
 
-                      <h6>تعريفات</h6>
+                      <h6>{t("Conditions.definitions")}</h6>
                       <div>
-                        <ul>
-                          <li>
-                            الشركة: الجهة المالكة للمنتجات أو الخدمات المقدمة
-                            عبر برنامج التسويق بالعمولة.
-                          </li>
-                          <li>
-                            المسوق: الشخص أو الكيان المشترك في البرنامج والذي
-                            يسوّق للمنتجات أو الخدمات مقابل عمولة.
-                          </li>
-                          <li>
-                            العمولة: المبلغ أو النسبة المالية التي يحصل عليها
-                            المسوق مقابل كل عملية بيع أو إجراء محدد تم تحقيقه من
-                            خلال الكود التسويقي الخاص به.
-                          </li>
-                          <li>
-                            كود المسوق: الرابط الفريد الخاص بكل مسوق لمتابعة
-                            الأداء وتحديد العمليات التي تمت من خلاله.
-                          </li>
+                        <ul
+                          style={
+                            languageText === "ar"
+                              ? { paddingRight: 16 }
+                              : { paddingLeft: 16 }
+                          }
+                        >
+                          <li>{t("Conditions.definitionsA")}</li>
+                          <li>{t("Conditions.definitionsB")}</li>
+                          <li>{t("Conditions.definitionsC")}</li>
+                          <li>{t("Conditions.definitionsD")}</li>
                         </ul>
                       </div>
 
-                      <h6>شروط التسجيل</h6>
+                      <h6>{t("Conditions.registrationTerms")}</h6>
                       <div>
-                        <ul>
-                          <li>
-                            يجب أن يكون المسوق شخصًا طبيعيًا أو اعتباريًا يتمتع
-                            بالأهلية القانونية.
-                          </li>
-                          <li>الا يقل عمر المشترك عن 18 سنة.</li>
-                          <li>
-                            يُشترط تقديم بيانات صحيحة ودقيقة أثناء التسجيل.
-                          </li>
-                          <li>
-                            يحق للشركة في أي مرحلة طلب صورة من الهوية والإقامة.
-                          </li>
-                          <li>
-                            يجب على المشارك الإبلاغ عن أي تغييرات في معلوماته
-                          </li>
-                          <li>يحظر على المشارك تسجيل حسابات متعددة.</li>
-                          <li>
-                            تحتفظ الشركة بالحق في قبول أو رفض طلب التسجيل دون
-                            إبداء أسباب.
-                          </li>
+                        <ul
+                          style={
+                            languageText === "ar"
+                              ? { paddingRight: 16 }
+                              : { paddingLeft: 16 }
+                          }
+                        >
+                          <li>{t("Conditions.registrationTermsA")}</li>
+                          <li>{t("Conditions.registrationTermsB")}</li>
+                          <li>{t("Conditions.registrationTermsC")}</li>
+                          <li>{t("Conditions.registrationTermsD")}</li>
+                          <li>{t("Conditions.registrationTermsE")}</li>
+                          <li>{t("Conditions.registrationTermsF")}</li>
+                          <li>{t("Conditions.registrationTermsG")}</li>
                         </ul>
                       </div>
 
-                      <h6>آلية العمل</h6>
+                      <h6>{t("Conditions.mechanismOfAction")}</h6>
                       <div>
-                        <ul>
-                          <li>
-                            يحصل المسوق على كود تسويقي فريد بعد التسجيل
-                            والموافقة.
-                          </li>
-                          <li>
-                            سيحصل المسوق على عمولة 10% من صافي قيمة الفاتورة.
-                          </li>
-                          <li>
-                            قد تتغير نسبة العمولة في أي وقت دون ابداء أسباب
-                            التغيير.
-                          </li>
-                          <li>
-                            تُحسب العمولات بناءً على العمليات التي تتم من خلال
-                            الكود التسويقي وفقًا للاتفاق المبرم.
-                          </li>
-                          <li>
-                            التطبيق هي المنصة الوحيدة التي تعرض تقارير الزيارات
-                            التي وصلت من خلال نشر الكود.
-                          </li>
-                          <li>
-                            لا يُسمح باستخدام أساليب غير قانونية أو غير أخلاقية
-                            لجذب العملاء.
-                          </li>
-                          <li>
-                            يستفيد المسوق من الخصم فقط ولا يحصل على عمولة اذا
-                            استخدم كوده التسويقي لزياراته الخاصة.
-                          </li>
+                        <ul
+                          style={
+                            languageText === "ar"
+                              ? { paddingRight: 16 }
+                              : { paddingLeft: 16 }
+                          }
+                        >
+                          <li>{t("Conditions.mechanismOfActionA")}</li>
+                          <li>{t("Conditions.mechanismOfActionB")}</li>
+                          <li>{t("Conditions.mechanismOfActionC")}</li>
+                          <li>{t("Conditions.mechanismOfActionD")}</li>
+                          <li>{t("Conditions.mechanismOfActionE")}</li>
+                          <li>{t("Conditions.mechanismOfActionF")}</li>
+                          <li>{t("Conditions.mechanismOfActionG")}</li>
                         </ul>
                       </div>
 
-                      <h6>الدفع</h6>
+                      <h6>{t("Conditions.payment")}</h6>
                       <div>
-                        <ul>
-                          <li>
-                            يتم دفع العمولات وفقًا لتقارير الأداء بعد التحقق من
-                            صحة العمليات.
-                          </li>
-                          <li>
-                            يُشترط أن تصل قيمة العمولات مستحقة الدفع إلى 200
-                            ريال وهو الحد الأدنى للدفع المحدد.
-                          </li>
-                          <li>
-                            لا يتم الدفع والتحويل الا على حسابات بنكية محلية او
-                            تطبيقات سعودية كـ stc pay او urpay
-                          </li>
-                          <li>
-                            يجب ان يكون الحساب المحول عليه العمولة باسم المسوق
-                            المسجل في التطبيق.
-                          </li>
-                          <li>
-                            أي نزاع حول العمولات يتم حله وفقًا لتقارير الشركة
-                            النهائية.
-                          </li>
+                        <ul
+                          style={
+                            languageText === "ar"
+                              ? { paddingRight: 16 }
+                              : { paddingLeft: 16 }
+                          }
+                        >
+                          <li>{t("Conditions.paymentA")}</li>
+                          <li>{t("Conditions.paymentB")}</li>
+                          <li>{t("Conditions.paymentC")}</li>
+                          <li>{t("Conditions.paymentD")}</li>
+                          <li>{t("Conditions.paymentE")}</li>
                         </ul>
                       </div>
 
-                      <h6>التزامات المسوق</h6>
+                      <h6>{t("Conditions.marketerObligations")}</h6>
                       <div>
-                        <ul>
-                          <li>
-                            الالتزام بالترويج لمنتجات وأنواع الفحص والخدمات
-                            بطريقة قانونية وأخلاقية.
-                          </li>
-                          <li>
-                            الامتناع عن الإساءة لسمعة الشركة أو المنتجات بأي
-                            شكل.
-                          </li>
-                          <li>
-                            الامتناع عن استخدام العلامة التجارية للشركة في
-                            الإعلانات المدفوعة دون إذن مسبق.
-                          </li>
-                          <li>
-                            عدم انشاء أي حسابات في جميع مواقع التواصل باسم
-                            الشركة بغرض التسويق للمنتجات.
-                          </li>
+                        <ul
+                          style={
+                            languageText === "ar"
+                              ? { paddingRight: 16 }
+                              : { paddingLeft: 16 }
+                          }
+                        >
+                          <li>{t("Conditions.marketerObligationsA")}</li>
+                          <li>{t("Conditions.marketerObligationsB")}</li>
+                          <li>{t("Conditions.marketerObligationsC")}</li>
+                          <li>{t("Conditions.marketerObligationsD")}</li>
                         </ul>
                       </div>
 
-                      <h6>التزامات الشركة</h6>
+                      <h6>{t("Conditions.companyObligations")}</h6>
                       <div>
-                        <ul>
-                          <li>
-                            تقديم أدوات التسويق اللازمة مثل اكواد التسويق
-                            والتقارير.
-                          </li>
-                          <li>
-                            دفع العمولات في الوقت المحدد بعد التحقق من العمليات.
-                          </li>
-                          <li>
-                            الاحتفاظ بسرية معلومات المسوق وعدم مشاركتها مع أطراف
-                            خارجية دون موافقة.
-                          </li>
+                        <ul
+                          style={
+                            languageText === "ar"
+                              ? { paddingRight: 16 }
+                              : { paddingLeft: 16 }
+                          }
+                        >
+                          <li>{t("Conditions.companyObligationsA")}</li>
+                          <li>{t("Conditions.companyObligationsB")}</li>
+                          <li>{t("Conditions.companyObligationsC")}</li>
                         </ul>
                       </div>
 
-                      <h6>الإلغاء</h6>
+                      <h6>{t("Conditions.cancellation")}</h6>
                       <div>
-                        <ul>
-                          <li>
-                            تحتفظ الشركة بالحق في إنهاء عضوية أي مسوق إذا تم
-                            اكتشاف انتهاك للشروط.
-                          </li>
-                          <li>
-                            يحق للشركة إيقاف العمل في خطة التسويق بالعمولة في أي
-                            وقت دون ان يترتب على ذلك أي التزامات قانونية او
-                            مالية تجاه الشركة.
-                          </li>
-                          <li>يمكن للمسوق إنهاء عضويته بإخطار مسبق للشركة.</li>
-                          <li>
-                            عند انهاء المسوق لعضويته فسيتم إزالة كافة بياناته
-                            وعليه التسجيل من جديد في حال رغب بالانضمام مرة أخرى،
-                            ولا يحق له المطالبة بأي عمولات متبقية من حسابه
-                            الملغي.
-                          </li>
+                        <ul
+                          style={
+                            languageText === "ar"
+                              ? { paddingRight: 16 }
+                              : { paddingLeft: 16 }
+                          }
+                        >
+                          <li>{t("Conditions.cancellationA")}</li>
+                          <li>{t("Conditions.cancellationB")}</li>
+                          <li>{t("Conditions.cancellationC")}</li>
+                          <li>{t("Conditions.cancellationD")}</li>
                         </ul>
                       </div>
 
-                      <h6>التعديلات</h6>
+                      <h6>{t("Conditions.modifications")}</h6>
                       <div>
-                        <ul>
-                          <li>
-                            يحق للشركة تعديل الشروط والأحكام في أي وقت، ويتم
-                            إشعار المسوقين بالتعديلات قبل تطبيقها.
-                          </li>
-                          <li>
-                            استمرار المسوق في استخدام البرنامج بعد التعديلات
-                            يعتبر موافقة ضمنية عليها.
-                          </li>
+                        <ul
+                          style={
+                            languageText === "ar"
+                              ? { paddingRight: 16 }
+                              : { paddingLeft: 16 }
+                          }
+                        >
+                          <li>{t("Conditions.modificationsA")}</li>
+                          <li>{t("Conditions.modificationsB")}</li>
                         </ul>
                       </div>
 
-                      <h6>القوانين المعمول بها</h6>
+                      <h6>{t("Conditions.applicableLaws")}</h6>
                       <div>
-                        <ul>
-                          <li>
-                            تخضع هذه الشروط والأحكام للقوانين واللوائح المحلية.
-                          </li>
-                          <li>
-                            يتم تسوية أي نزاع وفقًا للجهات القضائية المختصة.
-                          </li>
+                        <ul
+                          style={
+                            languageText === "ar"
+                              ? { paddingRight: 16 }
+                              : { paddingLeft: 16 }
+                          }
+                        >
+                          <li>{t("Conditions.applicableLawsA")}</li>
+                          <li>{t("Conditions.applicableLawsB")}</li>
                         </ul>
                       </div>
 
-                      <h6>إخلاء المسؤولية</h6>
-                      <p>
-                        الشركة غير مسؤولة عن أي خسائر أو أضرار ناجمة عن سوء
-                        استخدام برنامج التسويق بالعمولة من قبل المسوق.
-                      </p>
+                      <h6>{t("Conditions.disclaimer")}</h6>
+                      <p>{t("Conditions.disclaimerA")}</p>
                     </div>
 
                     <div>
@@ -653,7 +633,7 @@ export default function Marketer() {
                         control={
                           <Checkbox required checked={true} disabled={true} />
                         }
-                        label="أوافق على الشروط والأحكام, وأقر بأنني قرأتها وفهمتها بالكامل"
+                        label={t("Conditions.label")}
                       />
                     </div>
 
@@ -664,7 +644,7 @@ export default function Marketer() {
                       size="large"
                       disabled={true}
                     >
-                      موافق
+                      {t("Conditions.ok")}
                     </Button>
                   </div>
                 </Box>
@@ -676,23 +656,25 @@ export default function Marketer() {
 
                 <div className={style.person_data_box}>
                   <div>
-                    <p>استخدام الكود</p>
+                    <p>{t("Marketer.useTheCode")}</p>
                     <h3>{marketerData?.cardCount || 0}</h3>
                   </div>
 
                   <div>
-                    <p>الحالة</p>
+                    <p>{t("Marketer.status")}</p>
                     <h3
                       style={{
                         color: marketerData?.isActive ? "#25d366" : "#d32f2f",
                       }}
                     >
-                      {marketerData?.isActive ? "نشط" : "غير نشط"}
+                      {marketerData?.isActive
+                        ? t("Marketer.active")
+                        : t("Marketer.inactive")}
                     </h3>
                   </div>
 
                   <div>
-                    <p>كود التسويق</p>
+                    <p>{t("Marketer.marketingCode")}</p>
                     <h3>{marketerData?.code || "-"}</h3>
                   </div>
                 </div>
@@ -704,7 +686,7 @@ export default function Marketer() {
                     variant="contained"
                     onClick={transfer}
                   >
-                    سحب الأرباح
+                    {t("Marketer.withdrawProfits")}
                   </Button>
 
                   <Button
@@ -714,7 +696,7 @@ export default function Marketer() {
                     component={Link}
                     to={`${process.env.PUBLIC_URL}/falak/history`}
                   >
-                    السجل
+                    {t("Marketer.history")}
                   </Button>
                 </div>
               </div>
@@ -726,7 +708,9 @@ export default function Marketer() {
           </div>
 
           {/* Images Downloader */}
-          <h5 className={style.last_reports_title}>حقيبة المسوق</h5>
+          <h5 className={style.last_reports_title}>
+            {t("Marketer.marketerBag")}
+          </h5>
           <Divider sx={{ marginBottom: "18px" }} />
 
           <CouponImages

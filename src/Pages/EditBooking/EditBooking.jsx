@@ -24,11 +24,30 @@ import useGetAllManufacturerApi from "../../API/useGetAllManufacturerApi";
 import useGetServices from "../../API/useGetServices";
 import { useEditAppointmentApi } from "../../API/useEditAppointmentApi";
 import useGetAppointmentApi from "../../API/useGetAppointmentApi";
+// Lang
+import i18n from "../../i18n";
+import { useTranslation } from "react-i18next";
 
 export default function EditBooking() {
   React.useEffect(() => {
     // Scroll to the top of the page
     window.scrollTo(0, 0);
+  }, []);
+  //
+  const { t } = useTranslation();
+  const [languageText, setLanguageText] = React.useState(i18n.language);
+  // Add language change listener
+  React.useEffect(() => {
+    const handleLanguageChange = (lng) => {
+      setLanguageText(lng);
+    };
+
+    i18n.on("languageChanged", handleLanguageChange);
+
+    // Cleanup function to remove the listener when component unmounts
+    return () => {
+      i18n.off("languageChanged", handleLanguageChange);
+    };
   }, []);
   // Get the id from the URL
   const { id } = useParams();
@@ -276,7 +295,7 @@ export default function EditBooking() {
           component="div"
           style={{ textAlign: "center", margin: "20px", color: "#757575" }}
         >
-          يرجى{" "}
+          {t("EditBooking.please")}{" "}
           <Link
             to={`${process.env.PUBLIC_URL}/login`}
             style={{
@@ -286,9 +305,9 @@ export default function EditBooking() {
             onMouseOver={() => setIsHovered(true)}
             onMouseOut={() => setIsHovered(false)}
           >
-            تسجيل الدخول
+            {t("EditBooking.logIn")}
           </Link>{" "}
-          لتعديل الحجز
+          {t("EditBooking.toModifyTheReservation")}
         </Typography>
       ) : (
         <>
@@ -303,32 +322,47 @@ export default function EditBooking() {
               fontWeight: "bold",
             }}
           >
-            تعديل الحجز
+            {t("EditBooking.modifyReservation")}
           </Typography>
           <Box sx={{ minWidth: 120, maxWidth: "400px", margin: "auto" }}>
             {/*  مكان الفحص */}
-            <FormControl fullWidth dir="rtl">
+            <FormControl fullWidth dir={languageText === "ar" ? "rtl" : "ltr"}>
               {/* الفرع  */}
               <TextField
                 sx={{ backgroundColor: "#fff", marginTop: "16px" }}
-                dir="rtl"
+                dir={languageText === "ar" ? "rtl" : "ltr"}
                 required
                 fullWidth
                 select
-                label="الفرع"
+                label={t("EditBooking.branch")}
                 value={selectedBranch}
                 onChange={handleBranchChange}
                 disabled={isPending || isSuccess}
               >
                 {allBranches && allBranches.length > 0 ? (
-                  allBranches.map((branch) => (
-                    <MenuItem dir="rtl" key={branch.id} value={branch.id}>
-                      {branch.nameAr}
-                    </MenuItem>
-                  ))
+                  allBranches
+                    .filter(
+                      (branch) =>
+                        branch.nameAr !== "افتراضي" ||
+                        branch.nameEn !== "Virtual"
+                    )
+                    .map((branch) => (
+                      <MenuItem
+                        dir={languageText === "ar" ? "rtl" : "ltr"}
+                        key={branch.id}
+                        value={branch.id}
+                      >
+                        {languageText === "en"
+                          ? branch?.nameEn
+                          : branch?.nameAr}
+                      </MenuItem>
+                    ))
                 ) : (
-                  <MenuItem dir="rtl" value="">
-                    جاري التحميل..
+                  <MenuItem
+                    dir={languageText === "ar" ? "rtl" : "ltr"}
+                    value=""
+                  >
+                    {t("EditBooking.loading")}
                   </MenuItem>
                 )}
               </TextField>
@@ -336,24 +370,35 @@ export default function EditBooking() {
               {/* الشركة المصنعة */}
               <Autocomplete
                 className={style.autocomplete_input}
-                dir="ltr"
+                dir={languageText === "ar" ? "rtl" : "ltr"}
                 sx={{ backgroundColor: "#fff", marginTop: "16px" }}
                 disablePortal
                 onChange={handleManufacturerChange} // Add the onChange handler
                 options={allManufacturers ? allManufacturers : []}
-                getOptionLabel={(option) => option.nameAr}
+                getOptionLabel={(option) =>
+                  languageText === "en" ? option.nameEn : option.nameAr
+                }
                 value={
                   allManufacturers?.find(
                     (manufacturer) => manufacturer.id === selectedManufacturer
                   ) || null
                 }
                 renderInput={(params) => (
-                  <TextField {...params} label="الشركة المصنعة" />
+                  <TextField
+                    dir={languageText === "ar" ? "rtl" : "ltr"}
+                    {...params}
+                    label={t("EditBooking.manufacturer")}
+                  />
                 )}
                 // Use a unique key for each option
                 renderOption={(props, option) => (
-                  <li dir="rtl" {...props} key={option.id}>
-                    {option.nameAr}
+                  <li
+                    dir={languageText === "ar" ? "rtl" : "ltr"}
+                    {...props}
+                    key={option.id}
+                  >
+                    {/* {option.nameAr} */}
+                    {languageText === "en" ? option.nameEn : option.nameAr}
                   </li>
                 )}
                 disabled={isPending || isSuccess}
@@ -361,51 +406,61 @@ export default function EditBooking() {
                 clearIcon={null}
                 noOptionsText={
                   allManufacturers === null
-                    ? "جاري التحميل..."
-                    : "لا توجد خيارات متاحة"
+                    ? t("EditBooking.loading")
+                    : t("EditBooking.noOptionsAvailable")
                 }
               />
 
               {/*  سنة الصنع */}
               <TextField
                 sx={{ backgroundColor: "#fff", marginTop: "16px" }}
-                dir="rtl"
+                dir={languageText === "ar" ? "rtl" : "ltr"}
                 required
                 fullWidth
                 select
-                label="سنة الصنع"
+                label={t("EditBooking.yearOfManufacture")}
                 value={selectedYear}
                 onChange={handleYearChange}
                 disabled={isPending || isSuccess}
               >
                 {years && years.length > 0 ? (
                   years.map((year) => (
-                    <MenuItem dir="rtl" key={year.id} value={year.id}>
+                    <MenuItem
+                      dir={languageText === "ar" ? "rtl" : "ltr"}
+                      key={year.id}
+                      value={year.id}
+                    >
                       {year.year}
                     </MenuItem>
                   ))
                 ) : (
-                  <MenuItem dir="rtl" value="">
-                    جاري التحميل..
+                  <MenuItem
+                    dir={languageText === "ar" ? "rtl" : "ltr"}
+                    value=""
+                  >
+                    {t("EditBooking.loading")}
                   </MenuItem>
                 )}
               </TextField>
 
               <div className={style.date_and_time_container}>
                 {/* تاريخ */}
-                <div dir="rtl" className={style.datePickerContainer}>
+                <div
+                  dir={languageText === "ar" ? "rtl" : "ltr"}
+                  className={style.datePickerContainer}
+                >
                   <LocalizationProvider
                     dateAdapter={AdapterDayjs}
                     adapterLocale="en"
                   >
                     <DemoContainer components={["MobileDatePicker"]}>
                       <MobileDatePicker
-                        dir="rtl"
+                        dir={languageText === "ar" ? "rtl" : "ltr"}
                         sx={{
                           backgroundColor: "#fff",
                           width: "100%",
                         }}
-                        label="* تاريخ الفحص"
+                        label={t("EditBooking.examinationDate")}
                         format="DD/MM/YYYY"
                         value={date}
                         onChange={(newValue) => setDate(newValue)}
@@ -418,19 +473,22 @@ export default function EditBooking() {
                 </div>
 
                 {/* الوقت */}
-                <div dir="rtl" className={style.datePickerContainer}>
+                <div
+                  dir={languageText === "ar" ? "rtl" : "ltr"}
+                  className={style.datePickerContainer}
+                >
                   <LocalizationProvider
                     dateAdapter={AdapterDayjs}
                     adapterLocale="en"
                   >
                     <DemoContainer components={["MobileTimePicker"]}>
                       <MobileTimePicker
-                        dir="rtl"
+                        dir={languageText === "ar" ? "rtl" : "ltr"}
                         sx={{
                           backgroundColor: "#fff",
                           width: "100%",
                         }}
-                        label="* وقت الفحص"
+                        label={t("EditBooking.examinationTime")}
                         // format=""
                         value={time}
                         onChange={(newValue) => setTime(newValue)}
@@ -442,37 +500,47 @@ export default function EditBooking() {
                 </div>
               </div>
               <p
-                dir="rtl"
+                dir={languageText === "ar" ? "rtl" : "ltr"}
                 style={{
                   fontSize: "14px",
                   padding: "3px 3px 0 0",
                   color: "#757575",
                 }}
               >
-                اختيار الوقت (من التاسعة صباحاً وحتى التاسعة مساءً)
+                {t("EditBooking.chooseTheTimeFromNineAmToNinePm")}
               </p>
 
               {/*  نوع الخدمة */}
               <TextField
                 sx={{ backgroundColor: "#fff", marginTop: "16px" }}
-                dir="rtl"
+                dir={languageText === "ar" ? "rtl" : "ltr"}
                 required
                 fullWidth
                 select
-                label="نوع الخدمة"
+                label={t("EditBooking.typeOfService")}
                 value={selectedServiceId}
                 onChange={handleServicesChange}
                 disabled={isPending || isSuccess}
               >
                 {allServices && allServices.length > 0 ? (
                   allServices.map((service) => (
-                    <MenuItem dir="rtl" key={service.id} value={service.id}>
-                      {service.nameAr}
+                    <MenuItem
+                      dir={languageText === "ar" ? "rtl" : "ltr"}
+                      key={service.id}
+                      value={service.id}
+                    >
+                      {/* {service.nameAr} */}
+                      {languageText === "en"
+                        ? service?.nameEn
+                        : service?.nameAr}
                     </MenuItem>
                   ))
                 ) : (
-                  <MenuItem dir="rtl" value="">
-                    جاري التحميل..
+                  <MenuItem
+                    dir={languageText === "ar" ? "rtl" : "ltr"}
+                    value=""
+                  >
+                    {t("EditBooking.loading")}
                   </MenuItem>
                 )}
               </TextField>
@@ -482,10 +550,10 @@ export default function EditBooking() {
                 <div className={style.description}>
                   {selectedService && (
                     <pre>
-                      {selectedService?.descriptionAr?.replace(
-                        /(\d+)[.-]\s*/g,
-                        "$1. "
-                      )}
+                      {(languageText === "en"
+                        ? selectedService?.descriptionEn
+                        : selectedService?.descriptionAr
+                      )?.replace(/(\d+)[.-]\s*/g, "$1. ")}
                     </pre>
                   )}
                 </div>
@@ -499,12 +567,12 @@ export default function EditBooking() {
                 size="large"
                 loading={isPending}
               >
-                تعديل{" "}
-                {selectedServiceId && (
+                {t("EditBooking.edit")}
+                {/* {selectedServiceId && (
                   <span style={{ paddingRight: "9px" }}>
                     ({selectedService?.pricing} ريال تقريبا)
                   </span>
-                )}
+                )} */}
               </LoadingButton>
             </FormControl>
           </Box>

@@ -5,11 +5,30 @@ import { useCookies } from "react-cookie";
 // MUI
 import * as React from "react";
 import Button from "@mui/material/Button";
+// Lang
+import i18n from "../../i18n";
+import { useTranslation } from "react-i18next";
 
 export default function HowWorks() {
   React.useEffect(() => {
     // Scroll to the top of the page
     window.scrollTo(0, 0);
+  }, []);
+  //
+  const { t } = useTranslation();
+  const [languageText, setLanguageText] = React.useState(i18n.language);
+  // Add language change listener
+  React.useEffect(() => {
+    const handleLanguageChange = (lng) => {
+      setLanguageText(lng);
+    };
+
+    i18n.on("languageChanged", handleLanguageChange);
+
+    // Cleanup function to remove the listener when component unmounts
+    return () => {
+      i18n.off("languageChanged", handleLanguageChange);
+    };
   }, []);
   // Cookies
   const [cookies, setCookie] = useCookies(["tokenApp", "userId"]);
@@ -31,46 +50,68 @@ export default function HowWorks() {
   }
 
   return (
-    <div dir="rtl" className={style.container}>
+    <div
+      dir={languageText === "ar" ? "rtl" : "ltr"}
+      className={style.container}
+    >
       <div className={style.not_auth_container}>
         <div className={style.not_auth_box}>
           <div>
-            <h1>نحن سعداء لانضمامك إلى برنامج "فالك"!</h1>
+            <h1>{t("HowWorks.weAreExcitedToHaveYouJoinTheFalkProgram")}</h1>
 
             <p>
-              باستخدام الصورة التسويقية التي تحتوي على{" "}
-              <span style={{ fontWeight: "bold" }}>كودك الخاص</span>، يمكنك
-              الترويج لخدمة فحص السيارات.
+              {t("HowWorks.usingMarketingImageThatContains")}{" "}
+              <span style={{ fontWeight: "bold" }}>
+                {t("HowWorks.yourOwnCode")}
+              </span>
+              {t("HowWorks.youCanPromoteYourCarInspectionService")}
             </p>
             <p>
-              الكود يمنح العملاء{" "}
-              <span style={{ fontWeight: "bold" }}>خصم 20%</span>، بينما تحصل
-              أنت على <span style={{ fontWeight: "bold" }}>عمولة 10%</span> عن
-              كل عملية حجز تتم باستخدام الكود.
+              {t("HowWorks.theCodeGivesCustomers")}{" "}
+              <span style={{ fontWeight: "bold" }}>
+                {t("HowWorks.TwinyDiscount")}
+              </span>
+              {t("HowWorks.whileYouGet")}{" "}
+              <span style={{ fontWeight: "bold" }}>
+                {t("HowWorks.tenPrecentCommission")}
+              </span>{" "}
+              {t("HowWorks.forEveryReservationMadeUsingTheCode")}
             </p>
 
-            <h3>كيفية العمل:</h3>
+            <h3>{t("HowWorks.howToWork")}:</h3>
             <div>
-              <ol>
+              <ol
+                style={
+                  languageText === "ar"
+                    ? { paddingRight: 16 }
+                    : { paddingLeft: 16 }
+                }
+              >
                 <li>
                   <span style={{ fontWeight: "bold" }}>
-                    استخدم الصورة والكود
+                    {t("HowWorks.useImageAndCode")}
                   </span>{" "}
-                  للترويج عبر منصاتك الإلكترونية.
+                  {t("HowWorks.toPromoteThroughYourOnlinePlatforms")}
                 </li>
                 <li>
-                  <span style={{ fontWeight: "bold" }}>شارك مع جمهورك</span> بأن
-                  الكود يتيح لهم خصم 20% عند حجز خدمة فحص السيارات.
+                  <span style={{ fontWeight: "bold" }}>
+                    {t("HowWorks.shareWithYourAudience")}
+                  </span>{" "}
+                  {t(
+                    "HowWorks.theCodeGivesThemTwentPercentDiscountWhenBookingCarInspection"
+                  )}
                 </li>
                 <li>
-                  <span style={{ fontWeight: "bold" }}>احصل على عمولة 10%</span>{" "}
-                  عن كل حجز يتم باستخدام كودك.
+                  <span style={{ fontWeight: "bold" }}>
+                    {t("HowWorks.getTenPercentCommission")}
+                  </span>{" "}
+                  {t("HowWorks.forEveryReservationMadeUsingYourCode")}
                 </li>
               </ol>
             </div>
 
-            <p>انطلق في الترويج الآن وابدأ في جني الأرباح!</p>
-            <p style={{ fontWeight: "bold" }}>وفالك التوفيق!</p>
+            <p>{t("HowWorks.startPromotingNowAndStartMakingProfits")}</p>
+            <p style={{ fontWeight: "bold" }}>{t("HowWorks.goodLuckToYou")}</p>
           </div>
 
           {!cookies.tokenApp ? (
@@ -82,7 +123,7 @@ export default function HowWorks() {
               size="large"
               to={`${process.env.PUBLIC_URL}/login`}
             >
-              تسجيل دخول
+              {t("HowWorks.login")}
             </Button>
           ) : (
             <Button
@@ -92,7 +133,7 @@ export default function HowWorks() {
               size="large"
               onClick={pageThree}
             >
-              استمرار
+              {t("HowWorks.continue")}
             </Button>
           )}
         </div>

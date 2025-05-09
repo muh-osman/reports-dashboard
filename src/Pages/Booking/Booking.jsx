@@ -27,6 +27,9 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+// Lang
+import i18n from "../../i18n";
+import { useTranslation } from "react-i18next";
 //
 import dayjs from "dayjs";
 // Cookies
@@ -45,6 +48,21 @@ export default function Booking() {
     window.scrollTo(0, 0);
   }, []);
   //
+  const { t } = useTranslation();
+  const [languageText, setLanguageText] = React.useState(i18n.language);
+  // Add language change listener
+  React.useEffect(() => {
+    const handleLanguageChange = (lng) => {
+      setLanguageText(lng);
+    };
+
+    i18n.on("languageChanged", handleLanguageChange);
+
+    // Cleanup function to remove the listener when component unmounts
+    return () => {
+      i18n.off("languageChanged", handleLanguageChange);
+    };
+  }, []);
   // Utility function to format date to dd/mm/yyyy
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -268,7 +286,7 @@ export default function Booking() {
   const [loadingDelete, setLoadingDelete] = React.useState({});
 
   let handleDeleteApoinment = (id) => {
-    const isConfirmed = window.confirm("هل أنت متأكد من حذف الموعد؟");
+    const isConfirmed = window.confirm(t("Booking.confirmDelete"));
     if (isConfirmed) {
       setLoadingDelete((prev) => ({ ...prev, [id]: true })); // Set loading for the specific card
       deleteApoinmentMutate(id, {
@@ -299,25 +317,29 @@ export default function Booking() {
           fontWeight: "bold",
         }}
       >
-        احجز موعد
+        {t("Booking.bookAppointment")}
       </Typography>
       <Box sx={{ minWidth: 120, maxWidth: "400px", margin: "auto" }}>
         {/*  مكان الفحص */}
-        <FormControl fullWidth dir="rtl">
+        <FormControl fullWidth dir={languageText === "ar" ? "rtl" : "ltr"}>
           {/* الفرع  */}
           {!cookies.tokenApp && (
             <TextField
               sx={{ backgroundColor: "#fff" }}
-              dir="rtl"
+              dir={languageText === "ar" ? "rtl" : "ltr"}
               required
               fullWidth
               select
-              label="الفرع"
+              label={t("Booking.branch")}
               value=""
               disabled={isPostApoinmentFormMutatePending}
             >
-              <MenuItem onClick={navToLoginPage} dir="rtl" value={"notAuth"}>
-                يرجى تسجيل الدخول لحجز موعد
+              <MenuItem
+                onClick={navToLoginPage}
+                dir={languageText === "ar" ? "rtl" : "ltr"}
+                value={"notAuth"}
+              >
+                {t("Booking.pleaseLogInToBookAnAppointment")}
               </MenuItem>
             </TextField>
           )}
@@ -325,26 +347,33 @@ export default function Booking() {
           {cookies.tokenApp && (
             <TextField
               sx={{ backgroundColor: "#fff", marginTop: "16px" }}
-              dir="rtl"
+              dir={languageText === "ar" ? "rtl" : "ltr"}
               required
               fullWidth
               select
-              label="الفرع"
+              label={t("Booking.branch")}
               value={selectedBranch}
               onChange={handleBranchChange}
               disabled={isPostApoinmentFormMutatePending}
             >
               {allBranches && allBranches.length > 0 ? (
                 allBranches
-                  .filter((branch) => branch.nameAr !== "افتراضي") // Filter out branches with nameAr "افتراضي"
+                  .filter(
+                    (branch) =>
+                      branch.nameAr !== "افتراضي" || branch.nameEn !== "Virtual"
+                  ) // Filter out branches with nameAr "افتراضي"
                   .map((branch) => (
-                    <MenuItem dir="rtl" key={branch.id} value={branch.id}>
-                      {branch.nameAr}
+                    <MenuItem
+                      dir={languageText === "ar" ? "rtl" : "ltr"}
+                      key={branch.id}
+                      value={branch.id}
+                    >
+                      {languageText === "en" ? branch?.nameEn : branch?.nameAr}
                     </MenuItem>
                   ))
               ) : (
-                <MenuItem dir="rtl" value="">
-                  جاري التحميل..
+                <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} value="">
+                  {t("Booking.loading")}
                 </MenuItem>
               )}
             </TextField>
@@ -354,19 +383,30 @@ export default function Booking() {
           {cookies.tokenApp && selectedBranch && (
             <Autocomplete
               className={style.autocomplete_input}
-              dir="ltr"
+              dir={languageText === "ar" ? "rtl" : "ltr"}
               sx={{ backgroundColor: "#fff", marginTop: "16px" }}
               disablePortal
               onChange={handleManufacturerChange} // Add the onChange handler
               options={allManufacturers ? allManufacturers : []}
-              getOptionLabel={(option) => option.nameAr}
+              getOptionLabel={(option) =>
+                languageText === "en" ? option.nameEn : option.nameAr
+              }
               renderInput={(params) => (
-                <TextField {...params} label="الشركة المصنعة" />
+                <TextField
+                  dir={languageText === "ar" ? "rtl" : "ltr"}
+                  {...params}
+                  label={t("Booking.manufacturer")}
+                />
               )}
               // Use a unique key for each option
               renderOption={(props, option) => (
-                <li dir="rtl" {...props} key={option.id}>
-                  {option.nameAr}
+                <li
+                  dir={languageText === "ar" ? "rtl" : "ltr"}
+                  {...props}
+                  key={option.id}
+                >
+                  {/* {option.nameAr} */}
+                  {languageText === "en" ? option.nameEn : option.nameAr}
                 </li>
               )}
               disabled={isPostApoinmentFormMutatePending}
@@ -374,8 +414,8 @@ export default function Booking() {
               clearIcon={null}
               noOptionsText={
                 allManufacturers === null
-                  ? "جاري التحميل..."
-                  : "لا توجد خيارات متاحة"
+                  ? t("Booking.loading")
+                  : t("Booking.noOptionsAvailable")
               }
             />
           )}
@@ -384,24 +424,28 @@ export default function Booking() {
           {cookies.tokenApp && selectedManufacturer && (
             <TextField
               sx={{ backgroundColor: "#fff", marginTop: "16px" }}
-              dir="rtl"
+              dir={languageText === "ar" ? "rtl" : "ltr"}
               required
               fullWidth
               select
-              label="سنة الصنع"
+              label={t("Booking.yearOfManufacture")}
               value={selectedYear}
               onChange={handleYearChange}
               disabled={isPostApoinmentFormMutatePending}
             >
               {years && years.length > 0 ? (
                 years.map((year) => (
-                  <MenuItem dir="rtl" key={year.id} value={year.id}>
+                  <MenuItem
+                    dir={languageText === "ar" ? "rtl" : "ltr"}
+                    key={year.id}
+                    value={year.id}
+                  >
                     {year.year}
                   </MenuItem>
                 ))
               ) : (
-                <MenuItem dir="rtl" value="">
-                  جاري التحميل..
+                <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} value="">
+                  {t("Booking.loading")}
                 </MenuItem>
               )}
             </TextField>
@@ -410,7 +454,10 @@ export default function Booking() {
           <div className={style.date_and_time_container}>
             {/* تاريخ */}
             {cookies.tokenApp && selectedYear && (
-              <div dir="rtl" className={style.datePickerContainer}>
+              <div
+                dir={languageText === "ar" ? "rtl" : "ltr"}
+                className={style.datePickerContainer}
+              >
                 <LocalizationProvider
                   dateAdapter={AdapterDayjs}
                   adapterLocale="en"
@@ -418,9 +465,9 @@ export default function Booking() {
                   <DemoContainer components={["MobileDatePicker"]}>
                     <MobileDatePicker
                       fullWidth
-                      dir="rtl"
+                      dir={languageText === "ar" ? "rtl" : "ltr"}
                       sx={{ backgroundColor: "#fff", width: "100%" }}
-                      label="* تاريخ الفحص"
+                      label={t("Booking.examinationDate")}
                       format="DD/MM/YYYY"
                       value={date}
                       onChange={(newValue) => setDate(newValue)}
@@ -435,7 +482,10 @@ export default function Booking() {
 
             {/* الوقت */}
             {cookies.tokenApp && selectedYear && (
-              <div dir="rtl" className={style.datePickerContainer}>
+              <div
+                dir={languageText === "ar" ? "rtl" : "ltr"}
+                className={style.datePickerContainer}
+              >
                 <LocalizationProvider
                   dateAdapter={AdapterDayjs}
                   adapterLocale="en"
@@ -443,9 +493,9 @@ export default function Booking() {
                   <DemoContainer components={["MobileTimePicker"]}>
                     <MobileTimePicker
                       fullWidth
-                      dir="rtl"
+                      dir={languageText === "ar" ? "rtl" : "ltr"}
                       sx={{ backgroundColor: "#fff", width: "100%" }}
-                      label="* وقت الفحص"
+                      label={t("Booking.examinationTime")}
                       // format=""
                       value={time}
                       onChange={(newValue) => setTime(newValue)}
@@ -459,14 +509,14 @@ export default function Booking() {
           </div>
           {cookies.tokenApp && selectedYear && (
             <p
-              dir="rtl"
+              dir={languageText === "ar" ? "rtl" : "ltr"}
               style={{
                 fontSize: "14px",
                 padding: "3px 3px 0 0",
                 color: "#757575",
               }}
             >
-              اختيار الوقت (من التاسعة صباحاً وحتى التاسعة مساءً)
+              {t("Booking.chooseTheTimeFromNineAmToNinePm")}
             </p>
           )}
 
@@ -475,24 +525,33 @@ export default function Booking() {
             <>
               <TextField
                 sx={{ backgroundColor: "#fff", marginTop: "16px" }}
-                dir="rtl"
+                dir={languageText === "ar" ? "rtl" : "ltr"}
                 required
                 fullWidth
                 select
-                label="نوع الخدمة"
+                label={t("Booking.typeOfService")}
                 value={selectedServiceId}
                 onChange={handleServicesChange}
                 disabled={isPostApoinmentFormMutatePending}
               >
                 {allServices && allServices.length > 0 ? (
                   allServices.map((service) => (
-                    <MenuItem dir="rtl" key={service.id} value={service.id}>
-                      {service.nameAr}
+                    <MenuItem
+                      dir={languageText === "ar" ? "rtl" : "ltr"}
+                      key={service.id}
+                      value={service.id}
+                    >
+                      {languageText === "en"
+                        ? service?.nameEn
+                        : service?.nameAr}
                     </MenuItem>
                   ))
                 ) : (
-                  <MenuItem dir="rtl" value="">
-                    جاري التحميل..
+                  <MenuItem
+                    dir={languageText === "ar" ? "rtl" : "ltr"}
+                    value=""
+                  >
+                    {t("Booking.loading")}
                   </MenuItem>
                 )}
               </TextField>
@@ -502,10 +561,10 @@ export default function Booking() {
                 <div className={style.description}>
                   {selectedService && (
                     <pre>
-                      {selectedService?.descriptionAr?.replace(
-                        /(\d+)[.-]\s*/g,
-                        "$1. "
-                      )}
+                      {(languageText === "en"
+                        ? selectedService?.descriptionEn
+                        : selectedService?.descriptionAr
+                      )?.replace(/(\d+)[.-]\s*/g, "$1. ")}
                     </pre>
                   )}
                 </div>
@@ -522,7 +581,7 @@ export default function Booking() {
               size="large"
               loading={isPostApoinmentFormMutatePending}
             >
-              حجز
+              {t("Booking.reservation")}
               {/* {" "}
               <span style={{ paddingRight: "9px" }}>
                 ({selectedService?.pricing} ريال تقريبا)
@@ -533,7 +592,12 @@ export default function Booking() {
       </Box>
 
       {/* Booking Cards */}
-      <h5 className={style.last_appointment_title}>حجوزاتي</h5>
+      <h5
+        dir={languageText === "ar" ? "rtl" : "ltr"}
+        className={style.last_appointment_title}
+      >
+        {t("Booking.myReservations")}
+      </h5>
       <Divider sx={{ marginBottom: "18px" }} />
 
       {!cookies.tokenApp ? (
@@ -542,7 +606,7 @@ export default function Booking() {
           component="div"
           style={{ textAlign: "center", margin: "20px", color: "#757575" }}
         >
-          يرجى{" "}
+          {t("Booking.please")}{" "}
           <Link
             to={`${process.env.PUBLIC_URL}/login`}
             style={{
@@ -552,12 +616,15 @@ export default function Booking() {
             onMouseOver={() => setIsHovered(true)}
             onMouseOut={() => setIsHovered(false)}
           >
-            تسجيل الدخول
+            {t("Booking.logIn")}
           </Link>{" "}
-          لعرض الحجوزات
+          {t("Booking.toViewReservations")}
         </Typography>
       ) : (
-        <div dir="rtl" className={style.appointment_cards_container}>
+        <div
+          dir={languageText === "ar" ? "rtl" : "ltr"}
+          className={style.appointment_cards_container}
+        >
           {allAppointment && allAppointment.length > 0 ? (
             allAppointment
               .slice()
@@ -585,7 +652,11 @@ export default function Booking() {
                         component="div"
                         style={{ fontSize: "14px" }}
                       >
-                        {card.branchNameAr}
+                        {/* {card.branchNameAr} */}
+
+                        {languageText === "en"
+                          ? card?.branchNameEn
+                          : card?.branchNameAr}
                       </Typography>
                     </Box>
 
@@ -601,7 +672,11 @@ export default function Booking() {
                         component="div"
                         style={{ fontSize: "14px" }}
                       >
-                        {card.carManufacturerNameAr}
+                        {/* {card.carManufacturerNameAr} */}
+
+                        {languageText === "en"
+                          ? card?.carManufacturerNameEn
+                          : card?.carManufacturerNameAr}
                       </Typography>
                     </Box>
 
@@ -642,8 +717,11 @@ export default function Booking() {
 
                   <Divider />
 
-                  <CardActions dir="ltr" sx={{ backgroundColor: "#fdfefe" }}>
-                    <Tooltip title="حذف">
+                  <CardActions
+                    dir={languageText === "ar" ? "ltr" : "rtl"}
+                    sx={{ backgroundColor: "#fdfefe" }}
+                  >
+                    <Tooltip title={t("Booking.delete")}>
                       <IconButton
                         onClick={() => handleDeleteApoinment(card.id)}
                         color="error"
@@ -658,7 +736,7 @@ export default function Booking() {
                       </IconButton>
                     </Tooltip>
 
-                    <Tooltip title="تعديل">
+                    <Tooltip title={t("Booking.edit")}>
                       <IconButton
                         onClick={() => handleEditApoinment(card.id)}
                         sx={{ color: "#1976d2" }}
@@ -672,14 +750,14 @@ export default function Booking() {
               ))
           ) : (
             <Typography
-              dir="rtl"
+              dir={languageText === "ar" ? "rtl" : "ltr"}
               variant="h6"
               component="div"
               style={{ textAlign: "center", margin: "20px", color: "#757575" }}
             >
               {fetchAppointmentStatus === "fetching"
-                ? "جاري التحميل.."
-                : "لا يوجد حجوزات"}
+                ? t("Booking.loading")
+                : t("Booking.noReservations")}
             </Typography>
           )}
         </div>

@@ -13,6 +13,9 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+// Lang
+import i18n from "../../i18n";
+import { useTranslation } from "react-i18next";
 // API
 import { useCreateCompanyAccountApi } from "../../API/useCreateCompanyAccountApi";
 // Toastify
@@ -21,6 +24,22 @@ import { toast } from "react-toastify";
 import logo from "../../Assets/Images/logo.webp";
 
 export default function Companies() {
+  //
+  const { t } = useTranslation();
+  const [languageText, setLanguageText] = React.useState(i18n.language);
+  // Add language change listener
+  React.useEffect(() => {
+    const handleLanguageChange = (lng) => {
+      setLanguageText(lng);
+    };
+
+    i18n.on("languageChanged", handleLanguageChange);
+
+    // Cleanup function to remove the listener when component unmounts
+    return () => {
+      i18n.off("languageChanged", handleLanguageChange);
+    };
+  }, []);
   //
   const navigate = useNavigate();
   const handleBack = () => {
@@ -48,7 +67,7 @@ export default function Companies() {
     // Remove leading '0' if present
     if (value.startsWith("0")) {
       value = value.slice(1);
-      toast.warn("لا داعي لإدخال 0 في بداية الرقم");
+      toast.warn(t("Companies.noNeedToEnter0ABeginningOfNumber"));
     }
 
     // Update the input value
@@ -74,7 +93,7 @@ export default function Companies() {
       phoneNumber.length > 9 ||
       isNaN(phoneNumber)
     ) {
-      toast.warn("أدخل رقم هاتف صالح");
+      toast.warn(t("Companies.enterValidPhoneNumber"));
       return;
     }
 
@@ -102,7 +121,7 @@ export default function Companies() {
             <img src={logo} alt="cashif logo" />
           </a>
           <Tooltip
-            title="عودة"
+            title={t("Companies.back")}
             className={style.three_dots}
             onClick={handleBack}
           >
@@ -142,7 +161,7 @@ export default function Companies() {
             component="h1"
             variant="h5"
           >
-            حساب مؤسسات
+            {t("Companies.institutionalAccount")}
           </Typography>
 
           <Box
@@ -165,7 +184,7 @@ export default function Companies() {
                 >
                   <TextField
                     fullWidth
-                    label="اسم الشركة / المؤسسة"
+                    label={t("Companies.companyOrInstitutionName")}
                     name="name"
                     type="text"
                     autoFocus
@@ -185,7 +204,7 @@ export default function Companies() {
                 >
                   <TextField
                     fullWidth
-                    label="رقم الجوال"
+                    label={t("Companies.mobileNumber")}
                     name="phoneNumber"
                     type="tel"
                     required
@@ -212,7 +231,7 @@ export default function Companies() {
                 >
                   <TextField
                     fullWidth
-                    label="عنوان الشركة / المؤسسة"
+                    label={t("Companies.companyOrInstitutionAddress")}
                     name="address"
                     type="text"
                     required
@@ -231,7 +250,7 @@ export default function Companies() {
                 >
                   <TextField
                     fullWidth
-                    label="الرقم الضريبي"
+                    label={t("Companies.taxNumber")}
                     name="taxNumber"
                     type="tel"
                     required
@@ -250,7 +269,7 @@ export default function Companies() {
                 >
                   <TextField
                     fullWidth
-                    label="السجل التجاري"
+                    label={t("Companies.commercialRegister")}
                     name="commerialRecord"
                     type="text"
                     required
@@ -272,7 +291,7 @@ export default function Companies() {
                 loading={isPending}
                 sx={{ mt: 3, mb: 2, transition: "0.1s" }}
               >
-                إنشاء
+                {t("Companies.create")}
               </LoadingButton>
             </Box>
           </Box>

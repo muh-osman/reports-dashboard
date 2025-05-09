@@ -1,9 +1,11 @@
 import style from "./Home.module.scss";
+import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
 export default function Home() {
+  const navigate = useNavigate();
   useEffect(() => {
-    window.location.href = "https://cashif.cc/";
+    navigate("/dashboard/login");
   }, []);
   return <div className={style.container}></div>;
 }

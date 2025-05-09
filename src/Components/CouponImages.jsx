@@ -9,6 +9,9 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { Box, Grid, IconButton, Tooltip } from "@mui/material";
+// Lang
+import i18n from "../i18n";
+import { useTranslation } from "react-i18next";
 // Api
 import useGetAllMarketingPostsApi from "../API/useGetAllMarketingPostsApi";
 //
@@ -50,6 +53,23 @@ const Tiktok = () => (
 );
 
 export default function CouponImages({ code, percent }) {
+  //
+  const { t } = useTranslation();
+  const [languageText, setLanguageText] = useState(i18n.language);
+  // Add language change listener
+  useEffect(() => {
+    const handleLanguageChange = (lng) => {
+      setLanguageText(lng);
+    };
+
+    i18n.on("languageChanged", handleLanguageChange);
+
+    // Cleanup function to remove the listener when component unmounts
+    return () => {
+      i18n.off("languageChanged", handleLanguageChange);
+    };
+  }, []);
+  //
   const [allImages, setAllImages] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [oneImage, setOneImage] = useState([palceholderImage]);
@@ -113,7 +133,7 @@ export default function CouponImages({ code, percent }) {
         })
         .catch((err) => {
           console.error("Error generating image:", err);
-          toast.error("فشل تحميل الصورة");
+          toast.error(t("CouponImages.imageFailedToLoad"));
         });
     }
   }, [ref]);
@@ -125,7 +145,7 @@ export default function CouponImages({ code, percent }) {
 
   const handleClick = () => {
     navigator.clipboard.writeText(post);
-    toast.success("تم النسخ");
+    toast.success(t("CouponImages.copied"));
   };
 
   //
@@ -204,7 +224,7 @@ export default function CouponImages({ code, percent }) {
   return (
     <div className={style.llc}>
       <main className={style.zxxc}>
-        <div ref={ref} className={style.img_box}>
+        <div dir="rtl" ref={ref} className={style.img_box}>
           <img id="img" src={oneImage} alt="cashif off" />
 
           <div className={style.down_text}>
@@ -213,13 +233,13 @@ export default function CouponImages({ code, percent }) {
             </div>
 
             <div className={style.sale}>
-              <p>خصم</p>
+              <p>{t("CouponImages.off")}</p>
               <p>%{percent}</p>
             </div>
           </div>
         </div>
 
-        <div className={style.bio}>
+        <div dir="rtl" className={style.bio}>
           <p style={{ whiteSpace: "pre-line" }}>{post}</p>
           <button onClick={handleClick}>
             <ContentCopyIcon />
@@ -263,7 +283,7 @@ export default function CouponImages({ code, percent }) {
             <ArrowBackIosNewIcon />
           </Button>
           <Button variant="contained" sx={{ flex: 1 }} onClick={downloadImg}>
-            تحميل
+            {t("CouponImages.download")}
           </Button>
           <Button variant="outlined" onClick={prevBtn}>
             <ArrowForwardIosIcon />

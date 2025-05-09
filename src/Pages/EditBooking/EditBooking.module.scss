@@ -33,6 +33,7 @@
   border-radius: 4px;
   border: 1px solid #0000003b;
   color: #757575;
+  overflow: auto;
 }
 
 //
@@ -42,7 +43,12 @@
   }
 
   input {
-    direction: rtl !important;
+    // direction: rtl !important;
     padding-right: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  button[aria-label="Clear"] {
+    display: none;
   }
 }

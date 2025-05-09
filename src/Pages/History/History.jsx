@@ -1,4 +1,5 @@
 import style from "./History.module.scss";
+import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 // MUI
 import Typography from "@mui/material/Typography";
@@ -13,26 +14,41 @@ import DangerousIcon from "@mui/icons-material/Dangerous";
 import useGetPaymentHistoryApi from "../../API/useGetPaymentHistoryApi";
 // Cookies
 import { useCookies } from "react-cookie";
+// Lang
+import i18n from "../../i18n";
+import { useTranslation } from "react-i18next";
 
 // Format date function
 const formatCreatedDate = (isoDateString) => {
   const date = new Date(isoDateString);
-
-  // Format options for Arabic locale
   const options = {
     year: "numeric",
     month: "long",
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
-    hour12: true,
-    numberingSystem: "latn", // Force English numbers
+    hour12: false,
   };
-
-  return date.toLocaleString("ar-EG", options);
+  return date.toLocaleString("en-GB", options);
 };
 
 export default function History() {
+  const { t } = useTranslation();
+  const [languageText, setLanguageText] = useState(i18n.language);
+  // Add language change listener
+  useEffect(() => {
+    const handleLanguageChange = (lng) => {
+      setLanguageText(lng);
+    };
+
+    i18n.on("languageChanged", handleLanguageChange);
+
+    // Cleanup function to remove the listener when component unmounts
+    return () => {
+      i18n.off("languageChanged", handleLanguageChange);
+    };
+  }, []);
+  //
   const [cookies, setCookie] = useCookies(["tokenApp", "userId"]);
 
   // History
@@ -42,7 +58,10 @@ export default function History() {
   return !cookies.tokenApp ? (
     <Navigate to={`${process.env.PUBLIC_URL}/falak/marketer`} replace />
   ) : (
-    <div dir="rtl" className={style.container}>
+    <div
+      dir={languageText === "ar" ? "rtl" : "ltr"}
+      className={style.container}
+    >
       <Typography
         variant="h6"
         component="div"
@@ -55,7 +74,7 @@ export default function History() {
           fontWeight: "bold",
         }}
       >
-        المعاملات المالية
+        {t("History.financialTransactions")}
       </Typography>
 
       {/* History */}
@@ -69,7 +88,9 @@ export default function History() {
                 <span>
                   <AccountBalanceWalletIcon />
                 </span>
-                <span>{payment.point} ريال</span>
+                <span>
+                  {payment.point} {t("History.riyal")}
+                </span>
               </div>
               <div
                 style={{
@@ -93,7 +114,12 @@ export default function History() {
                 <span>
                   <CreditCardIcon />
                 </span>
-                <span>{payment.tranferPaymentTypeNameAr}</span>
+                <span>
+                  {/* {payment.tranferPaymentTypeNameAr} */}
+                  {languageText === "ar"
+                    ? payment.tranferPaymentTypeNameAr
+                    : payment.tranferPaymentTypeNameEn}
+                </span>
               </div>
               <div>
                 <span>
@@ -105,7 +131,7 @@ export default function History() {
                 <span>
                   <AccessTimeIcon />
                 </span>
-                <span>{formatCreatedDate(payment?.createdDate)}</span>
+                <span dir="ltr">{formatCreatedDate(payment?.createdDate)}</span>
               </div>
             </div>
           ))
@@ -116,8 +142,8 @@ export default function History() {
           style={{ textAlign: "center", margin: "20px", color: "#757575" }}
         >
           {fetchHistoryStatus === "fetching"
-            ? "جاري التحميل.."
-            : "لا يوجد بيانات"}
+            ? t("History.loading")
+            : t("History.noData")}
         </Typography>
       )}
     </div>

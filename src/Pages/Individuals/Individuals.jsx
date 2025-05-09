@@ -12,6 +12,9 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+// Lang
+import i18n from "../../i18n";
+import { useTranslation } from "react-i18next";
 // API
 import { useCreateIndividualsAccountApi } from "../../API/useCreateIndividualsAccountApi";
 // Toastify
@@ -20,6 +23,22 @@ import { toast } from "react-toastify";
 import logo from "../../Assets/Images/logo.webp";
 
 export default function Individuals() {
+  //
+  const { t } = useTranslation();
+  const [languageText, setLanguageText] = React.useState(i18n.language);
+  // Add language change listener
+  React.useEffect(() => {
+    const handleLanguageChange = (lng) => {
+      setLanguageText(lng);
+    };
+
+    i18n.on("languageChanged", handleLanguageChange);
+
+    // Cleanup function to remove the listener when component unmounts
+    return () => {
+      i18n.off("languageChanged", handleLanguageChange);
+    };
+  }, []);
   //
   const navigate = useNavigate();
   const handleBack = () => {
@@ -43,7 +62,7 @@ export default function Individuals() {
     // Remove leading '0' if present
     if (value.startsWith("0")) {
       value = value.slice(1);
-      toast.warn("لا داعي لإدخال 0 في بداية الرقم");
+      toast.warn(t("Individuals.noNeedToEnter0ABeginningOfNumber"));
     }
 
     // Update the input value
@@ -69,7 +88,7 @@ export default function Individuals() {
       phoneNumber.length > 9 ||
       isNaN(phoneNumber)
     ) {
-      toast.warn("أدخل رقم هاتف صالح");
+      toast.warn(t("Individuals.enterValidPhoneNumber"));
       return;
     }
 
@@ -95,7 +114,7 @@ export default function Individuals() {
           </a>
 
           <Tooltip
-            title="عودة"
+            title={t("Individuals.back")}
             className={style.three_dots}
             onClick={handleBack}
           >
@@ -136,7 +155,7 @@ export default function Individuals() {
             component="h1"
             variant="h5"
           >
-            حساب أفراد
+            {t("Individuals.individualsAccount")}
           </Typography>
 
           <Box
@@ -161,7 +180,7 @@ export default function Individuals() {
                 >
                   <TextField
                     fullWidth
-                    label="الاسم"
+                    label={t("Individuals.name")}
                     name="name"
                     type="text"
                     autoFocus
@@ -181,7 +200,7 @@ export default function Individuals() {
                 >
                   <TextField
                     fullWidth
-                    label="رقم الجوال"
+                    label={t("Individuals.mobileNumber")}
                     name="phoneNumber"
                     type="tel"
                     required
@@ -211,7 +230,7 @@ export default function Individuals() {
                 loading={isPending}
                 sx={{ mt: 3, mb: 2, transition: "0.1s" }}
               >
-                إنشاء
+                {t("Individuals.create")}
               </LoadingButton>
             </Box>
           </Box>

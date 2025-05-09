@@ -7,6 +7,9 @@ import { TextField } from "@mui/material";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import LoadingButton from "@mui/lab/LoadingButton";
+// Lang
+import i18n from "../../i18n";
+import { useTranslation } from "react-i18next";
 //
 import { toast } from "react-toastify";
 // Cookies
@@ -22,6 +25,22 @@ export default function Transfer() {
   React.useEffect(() => {
     // Scroll to the top of the page
     window.scrollTo(0, 0);
+  }, []);
+  //
+  const { t } = useTranslation();
+  const [languageText, setLanguageText] = React.useState(i18n.language);
+  // Add language change listener
+  React.useEffect(() => {
+    const handleLanguageChange = (lng) => {
+      setLanguageText(lng);
+    };
+
+    i18n.on("languageChanged", handleLanguageChange);
+
+    // Cleanup function to remove the listener when component unmounts
+    return () => {
+      i18n.off("languageChanged", handleLanguageChange);
+    };
   }, []);
   // Cookies
   const [cookies, setCookie] = useCookies(["tokenApp", "userId"]);
@@ -78,12 +97,14 @@ export default function Transfer() {
     if (!validate) return;
 
     if (amount < 200 || isNaN(amount)) {
-      toast.warn("الحد الأدنى لسحب الأرباح 200 ريال");
+      toast.warn(t("Transfer.minimumWithdrawalAmountIs200Riyals"));
       return;
     }
 
     if (amount > marketerData.points) {
-      toast.warn("المبلغ المدخل أكبر من الرصيد المتاح في حسابك");
+      toast.warn(
+        t("Transfer.theAmountEnteredIsGreaterThanAvailableBalanceInYourAccount")
+      );
       return;
     }
 
@@ -107,7 +128,10 @@ export default function Transfer() {
   return !cookies.tokenApp ? (
     <Navigate to={`${process.env.PUBLIC_URL}/falak/marketer`} replace />
   ) : (
-    <div dir="rtl" className={style.container}>
+    <div
+      dir={languageText === "ar" ? "rtl" : "ltr"}
+      className={style.container}
+    >
       <Typography
         variant="h6"
         component="div"
@@ -120,7 +144,7 @@ export default function Transfer() {
           fontWeight: "bold",
         }}
       >
-        سحب الأرباح
+        {t("Transfer.withdrawProfits")}
       </Typography>
 
       <Box
@@ -132,24 +156,29 @@ export default function Transfer() {
       >
         <TextField
           sx={{ backgroundColor: "#fff", marginTop: "16px" }}
-          dir="rtl"
+          dir={languageText === "ar" ? "rtl" : "ltr"}
           required
           fullWidth
           select
-          label="آلية الدفع"
+          label={t("Transfer.paymentMechanism")}
           value={selectedPaymentType}
           onChange={handlePaymentTypeChange}
           disabled={isPending || !checkIfPaymentRequestIsValid}
         >
           {paymentTypes && paymentTypes.length > 0 ? (
             paymentTypes.map((type) => (
-              <MenuItem dir="rtl" key={type.id} value={type.id}>
-                {type.nameAr}
+              <MenuItem
+                dir={languageText === "ar" ? "rtl" : "ltr"}
+                key={type.id}
+                value={type.id}
+              >
+                {/* {type.nameAr} */}
+                {languageText === "ar" ? type.nameAr : type.nameEn}
               </MenuItem>
             ))
           ) : (
-            <MenuItem dir="rtl" value="">
-              جاري التحميل..
+            <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} value="">
+              {t("Transfer.loading")}
             </MenuItem>
           )}
         </TextField>
@@ -157,7 +186,7 @@ export default function Transfer() {
         <TextField
           sx={{ backgroundColor: "#fff", marginTop: "16px" }}
           fullWidth
-          label="رقم الحساب"
+          label={t("Transfer.accountNumber")}
           type="text"
           required
           dir="ltr"
@@ -169,7 +198,7 @@ export default function Transfer() {
         <TextField
           sx={{ backgroundColor: "#fff", marginTop: "16px" }}
           fullWidth
-          label="المبلغ"
+          label={t("Transfer.amount")}
           type="tel"
           required
           dir="ltr"
@@ -186,7 +215,8 @@ export default function Transfer() {
             marginTop: "9px",
           }}
         >
-          الرصيد المتاح للسحب {marketerData?.points} ريال
+          {t("Transfer.availableBalanceForWithdrawal")} {marketerData?.points}{" "}
+          {t("Transfer.riyal")}
         </p>
 
         <LoadingButton
@@ -200,8 +230,8 @@ export default function Transfer() {
           disabled={!checkIfPaymentRequestIsValid}
         >
           {checkIfPaymentRequestIsValid
-            ? "إرسال الطلب"
-            : "يرجى انتظار الموافقة على الطلب السابق"}
+            ? t("Transfer.submitApplication")
+            : t("Transfer.pleaseWaitForApprovalOfThePreviousRequest")}
         </LoadingButton>
       </Box>
     </div>

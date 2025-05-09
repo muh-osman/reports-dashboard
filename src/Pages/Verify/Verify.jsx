@@ -15,12 +15,31 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+// Lang
+import i18n from "../../i18n";
+import { useTranslation } from "react-i18next";
 // API
 import { useVerifyApi } from "../../API/useVerifyApi";
 // PhoneNumberContext
 import { usePhoneNumber } from "../../Contexts/PhoneNumberContext";
 
 export default function Verify() {
+  //
+  const { t } = useTranslation();
+  const [languageText, setLanguageText] = React.useState(i18n.language);
+  // Add language change listener
+  React.useEffect(() => {
+    const handleLanguageChange = (lng) => {
+      setLanguageText(lng);
+    };
+
+    i18n.on("languageChanged", handleLanguageChange);
+
+    // Cleanup function to remove the listener when component unmounts
+    return () => {
+      i18n.off("languageChanged", handleLanguageChange);
+    };
+  }, []);
   //
   const navigate = useNavigate();
   const handleBack = () => {
@@ -63,7 +82,7 @@ export default function Verify() {
             <img src={logo} alt="cashif logo" />
           </a>
           <Tooltip
-            title="عودة"
+            title={t("Verify.back")}
             className={style.three_dots}
             onClick={handleBack}
           >
@@ -89,7 +108,7 @@ export default function Verify() {
 
       <div className={style.container}>
         <Container
-          dir="rtl"
+          dir={languageText === "ar" ? "rtl" : "ltr"}
           component="main"
           maxWidth="xs"
           className={style.box}
@@ -102,7 +121,7 @@ export default function Verify() {
         >
           <Box sx={{ width: "100%" }}>
             <Typography
-              dir="ltr"
+              dir={languageText === "ar" ? "rtl" : "ltr"}
               component="h1"
               variant="h5"
               sx={{ textAlign: "center", paddingTop: "16px" }}
@@ -111,7 +130,7 @@ export default function Verify() {
             </Typography>
 
             <Typography
-              dir="rtl"
+              dir={languageText === "ar" ? "rtl" : "ltr"}
               component="h5"
               variant="h5"
               sx={{
@@ -120,7 +139,7 @@ export default function Verify() {
                 fontSize: "0.875rem",
               }}
             >
-              أرسلنا رسالة الى رقمك تحوي كود التحقق
+              {t("Verify.weSentMessageToYourNumberContainingVerificationCode")}
             </Typography>
 
             <Box
@@ -138,7 +157,7 @@ export default function Verify() {
                     autoFocus
                     fullWidth
                     name="otp"
-                    label="كود التحقق"
+                    label={t("Verify.verificationCode")}
                     type="number"
                     required
                     disabled={isPending}
@@ -164,7 +183,7 @@ export default function Verify() {
                 loading={isPending}
                 sx={{ mt: 3, mb: 2, transition: "0.1s" }}
               >
-                تحقق
+                {t("Verify.verify")}
               </LoadingButton>
             </Box>
           </Box>
@@ -176,12 +195,12 @@ export default function Verify() {
             color="text.secondary"
             align="center"
           >
-            لم يصلك الرمز؟{" "}
+            {t("Verify.didNotReceiveTheCode")}{" "}
             <Link
               to={`${process.env.PUBLIC_URL}/login`}
               style={{ color: "#1976d2" }}
             >
-              إعادة طلب
+              {t("Verify.ReOrder")}
             </Link>
           </Typography>
         </Container>

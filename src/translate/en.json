@@ -1,0 +1,374 @@
+{
+  "HomeLayout": {
+    "language": "العربية",
+    "ourBranches": "Our branches",
+    "callUs": "Call us",
+    "login": "Login",
+    "logout": "Logout",
+    "more": "More",
+    "booking": "Booking",
+    "prices": "Prices",
+    "home": "Home",
+    "reports": "Reports",
+    "falak": "Falak"
+  },
+
+  "ContactUs": {
+    "ourBranches": "Our branches",
+    "RiyadhAlQadisiyah": "Riyadh - Al-Qadisiyah Exhibitions",
+    "RiyadhAlShifa": "Riyadh - Al-Shifa Exhibitions",
+    "Dammam": "Dammam - Dammam Exhibitions",
+    "Jeddah": "Jeddah - Jeddah Exhibitions"
+  },
+
+  "Reports": {
+    "points": "Points balance",
+    "pointWorthInRiyal": "Each point is worth one riyal.",
+    "rank": "Rank",
+    "allPointsUsedFromYourAccount": "All points used from your account",
+    "totalPointsUsed": "Total points used",
+    "customerCategories": "Customer categories",
+    "minimumPoints": "Minimum points",
+    "maximumPoints": "Maximum points",
+    "pointsPercentage": "Points percentage",
+    "bronze": "Bronze",
+    "silver": "Silver",
+    "golden": "Golden",
+    "platini": "Platini",
+    "elite": "Elite",
+    "myReports": "Reports",
+    "please": "Please",
+    "logIn": "Login",
+    "toViewReports": "to view reports",
+    "photoReport": "Photo report",
+    "loading": "Loading..",
+    "noReports": "No reports"
+  },
+  "Prices": {
+    "pleaseSelectModelAndYear": "Please select the model and year of manufacture.",
+    "enterTheVehicleType": "Enter the vehicle model",
+    "CarModelNotAvailableContactUs": "Can't find model? Contact us",
+    "loading": "Loading..",
+    "search": "Search",
+    "selectYearOfManufacture": "Select the year of manufacture",
+    "older": "Older",
+    "chooseTheRightPackage": "Choose the right package",
+    "engines": "Engines",
+    "fullInspection": "Full-Inspection",
+    "basic": "Basic",
+    "includesExamination": "Includes examination",
+    "orderNow": "Order now",
+    "save": "Save",
+
+    "checklist": {
+      "items": [
+        {
+          "text": "Engine",
+          "tooltip": "Check performance, oil level, and sound"
+        },
+        {
+          "text": "Transmission",
+          "tooltip": "Test shifting smoothness and performance"
+        },
+        {
+          "text": "Differential",
+          "tooltip": "Check for noises and leaks"
+        },
+        {
+          "text": "Undercarriage Mechanics",
+          "tooltip": "Inspect undercarriage mechanics: Moving parts: Check moving parts for damage or wear. Undercarriage: Verify no rust or damage to the undercarriage"
+        },
+        {
+          "text": "Computer and Sensors",
+          "tooltip": "Use diagnostic tools to check electronic systems"
+        },
+        {
+          "text": "Internal Structure",
+          "tooltip": "Verify chassis condition: impacts, rust, welds, mounting points, and mechanical connections to ensure structural safety"
+        },
+        {
+          "text": "Test Drive",
+          "tooltip": "Driving test to check overall performance"
+        },
+        {
+          "text": "Exterior Body",
+          "tooltip": "Inspect body, paint, impacts, and scratches"
+        },
+        {
+          "text": "Airbags",
+          "tooltip": "Verify airbag integrity and operation"
+        },
+        {
+          "text": "Interior Trim",
+          "tooltip": "Check seats, buttons, and interior devices"
+        },
+        {
+          "text": "Vehicle Custom Features",
+          "tooltip": "Verify navigation system, cameras, sensors, etc."
+        },
+        {
+          "text": "Exterior Accessories",
+          "tooltip": "Inspect mirrors and exterior lights"
+        },
+        {
+          "text": "Glass",
+          "tooltip": "Check glass integrity"
+        },
+        {
+          "text": "Tires and Rims",
+          "tooltip": "Check tire wear and rim balance"
+        },
+        {
+          "text": "Spark Plugs and Coils",
+          "tooltip": "Check operation and condition of spark plugs and coils"
+        }
+      ]
+    }
+  },
+
+  "Booking": {
+    "confirmDelete": "Are you sure you want to delete the appointment?",
+    "bookAppointment": "Book an appointment",
+    "branch": "Branch",
+    "pleaseLogInToBookAnAppointment": "Please log in to book an appointment.",
+    "loading": "Loading..",
+    "manufacturer": "Manufacturer",
+    "noOptionsAvailable": "No options available",
+    "yearOfManufacture": "Year of manufacture",
+    "examinationDate": "Examination date *",
+    "examinationTime": "Examination time *",
+    "chooseTheTimeFromNineAmToNinePm": "Choose the time (from 9 am to 9 pm)",
+    "typeOfService": "Type of service",
+    "reservation": "Book an appointment",
+    "please": "Please",
+    "logIn": "Login",
+    "toViewReservations": "To view reservations",
+    "delete": "Delete",
+    "edit": "Edit",
+    "noReservations": "No reservations",
+    "myReservations": "My reservations"
+  },
+
+  "EditBooking": {
+    "please": "Please",
+    "logIn": "Login",
+    "toModifyTheReservation": "To modify the reservation",
+    "modifyReservation": "Edit reservation",
+    "branch": "Branch",
+    "loading": "Loading..",
+    "manufacturer": "Manufacturer",
+    "noOptionsAvailable": "No options available",
+    "yearOfManufacture": "Year of manufacture",
+    "examinationDate": "Examination date *",
+    "examinationTime": "Examination time *",
+    "chooseTheTimeFromNineAmToNinePm": "Choose the time (from 9 am to 9 pm)",
+    "typeOfService": "Type of service",
+    "edit": "Edit"
+  },
+
+  "SignUp": {
+    "noNeedToEnter0ABeginningOfNumber": "No need to enter 0 at the beginning of the number.",
+    "enterValidPhoneNumber": "Enter a valid phone number",
+    "back": "Back",
+    "login": "Login",
+    "mobileNumber": "Mobile number",
+    "sendCode": "Send code",
+    "donNotHaveAccount": "Don't have an account?",
+    "createAccount": "Create an account"
+  },
+
+  "Verify": {
+    "back": "Back",
+    "weSentMessageToYourNumberContainingVerificationCode": "We have sent a message to your number containing the verification code.",
+    "verificationCode": "Verification code",
+    "verify": "Verify",
+    "didNotReceiveTheCode": "Didn't receive the code?",
+    "ReOrder": "Re-order"
+  },
+
+  "Create": {
+    "back": "Back",
+    "createAccount": "Create an account",
+    "individuals": "Individuals",
+    "institutions": "Institutions",
+    "doYouHaveAccount": "Do you have an account?",
+    "login": "Login"
+  },
+
+  "Individuals": {
+    "noNeedToEnter0ABeginningOfNumber": "No need to enter 0 at the beginning of the number.",
+    "enterValidPhoneNumber": "Enter a valid phone number",
+    "back": "Back",
+    "individualsAccount": "Individuals account",
+    "name": "Name",
+    "mobileNumber": "Mobile number",
+    "create": "Create"
+  },
+
+  "Companies": {
+    "noNeedToEnter0ABeginningOfNumber": "No need to enter 0 at the beginning of the number.",
+    "enterValidPhoneNumber": "Enter a valid phone number",
+    "back": "Back",
+    "institutionalAccount": "Institutional account",
+    "companyOrInstitutionName": "Company/Institution Name",
+    "mobileNumber": "Mobile number",
+    "companyOrInstitutionAddress": "Company/Institution Address",
+    "taxNumber": "Tax number",
+    "commercialRegister": "Commercial register",
+    "create": "Create"
+  },
+
+  "Soon": {
+    "title": "'Falk' Affiliate Marketing",
+    "subTitleOne": "The 'Falk' Affiliate Marketing Program is a platform that allows you, as a marketer, to easily earn money by promoting the services of 'Kashef' Center for online car inspections or through direct referrals to acquaintances, friends, and close ones.",
+    "subTitleTwo": "By joining the program, you receive a unique marketing 'code' to promote inspection products. When people visit 'Kashef' centers for car inspections and purchase an inspection product using your 'code,' you earn a commission on each inspection.",
+    "subTitleThree": "Join 'Falk' today and begin your journey in the world of affiliate marketing.",
+    "subTitleFour": "Wishing you success with Falk!",
+    "login": "Login",
+    "soon": "Coming Soon"
+  },
+
+  "Falak": {
+    "title": "'Falk' Affiliate Marketing",
+    "subTitleOne": "The 'Falk' Affiliate Marketing Program is a platform that allows you, as a marketer, to easily earn money by promoting the services of 'Kashef' Center for online car inspections or through direct referrals to acquaintances, friends, and close ones.",
+    "subTitleTwo": "By joining the program, you receive a unique marketing 'code' to promote inspection products. When people visit 'Kashef' centers for car inspections and purchase an inspection product using your 'code,' you earn a commission on each inspection.",
+    "subTitleThree": "Join 'Falk' today and begin your journey in the world of affiliate marketing.",
+    "subTitleFour": "Wishing you success with Falk!",
+    "login": "Login",
+    "joinNow": "Join now"
+  },
+
+  "Conditions": {
+    "please": "Please",
+    "logIn": "Log in",
+    "toViewTheTermsAndConditions": "to view the terms and conditions",
+    "termsAndConditions": "Terms and Conditions",
+    "termsHeader": "The affiliate marketing idea is experimental and may be suspended or modified at any time based on performance evaluation and trial results. We strive to provide the best solutions in line with our shared goals.",
+    "definitions": "Definitions",
+    "definitionsA": "Company: The entity that owns the products or services offered through the affiliate marketing program.",
+    "definitionsB": "Marketer: The individual or entity participating in the program who markets the products or services in exchange for a commission.",
+    "definitionsC": "Commission: The monetary amount or percentage received by the marketer for each sale or specified action achieved through their marketing code.",
+    "definitionsD": "Marketer’s Code: The unique link assigned to each marketer to track performance and identify transactions made through it.",
+    "registrationTerms": "Registration Terms",
+    "registrationTermsA": "The marketer must be a natural or legal person with legal capacity.",
+    "registrationTermsB": "The participant must be at least 18 years old.",
+    "registrationTermsC": "Accurate and correct information must be provided during registration.",
+    "registrationTermsD": "The company reserves the right to request a copy of ID and residency at any stage.",
+    "registrationTermsE": "The participant must report any changes in their information.",
+    "registrationTermsF": "Participants are prohibited from registering multiple accounts.",
+    "registrationTermsG": "The company reserves the right to accept or reject registration requests without providing reasons.",
+    "mechanismOfAction": "Mechanism of Action",
+    "mechanismOfActionA": "The marketer receives a unique marketing code after registration and approval.",
+    "mechanismOfActionB": "The marketer will receive a 10% commission on the net invoice value.",
+    "mechanismOfActionC": "The commission rate may change at any time without prior notice.",
+    "mechanismOfActionD": "Commissions are calculated based on transactions made through the marketing code as per the agreement.",
+    "mechanismOfActionE": "The app is the only platform that displays reports of visits generated through the marketing code.",
+    "mechanismOfActionF": "The use of illegal or unethical methods to attract customers is prohibited.",
+    "mechanismOfActionG": "The marketer benefits only from the discount and does not earn a commission if they use their own marketing code for personal visits.",
+    "payment": "Payment",
+    "paymentA": "Commissions are paid based on performance reports after verifying the validity of transactions.",
+    "paymentB": "The minimum payout threshold is set at 200 SAR.",
+    "paymentC": "Payments are only transferred to local bank accounts or Saudi apps like STC Pay or URPay.",
+    "paymentD": "The account receiving the commission must be under the name of the marketer registered in the app.",
+    "paymentE": "Any disputes regarding commissions will be resolved based on the company’s final reports.",
+    "marketerObligations": "Marketer’s Obligations",
+    "marketerObligationsA": "Promote the products, types of tests, and services in a legal and ethical manner.",
+    "marketerObligationsB": "Refrain from damaging the company’s or products’ reputation in any way.",
+    "marketerObligationsC": "Do not use the company’s trademark in paid advertisements without prior permission.",
+    "marketerObligationsD": "Do not create any social media accounts under the company’s name for marketing purposes.",
+    "companyObligations": "Company’s Obligations",
+    "companyObligationsA": "Provide necessary marketing tools such as marketing codes and reports.",
+    "companyObligationsB": "Pay commissions on time after verifying transactions.",
+    "companyObligationsC": "Maintain the confidentiality of the marketer’s information and not share it with external parties without consent.",
+    "cancellation": "Cancellation",
+    "cancellationA": "The company reserves the right to terminate any marketer’s membership if a violation of the terms is detected.",
+    "cancellationB": "The company may suspend the affiliate marketing program at any time without incurring any legal or financial obligations.",
+    "cancellationC": "The marketer may terminate their membership by providing prior notice to the company.",
+    "cancellationD": "Upon termination, all the marketer’s data will be removed, and they must re-register if they wish to rejoin. They forfeit any remaining commissions in their canceled account.",
+    "modifications": "Modifications",
+    "modificationsA": "The company may modify the terms and conditions at any time, and marketers will be notified of changes before implementation.",
+    "modificationsB": "Continued use of the program after modifications constitutes implicit acceptance.",
+    "applicableLaws": "Applicable Laws",
+    "applicableLawsA": "These terms and conditions are subject to local laws and regulations.",
+    "applicableLawsB": "Any disputes shall be settled according to the competent judicial authorities.",
+    "disclaimer": "Disclaimer",
+    "disclaimerA": "The company is not responsible for any losses or damages resulting from the misuse of the affiliate marketing program by the marketer.",
+    "label": "I agree to the terms and conditions and confirm that I have read and fully understood them",
+    "ok": "Agree"
+  },
+
+  "HowWorks": {
+    "weAreExcitedToHaveYouJoinTheFalkProgram": "We are excited to have you join the 'Falk' program!",
+    "usingMarketingImageThatContains": "Using the marketing image that contains",
+    "yourOwnCode": "your own code",
+    "youCanPromoteYourCarInspectionService": ", you can promote your car inspection service.",
+    "theCodeGivesCustomers": "The code gives customers",
+    "TwinyDiscount": "a 20% discount",
+    "whileYouGet": ", while you get",
+    "tenPrecentCommission": "a 10% commission",
+    "forEveryReservationMadeUsingTheCode": "for every reservation made using the code.",
+    "howToWork": "How it works",
+    "useImageAndCode": "Use the image and code",
+    "toPromoteThroughYourOnlinePlatforms": "to promote through your online platforms.",
+    "shareWithYourAudience": "Share with your audience",
+    "theCodeGivesThemTwentPercentDiscountWhenBookingCarInspection": "that the code gives them a 20% discount when booking a car inspection.",
+    "getTenPercentCommission": "Get a 10% commission",
+    "forEveryReservationMadeUsingYourCode": "for every reservation made using your code.",
+    "startPromotingNowAndStartMakingProfits": "Start promoting now and begin earning profits!",
+    "goodLuckToYou": "Good luck to you!",
+    "login": "Login",
+    "continue": "Continue"
+  },
+
+  "Transfer": {
+    "minimumWithdrawalAmountIs200Riyals": "The minimum withdrawal amount is 200 Riyals",
+    "theAmountEnteredIsGreaterThanAvailableBalanceInYourAccount": "The entered amount is greater than the available balance in your account",
+    "withdrawProfits": "Withdraw Profits",
+    "paymentMechanism": "Payment Mechanism",
+    "loading": "Loading...",
+    "accountNumber": "Account Number",
+    "amount": "Amount",
+    "availableBalanceForWithdrawal": "Available Balance for Withdrawal",
+    "riyal": "Riyal",
+    "submitApplication": "Submit",
+    "pleaseWaitForApprovalOfThePreviousRequest": "Please wait for approval of the previous request"
+  },
+
+  "History": {
+    "financialTransactions": "Financial Transactions",
+    "riyal": "Riyal",
+    "loading": "Loading...",
+    "noData": "No data available"
+  },
+
+  "Marketer": {
+    "minimumWithdrawalAmountIs200Riyals": "The minimum withdrawal amount is 200 Riyals",
+    "title": "'Falk' for Affiliate Marketing",
+    "subTitleOne": "'Falk' Affiliate Marketing Program is a platform that allows you, as a marketer, the opportunity to earn money easily by promoting the services of 'Kashef' Center for online vehicle inspections or through direct referrals to acquaintances, friends, and close ones.",
+    "subTitleTwo": "By joining the program, you get your own unique marketing 'code' to promote inspection products. When people visit 'Kashef' Centers for vehicle inspections and purchase an inspection product using your 'code,' you earn a commission on each inspection.",
+    "subTitleThree": "Join 'Falk' today and begin your journey in the world of affiliate marketing.",
+    "subTitleFour": "Wishing you success! (Lit. 'And may Falk bring you success!')",
+    "joinNow": "Join Now",
+    "more": "More",
+    "howItWorks": "How It Works",
+    "termsAndConditions": "Terms and Conditions",
+    "currentBalance": "Current Balance",
+    "commissionRate": "Commission Rate",
+    "discountRate": "Discount Rate",
+    "useTheCode": "Use the Code",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "marketingCode": "Marketing Code",
+    "withdrawProfits": "Withdraw Profits",
+    "history": "History",
+    "marketerBag": "Marketer's Bag"
+  },
+
+  "CouponImages": {
+    "imageFailedToLoad": "Image failed to load",
+    "copied": "Copied",
+    "download": "Download",
+    "off": "Off"
+  }
+}

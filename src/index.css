@@ -291,12 +291,12 @@ nav.mob-phone-nav {
   color: #757575;
   line-height: 2.1;
   font-size: 18px;
-  text-align: right;
+  /* text-align: right; */
 }
 
 .overlay li span svg {
   width: 16px;
-  margin-left: 6px;
+  /* margin-left: 6px; */
 }
 
 .true-icon {
@@ -394,6 +394,14 @@ nav.mob-phone-nav {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* New modified styles */
+.crown-box.modified::after {
+  content: "20% Off";
+  left: unset;
+  right: -50px;
+  transform: rotate(45deg);
 }
 
 .seventy-discount {

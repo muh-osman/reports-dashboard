@@ -12,6 +12,9 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+// Lang
+import i18n from "../../i18n";
+import { useTranslation } from "react-i18next";
 // API
 import { useAskCodeApi } from "../../API/useAskCodeApi";
 // Toastify
@@ -20,6 +23,22 @@ import { toast } from "react-toastify";
 import logo from "../../Assets/Images/logo.webp";
 
 export default function SignUp() {
+  //
+  const { t } = useTranslation();
+  const [languageText, setLanguageText] = React.useState(i18n.language);
+  // Add language change listener
+  React.useEffect(() => {
+    const handleLanguageChange = (lng) => {
+      setLanguageText(lng);
+    };
+
+    i18n.on("languageChanged", handleLanguageChange);
+
+    // Cleanup function to remove the listener when component unmounts
+    return () => {
+      i18n.off("languageChanged", handleLanguageChange);
+    };
+  }, []);
   //
   const navigate = useNavigate();
   const handleBack = () => {
@@ -43,7 +62,9 @@ export default function SignUp() {
     // Remove leading '0' if present
     if (value.startsWith("0")) {
       value = value.slice(1);
-      toast.warn("لا داعي لإدخال 0 في بداية الرقم");
+      toast.warn(
+        t("SignUp.noNeedToEnter0ABeginningOfNumber")
+      );
     }
 
     // Update the input value
@@ -69,7 +90,7 @@ export default function SignUp() {
       phoneNumber.length > 9 ||
       isNaN(phoneNumber)
     ) {
-      toast.warn("أدخل رقم هاتف صالح");
+      toast.warn(t("SignUp.enterValidPhoneNumber"));
 
       return;
     }
@@ -91,7 +112,7 @@ export default function SignUp() {
             <img src={logo} alt="cashif logo" />
           </a>
           <Tooltip
-            title="عودة"
+            title={t("SignUp.back")}
             className={style.three_dots}
             onClick={handleBack}
           >
@@ -131,7 +152,7 @@ export default function SignUp() {
             component="h1"
             variant="h5"
           >
-            تسجيل الدخول
+            {t("SignUp.login")}
           </Typography>
 
           <Box
@@ -154,7 +175,7 @@ export default function SignUp() {
                 >
                   <TextField
                     fullWidth
-                    label="رقم الجوال"
+                    label={t("SignUp.mobileNumber")}
                     name="phoneNumber"
                     type="tel"
                     autoFocus
@@ -185,7 +206,7 @@ export default function SignUp() {
                 loading={isPending}
                 sx={{ mt: 3, mb: 2, transition: "0.1s" }}
               >
-                إرسال الرمز
+                {t("SignUp.sendCode")}
               </LoadingButton>
             </Box>
           </Box>
@@ -202,12 +223,12 @@ export default function SignUp() {
               marginBottom: "9px",
             }}
           >
-            ليس لديك حساب؟{" "}
+            {t("SignUp.donNotHaveAccount")}{" "}
             <Link
               to={`${process.env.PUBLIC_URL}/signup`}
               style={{ color: "#1976d2" }}
             >
-              إنشاء حساب
+              {t("SignUp.createAccount")}
             </Link>
           </Typography>
         </Container>

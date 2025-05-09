@@ -44,6 +44,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+// Lang
+import i18n from "../../i18n"; // Make sure to import i18n
+import { useTranslation } from "react-i18next";
 
 // Utility function to format date to dd/mm/yyyy
 const formatDate = (dateString) => {
@@ -78,15 +81,23 @@ function createData(name, calories, fat, carbs, clr) {
   return { name, calories, fat, carbs, clr };
 }
 
-const rows = [
-  createData("برونزي", 1, 100, 5, "#E69546"),
-  createData("فضي", 101, 250, 6, "#D4D4D4"),
-  createData("ذهبي", 251, 500, 7, "#FFDF00"),
-  createData("بلاتيني", 501, 850, 8, "#E5E4E2"),
-  createData("نخبة", 851, 100000, 10, "#000000"),
-];
-
 export default function Reports() {
+  const { t } = useTranslation();
+  const [languageText, setLanguageText] = useState(i18n.language);
+  // Add language change listener
+  useEffect(() => {
+    const handleLanguageChange = (lng) => {
+      setLanguageText(lng);
+    };
+
+    i18n.on("languageChanged", handleLanguageChange);
+
+    // Cleanup function to remove the listener when component unmounts
+    return () => {
+      i18n.off("languageChanged", handleLanguageChange);
+    };
+  }, []);
+  //
   useEffect(() => {
     // Scroll to the top of the page
     window.scrollTo(0, 0);
@@ -296,16 +307,29 @@ export default function Reports() {
   const handleOpenClientTypesModal = () => setisClientTypesModalOpen(true);
   const handleClientTypesModalClose = () => setisClientTypesModalOpen(false);
 
+  const rows = [
+    createData(t("Reports.bronze"), 1, 100, 5, "#E69546"),
+    createData(t("Reports.silver"), 101, 250, 6, "#D4D4D4"),
+    createData(t("Reports.golden"), 251, 500, 7, "#FFDF00"),
+    createData(t("Reports.platini"), 501, 850, 8, "#E5E4E2"),
+    createData(t("Reports.elite"), 851, 100000, 10, "#000000"),
+  ];
+
   return (
-    <div dir="rtl" className={style.container}>
+    <div
+      dir={languageText === "ar" ? "rtl" : "ltr"}
+      className={style.container}
+    >
       {/* Points */}
 
       <div className={style.points_container}>
         <div className={style.money_card_container}>
           <div className={style.money_card_header}>
             <div>
-              <h3>رصيد النقاط</h3>
-              <p style={{ fontSize: "14px" }}>كل نقطة تساوي ريال واحد</p>
+              <h3>{t("Reports.points")}</h3>
+              <p style={{ fontSize: "14px" }}>
+                {t("Reports.pointWorthInRiyal")}
+              </p>
               {/* <h1>
                 {points && points.points !== undefined ? points.points : 0}{" "}
               </h1> */}
@@ -351,12 +375,12 @@ export default function Reports() {
                   }}
                 >
                   <h3 style={{ textAlign: "center", color: getClientColor() }}>
-                    الرتبة
+                    {t("Reports.rank")}
                   </h3>
                   <h3 style={{ textAlign: "center", color: getClientColor() }}>
-                    {points && points.clientTypeAr !== undefined
-                      ? points.clientTypeAr
-                      : "."}
+                    {languageText === "ar"
+                      ? points?.clientTypeAr || "-"
+                      : points?.clientTypeEn || "-"}
                   </h3>
                   {/* Adjust size and color as needed */}
                 </div>
@@ -366,12 +390,12 @@ export default function Reports() {
 
           <div className={style.money_card_footer}>
             <Tooltip
-              title="جميع النقاط التي تم استخدامها من حسابك"
+              title={t("Reports.allPointsUsedFromYourAccount")}
               arrow
               enterTouchDelay={0}
             >
               <h3>
-                مجموع النقاط المستخدمة{" "}
+                {t("Reports.totalPointsUsed")}{" "}
                 {points && points.pointsConsumed !== undefined
                   ? points.pointsConsumed
                   : 0}
@@ -379,7 +403,12 @@ export default function Reports() {
             </Tooltip>
           </div>
 
-          <div className={style.info_icon}>
+          <div
+            className={style.info_icon}
+            style={{
+              ...(languageText === "en" ? { right: 0 } : { left: 0 }),
+            }}
+          >
             <IconButton onClick={handleOpenClientTypesModal}>
               <InfoIcon sx={{ color: "#fff" }} />
             </IconButton>
@@ -395,7 +424,7 @@ export default function Reports() {
         aria-describedby="modal-modal-description"
       >
         <Box
-          dir="rtl"
+          dir={languageText === "ar" ? "rtl" : "ltr"}
           sx={{
             position: "absolute",
             top: "50%",
@@ -420,22 +449,30 @@ export default function Reports() {
           }}
         >
           <div className={style.table_box}>
-            <div>
-              <h1>فئات العملاء:</h1>
+            <div dir={languageText === "ar" ? "rtl" : "ltr"}>
+              <h1>{t("Reports.customerCategories")}</h1>
 
-              <TableContainer component={Paper}>
-                <Table dir="rtl" aria-label="customized table">
+              <TableContainer
+                dir={languageText === "ar" ? "rtl" : "ltr"}
+                component={Paper}
+              >
+                <Table
+                  dir={languageText === "ar" ? "rtl" : "ltr"}
+                  aria-label="customized table"
+                >
                   <TableHead>
                     <TableRow>
-                      <StyledTableCell align="center">الرتبة</StyledTableCell>
                       <StyledTableCell align="center">
-                        الحد الأدنى للنقاط
+                        {t("Reports.rank")}
                       </StyledTableCell>
                       <StyledTableCell align="center">
-                        الحد الأعلى للنقاط
+                        {t("Reports.minimumPoints")}
                       </StyledTableCell>
                       <StyledTableCell align="center">
-                        نسبة النقاط
+                        {t("Reports.maximumPoints")}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {t("Reports.pointsPercentage")}
                       </StyledTableCell>
                     </TableRow>
                   </TableHead>
@@ -472,7 +509,7 @@ export default function Reports() {
       </Modal>
 
       {/* Cards */}
-      <h5 className={style.last_reports_title}>تقاريري</h5>
+      <h5 className={style.last_reports_title}>{t("Reports.myReports")}</h5>
       <Divider sx={{ marginBottom: "18px" }} />
 
       {!cookies.tokenApp ? (
@@ -481,7 +518,7 @@ export default function Reports() {
           component="div"
           style={{ textAlign: "center", margin: "20px", color: "#757575" }}
         >
-          يرجى{" "}
+          {t("Reports.please")}{" "}
           <Link
             to={`${process.env.PUBLIC_URL}/login`}
             style={{
@@ -491,9 +528,9 @@ export default function Reports() {
             onMouseOver={() => setIsHovered(true)}
             onMouseOut={() => setIsHovered(false)}
           >
-            تسجيل الدخول
+            {t("Reports.logIn")}
           </Link>{" "}
-          لعرض التقارير
+          {t("Reports.toViewReports")}
         </Typography>
       ) : (
         <div className={style.reports_cards_container}>
@@ -505,7 +542,7 @@ export default function Reports() {
             aria-describedby="modal-modal-description"
           >
             <Box
-              dir="rtl"
+              dir={languageText === "ar" ? "rtl" : "ltr"}
               sx={{
                 position: "absolute",
                 top: "50%",
@@ -769,12 +806,14 @@ export default function Reports() {
                   }}
                 >
                   {card.includeImage && (
-                    <Tooltip title="تقرير مصور">
+                    <Tooltip title={t("Reports.photoReport")}>
                       <PhotoLibraryIcon
                         style={{
                           position: "absolute",
                           top: 16,
-                          left: 16,
+                          ...(languageText === "en"
+                            ? { right: 16 }
+                            : { left: 16 }),
                         }}
                       />
                     </Tooltip>
@@ -792,7 +831,9 @@ export default function Reports() {
                         component="div"
                         style={{ fontSize: "14px" }}
                       >
-                        {card.carManufacturerNameAr}
+                        {languageText === "en"
+                          ? card?.carManufacturerNameEn || "-"
+                          : card?.carManufacturerNameAr || "-"}
                       </Typography>
                     </Box>
 
@@ -808,7 +849,9 @@ export default function Reports() {
                         component="div"
                         style={{ fontSize: "14px" }}
                       >
-                        {card.carModelNameAr}
+                        {languageText === "en"
+                          ? card?.carModelNameEn || "-"
+                          : card?.carModelNameAr || "-"}
                       </Typography>
                     </Box>
 
@@ -824,9 +867,13 @@ export default function Reports() {
                         component="div"
                         style={{ fontSize: "14px" }}
                       >
-                        {card.servicesListNameAr.length > 0
+                        {/* {card.servicesListNameAr.length > 0
                           ? card.servicesListNameAr.join(", ")
-                          : "غير محدد"}
+                          : "غير محدد"} */}
+
+                        {languageText === "en"
+                          ? card?.servicesListNameEn.join(", ") || "-"
+                          : card?.servicesListNameAr.join(", ") || "-"}
                       </Typography>
                     </Box>
 
@@ -844,7 +891,10 @@ export default function Reports() {
 
                   <Divider />
 
-                  <CardActions dir="ltr" sx={{ backgroundColor: "#fdfefe" }}>
+                  <CardActions
+                    dir={languageText === "en" ? "rtl" : "ltr"}
+                    sx={{ backgroundColor: "#fdfefe" }}
+                  >
                     <IconButton
                       onClick={() =>
                         handleDownloadCard(card.id, card.includeImage)
@@ -869,8 +919,8 @@ export default function Reports() {
               style={{ textAlign: "center", margin: "20px", color: "#757575" }}
             >
               {fetchCardStatus === "fetching"
-                ? "جاري التحميل.."
-                : "لا يوجد تقارير"}
+                ? t("Reports.loading")
+                : t("Reports.noReports")}
             </Typography>
           )}
         </div>

@@ -1,5 +1,6 @@
 import style from "./Create.module.scss";
 import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 //
 import logo from "../../Assets/Images/logo.webp";
 import signUp from "../../Assets/Images/sign-up.svg";
@@ -11,8 +12,27 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 // MUI Icons
 import PersonIcon from "@mui/icons-material/Person";
 import ApartmentIcon from "@mui/icons-material/Apartment";
+// Lang
+import i18n from "../../i18n";
+import { useTranslation } from "react-i18next";
 
 export default function Create() {
+  //
+  const { t } = useTranslation();
+  const [languageText, setLanguageText] = useState(i18n.language);
+  // Add language change listener
+  useEffect(() => {
+    const handleLanguageChange = (lng) => {
+      setLanguageText(lng);
+    };
+
+    i18n.on("languageChanged", handleLanguageChange);
+
+    // Cleanup function to remove the listener when component unmounts
+    return () => {
+      i18n.off("languageChanged", handleLanguageChange);
+    };
+  }, []);
   //
   const navigate = useNavigate();
   const handleBack = () => {
@@ -28,7 +48,7 @@ export default function Create() {
           </a>
 
           <Tooltip
-            title="عودة"
+            title={t("Create.back")}
             className={style.three_dots}
             onClick={handleBack}
           >
@@ -62,7 +82,7 @@ export default function Create() {
           component="h1"
           variant="h4"
         >
-          إنشاء حساب
+          {t("Create.createAccount")}
         </Typography>
 
         <div className={style.container}>
@@ -76,14 +96,14 @@ export default function Create() {
               className={style.box}
             >
               <PersonIcon sx={{ fontSize: "48px" }} />
-              <h3>أفراد</h3>
+              <h3>{t("Create.individuals")}</h3>
             </Link>
             <Link
               to={`${process.env.PUBLIC_URL}/companies`}
               className={style.box}
             >
               <ApartmentIcon sx={{ fontSize: "48px" }} />
-              <h3>مؤسسات</h3>
+              <h3>{t("Create.institutions")}</h3>
             </Link>
 
             <Typography
@@ -97,12 +117,12 @@ export default function Create() {
                 marginBottom: "32px",
               }}
             >
-              لديك حساب؟{" "}
+              {t("Create.doYouHaveAccount")}{" "}
               <Link
                 to={`${process.env.PUBLIC_URL}/login`}
                 style={{ color: "#1976d2" }}
               >
-                تسجيل دخول
+                {t("Create.login")}
               </Link>
             </Typography>
           </div>
