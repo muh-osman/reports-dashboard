@@ -1,5 +1,8 @@
 import style from "./Booking.module.scss";
 import { Link, useNavigate } from "react-router-dom";
+import { useRef, useEffect } from "react";
+// npm install --save html-to-image --legacy-peer-deps
+import { toPng } from "html-to-image"; //html-to-image library
 // MUI
 import * as React from "react";
 import Box from "@mui/material/Box";
@@ -20,6 +23,7 @@ import CardContent from "@mui/material/CardContent";
 import IconButton from "@mui/material/IconButton";
 import { LoadingButton } from "@mui/lab";
 import Autocomplete from "@mui/material/Autocomplete";
+import Modal from "@mui/material/Modal";
 // MUI Icons
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import MinorCrashIcon from "@mui/icons-material/MinorCrash";
@@ -27,6 +31,8 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import StyleIcon from "@mui/icons-material/Style";
+import HourglassTopIcon from "@mui/icons-material/HourglassTop";
 // Lang
 import i18n from "../../i18n";
 import { useTranslation } from "react-i18next";
@@ -34,6 +40,8 @@ import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 // Cookies
 import { useCookies } from "react-cookie";
+// Logo
+import logo from "../../Assets/Images/logo.webp";
 // API
 import useGetAllBranchesApi from "../../API/useGetAllBranchesApi";
 import useGetAllManufacturerApi from "../../API/useGetAllManufacturerApi";
@@ -240,18 +248,109 @@ export default function Booking() {
   );
 
   // Submit Apoinment form
+  // Submit Modal
+  const [openBookingModal, setOpenBookingModal] = React.useState(false);
+  const handleBookingModalOpen = () => setOpenBookingModal(true);
+  const handleBookingModalClose = () => setOpenBookingModal(false);
+
+  // Function to convert modal to image and download it
+  const modalRef = useRef(null);
+  const saveModalAsImage = () => {
+    if (openBookingModal) {
+      // Add small delay to ensure modal is fully rendered
+      setTimeout(() => {
+        toPng(modalRef.current, {
+          backgroundColor: "#f0f1f3",
+          style: {
+            transform: "none", // Override any transforms
+          },
+          // width: modalRef.current.offsetWidth * 2, // Double the width for higher quality
+          // height: modalRef.current.scrollHeight * 2, // Capture full height
+          quality: 1, // Maximum quality
+        })
+          .then((dataUrl) => {
+            // Create a filename with date and time
+            const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+            const filename = `reservation-details-${timestamp}.png`;
+
+            // Create a download link
+            const link = document.createElement("a");
+            link.download = filename;
+            link.href = dataUrl;
+            link.click();
+
+            // Show success notification
+            // setSnackbarMessage(t("Booking.reservationImageSaved"));
+            // setSnackbarSeverity("success");
+            // setSnackbarOpen(true);
+          })
+          .catch((error) => {
+            console.error("Error saving modal as image:", error);
+            // setSnackbarMessage(t("Booking.errorSavingImage"));
+            // setSnackbarSeverity("error");
+            // setSnackbarOpen(true);
+          });
+      }, 500); // 500ms delay to ensure modal is rendered
+    }
+  };
+
+  // Effect to automatically save the modal as image when it opens
+  React.useEffect(() => {
+    saveModalAsImage();
+  }, [openBookingModal]);
+
   const {
     mutate: PostApoinmentFormMutate,
     isPending: isPostApoinmentFormMutatePending,
     isSuccess: isPostApoinmentFormMutateSuccess,
   } = usePostApoinmentFormApi();
 
-  const submitForm = () => {
+  // Modal Data
+  const [selectedDataForModal, setSelectedDataForModal] = React.useState({
+    branch: "",
+    manufacturer: "",
+    year: "",
+    date: "",
+    time: "",
+    service: "",
+  });
+
+  const submitForm = async () => {
     // Format the date and time using dayjs
     let dateAfterFormat = date
       ? dayjs(date).format("YYYY-MM-DDTHH:mm:ss.SSSSSS")
       : null;
     let timeAfterFormat = time ? dayjs(time).format("HH:mm:ss") : null;
+    //////////////////////////////
+    // Store selected data for modal
+    const selectedBranchObj = allBranches?.find(
+      (b) => b.id === parseInt(selectedBranch)
+    );
+    const selectedManufacturerObj = allManufacturers?.find(
+      (m) => m.id === parseInt(selectedManufacturer)
+    );
+    const selectedServiceObj = allServices?.find(
+      (s) => s.id === parseInt(selectedServiceId)
+    );
+
+    setSelectedDataForModal({
+      branch:
+        languageText === "en"
+          ? selectedBranchObj?.nameEn
+          : selectedBranchObj?.nameAr,
+      manufacturer:
+        languageText === "en"
+          ? selectedManufacturerObj?.nameEn
+          : selectedManufacturerObj?.nameAr,
+      year: selectedYear,
+      date: dateAfterFormat,
+      time: timeAfterFormat,
+      service:
+        languageText === "en"
+          ? selectedServiceObj?.nameEn
+          : selectedServiceObj?.nameAr,
+    });
+    /////////////////////////////
     const data = {
       clientId: cookies.userId,
       check_Place: 1,
@@ -266,6 +365,8 @@ export default function Booking() {
     };
 
     PostApoinmentFormMutate(data);
+
+    handleBookingModalOpen();
   };
 
   React.useEffect(() => {
@@ -589,6 +690,183 @@ export default function Booking() {
             </LoadingButton>
           )}
         </FormControl>
+
+        {/* Booking Modal */}
+        <Modal
+          ref={modalRef}
+          open={openBookingModal}
+          onClose={handleBookingModalClose}
+        >
+          <Box
+            dir={languageText === "ar" ? "rtl" : "ltr"}
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: 300,
+              bgcolor: "background.paper",
+              p: 2,
+              textAlign: "center",
+              borderRadius: "16px",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+              backgroundColor: "#fff",
+              // maxHeight: "80vh",
+              overflowY: "hidden",
+              overflowX: "hidden",
+              border: "3px solid #174545",
+              backgroundColor: "#f0f1f3",
+              paddingTop: "12px",
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                top: "0",
+                left: "0",
+                height: "100px",
+                backgroundColor: "#174545",
+                width: "100%",
+                zIndex: "-1",
+              }}
+            ></div>
+            <div className={style.introCurve}>
+              <svg
+                style={{ width: "100%", height: "auto" }}
+                viewBox="0 0 1920 74"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M0 0H1920V0.96521C1920 0.96521 1335.71 74 960 74C584.29 74 0 0.96521 0 0.96521V0Z"
+                  fill="#174545"
+                />
+              </svg>
+            </div>
+
+            <div style={{ width: "75px", margin: "auto" }}>
+              <img style={{ width: "100%" }} src={logo} alt="cashif logo" />
+            </div>
+
+            <div>
+              <h1 style={{ fontSize: "24px", marginBottom: "10px" }}>
+                {t("Booking.reservationDetails")}
+              </h1>
+            </div>
+
+            <Card
+              sx={{
+                position: "relative",
+                borderRadius: "9px",
+                boxShadow: "none",
+                padding: 0,
+                backgroundColor: "#fff",
+              }}
+            >
+              <CardContent>
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  gap={1}
+                  marginBottom={"9px"}
+                >
+                  <LocationOnIcon style={{ color: "#000000de" }} />
+                  <Typography
+                    variant="h5"
+                    component="div"
+                    style={{ fontSize: "14px" }}
+                  >
+                    {selectedDataForModal.branch}
+                  </Typography>
+                </Box>
+
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  gap={1}
+                  marginBottom={"9px"}
+                >
+                  <MinorCrashIcon style={{ color: "#000000de" }} />
+                  <Typography
+                    variant="h5"
+                    component="div"
+                    style={{ fontSize: "14px" }}
+                  >
+                    {selectedDataForModal.manufacturer}
+                  </Typography>
+                </Box>
+
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  gap={1}
+                  marginBottom={"9px"}
+                >
+                  <HourglassTopIcon style={{ color: "#000000de" }} />
+                  <Typography
+                    variant="h5"
+                    component="div"
+                    style={{ fontSize: "14px" }}
+                  >
+                    {selectedDataForModal.year}
+                  </Typography>
+                </Box>
+
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  gap={1}
+                  marginBottom={"9px"}
+                >
+                  <AccessTimeIcon style={{ color: "#000000de" }} />
+                  <Typography
+                    dir="ltr"
+                    variant="h5"
+                    component="div"
+                    style={{ fontSize: "14px" }}
+                  >
+                    {selectedDataForModal.time &&
+                      new Date(
+                        `1970-01-01T${selectedDataForModal.time}`
+                      ).toLocaleTimeString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}
+                  </Typography>
+                </Box>
+
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  gap={1}
+                  marginBottom={"9px"}
+                >
+                  <CalendarMonthIcon style={{ color: "#000000de" }} />
+                  <Typography
+                    variant="h5"
+                    component="div"
+                    style={{ fontSize: "14px" }}
+                  >
+                    {selectedDataForModal.date &&
+                      formatDate(selectedDataForModal.date)}
+                  </Typography>
+                </Box>
+
+                <Box display="flex" alignItems="center" gap={1}>
+                  <StyleIcon style={{ color: "#000000de" }} />
+                  <Typography
+                    variant="h5"
+                    component="div"
+                    style={{ fontSize: "14px" }}
+                  >
+                    {selectedDataForModal.service}
+                  </Typography>
+                </Box>
+              </CardContent>
+            </Card>
+          </Box>
+        </Modal>
       </Box>
 
       {/* Booking Cards */}

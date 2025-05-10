@@ -146,7 +146,8 @@
     "delete": "Delete",
     "edit": "Edit",
     "noReservations": "No reservations",
-    "myReservations": "My reservations"
+    "myReservations": "My reservations",
+    "reservationDetails": "Reservation details"
   },
 
   "EditBooking": {
@@ -360,7 +361,7 @@
     "active": "Active",
     "inactive": "Inactive",
     "marketingCode": "Marketing Code",
-    "withdrawProfits": "Withdraw Profits",
+    "withdrawProfits": "Withdraw",
     "history": "History",
     "marketerBag": "Marketer's Bag"
   },

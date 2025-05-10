@@ -147,7 +147,8 @@
     "delete": "حذف",
     "edit": "تعديل",
     "noReservations": "لا يوجد حجوزات",
-    "myReservations": "حجوزاتي"
+    "myReservations": "حجوزاتي",
+    "reservationDetails": "تفاصيل الحجز"
   },
 
   "EditBooking": {
