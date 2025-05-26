@@ -181,6 +181,7 @@ export default function Individuals() {
                   <TextField
                     fullWidth
                     label={t("Individuals.name")}
+                    placeholder={t("Individuals.namePlaceholder")}
                     name="name"
                     type="text"
                     autoFocus

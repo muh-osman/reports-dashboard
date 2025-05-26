@@ -33,6 +33,8 @@ import useGetPoinsApi from "../../API/useGetPoinsApi";
 import { useGetAllCardsApi } from "../../API/useGetAllCardsApi";
 import { fetchDownloadCard } from "../../API/useDownloadCardApi";
 import { fetchImgCard } from "../../API/useGetImgCardApi";
+import useGetAllSummaryReportsNumbersApi from "../../API/useGetAllSummaryReportsNumbersApi";
+import { fetchDownloadSummaryReport } from "../../API/useDownloadSummaryReportsApi";
 // NumberFlow
 import NumberFlow from "@number-flow/react";
 // MUI Table
@@ -108,6 +110,12 @@ export default function Reports() {
   const [temporaryCookie, setTemporaryCookie] = useState([]);
 
   const [isHovered, setIsHovered] = useState(false);
+  //
+  const {
+    data: AllSummaryReportsNumbers,
+    fetchStatus: fetchAllSummaryReportsNumbersStatus,
+  } = useGetAllSummaryReportsNumbersApi();
+  //
 
   const { data: points } = useGetPoinsApi();
   const { data: cardsData, fetchStatus: fetchCardStatus } = useGetAllCardsApi();
@@ -178,6 +186,40 @@ export default function Reports() {
         setLoadingDownload((prev) => ({ ...prev, [id]: false })); // Reset loading for the specific card
         setChecked(false); // Reset terms and condetions checkbox
       }
+    }
+  };
+
+  // Download Summary Reports Button
+  const [loadingSummaryCardDownload, setLoadingSummaryCardDownload] = useState(
+    {}
+  );
+  const handleDownloadSummaryCard = async (id) => {
+    try {
+      setLoadingSummaryCardDownload((prev) => ({ ...prev, [id]: true })); // Set loading for the specific card
+      // Call the API to download the card
+      let response = await fetchDownloadSummaryReport(id);
+
+      // Create a blob from the response data
+      const blob = new Blob([response], { type: "application/pdf" });
+
+      // Create a link element
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = `card_${id}.pdf`; // Set the file name
+
+      // Append to the body
+      document.body.appendChild(link);
+
+      // Trigger the download
+      link.click();
+
+      // Clean up and remove the link
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Error downloading the card:", error);
+      toast.error(error.message);
+    } finally {
+      setLoadingSummaryCardDownload((prev) => ({ ...prev, [id]: false })); // Reset loading for the specific card
     }
   };
 
@@ -892,23 +934,82 @@ export default function Reports() {
                   <Divider />
 
                   <CardActions
-                    dir={languageText === "en" ? "rtl" : "ltr"}
-                    sx={{ backgroundColor: "#fdfefe" }}
+                    dir={languageText === "en" ? "ltr" : "rtl"}
+                    sx={{
+                      backgroundColor: "#fdfefe",
+                      justifyContent: "center",
+                      gap: "16px",
+                    }}
                   >
-                    <IconButton
+                    <Button
                       onClick={() =>
                         handleDownloadCard(card.id, card.includeImage)
                       }
-                      sx={{ color: "#1976d2" }}
                       size="small"
+                      variant="contained"
                       disabled={loadingDownload[card.id]} // Disable button if loading
+                      endIcon={
+                        loadingDownload[card.id] ? (
+                          <CircularProgress
+                            size={18}
+                            sx={{
+                              margin:
+                                languageText === "en"
+                                  ? "0px 0px 0px 0px"
+                                  : "0px 8px 0px -8px",
+                            }}
+                          />
+                        ) : (
+                          <DownloadIcon
+                            sx={{
+                              margin:
+                                languageText === "en"
+                                  ? "0px 0px 0px 0px"
+                                  : "0px 8px 0px -8px",
+                            }}
+                          />
+                        )
+                      }
                     >
-                      {loadingDownload[card.id] ? (
-                        <CircularProgress size={24} color="inherit" />
-                      ) : (
-                        <DownloadIcon />
-                      )}
-                    </IconButton>
+                      {t("Reports.downloadReport")}
+                    </Button>
+
+                    {/* Summary Reports Button */}
+                    {AllSummaryReportsNumbers?.data?.includes(
+                      card.id.toString()
+                    ) && (
+                      <Button
+                        sx={{ margin: "0 !important" }}
+                        onClick={() => handleDownloadSummaryCard(card.id)}
+                        size="small"
+                        variant="outlined"
+                        disabled={loadingSummaryCardDownload[card.id]} // Disable button if loading
+                        endIcon={
+                          loadingSummaryCardDownload[card.id] ? (
+                            <CircularProgress
+                              size={18}
+                              sx={{
+                                margin:
+                                  languageText === "en"
+                                    ? "0px 0px 0px 0px"
+                                    : "0px 8px 0px -8px",
+                              }}
+                            />
+                          ) : (
+                            <DownloadIcon
+                              sx={{
+                                margin:
+                                  languageText === "en"
+                                    ? "0px 0px 0px 0px"
+                                    : "0px 8px 0px -8px",
+                              }}
+                            />
+                          )
+                        }
+                      >
+                        {t("Reports.downloadSummaryReport")}
+                      </Button>
+                    )}
                   </CardActions>
                 </Card>
               ))

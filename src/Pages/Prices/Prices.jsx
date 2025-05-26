@@ -20,6 +20,10 @@ import { toast } from "react-toastify";
 // API
 import useSearchApi from "../../API/useSearchApi";
 import useGetPricesApi from "../../API/useGetPricesApi";
+// Image
+import A from "../../Assets/Images/1.jpg";
+import B from "../../Assets/Images/2.jpg";
+import C from "../../Assets/Images/3.jpg";
 
 const TrueIcon = `<svg fill="#25d366" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" /></svg>`;
 const FalseIcon = `<svg class="wrong-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"></path></svg>`;
@@ -43,26 +47,111 @@ export default function Prices() {
       i18n.off("languageChanged", handleLanguageChange);
     };
   }, []);
-  // Change ::after style based on lang
-
-  React.useEffect(() => {
-    const crownBox = document.querySelector(".crown-box");
-    if (languageText === "ar") {
-      crownBox.classList.remove("modified");
-    } else {
-      crownBox.classList.add("modified");
-    }
-  }, [languageText]);
 
   //
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
+  // مخدوم
   const [checkit, setCheckit] = React.useState(
     queryParams.get("checkit") === "true"
   );
+  // فحص المسافر
+  const [passengerCheck, setPassengerCheck] = React.useState(
+    queryParams.get("passengerCheck") === "true"
+  );
+  // نوع السيارة (سيدان - دفع رباعي - فارهة)
+  const [passenger, setPassenger] = React.useState(null);
+  // URL Discount
+  const [dis, setDis] = React.useState(
+    queryParams.get("dis") === "fifty" ||
+      sessionStorage.getItem("dis") === "fifty"
+  );
+
+  // Change ::after style based on lang
+  // React.useEffect(() => {
+  //   const crownBox = document.querySelector(".crown-box");
+  //   if (languageText === "ar") {
+  //     crownBox?.classList.remove("modified");
+  //   } else {
+  //     crownBox?.classList.add("modified");
+  //   }
+  // }, [languageText]);
+
+  React.useEffect(() => {
+    const fiftyDiscountCrownFullPlaneCatcher = document.querySelector(
+      ".full-Plane-catcher"
+    );
+    const fiftyDiscountCrownEnginesCatcher =
+      document.querySelector(".engines-catcher");
+    const fiftyDiscountCrownBasicCatcher =
+      document.querySelector(".bascic-catcher");
+    if (dis) {
+      sessionStorage.setItem("dis", "fifty");
+      if (languageText === "ar") {
+        fiftyDiscountCrownFullPlaneCatcher?.classList.remove(
+          "en-fifty-discount"
+        );
+        fiftyDiscountCrownEnginesCatcher?.classList.remove("en-fifty-discount");
+        fiftyDiscountCrownBasicCatcher?.classList.remove("en-fifty-discount");
+
+        fiftyDiscountCrownFullPlaneCatcher?.classList.add("ar-fifty-discount");
+        fiftyDiscountCrownEnginesCatcher?.classList.add("ar-fifty-discount");
+        fiftyDiscountCrownBasicCatcher?.classList.add("ar-fifty-discount");
+      } else {
+        fiftyDiscountCrownFullPlaneCatcher?.classList.remove(
+          "ar-fifty-discount"
+        );
+        fiftyDiscountCrownEnginesCatcher?.classList.remove("ar-fifty-discount");
+        fiftyDiscountCrownBasicCatcher?.classList.remove("ar-fifty-discount");
+
+        fiftyDiscountCrownFullPlaneCatcher?.classList.add("en-fifty-discount");
+        fiftyDiscountCrownEnginesCatcher?.classList.add("en-fifty-discount");
+        fiftyDiscountCrownBasicCatcher?.classList.add("en-fifty-discount");
+      }
+    } else {
+      if (languageText === "ar") {
+        fiftyDiscountCrownFullPlaneCatcher?.classList.remove("en-discount");
+        fiftyDiscountCrownFullPlaneCatcher?.classList.add("ar-discount");
+      } else {
+        fiftyDiscountCrownFullPlaneCatcher?.classList.remove("ar-discount");
+        fiftyDiscountCrownFullPlaneCatcher?.classList.add("en-discount");
+      }
+    }
+  }, [dis, languageText]);
   //
   // Create a component for checklist items with tooltips
   const ChecklistItem = ({ checked, text, tooltip }) => {
+    return (
+      <li
+        style={{
+          ...(languageText === "ar"
+            ? { textAlign: "right" }
+            : { textAlign: "left" }),
+        }}
+      >
+        <span
+          style={{
+            ...(languageText === "ar"
+              ? { marginLeft: "6px" }
+              : { marginRight: "6px" }),
+          }}
+          dangerouslySetInnerHTML={{ __html: checked ? TrueIcon : FalseIcon }}
+        ></span>{" "}
+        {text}
+        <Tooltip
+          title={<p style={{ direction: "rtl" }}>{tooltip}</p>}
+          arrow
+          enterTouchDelay={0}
+        >
+          <IconButton>
+            <InfoIcon sx={{ fontSize: "16px" }} />
+          </IconButton>
+        </Tooltip>
+      </li>
+    );
+  };
+  // Create a component for checklist items with tooltips
+  const PassengerChecklistItem = ({ checked, text, tooltip }) => {
     return (
       <li
         style={{
@@ -156,13 +245,80 @@ export default function Prices() {
       tooltip: t("Prices.checklist.items.14.tooltip"),
     },
   ];
-  //
+  // Create an array of all Passenger checklist (فحص المسافر) items with their tooltips
+  const PassengerchecklistItems = [
+    {
+      text: t("Prices.passengerChecklist.items.0.text"),
+      tooltip: t("Prices.passengerChecklist.items.0.tooltip"),
+    },
+    {
+      text: t("Prices.passengerChecklist.items.1.text"),
+      tooltip: t("Prices.passengerChecklist.items.1.tooltip"),
+    },
+    {
+      text: t("Prices.passengerChecklist.items.2.text"),
+      tooltip: t("Prices.passengerChecklist.items.2.tooltip"),
+    },
+    {
+      text: t("Prices.passengerChecklist.items.3.text"),
+      tooltip: t("Prices.passengerChecklist.items.3.tooltip"),
+    },
+    {
+      text: t("Prices.passengerChecklist.items.4.text"),
+      tooltip: t("Prices.passengerChecklist.items.4.tooltip"),
+    },
+    {
+      text: t("Prices.passengerChecklist.items.5.text"),
+      tooltip: t("Prices.passengerChecklist.items.5.tooltip"),
+    },
+    {
+      text: t("Prices.passengerChecklist.items.6.text"),
+      tooltip: t("Prices.passengerChecklist.items.6.tooltip"),
+    },
+    {
+      text: t("Prices.passengerChecklist.items.7.text"),
+      tooltip: t("Prices.passengerChecklist.items.7.tooltip"),
+    },
+    {
+      text: t("Prices.passengerChecklist.items.8.text"),
+      tooltip: t("Prices.passengerChecklist.items.8.tooltip"),
+    },
+    {
+      text: t("Prices.passengerChecklist.items.9.text"),
+      tooltip: t("Prices.passengerChecklist.items.9.tooltip"),
+    },
+    {
+      text: t("Prices.passengerChecklist.items.10.text"),
+      tooltip: t("Prices.passengerChecklist.items.10.tooltip"),
+    },
+    {
+      text: t("Prices.passengerChecklist.items.11.text"),
+      tooltip: t("Prices.passengerChecklist.items.11.tooltip"),
+    },
+    {
+      text: t("Prices.passengerChecklist.items.12.text"),
+      tooltip: t("Prices.passengerChecklist.items.12.tooltip"),
+    },
+    {
+      text: t("Prices.passengerChecklist.items.13.text"),
+      tooltip: t("Prices.passengerChecklist.items.13.tooltip"),
+    },
+    {
+      text: t("Prices.passengerChecklist.items.14.text"),
+      tooltip: t("Prices.passengerChecklist.items.14.tooltip"),
+    },
+    {
+      text: t("Prices.passengerChecklist.items.15.text"),
+      tooltip: t("Prices.passengerChecklist.items.15.tooltip"),
+    },
+  ];
+  // Plans Overlay
   const overlay = React.useRef(null);
   React.useEffect(() => {
     // Scroll to the top of the page
     window.scrollTo(0, 0);
   }, []);
-  //
+  // Year Slider
   const marks = [
     {
       value: 2009,
@@ -255,7 +411,7 @@ export default function Prices() {
     }
   };
 
-  //
+  // Year
   const [selectedYear, setSelectedYear] = React.useState(2018); // State to hold the selected year
   const handleYearChange = (event, newValue) => {
     overlay.current.style.gridTemplateRows = "0fr";
@@ -263,6 +419,7 @@ export default function Prices() {
     setSelectedYear(newValue); // Update the selected year
   };
 
+  // Get Prices
   const {
     data: prices,
     fetchStatus: pricesFetchStatus,
@@ -288,16 +445,19 @@ export default function Prices() {
     basicPrice = Math.floor(prices[0]?.prices[1]?.price);
     engainPrice = Math.floor(prices[0]?.prices[2]?.price);
 
-    oldPriceFullPrice = Math.floor(prices[0]?.prices[0]?.price / 0.8);
+    oldPriceFullPrice = Math.floor(
+      prices[0]?.prices[0]?.price / (dis ? 0.5 : 0.8)
+    );
     saveFullPrice = Math.floor(oldPriceFullPrice - fullPrice);
 
-    oldPriceBasicPrice = Math.floor(prices[0]?.prices[1]?.price / 0.3);
+    oldPriceBasicPrice = Math.floor(prices[0]?.prices[1]?.price / 0.5);
     saveBasicPrice = Math.floor(oldPriceBasicPrice - basicPrice);
 
-    oldPriceEngainPrice = Math.floor(prices[0]?.prices[2]?.price / 0.3);
+    oldPriceEngainPrice = Math.floor(prices[0]?.prices[2]?.price / 0.5);
     saveEngainPrice = Math.floor(oldPriceEngainPrice - engainPrice);
   }
 
+  //
   const handleSubmit = () => {
     if (selectedModelId && selectedYear) {
       setTrigger(true);
@@ -308,7 +468,13 @@ export default function Prices() {
 
   const searchBtn = React.useRef(null);
   React.useEffect(() => {
-    if (isFetchPricesSuccess) {
+    if (
+      isFetchPricesSuccess ||
+      (prices &&
+        prices.length > 0 &&
+        prices[0]?.car_model_id === selectedModelId &&
+        (selectedYear >= 2017 ? 2 : 1) === prices[0]?.year_id)
+    ) {
       // overlay.current.style.padding = "16px";
       overlay.current.style.gridTemplateRows = "1fr";
 
@@ -321,10 +487,30 @@ export default function Prices() {
         });
       }, 100);
     }
-  }, [isFetchPricesSuccess]);
+  }, [isFetchPricesSuccess, prices, selectedModelId, selectedYear]);
+
+  // Show Passenger Card
+  const passengerOverlay = React.useRef(null);
+  React.useEffect(() => {
+    if (passenger && passengerCheck) {
+      // overlay.current.style.padding = "16px";
+      passengerOverlay.current.style.gridTemplateRows = "1fr";
+    }
+  }, [passenger]);
+
+  // Car types options array
+  const handleCarTypesChange = (option) => {
+    setPassenger(option);
+  };
+  const carTypes = [
+    { value: "luxury", label: t("Prices.luxury"), image: C },
+    { value: "suv", label: t("Prices.suv"), image: B },
+    { value: "sedan", label: t("Prices.sedan"), image: A },
+  ];
 
   return (
     <div className={style.container}>
+      {/* Shared Title */}
       <Typography
         variant="h6"
         component="div"
@@ -339,371 +525,498 @@ export default function Prices() {
         {t("Prices.enterTheVehicleType")}
       </Typography>
 
-      <div className={style.box}>
-        <Autocomplete
-          dir={languageText === "ar" ? "rtl" : "ltr"}
-          sx={{ backgroundColor: "#fff" }}
-          disablePortal
-          onChange={handleModelChange} // Add the onChange handler
-          options={isSuccess ? models.carModels : []}
-          getOptionLabel={(option) => option.model_name}
-          renderInput={(params) => (
-            <TextField {...params} label={t("Prices.search")} />
-          )}
-          // Use a unique key for each option
-          renderOption={(props, option) => (
-            <li
-              dir={languageText === "ar" ? "rtl" : "ltr"}
-              {...props}
-              key={option.id}
-            >
-              {option.model_name}
-            </li>
-          )}
-          noOptionsText={
-            isSuccess ? (
-              <div
-                dir={languageText === "ar" ? "rtl" : "ltr"}
-                style={{ padding: "8px 16px", textAlign: "center" }}
-              >
-                <a
-                  href="https://wa.me/966920019948?text=استعلام عن موديل غير موجود"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ color: "#0b6bcb", textDecoration: "none" }}
-                >
-                  {t("Prices.CarModelNotAvailableContactUs")}
-                </a>
-              </div>
-            ) : (
-              <div
-                dir={languageText === "ar" ? "rtl" : "ltr"}
-                style={{ padding: "8px 16px", textAlign: "center" }}
-              >
-                {t("Prices.loading")}
-              </div>
-            )
-          }
-        />
-
-        <Box sx={{ width: "85%", margin: "auto", marginTop: "28px" }}>
-          <Typography
-            variant="h6"
-            component="div"
-            style={{ textAlign: "center", margin: "auto", color: "#757575" }}
-          >
-            {t("Prices.selectYearOfManufacture")}
-          </Typography>
-          <Slider
-            aria-label={t("Prices.selectYearOfManufacture")}
-            value={selectedYear} // Set the value of the slider to the selected year
-            onChange={handleYearChange} // Add the onChange handler
-            valueLabelDisplay="auto"
-            step={1}
-            marks={marks}
-            min={2009}
-            max={2026}
-          />
-        </Box>
-
-        <Box ref={searchBtn} sx={{ marginTop: "32px", textAlign: "center" }}>
-          <IconButton
-            size="large"
-            onClick={handleSubmit}
-            disabled={pricesFetchStatus === "fetching"} // Disable button while loading
-            className={style.search_btn}
-          >
-            {pricesFetchStatus === "fetching" ? (
-              <CircularProgress size={46} /> // Show loading spinner
-            ) : (
-              <SearchIcon sx={{ fontSize: "46px", color: "#174545" }} />
+      {/* Normal Select (car model & year) */}
+      {!passengerCheck && (
+        <div className={style.box}>
+          <Autocomplete
+            dir={languageText === "ar" ? "rtl" : "ltr"}
+            sx={{ backgroundColor: "#fff" }}
+            disablePortal
+            onChange={handleModelChange} // Add the onChange handler
+            options={isSuccess ? models.carModels : []}
+            getOptionLabel={(option) => option.model_name}
+            renderInput={(params) => (
+              <TextField {...params} label={t("Prices.search")} />
             )}
-          </IconButton>
-        </Box>
-      </div>
-
-      <Box dir={languageText === "ar" ? "rtl" : "ltr"}>
-        <div className="overlay" ref={overlay} id="overlay">
-          <div>
-            <div className="title-box">
-              <h2>{t("Prices.chooseTheRightPackage")}</h2>
-            </div>
-            <div className="plane-box">
-              {/* المحركات */}
-              <div className="col plane eng-pane dis rounded-3 shadow-sm">
-                <div className="card mb-4 card-price eng">
-                  <div className="card-header py-3">
-                    <h4 className="my-0 fw-normal">{t("Prices.engines")}</h4>
-                  </div>
-                  <div className="card-body">
-                    <h1
-                      dir="rtl"
-                      id="engain-price"
-                      className="card-title pricing-card-title"
-                    >
-                      {engainPrice}
-                      <span dangerouslySetInnerHTML={{ __html: ryalIcon }} />
-                    </h1>
-
-                    {/* <h3
-                    dir="rtl"
-                      id="old-price-a"
-                      style={{
-                        marginTop: "-12px",
-                        fontSize: 16,
-                        color: "#d32f2f",
-                      }}
-                    ></h3>
-                    <h3
-                    dir="rtl"
-                      style={{
-                        marginTop: "-20px",
-                        marginBottom: "12px",
-                        fontSize: 16,
-                        color: "#d32f2f",
-                        textAlign: "center",
-                      }}
-                    >
-                      <span style={{ textDecoration: "line-through" }}>
-                        {oldPriceEngainPrice}
-                      </span>{" "}
-                      <span>
-                        <span
-                          dangerouslySetInnerHTML={{ __html: redRyalIcon }}
-                        />
-                      </span>
-                      <span
-                      dir="rtl"
-                        style={{
-                          textDecoration: "none",
-                          color: "#25d366",
-                          backgroundColor: "#dff1d9",
-                          marginRight: 6,
-                          padding: "0 5px",
-                          borderRadius: 2,
-                          fontSize: 16,
-                        }}
-                      >
-                        {t("Prices.save")} {saveEngainPrice}{" "}
-                        <span
-                          dangerouslySetInnerHTML={{ __html: greenRyalIcon }}
-                        />
-                      </span>
-                    </h3> */}
-
-                    <h5>{t("Prices.includesExamination")}:</h5>
-                    <ul className="list-unstyled mt-3 mb-4">
-                      {checklistItems.map((item, index) => (
-                        <ChecklistItem
-                          key={index}
-                          checked={index < 7} // First 7 items checked for engines plan
-                          text={item.text}
-                          tooltip={item.tooltip}
-                        />
-                      ))}
-                    </ul>
-                    <a
-                      aria-label="Ask now Button"
-                      id="plane-one"
-                      className="ask-now"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href={`https://cashif.cc${
-                        checkit ? "/check-it/receipt" : "/pay"
-                      }${languageText === "ar" ? "" : "/en"}/?plan=${
-                        languageText === "ar" ? "محركات" : "Engine"
-                      }&year_id=${
-                        selectedYear >= 2015 ? 2 : 1
-                      }&car_model_id=${selectedModelId}&price_id=2&full_year=${selectedYear}`}
-                    >
-                      {t("Prices.orderNow")}
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              {/* الأساسي */}
-              <div className="col plane main-plane dis rounded-3 shadow-sm">
-                <div className="card mb-4 card-price">
-                  <div className="card-header py-3">
-                    <h4 className="my-0 fw-normal">{t("Prices.basic")}</h4>
-                  </div>
-                  <div className="card-body">
-                    <h1
-                      dir="rtl"
-                      id="main-price"
-                      className="card-title pricing-card-title"
-                    >
-                      {basicPrice}
-                      <span dangerouslySetInnerHTML={{ __html: ryalIcon }} />
-                    </h1>
-
-                    {/* <h3
-                    dir="rtl"
-                      id="old-price-b"
-                      style={{
-                        marginTop: "-12px",
-                        fontSize: 16,
-                        color: "#d32f2f",
-                      }}
-                    ></h3>
-                    <h3
-                    dir="rtl"
-                      style={{
-                        marginTop: "-20px",
-                        marginBottom: "12px",
-                        fontSize: 16,
-                        color: "#d32f2f",
-                        textAlign: "center",
-                      }}
-                    >
-                      <span style={{ textDecoration: "line-through" }}>
-                        {oldPriceBasicPrice}
-                      </span>{" "}
-                      <span>
-                        <span
-                          dangerouslySetInnerHTML={{ __html: redRyalIcon }}
-                        />
-                      </span>
-                      <span
-                      dir="rtl"
-                        style={{
-                          textDecoration: "none",
-                          color: "#25d366",
-                          backgroundColor: "#dff1d9",
-                          marginRight: 6,
-                          padding: "0 5px",
-                          borderRadius: 2,
-                          fontSize: 16,
-                        }}
-                      >
-                        {t("Prices.save")} {saveBasicPrice}{" "}
-                        <span
-                          dangerouslySetInnerHTML={{ __html: greenRyalIcon }}
-                        />
-                      </span>
-                    </h3> */}
-                    <h5>{t("Prices.includesExamination")}:</h5>
-                    <ul className="list-unstyled mt-3 mb-4">
-                      {checklistItems.map((item, index) => (
-                        <ChecklistItem
-                          key={index}
-                          checked={index < 9} // First 9 items checked for basic plan
-                          text={item.text}
-                          tooltip={item.tooltip}
-                        />
-                      ))}
-                    </ul>
-                    <a
-                      aria-label="Ask now Button"
-                      id="plane-two"
-                      className="ask-now"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href={`https://cashif.cc${
-                        checkit ? "/check-it/receipt" : "/pay"
-                      }${languageText === "ar" ? "" : "/en"}/?plan=${
-                        languageText === "ar" ? "أساسي" : "Basic"
-                      }&year_id=${
-                        selectedYear >= 2015 ? 2 : 1
-                      }&car_model_id=${selectedModelId}&price_id=1&full_year=${selectedYear}`}
-                    >
-                      {t("Prices.orderNow")}
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              {/* الشامل */}
-              <div
-                className="col plane crown-box full-pane dis rounded-3 shadow-sm"
-                style={{ border: "2px solid #174545" }}
+            // Use a unique key for each option
+            renderOption={(props, option) => (
+              <li
+                dir={languageText === "ar" ? "rtl" : "ltr"}
+                {...props}
+                key={option.id}
               >
-                <div className="card mb-0 card-price">
-                  <div className="card-header py-3 crown">
-                    <h4 className="my-0 fw-normal">
-                      {t("Prices.fullInspection")}
-                    </h4>
+                {option.model_name}
+              </li>
+            )}
+            noOptionsText={
+              isSuccess ? (
+                <div
+                  dir={languageText === "ar" ? "rtl" : "ltr"}
+                  style={{ padding: "8px 16px", textAlign: "center" }}
+                >
+                  <a
+                    href="https://wa.me/966920019948?text=استعلام عن موديل غير موجود"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: "#0b6bcb", textDecoration: "none" }}
+                  >
+                    {t("Prices.CarModelNotAvailableContactUs")}
+                  </a>
+                </div>
+              ) : (
+                <div
+                  dir={languageText === "ar" ? "rtl" : "ltr"}
+                  style={{ padding: "8px 16px", textAlign: "center" }}
+                >
+                  {t("Prices.loading")}
+                </div>
+              )
+            }
+          />
+
+          <Box sx={{ width: "85%", margin: "auto", marginTop: "28px" }}>
+            <Typography
+              variant="h6"
+              component="div"
+              style={{ textAlign: "center", margin: "auto", color: "#757575" }}
+            >
+              {t("Prices.selectYearOfManufacture")}
+            </Typography>
+            <Slider
+              aria-label={t("Prices.selectYearOfManufacture")}
+              value={selectedYear} // Set the value of the slider to the selected year
+              onChange={handleYearChange} // Add the onChange handler
+              valueLabelDisplay="auto"
+              step={1}
+              marks={marks}
+              min={2009}
+              max={2026}
+              valueLabelFormat={(value) =>
+                value === 2009 ? t("Prices.older") : value
+              }
+            />
+          </Box>
+
+          <Box ref={searchBtn} sx={{ marginTop: "32px", textAlign: "center" }}>
+            <IconButton
+              size="large"
+              onClick={handleSubmit}
+              disabled={pricesFetchStatus === "fetching"} // Disable button while loading
+              className={style.search_btn}
+            >
+              {pricesFetchStatus === "fetching" ? (
+                <CircularProgress size={46} /> // Show loading spinner
+              ) : (
+                <SearchIcon sx={{ fontSize: "46px", color: "#174545" }} />
+              )}
+            </IconButton>
+          </Box>
+        </div>
+      )}
+
+      {/* Plans */}
+      {!passengerCheck && (
+        <Box dir={languageText === "ar" ? "rtl" : "ltr"}>
+          <div
+            className="overlay"
+            ref={overlay}
+            style={{ marginBottom: passengerCheck ? 0 : "32px" }}
+          >
+            <div>
+              <div className="title-box">
+                <h2>{t("Prices.chooseTheRightPackage")}</h2>
+              </div>
+              <div className="plane-box">
+                {/* المحركات */}
+                <div className="col plane eng-pane dis rounded-3 shadow-sm engines-catcher">
+                  <div className="card mb-4 card-price eng">
+                    <div className="card-header py-3">
+                      <h4 className="my-0 fw-normal">{t("Prices.engines")}</h4>
+                    </div>
+                    <div className="card-body">
+                      <h1
+                        dir="rtl"
+                        id="engain-price"
+                        className="card-title pricing-card-title"
+                      >
+                        {engainPrice}
+                        <span dangerouslySetInnerHTML={{ __html: ryalIcon }} />
+                      </h1>
+
+                      {dis && (
+                        <>
+                          <h3
+                            dir="rtl"
+                            id="old-price-a"
+                            style={{
+                              marginTop: "-12px",
+                              fontSize: 16,
+                              color: "#d32f2f",
+                            }}
+                          ></h3>
+                          <h3
+                            dir="rtl"
+                            style={{
+                              marginTop: "-20px",
+                              marginBottom: "12px",
+                              fontSize: 16,
+                              color: "#d32f2f",
+                              textAlign: "center",
+                            }}
+                          >
+                            <span style={{ textDecoration: "line-through" }}>
+                              {oldPriceEngainPrice}
+                            </span>{" "}
+                            <span>
+                              <span
+                                dangerouslySetInnerHTML={{
+                                  __html: redRyalIcon,
+                                }}
+                              />
+                            </span>
+                            <span
+                              dir="rtl"
+                              style={{
+                                textDecoration: "none",
+                                color: "#25d366",
+                                backgroundColor: "#dff1d9",
+                                marginRight: 6,
+                                padding: "0 5px",
+                                borderRadius: 2,
+                                fontSize: 16,
+                              }}
+                            >
+                              {t("Prices.save")} {saveEngainPrice}{" "}
+                              <span
+                                dangerouslySetInnerHTML={{
+                                  __html: greenRyalIcon,
+                                }}
+                              />
+                            </span>
+                          </h3>
+                        </>
+                      )}
+
+                      <h5>{t("Prices.includesExamination")}:</h5>
+                      <ul className="list-unstyled mt-3 mb-4">
+                        {checklistItems.map((item, index) => (
+                          <ChecklistItem
+                            key={index}
+                            checked={index < 7} // First 7 items checked for engines plan
+                            text={item.text}
+                            tooltip={item.tooltip}
+                          />
+                        ))}
+                      </ul>
+                      <a
+                        aria-label="Ask now Button"
+                        id="plane-one"
+                        className="ask-now"
+                        rel="noopener noreferrer"
+                        href={`https://cashif.cc${
+                          checkit ? "/check-it/receipt" : "/pay"
+                        }${languageText === "ar" ? "" : "/en"}/?plan=${
+                          languageText === "ar" ? "محركات" : "Engine"
+                        }&year_id=${
+                          selectedYear >= 2017 ? 2 : 1
+                        }&car_model_id=${selectedModelId}&price_id=2&full_year=${selectedYear}${
+                          dis ? "&dis=fifty" : ""
+                        }`}
+                      >
+                        {t("Prices.orderNow")}
+                      </a>
+                    </div>
                   </div>
-                  <div className="card-body">
-                    <h1
-                      dir="rtl"
-                      id="full-price"
-                      className="card-title pricing-card-title"
-                    >
-                      {fullPrice}
-                      <span dangerouslySetInnerHTML={{ __html: ryalIcon }} />
-                    </h1>
-                    <h3
-                      dir="rtl"
-                      style={{
-                        marginTop: "-20px",
-                        marginBottom: "12px",
-                        fontSize: 16,
-                        color: "#d32f2f",
-                        textAlign: "center",
-                      }}
-                    >
-                      <span style={{ textDecoration: "line-through" }}>
-                        {oldPriceFullPrice}
-                      </span>{" "}
-                      <span>
-                        <span
-                          dangerouslySetInnerHTML={{ __html: redRyalIcon }}
-                        />
-                      </span>
-                      <span
+                </div>
+
+                {/* الأساسي */}
+                <div className="col plane main-plane dis rounded-3 shadow-sm bascic-catcher">
+                  <div className="card mb-4 card-price">
+                    <div className="card-header py-3">
+                      <h4 className="my-0 fw-normal">{t("Prices.basic")}</h4>
+                    </div>
+                    <div className="card-body">
+                      <h1
+                        dir="rtl"
+                        id="main-price"
+                        className="card-title pricing-card-title"
+                      >
+                        {basicPrice}
+                        <span dangerouslySetInnerHTML={{ __html: ryalIcon }} />
+                      </h1>
+
+                      {dis && (
+                        <>
+                          <h3
+                            dir="rtl"
+                            id="old-price-b"
+                            style={{
+                              marginTop: "-12px",
+                              fontSize: 16,
+                              color: "#d32f2f",
+                            }}
+                          ></h3>
+                          <h3
+                            dir="rtl"
+                            style={{
+                              marginTop: "-20px",
+                              marginBottom: "12px",
+                              fontSize: 16,
+                              color: "#d32f2f",
+                              textAlign: "center",
+                            }}
+                          >
+                            <span style={{ textDecoration: "line-through" }}>
+                              {oldPriceBasicPrice}
+                            </span>{" "}
+                            <span>
+                              <span
+                                dangerouslySetInnerHTML={{
+                                  __html: redRyalIcon,
+                                }}
+                              />
+                            </span>
+                            <span
+                              dir="rtl"
+                              style={{
+                                textDecoration: "none",
+                                color: "#25d366",
+                                backgroundColor: "#dff1d9",
+                                marginRight: 6,
+                                padding: "0 5px",
+                                borderRadius: 2,
+                                fontSize: 16,
+                              }}
+                            >
+                              {t("Prices.save")} {saveBasicPrice}{" "}
+                              <span
+                                dangerouslySetInnerHTML={{
+                                  __html: greenRyalIcon,
+                                }}
+                              />
+                            </span>
+                          </h3>
+                        </>
+                      )}
+                      <h5>{t("Prices.includesExamination")}:</h5>
+                      <ul className="list-unstyled mt-3 mb-4">
+                        {checklistItems.map((item, index) => (
+                          <ChecklistItem
+                            key={index}
+                            checked={index < 9} // First 9 items checked for basic plan
+                            text={item.text}
+                            tooltip={item.tooltip}
+                          />
+                        ))}
+                      </ul>
+                      <a
+                        aria-label="Ask now Button"
+                        id="plane-two"
+                        className="ask-now"
+                        rel="noopener noreferrer"
+                        href={`https://cashif.cc${
+                          checkit ? "/check-it/receipt" : "/pay"
+                        }${languageText === "ar" ? "" : "/en"}/?plan=${
+                          languageText === "ar" ? "أساسي" : "Basic"
+                        }&year_id=${
+                          selectedYear >= 2017 ? 2 : 1
+                        }&car_model_id=${selectedModelId}&price_id=1&full_year=${selectedYear}${
+                          dis ? "&dis=fifty" : ""
+                        }`}
+                      >
+                        {t("Prices.orderNow")}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                {/* الشامل */}
+                <div
+                  className="col plane crown-box full-pane dis rounded-3 shadow-sm full-Plane-catcher"
+                  style={{ border: "2px solid #174545" }}
+                >
+                  <div className="card mb-0 card-price">
+                    <div className="card-header py-3 crown">
+                      <h4 className="my-0 fw-normal">
+                        {t("Prices.fullInspection")}
+                      </h4>
+                    </div>
+                    <div className="card-body">
+                      <h1
+                        dir="rtl"
+                        id="full-price"
+                        className="card-title pricing-card-title"
+                      >
+                        {fullPrice}
+                        <span dangerouslySetInnerHTML={{ __html: ryalIcon }} />
+                      </h1>
+                      <h3
                         dir="rtl"
                         style={{
-                          textDecoration: "none",
-                          color: "#25d366",
-                          backgroundColor: "#dff1d9",
-                          marginRight: 6,
-                          padding: "0 5px",
-                          borderRadius: 2,
+                          marginTop: "-20px",
+                          marginBottom: "12px",
                           fontSize: 16,
+                          color: "#d32f2f",
+                          textAlign: "center",
                         }}
                       >
-                        {t("Prices.save")} {saveFullPrice}{" "}
+                        <span style={{ textDecoration: "line-through" }}>
+                          {oldPriceFullPrice}
+                        </span>{" "}
+                        <span>
+                          <span
+                            dangerouslySetInnerHTML={{ __html: redRyalIcon }}
+                          />
+                        </span>
                         <span
-                          dangerouslySetInnerHTML={{ __html: greenRyalIcon }}
-                        />
-                      </span>
-                    </h3>
-                    <h5>{t("Prices.includesExamination")}:</h5>
-                    <ul className="list-unstyled mt-3 mb-4">
-                      {checklistItems.map((item) => (
-                        <ChecklistItem
-                          key={item.text}
-                          checked={true} // All items checked for full plan
-                          text={item.text}
-                          tooltip={item.tooltip}
-                        />
-                      ))}
-                    </ul>
-                    <a
-                      aria-label="Ask now Button"
-                      id="plane-three"
-                      className="ask-now"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href={`https://cashif.cc${
-                        checkit ? "/check-it/receipt" : "/pay"
-                      }${languageText === "ar" ? "" : "/en"}/?plan=${
-                        languageText === "ar" ? "شامل" : "Full-Inspection"
-                      }&year_id=${
-                        selectedYear >= 2015 ? 2 : 1
-                      }&car_model_id=${selectedModelId}&price_id=0&full_year=${selectedYear}`}
-                    >
-                      {t("Prices.orderNow")}
-                    </a>
+                          dir="rtl"
+                          style={{
+                            textDecoration: "none",
+                            color: "#25d366",
+                            backgroundColor: "#dff1d9",
+                            marginRight: 6,
+                            padding: "0 5px",
+                            borderRadius: 2,
+                            fontSize: 16,
+                          }}
+                        >
+                          {t("Prices.save")} {saveFullPrice}{" "}
+                          <span
+                            dangerouslySetInnerHTML={{ __html: greenRyalIcon }}
+                          />
+                        </span>
+                      </h3>
+                      <h5>{t("Prices.includesExamination")}:</h5>
+                      <ul className="list-unstyled mt-3 mb-4">
+                        {checklistItems.map((item) => (
+                          <ChecklistItem
+                            key={item.text}
+                            checked={true} // All items checked for full plan
+                            text={item.text}
+                            tooltip={item.tooltip}
+                          />
+                        ))}
+                      </ul>
+                      <a
+                        aria-label="Ask now Button"
+                        id="plane-three"
+                        className="ask-now"
+                        rel="noopener noreferrer"
+                        href={`https://cashif.cc${
+                          checkit ? "/check-it/receipt" : "/pay"
+                        }${languageText === "ar" ? "" : "/en"}/?plan=${
+                          languageText === "ar" ? "شامل" : "Full-Inspection"
+                        }&year_id=${
+                          selectedYear >= 2017 ? 2 : 1
+                        }&car_model_id=${selectedModelId}&price_id=0&full_year=${selectedYear}${
+                          dis ? "&dis=fifty" : ""
+                        }`}
+                      >
+                        {t("Prices.orderNow")}
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </Box>
+        </Box>
+      )}
+
+      {/* فحص المسافر الاختيارات */}
+      {passengerCheck && (
+        <Box className={style.label_box} sx={{ marginTop: "32px" }}>
+          {carTypes.map((option) => (
+            <label key={option.value} dir="rtl">
+              <div
+                className={style.image_box}
+                onClick={() => handleCarTypesChange(option.value)}
+              >
+                <img src={option.image} alt={`Option ${option.value}`} />
+              </div>
+              <div className={style.label_text_box}>
+                <input
+                  type="radio"
+                  name="options"
+                  value={option.value}
+                  checked={passenger === option.value}
+                  onChange={() => handleCarTypesChange(option.value)}
+                  required
+                />
+                {option.label}
+              </div>
+            </label>
+          ))}
+        </Box>
+      )}
+
+      {/* فحص المسافر الخطط */}
+      {passengerCheck && (
+        <Box dir={languageText === "ar" ? "rtl" : "ltr"}>
+          <div className="overlay" ref={passengerOverlay}>
+            <div>
+              <div className="title-box">
+                <h2>{t("Prices.chooseThePackage")}</h2>
+              </div>
+              <div className="plane-box">
+                {/* سيدان - دفع رباعي - فارهة */}
+                <div className="col plane eng-pane dis rounded-3 shadow-sm engines-catcher">
+                  <div className="card mb-4 card-price eng">
+                    <div className="card-header py-3">
+                      <h4 className="my-0 fw-normal">
+                        {passenger &&
+                          passenger === "sedan" &&
+                          t("Prices.sedan")}
+                        {passenger && passenger === "suv" && t("Prices.suv")}
+                        {passenger &&
+                          passenger === "luxury" &&
+                          t("Prices.luxury")}
+                      </h4>
+                    </div>
+                    <div className="card-body">
+                      <h1
+                        dir="rtl"
+                        id="engain-price"
+                        className="card-title pricing-card-title"
+                      >
+                        {passenger && passenger === "sedan" && 100}
+                        {passenger && passenger === "suv" && 150}
+                        {passenger && passenger === "luxury" && 200}
+                        <span dangerouslySetInnerHTML={{ __html: ryalIcon }} />
+                      </h1>
+
+                      <h5>{t("Prices.includesExamination")}:</h5>
+                      <ul className="list-unstyled mt-3 mb-4">
+                        {PassengerchecklistItems.map((item, index) => (
+                          <PassengerChecklistItem
+                            key={index}
+                            checked={true} // All checked
+                            text={item.text}
+                            tooltip={item.tooltip}
+                          />
+                        ))}
+                      </ul>
+                      <a
+                        aria-label="Ask now Button"
+                        id="plane-one"
+                        className="ask-now"
+                        rel="noopener noreferrer"
+                        href={`https://cashif.cc/pay${
+                          languageText === "ar" ? "" : "/en"
+                        }/?plan=passenger&year_id=1&car_model_id=9&price_id=2&full_year=0${
+                          dis ? "&dis=fifty" : ""
+                        }${passenger ? `&passenger=${passenger}` : ""}`}
+                      >
+                        {t("Prices.orderNow")}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Box>
+      )}
     </div>
   );
 }

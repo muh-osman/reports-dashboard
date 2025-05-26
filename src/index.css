@@ -290,7 +290,7 @@ nav.mob-phone-nav {
 .overlay li {
   color: #757575;
   line-height: 2.1;
-  font-size: 18px;
+  font-size: 17px;
   /* text-align: right; */
 }
 
@@ -324,7 +324,7 @@ nav.mob-phone-nav {
 
 .plane {
   padding: 0;
-  width: 300px;
+  width: 306px;
   background-color: #fff;
 }
 
@@ -375,12 +375,14 @@ nav.mob-phone-nav {
   }
 }
 
-.crown-box {
+.full-Plane-catcher,
+.engines-catcher,
+.bascic-catcher {
   position: relative;
   overflow: hidden;
 }
 
-.crown-box::after {
+.ar-discount::after {
   position: absolute;
   content: "خصم 20%";
   top: 15px;
@@ -396,20 +398,32 @@ nav.mob-phone-nav {
   justify-content: center;
 }
 
+.en-discount::after {
+  position: absolute;
+  content: "20% Off";
+  top: 15px;
+  left: unset;
+  right: -50px;
+  transform: rotate(45deg);
+  width: 175px;
+  height: 47px;
+  font-size: 16px;
+  background-color: #d32f2f;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* New modified styles */
-.crown-box.modified::after {
+/* .crown-box.modified::after {
   content: "20% Off";
   left: unset;
   right: -50px;
   transform: rotate(45deg);
-}
+} */
 
-.seventy-discount {
-  position: relative;
-  overflow: hidden;
-}
-
-.seventy-discount::after {
+.ar-fifty-discount::after {
   position: absolute;
   content: "خصم 50%";
   top: 15px;
@@ -419,6 +433,23 @@ nav.mob-phone-nav {
   font-size: 16px;
   background-color: #d32f2f;
   transform: rotate(315deg);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.en-fifty-discount::after {
+  position: absolute;
+  content: "50% Off";
+  top: 15px;
+  left: unset;
+  right: -50px;
+  transform: rotate(45deg);
+  width: 175px;
+  height: 47px;
+  font-size: 16px;
+  background-color: #d32f2f;
   color: #fff;
   display: flex;
   align-items: center;

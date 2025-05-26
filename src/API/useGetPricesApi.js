@@ -4,9 +4,18 @@ import axios from "axios";
 
 export const fetchPrices = async (modelId, year) => {
   // Map yearId based on the year
-  const mappedYearId = year >= 2015 ? 2 : 1;
+  const mappedYearId = year >= 2017 ? 2 : 1;
+
+  // Check sessionStorage for discount flag
+  const discountFlag = sessionStorage.getItem("dis") === "fifty";
+
+  // Base URL
+  const baseUrl = discountFlag
+    ? "https://cashif.online/back-end/public/api/get-fifty-precent-discounted-prices-by-model-and-year"
+    : "https://cashif.online/back-end/public/api/get-discounted-prices-by-model-and-year";
+
   const res = await axios.get(
-    `https://cashif.online/back-end/public/api/get-discounted-prices-by-model-and-year?car_model_id=${modelId}&year_id=${mappedYearId}`
+    `${baseUrl}?car_model_id=${modelId}&year_id=${mappedYearId}`
   );
   return res.data;
 };

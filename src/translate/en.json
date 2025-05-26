@@ -42,11 +42,13 @@
     "toViewReports": "to view reports",
     "photoReport": "Photo report",
     "loading": "Loading..",
-    "noReports": "No reports"
+    "noReports": "No reports",
+    "downloadReport": "Inspection report",
+    "downloadSummaryReport": "Brief"
   },
   "Prices": {
     "pleaseSelectModelAndYear": "Please select the model and year of manufacture.",
-    "enterTheVehicleType": "Enter the vehicle model",
+    "enterTheVehicleType": "Select the vehicle model",
     "CarModelNotAvailableContactUs": "Can't find model? Contact us",
     "loading": "Loading..",
     "search": "Search",
@@ -59,6 +61,10 @@
     "includesExamination": "Includes examination",
     "orderNow": "Order now",
     "save": "Save",
+    "chooseThePackage": "Choose the package",
+    "sedan": "Sedan",
+    "suv": "SUV",
+    "luxury": "Luxury",
 
     "checklist": {
       "items": [
@@ -123,6 +129,75 @@
           "tooltip": "Check operation and condition of spark plugs and coils"
         }
       ]
+    },
+
+    "passengerChecklist": {
+      "items": [
+        {
+          "text": "Engine Inspection",
+          "tooltip": "Ensure the engine is in good condition with no unusual noises"
+        },
+        {
+          "text": "Transmission Check",
+          "tooltip": "Test smooth gear shifting without difficulties"
+        },
+        {
+          "text": "Steering Gear Inspection",
+          "tooltip": "Check steering responsiveness and ensure no play in the wheel"
+        },
+        {
+          "text": "Brake Check",
+          "tooltip": "Test effectiveness of front and rear brakes"
+        },
+        {
+          "text": "4WD System Check",
+          "tooltip": "Test the four-wheel-drive system (if equipped)"
+        },
+        {
+          "text": "Fluid Levels Check",
+          "tooltip": "Verify oil levels and cleanliness"
+        },
+        {
+          "text": "Tire Inspection",
+          "tooltip": "Check air pressure, tread depth, and look for damage"
+        },
+        {
+          "text": "Fluid Leak Check",
+          "tooltip": "Inspect for any oil or fluid leaks"
+        },
+        {
+          "text": "Suspension Check",
+          "tooltip": "Test shock absorbers and suspension performance"
+        },
+        {
+          "text": "Gear Lever",
+          "tooltip": "Test gear stick and reverse function"
+        },
+        {
+          "text": "Suspension Arms Check",
+          "tooltip": "Inspect suspension arms and linkages"
+        },
+        {
+          "text": "Brake Pad Inspection",
+          "tooltip": "Check condition of brake pads"
+        },
+        {
+          "text": "Belt Inspection",
+          "tooltip": "Check engine belts and adjust if needed"
+        },
+        {
+          "text": "Wiper Check",
+          "tooltip": "Test front and rear windshield wipers"
+        },
+        {
+          "text": "Lights Check",
+          "tooltip": "Test all headlights, taillights, and turn signals"
+        },
+        {
+          "text": "Road Test",
+          "tooltip": "Comprehensive driving test for overall performance"
+        }
+      ]
     }
   },
 
@@ -147,7 +222,15 @@
     "edit": "Edit",
     "noReservations": "No reservations",
     "myReservations": "My reservations",
-    "reservationDetails": "Reservation details"
+    "reservationDetails": "Reservation details",
+    "timeValidationForAlqadisiaAndAlshifa": "Working hours are from 8:00 AM until 11:30 PM",
+    "timeValidationForJeddahAndDammam": "Working hours are from 10:00 AM until 10:00 PM",
+    "timeValidationForWorkHores": "Please select a time within the specified working hours",
+    "timeValidationMinBufferZone": "Please select a time that is at least one hour after the start of working hours.",
+    "timeValidationMaxBufferZone": "Please select a time that is at most one hour before the end of working hours.",
+    "timeValidationPastTime": "Cannot select a time in the past",
+    "timeValidation1Hour": "Please select a time at least 1 hour from now",
+    "late15Minutes": "15 minutes late will result in cancellation of the appointment."
   },
 
   "EditBooking": {
@@ -202,6 +285,7 @@
     "back": "Back",
     "individualsAccount": "Individuals account",
     "name": "Name",
+    "namePlaceholder": "The full name (in English)",
     "mobileNumber": "Mobile number",
     "create": "Create"
   },

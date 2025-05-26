@@ -27,6 +27,8 @@ import useGetAppointmentApi from "../../API/useGetAppointmentApi";
 // Lang
 import i18n from "../../i18n";
 import { useTranslation } from "react-i18next";
+//
+import { toast } from "react-toastify";
 
 export default function EditBooking() {
   React.useEffect(() => {
@@ -262,6 +264,66 @@ export default function EditBooking() {
     }
   }, [allServices, oneAppointmentData]);
 
+  const [timeError, setTimeError] = React.useState(false);
+  const validateTime = (newTime) => {
+    const now = dayjs();
+    const selectedTime = dayjs(newTime);
+    const isToday = date ? dayjs(date).isSame(now, "day") : false;
+
+    const minTime = selectedBranch === 19 || selectedBranch === 20 ? 8 : 10;
+    const maxTime = selectedBranch === 19 || selectedBranch === 20 ? 23.5 : 22;
+
+    // Check if time is between minTime of branch and maxTime of branch
+    if (
+      selectedTime.hour() < minTime ||
+      selectedTime.hour() + selectedTime.minute() / 60 > maxTime
+    ) {
+      setTimeError(true);
+      toast.warn(t("Booking.timeValidationForWorkHores"));
+      return false;
+    }
+
+    // Check if selected time is at least 1 hour after minTime
+    const minTimeWithBuffer = dayjs().hour(minTime).minute(0).add(59, "minute");
+    if (selectedTime.isBefore(minTimeWithBuffer)) {
+      setTimeError(true);
+      toast.warn(t("Booking.timeValidationMinBufferZone"));
+      return false;
+    }
+
+    // Check if selected time is at least 1 hour before maxTime
+    const maxTimeWithBuffer = dayjs()
+      .hour(maxTime)
+      .minute(selectedBranch === 19 || selectedBranch === 20 ? 30 : 0)
+      .subtract(1, "hour");
+
+    if (selectedTime.isAfter(maxTimeWithBuffer)) {
+      setTimeError(true);
+      toast.warn(t("Booking.timeValidationMaxBufferZone"));
+      return false;
+    }
+
+    // Check if selected time is NOT in the past time (for today only)
+    if (isToday && selectedTime.isBefore(now)) {
+      setTimeError(true);
+      toast.warn(t("Booking.timeValidationPastTime"));
+      return false;
+    }
+
+    // Check if selected time is at least 1 hour from now (for today only)
+    const oneHourFromNow = now.add(1, "hour");
+    if (isToday && selectedTime.isBefore(oneHourFromNow)) {
+      setTimeError(true);
+      toast.warn(t("Booking.timeValidation1Hour"));
+      return false;
+    }
+
+    // If all validations pass
+    setTimeError(false);
+
+    return true;
+  };
+
   //  Submit Edit
   const { mutate, isPending, isSuccess } = useEditAppointmentApi(id);
   const submitEditForm = () => {
@@ -270,6 +332,11 @@ export default function EditBooking() {
       ? dayjs(date).format("YYYY-MM-DDTHH:mm:ss.SSSSSS")
       : null;
     let timeAfterFormat = time ? dayjs(time).format("HH:mm:ss") : null;
+
+    // Validate the selected time
+    if (!validateTime(time)) {
+      return; // Stop form submission if validation fails
+    }
 
     let data = {
       clientId: cookies.userId,
@@ -487,13 +554,34 @@ export default function EditBooking() {
                         sx={{
                           backgroundColor: "#fff",
                           width: "100%",
+                          "& .MuiOutlinedInput-root": {
+                            "& fieldset": {
+                              borderColor: timeError ? "red" : undefined,
+                            },
+                            "&:hover fieldset": {
+                              borderColor: timeError ? "red" : undefined,
+                            },
+                            "&.Mui-focused fieldset": {
+                              borderColor: timeError ? "red" : undefined,
+                            },
+                          },
                         }}
                         label={t("EditBooking.examinationTime")}
                         // format=""
                         value={time}
-                        onChange={(newValue) => setTime(newValue)}
+                        onChange={(newValue) => {
+                          setTime(newValue);
+                          setTimeError(false); // Reset error when user changes the time
+                        }}
                         required
                         disabled={isPending || isSuccess}
+                        onAccept={(newValue) => {
+                          // Only validate when user clicks OK
+                          if (validateTime(newValue)) {
+                            setTime(newValue);
+                          }
+                        }}
+                        error={timeError}
                       />
                     </DemoContainer>
                   </LocalizationProvider>
@@ -507,7 +595,9 @@ export default function EditBooking() {
                   color: "#757575",
                 }}
               >
-                {t("EditBooking.chooseTheTimeFromNineAmToNinePm")}
+                {selectedBranch === 19 || selectedBranch === 20
+                  ? t("Booking.timeValidationForAlqadisiaAndAlshifa")
+                  : t("Booking.timeValidationForJeddahAndDammam")}
               </p>
 
               {/*  نوع الخدمة */}

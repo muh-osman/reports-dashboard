@@ -33,6 +33,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import StyleIcon from "@mui/icons-material/Style";
 import HourglassTopIcon from "@mui/icons-material/HourglassTop";
+import DoNotDisturbOnIcon from "@mui/icons-material/DoNotDisturbOn";
 // Lang
 import i18n from "../../i18n";
 import { useTranslation } from "react-i18next";
@@ -49,6 +50,8 @@ import useGetServices from "../../API/useGetServices";
 import useGetAppointmentApi from "../../API/useGetAppointmentApi";
 import { useDeleteAppointmentApi } from "../../API/useDeleteAppointmentApi";
 import { usePostApoinmentFormApi } from "../../API/usePostApoinmentFormApi";
+//
+import { toast } from "react-toastify";
 
 export default function Booking() {
   React.useEffect(() => {
@@ -315,12 +318,78 @@ export default function Booking() {
     service: "",
   });
 
+  const [timeError, setTimeError] = React.useState(false);
+  const validateTime = (newTime) => {
+    const now = dayjs();
+    const selectedTime = dayjs(newTime);
+    const isToday = date ? dayjs(date).isSame(now, "day") : false;
+
+    const minTime = selectedBranch === 19 || selectedBranch === 20 ? 8 : 10;
+    const maxTime = selectedBranch === 19 || selectedBranch === 20 ? 23.5 : 22;
+
+    // Check if time is between minTime of branch and maxTime of branch
+    if (
+      selectedTime.hour() < minTime ||
+      selectedTime.hour() + selectedTime.minute() / 60 > maxTime
+    ) {
+      setTimeError(true);
+      toast.warn(t("Booking.timeValidationForWorkHores"));
+      return false;
+    }
+
+    // Check if selected time is at least 1 hour after minTime
+    const minTimeWithBuffer = dayjs().hour(minTime).minute(0).add(59, "minute");
+    if (selectedTime.isBefore(minTimeWithBuffer)) {
+      setTimeError(true);
+      toast.warn(t("Booking.timeValidationMinBufferZone"));
+      return false;
+    }
+
+    // Check if selected time is at least 1 hour before maxTime
+    const maxTimeWithBuffer = dayjs()
+      .hour(maxTime)
+      .minute(selectedBranch === 19 || selectedBranch === 20 ? 30 : 0)
+      .subtract(1, "hour");
+
+    if (selectedTime.isAfter(maxTimeWithBuffer)) {
+      setTimeError(true);
+      toast.warn(t("Booking.timeValidationMaxBufferZone"));
+      return false;
+    }
+
+    // Check if selected time is NOT in the past time (for today only)
+    if (isToday && selectedTime.isBefore(now)) {
+      setTimeError(true);
+      toast.warn(t("Booking.timeValidationPastTime"));
+      return false;
+    }
+
+    // Check if selected time is at least 1 hour from now (for today only)
+    const oneHourFromNow = now.add(1, "hour");
+    if (isToday && selectedTime.isBefore(oneHourFromNow)) {
+      setTimeError(true);
+      toast.warn(t("Booking.timeValidation1Hour"));
+      return false;
+    }
+
+    // If all validations pass
+    setTimeError(false);
+
+    return true;
+  };
+
   const submitForm = async () => {
     // Format the date and time using dayjs
     let dateAfterFormat = date
       ? dayjs(date).format("YYYY-MM-DDTHH:mm:ss.SSSSSS")
       : null;
     let timeAfterFormat = time ? dayjs(time).format("HH:mm:ss") : null;
+
+    // Validate the selected time
+    if (!validateTime(time)) {
+      return; // Stop form submission if validation fails
+    }
+
     //////////////////////////////
     // Store selected data for modal
     const selectedBranchObj = allBranches?.find(
@@ -595,13 +664,37 @@ export default function Booking() {
                     <MobileTimePicker
                       fullWidth
                       dir={languageText === "ar" ? "rtl" : "ltr"}
-                      sx={{ backgroundColor: "#fff", width: "100%" }}
+                      sx={{
+                        backgroundColor: "#fff",
+                        width: "100%",
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": {
+                            borderColor: timeError ? "red" : undefined,
+                          },
+                          "&:hover fieldset": {
+                            borderColor: timeError ? "red" : undefined,
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: timeError ? "red" : undefined,
+                          },
+                        },
+                      }}
                       label={t("Booking.examinationTime")}
                       // format=""
                       value={time}
-                      onChange={(newValue) => setTime(newValue)}
+                      onChange={(newValue) => {
+                        setTime(newValue);
+                        setTimeError(false); // Reset error when user changes the time
+                      }}
                       required
                       disabled={isPostApoinmentFormMutatePending}
+                      onAccept={(newValue) => {
+                        // Only validate when user clicks OK
+                        if (validateTime(newValue)) {
+                          setTime(newValue);
+                        }
+                      }}
+                      error={timeError}
                     />
                   </DemoContainer>
                 </LocalizationProvider>
@@ -617,7 +710,9 @@ export default function Booking() {
                 color: "#757575",
               }}
             >
-              {t("Booking.chooseTheTimeFromNineAmToNinePm")}
+              {selectedBranch === 19 || selectedBranch === 20
+                ? t("Booking.timeValidationForAlqadisiaAndAlshifa")
+                : t("Booking.timeValidationForJeddahAndDammam")}
             </p>
           )}
 
@@ -704,7 +799,7 @@ export default function Booking() {
               top: "50%",
               left: "50%",
               transform: "translate(-50%, -50%)",
-              width: 300,
+              width: 310,
               bgcolor: "background.paper",
               p: 2,
               textAlign: "center",
@@ -853,7 +948,12 @@ export default function Booking() {
                   </Typography>
                 </Box>
 
-                <Box display="flex" alignItems="center" gap={1}>
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  gap={1}
+                  marginBottom={"9px"}
+                >
                   <StyleIcon style={{ color: "#000000de" }} />
                   <Typography
                     variant="h5"
@@ -861,6 +961,21 @@ export default function Booking() {
                     style={{ fontSize: "14px" }}
                   >
                     {selectedDataForModal.service}
+                  </Typography>
+                </Box>
+
+                <Box display="flex" alignItems="center" gap={1}>
+                  <DoNotDisturbOnIcon style={{ color: "#d32f2f" }} />
+                  <Typography
+                    variant="h5"
+                    component="div"
+                    style={{
+                      fontSize: "14px",
+                      color: "#d32f2f",
+                      textAlign: languageText === "ar" ? "right" : "left",
+                    }}
+                  >
+                    {t("Booking.late15Minutes")}
                   </Typography>
                 </Box>
               </CardContent>
@@ -907,6 +1022,12 @@ export default function Booking() {
             allAppointment
               .slice()
               .reverse()
+              .filter((card) => {
+                const cardDate = new Date(card.check_Date);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0); // Set to start of day for accurate comparison
+                return cardDate >= today;
+              })
               .map((card) => (
                 <Card
                   key={card.id}
@@ -981,7 +1102,12 @@ export default function Booking() {
                       </Typography>
                     </Box>
 
-                    <Box display="flex" alignItems="center" gap={1}>
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      gap={1}
+                      marginBottom={"9px"}
+                    >
                       <CalendarMonthIcon style={{ color: "#000000de" }} />
                       <Typography
                         variant="h5"
@@ -989,6 +1115,21 @@ export default function Booking() {
                         style={{ fontSize: "14px" }}
                       >
                         {formatDate(card.check_Date)}
+                      </Typography>
+                    </Box>
+
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <DoNotDisturbOnIcon style={{ color: "#d32f2f" }} />
+                      <Typography
+                        variant="h5"
+                        component="div"
+                        style={{
+                          fontSize: "14px",
+                          color: "#d32f2f",
+                          textAlign: languageText === "ar" ? "right" : "left",
+                        }}
+                      >
+                        {t("Booking.late15Minutes")}
                       </Typography>
                     </Box>
                   </CardContent>
