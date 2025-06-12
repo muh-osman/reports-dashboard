@@ -3,7 +3,7 @@ import style from "./HomeLayout.module.scss";
 import * as React from "react";
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 // MUI Icons
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 // import IosShareIcon from "@mui/icons-material/IosShare";
@@ -178,7 +178,7 @@ function HomeLayout() {
                       sx={{ color: "#fff", fontSize: "44px" }}
                     />
                   ) : (
-                    <MoreVertIcon sx={{ color: "#fff", fontSize: "32px" }} />
+                    <MenuIcon sx={{ color: "#fff", fontSize: "32px" }} />
                   )}
                 </IconButton>
               </Tooltip>
@@ -285,7 +285,7 @@ function HomeLayout() {
               <Link to={`${process.env.PUBLIC_URL}/falak/marketer`}>
                 <span className="icon">
                   <svg
-                    style={{ width: "44px" }}
+                    style={{ width: "44px", transform: "translateY(2px)" }}
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 640 512"
                   >
