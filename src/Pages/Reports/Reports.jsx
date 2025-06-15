@@ -24,6 +24,7 @@ import ContentPasteSearchIcon from "@mui/icons-material/ContentPasteSearch";
 import StyleIcon from "@mui/icons-material/Style";
 import InfoIcon from "@mui/icons-material/Info";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
+import VideocamIcon from "@mui/icons-material/Videocam";
 // Toastify
 import { toast } from "react-toastify";
 // Cookies
@@ -33,8 +34,12 @@ import useGetPoinsApi from "../../API/useGetPoinsApi";
 import { useGetAllCardsApi } from "../../API/useGetAllCardsApi";
 import { fetchDownloadCard } from "../../API/useDownloadCardApi";
 import { fetchImgCard } from "../../API/useGetImgCardApi";
+
 import useGetAllSummaryReportsNumbersApi from "../../API/useGetAllSummaryReportsNumbersApi";
 import { fetchDownloadSummaryReport } from "../../API/useDownloadSummaryReportsApi";
+
+import useGetAllVideosReportsNumbersApi from "../../API/useGetAllVideosReportsNumbersApi";
+import { fetchVideo } from "../../API/useDownloadVideoApi";
 // NumberFlow
 import NumberFlow from "@number-flow/react";
 // MUI Table
@@ -115,6 +120,11 @@ export default function Reports() {
     data: AllSummaryReportsNumbers,
     fetchStatus: fetchAllSummaryReportsNumbersStatus,
   } = useGetAllSummaryReportsNumbersApi();
+  //
+  const {
+    data: allVideosReportsNumbers,
+    fetchStatus: fetchAllVideosReportsNumbersStatus,
+  } = useGetAllVideosReportsNumbersApi();
   //
 
   const { data: points } = useGetPoinsApi();
@@ -220,6 +230,42 @@ export default function Reports() {
       toast.error(error.message);
     } finally {
       setLoadingSummaryCardDownload((prev) => ({ ...prev, [id]: false })); // Reset loading for the specific card
+    }
+  };
+
+  // Download video Button
+  const [loadingvideoDownload, setLoadingVideoDownload] = useState({});
+  const handleDownloadVideo = async (id) => {
+    try {
+      setLoadingVideoDownload((prev) => ({ ...prev, [id]: true }));
+
+      // Call the API to download the video through Axios
+      const response = await fetchVideo(id);
+
+      // Determine the video file extension (default to mp4)
+      let fileExtension = ".mp4";
+
+      // Create a blob from the arraybuffer data
+      const blob = new Blob([response], { type: "video/mp4" });
+
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `video_${id}${fileExtension}`;
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      setTimeout(() => {
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      }, 100);
+    } catch (error) {
+      console.error("Error downloading video:", error);
+      toast.error(error.message || "Failed to download video");
+    } finally {
+      setLoadingVideoDownload((prev) => ({ ...prev, [id]: false }));
     }
   };
 
@@ -841,7 +887,7 @@ export default function Reports() {
                 <Card
                   key={card.id}
                   sx={{
-                    width: { xs: "100%", sm: 300 },
+                    width: { xs: "100%", sm: 310 },
                     position: "relative",
                     borderRadius: "9px",
                     boxShadow: "none",
@@ -1009,6 +1055,32 @@ export default function Reports() {
                       >
                         {t("Reports.downloadSummaryReport")}
                       </Button>
+                    )}
+
+                    {/*  Video Button */}
+                    {allVideosReportsNumbers?.data?.includes(
+                      card.id.toString()
+                    ) && (
+                      <IconButton
+                        sx={{
+                          margin: "0 !important",
+                          backgroundColor: "#0000000a",
+                        }}
+                        onClick={() => handleDownloadVideo(card.id)}
+                        size="small"
+                        disabled={loadingvideoDownload[card.id]} // Disable button if loading
+                      >
+                        {loadingvideoDownload[card.id] ? (
+                          <CircularProgress size={24} />
+                        ) : (
+                          <VideocamIcon
+                            fontSize="medium"
+                            sx={{
+                              color: "#103030",
+                            }}
+                          />
+                        )}
+                      </IconButton>
                     )}
                   </CardActions>
                 </Card>
