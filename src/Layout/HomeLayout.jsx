@@ -80,7 +80,9 @@ function HomeLayout() {
     removeCookie("auth", { path: "/" });
 
     // Refresh the page after logout
-    window.location.reload();
+    // window.location.reload();
+
+    navigate(`${process.env.PUBLIC_URL}/login`);
   };
 
   const login = () => {

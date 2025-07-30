@@ -9,10 +9,10 @@ import CardContent from "@mui/material/CardContent";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Box } from "@mui/material";
+import { Box, Radio } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import Modal from "@mui/material/Modal";
-import Checkbox from "@mui/material/Checkbox";
+// import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Button from "@mui/material/Button";
 // MUI Icons
@@ -34,11 +34,14 @@ import useGetPoinsApi from "../../API/useGetPoinsApi";
 import { useGetAllCardsApi } from "../../API/useGetAllCardsApi";
 import { fetchDownloadCard } from "../../API/useDownloadCardApi";
 import { fetchImgCard } from "../../API/useGetImgCardApi";
+import useGetTermsApi from "../../API/useGetTermsApi";
+import { useApproveTermsApi } from "../../API/useApproveTermsApi";
+import { useGetCardsPendingApproveCardsApi } from "../../API/useGetCardsPendingApproveCardsApi";
 
-import useGetAllSummaryReportsNumbersApi from "../../API/useGetAllSummaryReportsNumbersApi";
+import { useCheckAllSummaryReportsNumbersApi } from "../../API/useCheckAllSummaryReportsNumbersApi";
 import { fetchDownloadSummaryReport } from "../../API/useDownloadSummaryReportsApi";
 
-import useGetAllVideosReportsNumbersApi from "../../API/useGetAllVideosReportsNumbersApi";
+import { useCheckCardsIfHaveVideosApi } from "../../API/useCheckCardsIfHaveVideosApi";
 import { fetchVideo } from "../../API/useDownloadVideoApi";
 // NumberFlow
 import NumberFlow from "@number-flow/react";
@@ -105,61 +108,84 @@ export default function Reports() {
     };
   }, []);
   //
+  // Cookies
+  const [cookies, setCookie] = useCookies(["tokenApp"]);
+
+  const [isHovered, setIsHovered] = useState(false);
+
+  //
+  const { mutate: GetCardsPendingApproveCards } =
+    useGetCardsPendingApproveCardsApi();
+  //
   useEffect(() => {
     // Scroll to the top of the page
     window.scrollTo(0, 0);
+    // GetCardsPendingApproveCards();
   }, []);
-
-  // Cookies
-  const [cookies, setCookie] = useCookies(["tokenApp"]);
-  const [temporaryCookie, setTemporaryCookie] = useState([]);
-
-  const [isHovered, setIsHovered] = useState(false);
   //
   const {
-    data: AllSummaryReportsNumbers,
-    fetchStatus: fetchAllSummaryReportsNumbersStatus,
-  } = useGetAllSummaryReportsNumbersApi();
+    mutate: checkIfCardsHaveSummeryReportMutate,
+    data: AllSummaryReportsStatus,
+  } = useCheckAllSummaryReportsNumbersApi();
   //
-  const {
-    data: allVideosReportsNumbers,
-    fetchStatus: fetchAllVideosReportsNumbersStatus,
-  } = useGetAllVideosReportsNumbersApi();
+  const { mutate: checkIfCardsHaveVideosMutate, data: AllVideoReportsStatus } =
+    useCheckCardsIfHaveVideosApi();
   //
 
   const { data: points } = useGetPoinsApi();
   const { data: cardsData, fetchStatus: fetchCardStatus } = useGetAllCardsApi();
 
+  // All Card IDs
+  const [cardIds, setCardIds] = useState([]);
+  useEffect(() => {
+    if (cardsData && cardsData.length > 0) {
+      // Extract all IDs from cardsData and store them in state
+      const ids = cardsData.map((card) => card.id);
+      setCardIds(ids);
+
+      checkIfCardsHaveSummeryReportMutate(ids);
+      checkIfCardsHaveVideosMutate(ids);
+
+      // Optional: log the IDs to verify
+      // console.log(ids);
+    }
+  }, [cardsData]);
+
   // State to manage the checkbox value in trems and condetions
+  const { data: terms } = useGetTermsApi();
+
   // condetion And Terms Modal
   const [openCondetionAndTermsModal, setOpenCondetionAndTermsModal] =
     useState(false);
 
+  const [checked, setChecked] = useState(null);
+  //
   const [currentCardId, setCurrentCardId] = useState(null);
   const [currentCardIncludeImage, setCurrentCardIncludeImage] = useState(false);
   const handleCondetionAndTermsModalOpen = (id, includeImage) => {
     setCurrentCardId(id);
     setCurrentCardIncludeImage(includeImage);
     setOpenCondetionAndTermsModal(true);
+    setChecked(null); // Reset terms and condetions checkbox
   };
 
   const handleCondetionAndTermsModalClose = () => {
     setOpenCondetionAndTermsModal(false);
   };
 
-  const [checked, setChecked] = useState(false);
   const handleChange = (event) => {
-    setChecked(event.target.checked);
+    setChecked(event);
   };
 
   // Download pdf Card
   const [loadingDownload, setLoadingDownload] = useState({});
 
-  const handleDownloadCard = async (id, includeImage) => {
-    setChecked(false); // Reset terms and condetions checkbox
+  const handleDownloadCard = async (id, includeImage, approveTerms) => {
+    // approveTerms === null ==> download immediately
+    // approveTerms === false ==> download after accept Terms
+    // approveTerms === true ==> download immediately
 
-    // Check if NOT accepted terms before
-    // if (!cookies[`card-${id}`] && !temporaryCookie[`card-${id}`]) {
+    // if (approveTerms === false) {
     if (false) {
       handleCondetionAndTermsModalOpen(id, includeImage); // Open terms modal
     } else {
@@ -194,8 +220,60 @@ export default function Reports() {
         toast.error(error.message);
       } finally {
         setLoadingDownload((prev) => ({ ...prev, [id]: false })); // Reset loading for the specific card
-        setChecked(false); // Reset terms and condetions checkbox
       }
+    }
+  };
+
+  //
+
+  const { mutateAsync: approveTerms } = useApproveTermsApi();
+
+  const downloadFromTermsModal = async () => {
+    if (!currentCardId) return; // Add a safety check
+
+    setLoadingDownload((prev) => ({ ...prev, [currentCardId]: true })); // Set loading for the specific card
+
+    setOpenCondetionAndTermsModal(false); // Close the Modal
+
+    try {
+      // 1. Approve terms (which will trigger refetch cards)
+      let data = {
+        cardId: currentCardId,
+        action: checked,
+      };
+      await approveTerms(data);
+
+      // Call the API to download the card
+      // 2. First download the card
+      let response;
+      if (currentCardIncludeImage) {
+        response = await fetchImgCard(currentCardId);
+      } else {
+        response = await fetchDownloadCard(currentCardId);
+      }
+
+      // Create a blob from the response data
+      const blob = new Blob([response], { type: "application/pdf" });
+
+      // Create a link element
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = `card_${currentCardId}.pdf`; // Set the file name
+
+      // Append to the body
+      document.body.appendChild(link);
+
+      // Trigger the download
+      link.click();
+
+      // Clean up and remove the link
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Error downloading the card:", error);
+      toast.error(error.message);
+    } finally {
+      setLoadingDownload((prev) => ({ ...prev, [currentCardId]: false })); // Reset loading for the specific card
+      setChecked(null); // Reset terms and condetions checkbox
     }
   };
 
@@ -235,89 +313,71 @@ export default function Reports() {
 
   // Download video Button
   const [loadingvideoDownload, setLoadingVideoDownload] = useState({});
+
   const handleDownloadVideo = async (id) => {
     try {
       setLoadingVideoDownload((prev) => ({ ...prev, [id]: true }));
 
-      // Call the API to download the video through Axios
-      const response = await fetchVideo(id);
+      // Helper function to delay between requests
+      const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-      // Determine the video file extension (default to mp4)
-      let fileExtension = ".mp4";
+      let downloadedAtLeastOne = false;
 
-      // Create a blob from the arraybuffer data
-      const blob = new Blob([response], { type: "video/mp4" });
+      // Try versions 1, 2, and 3 in sequence
+      for (const version of [1, 2, 3]) {
+        try {
+          // Call the API to download the video
+          const response = await fetchVideo(id, version);
 
-      // Create download link
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `video_${id}${fileExtension}`;
-      document.body.appendChild(link);
-      link.click();
+          // Skip if response indicates video not found
+          if (
+            response?.success === false &&
+            response?.message === "Video file not found"
+          ) {
+            await delay(1000); // Wait 1s before next attempt
+            continue;
+          }
 
-      // Cleanup
-      setTimeout(() => {
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-      }, 100);
+          // Determine the video file extension (default to mp4)
+          let fileExtension = ".mp4";
+
+          // Create a blob from the arraybuffer data
+          const blob = new Blob([response], { type: "video/mp4" });
+
+          // Create download link
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = `video_${id}_v${version}${fileExtension}`;
+          document.body.appendChild(link);
+          link.click();
+
+          // Cleanup
+          setTimeout(() => {
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+          }, 100);
+
+          downloadedAtLeastOne = true;
+          await delay(1000); // Wait 1s before next attempt (even on success)
+        } catch (error) {
+          // If it's not a "not found" error, log it but continue to next version
+          if (!(error?.response?.data?.message === "Video file not found")) {
+            console.error(`Error downloading video version ${version}:`, error);
+          }
+          await delay(1000); // Wait 1s before next attempt
+        }
+      }
+
+      // If none of the versions worked
+      if (!downloadedAtLeastOne) {
+        toast.error("No available video versions found for download");
+      }
     } catch (error) {
-      console.error("Error downloading video:", error);
+      console.error("Error in download process:", error);
       toast.error(error.message || "Failed to download video");
     } finally {
       setLoadingVideoDownload((prev) => ({ ...prev, [id]: false }));
-    }
-  };
-
-  //
-  const downloadFromTermsModal = async () => {
-    if (!currentCardId) return; // Add a safety check
-
-    setLoadingDownload((prev) => ({ ...prev, [currentCardId]: true })); // Set loading for the specific card
-
-    setCookie(`card-${currentCardId}`, "true", {
-      path: "/dashboard",
-      expires: new Date(Date.now() + 10 * 365 * 24 * 60 * 60 * 1000),
-    });
-
-    setTemporaryCookie((prev) => ({
-      ...prev,
-      [`card-${currentCardId}`]: true,
-    }));
-
-    setOpenCondetionAndTermsModal(false); // Close the Modal
-
-    try {
-      // Call the API to download the card
-      let response;
-      if (currentCardIncludeImage) {
-        response = await fetchImgCard(currentCardId);
-      } else {
-        response = await fetchDownloadCard(currentCardId);
-      }
-
-      // Create a blob from the response data
-      const blob = new Blob([response], { type: "application/pdf" });
-
-      // Create a link element
-      const link = document.createElement("a");
-      link.href = window.URL.createObjectURL(blob);
-      link.download = `card_${currentCardId}.pdf`; // Set the file name
-
-      // Append to the body
-      document.body.appendChild(link);
-
-      // Trigger the download
-      link.click();
-
-      // Clean up and remove the link
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error("Error downloading the card:", error);
-      toast.error(error.message);
-    } finally {
-      setLoadingDownload((prev) => ({ ...prev, [currentCardId]: false })); // Reset loading for the specific card
-      setChecked(false); // Reset terms and condetions checkbox
     }
   };
 
@@ -654,215 +714,182 @@ export default function Reports() {
                 overflowX: "hidden", // Prevent horizontal scrolling
               }}
             >
-              <div className={style.terms_box}>
+              <div
+                className={style.terms_box}
+                style={{ textAlign: languageText === "ar" ? "right" : "left" }}
+              >
                 <div>
-                  <h1>وثيقة ضمان المركبة</h1>
+                  <h1>
+                    {languageText === "ar"
+                      ? "وثيقة ضمان المركبة"
+                      : "Vehicle Warranty Document"}
+                  </h1>
 
-                  <h6>البند الأول. مقدمة:</h6>
-                  <div>
-                    <ul>
-                      <li>
-                        مركز كاشف يقدم خدمة الفحص الفني للمركبات وفقًا للمعايير
-                        المهنية المتعارف عليها، وبناءً على ذلك، نتحمل مسؤولية أي
-                        خطأ ناتج عن الفحص خلال مدة الضمان المحددة.
-                      </li>
-                      <li>
-                        يحق للعميل الذي يثبت وقوع خطأ في الفحص مراجعة المركز
-                        خلال فترة الضمان المحددة، بحيث يتم دراسة الحالة والتحقق
-                        من صحة الحالة، وفي حال ثبوت الخطأ، يتم تعويض العميل
-                        وفقًا للإجراءات المعتمدة لدينا، ووفق بنود وثيقة الشروط
-                        والأحكام المنصوص عليها في سياسة الضمان الخاصة بنا
-                        والمرفقة مع تقرير الفحص، والتي توضح آلية التعويض وحدوده.
-                      </li>
-                      <li>
-                        بعد انتهاء مدة الضمان، فإن مسؤولية المركز عن أي خطأ في
-                        الفحص تنتهي، ولا يحق للعميل المطالبة بأي تعويض أو إصلاح،
-                        وذلك لكون الفحص يعكس الحالة الفنية للمركبة وقت الفحص
-                        فقط، ولا يمكن تحميل المركز مسؤولية أي أعطال أو تغيرات
-                        تطرأ بعد انتهاء مدة الضمان.
-                      </li>
-                    </ul>
-                  </div>
+                  <pre className={style.wrapping_pre}>
+                    {(languageText === "ar"
+                      ? terms?.termsAndCondtionsAr || ""
+                      : terms?.termsAndCondtionsEn || ""
+                    )
+                      .split("\n")
+                      .reduce((acc, paragraph, index) => {
+                        if (paragraph.trim() === "") return acc;
+
+                        if (
+                          paragraph.startsWith(
+                            languageText === "ar" ? "البند" : "Clause"
+                          )
+                        ) {
+                          return [
+                            ...acc,
+                            <h6 key={`h6-${index}`}>{paragraph}</h6>,
+                          ];
+                        }
+
+                        if (/^\d+\.\t/.test(paragraph)) {
+                          const content = paragraph.replace(/^\d+\.\t/, "");
+                          const lastElement = acc[acc.length - 1];
+
+                          if (lastElement && lastElement.type === "ul") {
+                            return [
+                              ...acc.slice(0, -1),
+                              <ul
+                                key={lastElement.key}
+                                style={{
+                                  padding:
+                                    languageText === "ar"
+                                      ? "0 24px 0 0"
+                                      : "0 0 0 24px",
+                                }}
+                              >
+                                {lastElement.props.children}
+                                <li key={`li-${index}`}>{content}</li>
+                              </ul>,
+                            ];
+                          } else {
+                            return [
+                              ...acc,
+                              <ul
+                                key={`ul-${index}`}
+                                style={{
+                                  padding:
+                                    languageText === "ar"
+                                      ? "0 24px 0 0"
+                                      : "0 0 0 24px",
+                                }}
+                              >
+                                <li key={`li-${index}`}>{content}</li>
+                              </ul>,
+                            ];
+                          }
+                        }
+
+                        return [
+                          ...acc,
+                          <div key={`div-${index}`}>{paragraph}</div>,
+                        ];
+                      }, [])}
+                  </pre>
 
                   <h6>
-                    البند الثاني. شروط وأحكام وثيقة ضمان الأجزاء المذكورة في
-                    التقرير:
+                    {languageText === "ar"
+                      ? "حالات الغاء وثيقة ضمان المركبة"
+                      : ""}
                   </h6>
-                  <div>
-                    <ul>
-                      <li>
-                        تعتبر المقدمة ضمن الشروط وجزء لا يتجزأ من اتفاقية تقديم
-                        الضمان.
-                      </li>
-                      <li>
-                        يمنح الضمان على النقاط والملاحظات المذكورة في تقرير
-                        الفحص.
-                      </li>
-                      <li>يبدأ سريان الضمان من تاريخ الفحص.</li>
-                      <li>
-                        يستفيد من وثيقة الضمان طالب الفحص المسجل التقرير بأسمه
-                        وليس البائع او مالك المركبة.
-                      </li>
-                      <li>
-                        لا يشمل الضمان المركبات التي تجاوز سنة صنعها 15 سنة او
-                        قراءة العداد تجاوزت 300 الف كيلو.
-                      </li>
-                      <li>
-                        وثيقة الضمان ليست إقرار بعدم وقوع أي خلل طبيعي أو عارض
-                        على بقية أجزاء السيارة الأخرى.
-                      </li>
-                      <li>
-                        مدة الضمان 7 أيام او 250 كيلو ويشمل الأجزاء الرئيسية (
-                        المكينة – الجيربوكس – الشاسيه ) فقط.
-                      </li>
-                      <li>
-                        مدة الضمان للهيكل الخارجي (بودي) 3 أيام ولايشمل الصدامات
-                        او المركبات التي عليها عازل أو حماية.
-                      </li>
-                      <li>
-                        في حال وجود فك أو تهريب في أي جزء من الأجزاء الأساسية
-                        للمركبة مثل :المكينة، الجيربوكس، الدفرنس، الدبل فإن
-                        الضمان لا يشمل المركبة.
-                      </li>
-                      <li>الضمان لا يشمل مبرد القير ومبرد المكينة.</li>
-                      <li>
-                        مركز كاشف غير مسؤول عن فك أي أجزاء من المكينة او القير
-                        للوصول الى عناصر داخلية اثناء الفحص، وفي حال حدوث أي عطل
-                        لاحقاً داخل هذه الأجزاء فهي من الأجزاء المخفية التي لا
-                        يمكن فحصها، وبالتالي لا يشملها الضمان.
-                      </li>
-                      <li>
-                        الضمان لا يشمل الأجزاء الاستهلاكية والأعطال الكهربائية.
-                      </li>
-                      <li>
-                        الضمان لا يشمل السيارات المعدلة والكلاسيكية والتراثية.
-                      </li>
-                      <li>
-                        يقتصر دور مركز كاشف أثناء فحص الكمبيوتر للكشف على
-                        الوسائد الهوائية (الإيرباقات) الأخذ بالنتائج الصادرة من
-                        الكمبيوتر دون اللجوء الى إزالة الأجزاء الداخلية من
-                        الديكور لمعرفة ما إذا كانت الوسائد موجودة أو لا.
-                      </li>
-                      <li>
-                        عند وجود طلاء أو معجون على الهيكل الداخلي (الشاسيه)
-                        للمركبة يخفي عيوب محتملة فمركز كاشف غير مسؤول عن إزالة
-                        هذا الطلاء للتأكد من سلامة الهيكل، وفي هذه الحالة لا
-                        يمنح ضمان.
-                      </li>
-                      <li>
-                        في حالة النزاع فإن تقرير الوكالة هو المعتمد بين الأطراف
-                        ولايؤخذ بأي تقرير من أي جهة أخرى.
-                      </li>
-                      <li>
-                        بعد ان تتم المراجعة والتقدير فإن حدود التعويض بعد
-                        الإقرار لا يتجاوز ( 3000 ريال لمركبات السيدان والدفع
-                        الرباعي و 6000 ريال للمركبات الأوربية والفارهة).
-                      </li>
-                      <li>
-                        ترفق هذه الوثيقة ضمن تقرير الفحص وهو إقرار من العميل
-                        بالعلم والإطلاع ولا تحتاج الى ختم أو توقيع.
-                      </li>
-                      <li>
-                        مركز كاشف غير مسؤول عن توفير تقرير مختوم لإعتماد التقرير
-                        ووثيقة الضمان لأي مطالبات خارج اختصاص المركز تخص طالب
-                        الفحص.
-                      </li>
-                    </ul>
-                  </div>
 
-                  <h6>البند الثالث. تحذيرات عامة:</h6>
-                  <div>
-                    <ul>
-                      <li>
-                        عند ظهور اي رسالة تحذيرية في لوحة القيادة ( الطبلون ) او
-                        عن طريق الفحص المختص لكمبيوتر المركبة لابد من مراجعة
-                        الوكيل او فني مختص لتجنب اي تلفيات أو اعطال محتملة.
-                      </li>
-                      <li>
-                        عند وجود اي تلف او تآكل جزئي في سير المكينة الخارجي او
-                        المحامل الدوارة (البكرات) فإنها تؤثر على عمل جميع
-                        الاجزاء المرتبطة بالسير وتجعلها عرضة للتلف الجزئي او
-                        الكامل.
-                      </li>
-                      <li>
-                        وجود شوائب او رواسب كربونية او صمغية داخل الأجزاء
-                        الدوارة للمحرك او نظام نقل القدرة سيؤثر سلباً على عمل
-                        طرمبة الزيت بشكل اساسي مما يؤدي الى احتكاك داخلي او
-                        خشونة في العمل.
-                      </li>
-                      <li>
-                        عند وجود اي حادث له تأثير على الهيكل الداخلي للمركبة (
-                        الشاصيه ) يؤثر على استقامة قواعد المحرك فإن المحرك سيكون
-                        عرضة للتلف الجزئي او الكلي نتيجة تمركزه بشكل غير سليم.
-                      </li>
-                      <li>
-                        عند وجود اي تسريبات للسوائل ( ماء - زيوت ) تم ذكرها في
-                        تقرير الفحص فإنها قد تؤدي في حال عدم معالجتها الى تلف
-                        كامل للمنظومة التابعة لها.
-                      </li>
-                      <li>
-                        عند تعطل أو توقف انظمة التهوية ( المراوح - الشبك) فإن
-                        ذلك قد يؤدي الى ارتفاع درجة الحرارة وتلف كامل للمنظومة
-                        التابعة لها.
-                      </li>
-                      <li>
-                        عند وجود خلل في أنظمة الفرامل أو التوجيه فإن ذلك قد يشكل
-                        خطراً كبيرًا، حيث تزيد احتمالية وقوع الحوادث، مما قد
-                        يعرض السائق والركاب والمشاة للخطر.
-                      </li>
-                      <li>
-                        عند وجود تسريب في انظمة الوقود فإن ذلك قد يشكل خطراً
-                        كبيرًا، حيث يمكن أن يؤدي الى إشتعال النار أو حدوث
-                        انفجار، مما يهدد حياة السائق والركاب، ويزيد من خطر
-                        الحوادث.
-                      </li>
-                    </ul>
-                  </div>
+                  <pre className={style.wrapping_pre}>
+                    {(languageText === "ar"
+                      ? terms?.cancelWarrantyDocumentAr || ""
+                      : terms?.cancelWarrantyDocumentEn || ""
+                    )
+                      .split("\n")
+                      .reduce((acc, paragraph, index) => {
+                        if (paragraph.trim() === "") return acc;
 
-                  <h6>البند الرابع. حالات الغاء وثيقة ضمان المركبة:</h6>
-                  <div>
-                    <ul>
-                      <li>سوء الاستخدام أو الأهمال.</li>
-                      <li>استخدام الطرق غير المعبدة او المناطق الصحراوية.</li>
-                      <li>
-                        انتقال ملكية المركبة من العميل المسجل التقرير بإسمه الى
-                        مالك جديد.
-                      </li>
-                      <li>
-                        اصلاح العطل الذي يشمله الضمان قبل ابلاغ مركز الفحص عن
-                        العطل.
-                      </li>
-                      <li>
-                        استخدام زيوت غير اصلية أو الزيوت الثقيلة التي تخفي
-                        العيوب أو غير مناسبة لنوع المركبة.
-                      </li>
-                      <li>تغيير زيت القير.</li>
-                      <li>
-                        تغيير قراءة عداد المسافة أو أي تلاعب يمنع من قراءة
-                        العداد.
-                      </li>
-                      <li>
-                        إذا تأثرت أجزاء الضمان جراء حادث اصطدام أو انقلاب أو ضرب
-                        رصيف من أسفل أو لأي سبب خارجي.
-                      </li>
-                      <li>
-                        خروج المركبة من المدينة التي تم الفحص فيها، يستثنى من
-                        ذلك المركبات التي تم شحنها للمشتري عبر شركة نقل رسمية.
-                      </li>
-                    </ul>
-                  </div>
+                        if (
+                          paragraph.startsWith(
+                            languageText === "ar" ? "البند" : "Clause"
+                          )
+                        ) {
+                          return [
+                            ...acc,
+                            <h6 key={`h6-${index}`}>{paragraph}</h6>,
+                          ];
+                        }
+
+                        if (/^\d+\.\t/.test(paragraph)) {
+                          const content = paragraph.replace(/^\d+\.\t/, "");
+                          const lastElement = acc[acc.length - 1];
+
+                          if (lastElement && lastElement.type === "ul") {
+                            return [
+                              ...acc.slice(0, -1),
+                              <ul
+                                key={lastElement.key}
+                                style={{
+                                  padding:
+                                    languageText === "ar"
+                                      ? "0 24px 0 0"
+                                      : "0 0 0 24px",
+                                }}
+                              >
+                                {lastElement.props.children}
+                                <li key={`li-${index}`}>{content}</li>
+                              </ul>,
+                            ];
+                          } else {
+                            return [
+                              ...acc,
+                              <ul
+                                key={`ul-${index}`}
+                                style={{
+                                  padding:
+                                    languageText === "ar"
+                                      ? "0 24px 0 0"
+                                      : "0 0 0 24px",
+                                }}
+                              >
+                                <li key={`li-${index}`}>{content}</li>
+                              </ul>,
+                            ];
+                          }
+                        }
+
+                        return [
+                          ...acc,
+                          <div key={`div-${index}`}>{paragraph}</div>,
+                        ];
+                      }, [])}
+                  </pre>
                 </div>
 
-                <div>
+                <div style={{ display: "flex", flexDirection: "column" }}>
                   <FormControlLabel
                     control={
-                      <Checkbox
+                      <Radio
                         required
-                        checked={checked}
-                        onChange={handleChange}
+                        checked={checked === true}
+                        onChange={() => handleChange(true)}
                       />
                     }
-                    label="أوافق على الشروط والأحكام, وأقر بأنني قرأتها وفهمتها بالكامل"
+                    label={
+                      languageText === "ar"
+                        ? "أوافق على الشروط والأحكام, وأقر بأنني قرأتها وفهمتها بالكامل"
+                        : "I agree to the terms and conditions, and I acknowledge that I have read and fully understood them"
+                    }
+                  />
+                  <FormControlLabel
+                    control={
+                      <Radio
+                        required
+                        checked={checked === false}
+                        onChange={() => handleChange(false)}
+                      />
+                    }
+                    label={
+                      languageText === "ar"
+                        ? "لا أوافق على الشروط والأحكام"
+                        : "I disagree to the terms and conditions"
+                    }
                   />
                 </div>
 
@@ -871,16 +898,20 @@ export default function Reports() {
                   sx={{ marginTop: "30px" }}
                   variant="contained"
                   size="large"
-                  disabled={!checked}
+                  disabled={checked === null}
                   onClick={downloadFromTermsModal}
                 >
-                  موافق
+                  {languageText === "ar"
+                    ? "تحميل التقرير"
+                    : "Download the report"}
                 </Button>
               </div>
             </Box>
           </Modal>
+
           {cardsData && cardsData.length > 0 ? (
             cardsData
+              .filter((card) => card.cardStatus !== 7) //  filter to exclude "Appoinment" cards with status 7
               .slice()
               .reverse()
               .map((card) => (
@@ -989,7 +1020,11 @@ export default function Reports() {
                   >
                     <Button
                       onClick={() =>
-                        handleDownloadCard(card.id, card.includeImage)
+                        handleDownloadCard(
+                          card.id,
+                          card.includeImage,
+                          card.approveTerms
+                        )
                       }
                       size="small"
                       variant="contained"
@@ -1021,9 +1056,8 @@ export default function Reports() {
                     </Button>
 
                     {/* Summary Reports Button */}
-                    {AllSummaryReportsNumbers?.data?.includes(
-                      card.id.toString()
-                    ) && (
+                    {AllSummaryReportsStatus?.data?.[card.id.toString()] ===
+                      true && (
                       <Button
                         sx={{ margin: "0 !important" }}
                         onClick={() => handleDownloadSummaryCard(card.id)}
@@ -1058,9 +1092,9 @@ export default function Reports() {
                     )}
 
                     {/*  Video Button */}
-                    {allVideosReportsNumbers?.data?.includes(
-                      card.id.toString()
-                    ) && (
+
+                    {AllVideoReportsStatus?.data?.[card.id.toString()] ===
+                      true && (
                       <IconButton
                         sx={{
                           margin: "0 !important",

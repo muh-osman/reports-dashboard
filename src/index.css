@@ -392,7 +392,7 @@ nav.mob-phone-nav {
 
 .ar-discount::after {
   position: absolute;
-  content: "خصم 20%";
+  content: "خصم 10%";
   top: 15px;
   left: -50px;
   width: 175px;
@@ -408,7 +408,7 @@ nav.mob-phone-nav {
 
 .en-discount::after {
   position: absolute;
-  content: "20% Off";
+  content: "10% Off";
   top: 15px;
   left: unset;
   right: -50px;
@@ -425,7 +425,7 @@ nav.mob-phone-nav {
 
 /* New modified styles */
 /* .crown-box.modified::after {
-  content: "20% Off";
+  content: "10% Off";
   left: unset;
   right: -50px;
   transform: rotate(45deg);

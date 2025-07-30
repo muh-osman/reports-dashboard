@@ -12,6 +12,7 @@ import { jwtDecode } from "jwt-decode";
 
 export const useVerifyApi = () => {
   const navigate = useNavigate();
+
   // Cookies
   const [cookies, setCookie, removeCookie] = useCookies([
     "tokenApp",
@@ -19,6 +20,7 @@ export const useVerifyApi = () => {
     "userId",
     "phoneNumber",
     "auth",
+    "clientData",
   ]);
 
   return useMutation({

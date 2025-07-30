@@ -62,9 +62,7 @@ export default function SignUp() {
     // Remove leading '0' if present
     if (value.startsWith("0")) {
       value = value.slice(1);
-      toast.warn(
-        t("SignUp.noNeedToEnter0ABeginningOfNumber")
-      );
+      toast.warn(t("SignUp.noNeedToEnter0ABeginningOfNumber"));
     }
 
     // Update the input value

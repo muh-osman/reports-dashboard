@@ -20,7 +20,7 @@ export const usePostApoinmentFormApi = () => {
 
   return useMutation({
     mutationFn: async (data) => {
-      const res = await API.post("api/Appointment", data, {
+      const res = await API.post("api/Card/CreateCard", data, {
         headers: {
           "Content-Type": "application/json-patch+json", // this nessesary for sending data as json patch
         },

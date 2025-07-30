@@ -446,7 +446,7 @@ export default function Prices() {
     engainPrice = Math.floor(prices[0]?.prices[2]?.price);
 
     oldPriceFullPrice = Math.floor(
-      prices[0]?.prices[0]?.price / (dis ? 0.5 : 0.8)
+      prices[0]?.prices[0]?.price / (dis ? 0.5 : 0.9)
     );
     saveFullPrice = Math.floor(oldPriceFullPrice - fullPrice);
 
@@ -721,7 +721,7 @@ export default function Prices() {
                           selectedYear >= 2017 ? 2 : 1
                         }&car_model_id=${selectedModelId}&price_id=2&full_year=${selectedYear}${
                           dis ? "&dis=fifty" : ""
-                        }`}
+                        }&off=0`}
                       >
                         {t("Prices.orderNow")}
                       </a>
@@ -822,7 +822,7 @@ export default function Prices() {
                           selectedYear >= 2017 ? 2 : 1
                         }&car_model_id=${selectedModelId}&price_id=1&full_year=${selectedYear}${
                           dis ? "&dis=fifty" : ""
-                        }`}
+                        }&off=0`}
                       >
                         {t("Prices.orderNow")}
                       </a>
@@ -910,7 +910,7 @@ export default function Prices() {
                           selectedYear >= 2017 ? 2 : 1
                         }&car_model_id=${selectedModelId}&price_id=0&full_year=${selectedYear}${
                           dis ? "&dis=fifty" : ""
-                        }`}
+                        }&off=10`}
                       >
                         {t("Prices.orderNow")}
                       </a>

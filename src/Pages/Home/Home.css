@@ -1358,7 +1358,7 @@
 
   .crown-box::after {
     position: absolute;
-    content: "خصم 20%";
+    content: "خصم 10%";
     top: 15px;
     left: -50px;
     width: 175px;

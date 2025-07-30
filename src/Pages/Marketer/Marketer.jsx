@@ -24,6 +24,8 @@ import WorkIcon from "@mui/icons-material/Work";
 import Modal from "@mui/material/Modal";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 //
 import { toast } from "react-toastify";
 // Image
@@ -34,6 +36,9 @@ import useMarketerSettingsApi from "../../API/useMarketerSettingsApi";
 import { useCreateMarketerApi } from "../../API/useCreateMarketerApi";
 // Component
 import CouponImages from "../../Components/CouponImages";
+import InfoAboutCashif from "../../Components/InfoAboutCashif";
+import HowWorks from "../../Components/HowWorks";
+import InstructionsBeforePublishingContent from "../../Components/InstructionsBeforePublishingContent";
 // NumberFlow
 import NumberFlow from "@number-flow/react";
 // Lang
@@ -66,6 +71,13 @@ export default function Marketer() {
   // Cookies
   const [cookies, setCookie] = useCookies(["tokenApp", "userId"]);
 
+  // Tabs system
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
   // info icon
   // Controll the positin of drop down menue
   const theme = useTheme();
@@ -78,10 +90,6 @@ export default function Marketer() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  // How Works Modal
-  const [openHowWorksModal, setOpenHowWorksModal] = React.useState(false);
-  const handleHowWorksModalOpen = () => setOpenHowWorksModal(true);
-  const handleHowWorksModalClose = () => setOpenHowWorksModal(false);
   // condetion And Terms Modal
   const [openCondetionAndTermsModal, setOpenCondetionAndTermsModal] =
     React.useState(false);
@@ -132,6 +140,28 @@ export default function Marketer() {
       navigate(`${process.env.PUBLIC_URL}/falak/transfer`);
     } else {
       toast.warn(t("Marketer.minimumWithdrawalAmountIs200Riyals"));
+    }
+  };
+
+  // Render component based on selected tab
+  const renderTabContent = () => {
+    switch (value) {
+      case 0:
+        return <InfoAboutCashif />;
+      case 1:
+        return (
+          <CouponImages
+            code={marketerData?.code || "-"}
+            percent={MarketerSettings?.codeDiscountPercentage || 0}
+          />
+        );
+      case 2:
+        return <HowWorks />;
+      case 3:
+        return <InstructionsBeforePublishingContent />;
+
+      default:
+        return <InfoAboutCashif />;
     }
   };
 
@@ -295,13 +325,6 @@ export default function Marketer() {
               >
                 <Paper sx={{ maxWidth: "100%" }}>
                   <MenuList>
-                    <MenuItem onClick={handleHowWorksModalOpen}>
-                      <ListItemIcon>
-                        <WorkIcon fontSize="small" />
-                      </ListItemIcon>
-                      <ListItemText>{t("Marketer.howItWorks")}</ListItemText>
-                    </MenuItem>
-
                     <MenuItem onClick={handleCondetionAndTermsModalOpen}>
                       <ListItemIcon>
                         <GavelIcon fontSize="small" />
@@ -313,125 +336,6 @@ export default function Marketer() {
                   </MenuList>
                 </Paper>
               </Popover>
-
-              {/* How Works Modal */}
-              <Modal
-                open={openHowWorksModal}
-                onClose={handleHowWorksModalClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-              >
-                <Box
-                  dir={languageText === "ar" ? "rtl" : "ltr"}
-                  sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: {
-                      xs: 361, // width for small screens
-                      md: 750, // width for medium and larger screens
-                    },
-                    bgcolor: "background.paper",
-                    p: {
-                      xs: 2,
-                      md: 4,
-                    },
-                    textAlign: "center",
-                    borderRadius: "16px",
-                    boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
-                    backgroundColor: "#fff",
-                    maxHeight: "80vh", // Set a maximum height for the modal
-                    overflowY: "auto", // Enable vertical scrolling
-                    overflowX: "hidden", // Prevent horizontal scrolling
-                  }}
-                >
-                  <div className={style.not_auth_img}>
-                    <svg
-                      style={{ width: "100px", fill: "#174545" }}
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 640 512"
-                    >
-                      <path d="M323.4 85.2l-96.8 78.4c-16.1 13-19.2 36.4-7 53.1c12.9 17.8 38 21.3 55.3 7.8l99.3-77.2c7-5.4 17-4.2 22.5 2.8s4.2 17-2.8 22.5l-20.9 16.2L512 316.8 512 128l-.7 0-3.9-2.5L434.8 79c-15.3-9.8-33.2-15-51.4-15c-21.8 0-43 7.5-60 21.2zm22.8 124.4l-51.7 40.2C263 274.4 217.3 268 193.7 235.6c-22.2-30.5-16.6-73.1 12.7-96.8l83.2-67.3c-11.6-4.9-24.1-7.4-36.8-7.4C234 64 215.7 69.6 200 80l-72 48 0 224 28.2 0 91.4 83.4c19.6 17.9 49.9 16.5 67.8-3.1c5.5-6.1 9.2-13.2 11.1-20.6l17 15.6c19.5 17.9 49.9 16.6 67.8-2.9c4.5-4.9 7.8-10.6 9.9-16.5c19.4 13 45.8 10.3 62.1-7.5c17.9-19.5 16.6-49.9-2.9-67.8l-134.2-123zM16 128c-8.8 0-16 7.2-16 16L0 352c0 17.7 14.3 32 32 32l32 0c17.7 0 32-14.3 32-32l0-224-80 0zM48 320a16 16 0 1 1 0 32 16 16 0 1 1 0-32zM544 128l0 224c0 17.7 14.3 32 32 32l32 0c17.7 0 32-14.3 32-32l0-208c0-8.8-7.2-16-16-16l-80 0zm32 208a16 16 0 1 1 32 0 16 16 0 1 1 -32 0z" />
-                    </svg>
-                  </div>
-
-                  <div>
-                    <h1 style={{ fontSize: "24px", marginBottom: "10px" }}>
-                      {t("HowWorks.weAreExcitedToHaveYouJoinTheFalkProgram")}
-                    </h1>
-
-                    <p style={{ color: "#757575" }}>
-                      {t("HowWorks.usingMarketingImageThatContains")}{" "}
-                      <span style={{ fontWeight: "bold" }}>
-                        {t("HowWorks.yourOwnCode")}
-                      </span>
-                      {t("HowWorks.youCanPromoteYourCarInspectionService")}
-                    </p>
-                    <p style={{ color: "#757575" }}>
-                      {t("HowWorks.theCodeGivesCustomers")}{" "}
-                      <span style={{ fontWeight: "bold" }}>
-                        {t("HowWorks.TwinyDiscount")}
-                      </span>
-                      {t("HowWorks.whileYouGet")}{" "}
-                      <span style={{ fontWeight: "bold" }}>
-                        {t("HowWorks.tenPrecentCommission")}
-                      </span>{" "}
-                      {t("HowWorks.forEveryReservationMadeUsingTheCode")}
-                    </p>
-
-                    <div
-                      dir={languageText === "ar" ? "rtl" : "ltr"}
-                      style={{
-                        color: "#757575",
-                        marginTop: "16px",
-                        ...(languageText === "ar"
-                          ? { textAlign: "right" }
-                          : { textAlign: "left" }),
-                      }}
-                    >
-                      <h3>{t("HowWorks.howToWork")}:</h3>
-                      <div>
-                        <ol
-                          style={{
-                            listStylePosition: "outside",
-                            ...(languageText === "ar"
-                              ? { paddingRight: 16 }
-                              : { paddingLeft: 16 }),
-                          }}
-                        >
-                          <li>
-                            <span style={{ fontWeight: "bold" }}>
-                              {t("HowWorks.useImageAndCode")}
-                            </span>{" "}
-                            {t("HowWorks.toPromoteThroughYourOnlinePlatforms")}
-                          </li>
-                          <li>
-                            <span style={{ fontWeight: "bold" }}>
-                              {t("HowWorks.shareWithYourAudience")}
-                            </span>{" "}
-                            {t(
-                              "HowWorks.theCodeGivesThemTwentPercentDiscountWhenBookingCarInspection"
-                            )}
-                          </li>
-                          <li>
-                            <span style={{ fontWeight: "bold" }}>
-                              {t("HowWorks.getTenPercentCommission")}
-                            </span>{" "}
-                            {t("HowWorks.forEveryReservationMadeUsingYourCode")}
-                          </li>
-                        </ol>
-                      </div>
-                    </div>
-                    <p style={{ color: "#757575", marginTop: "16px" }}>
-                      {t("HowWorks.startPromotingNowAndStartMakingProfits")}
-                    </p>
-                    <p style={{ fontWeight: "bold", color: "#757575" }}>
-                      {t("HowWorks.goodLuckToYou")}
-                    </p>
-                  </div>
-                </Box>
-              </Modal>
 
               {/* Condetion And Terms Modal */}
               <Modal
@@ -707,16 +611,92 @@ export default function Marketer() {
             </div>
           </div>
 
-          {/* Images Downloader */}
+          {/* Tabs */}
           <h5 className={style.last_reports_title}>
             {t("Marketer.marketerBag")}
           </h5>
           <Divider sx={{ marginBottom: "18px" }} />
 
-          <CouponImages
-            code={marketerData?.code || "-"}
-            percent={MarketerSettings?.codeDiscountPercentage || 0}
-          />
+          <Box
+            sx={{
+              width: "100%",
+              bgcolor: "#fff",
+              color: "#174545",
+              borderRadius: "9px",
+            }}
+          >
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              centered
+              variant="fullWidth"
+              sx={{
+                marginBottom: "16px",
+                "& .MuiTabs-indicator": {
+                  backgroundColor: "#f0f1f3",
+                  border: "4px solid #fff",
+                  borderRadius: "9px",
+                  height: "100%",
+                },
+              }}
+            >
+              <Tab
+                disableRipple
+                label={t("Marketer.InfoAboutCashif")}
+                sx={{
+                  color: "#174545",
+                  minWidth: "69px",
+                  "&.Mui-selected": {
+                    backgroundColor: "transparent",
+                    color: "#174545", // Optional: Change text color when selected
+                    zIndex: 1,
+                  },
+                }}
+              />
+              <Tab
+                disableRipple
+                label={t("Marketer.visualContent")}
+                sx={{
+                  color: "#174545",
+                  minWidth: "69px",
+                  "&.Mui-selected": {
+                    backgroundColor: "transparent",
+                    color: "#174545",
+                    zIndex: 1,
+                  },
+                }}
+              />
+              <Tab
+                disableRipple
+                label={t("Marketer.howWorks")}
+                sx={{
+                  color: "#174545",
+                  minWidth: "69px",
+                  "&.Mui-selected": {
+                    backgroundColor: "transparent",
+                    color: "#174545", // Optional: Change text color when selected
+                    zIndex: 1,
+                  },
+                }}
+              />
+              <Tab
+                disableRipple
+                label={t("Marketer.InstructionsBeforePublishing")}
+                sx={{
+                  color: "#174545",
+                  minWidth: "69px",
+                  "&.Mui-selected": {
+                    backgroundColor: "transparent",
+                    color: "#174545", // Optional: Change text color when selected
+                    zIndex: 1,
+                  },
+                }}
+              />
+            </Tabs>
+          </Box>
+
+          {/* Render the appropriate component based on the selected tab */}
+          {renderTabContent()}
         </>
       )}
     </div>

@@ -6,7 +6,6 @@ import { useCookies } from "react-cookie";
 // Toastify
 import { toast } from "react-toastify";
 
-
 export const useDeleteAppointmentApi = () => {
   // Cookies
   const [cookies, setCookie] = useCookies([
@@ -20,8 +19,8 @@ export const useDeleteAppointmentApi = () => {
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: async (appointmentId) => {
-      const res = await API.delete(`api/Appointment/${appointmentId}`);
+    mutationFn: async (id) => {
+      const res = await API.delete(`api/Card/${id}`);
       return res.data;
     },
 
@@ -29,11 +28,10 @@ export const useDeleteAppointmentApi = () => {
       toast.success("تم الحذف");
       qc.invalidateQueries(["Appointment", clientId]); // This will refetch the appointments
 
-      //   qc.prefetchQuery({
-      //     queryKey: ["Appointment", clientId],
-      //     queryFn: () => fetchAppointment(clientId),
-      //   });
-
+      // qc.prefetchQuery({
+      //   queryKey: ["Appointment", clientId],
+      //   queryFn: () => fetchAppointment(clientId),
+      // });
     },
 
     onError: (err) => {

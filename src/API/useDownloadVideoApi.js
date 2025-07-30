@@ -2,9 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 // Axios
 import axios from "axios";
 
-export const fetchVideo = async (id) => {
+export const fetchVideo = async (reportNumber, videoNumber) => {
   const res = await axios.get(
-    `https://cashif.online/back-end/public/api/download-video/${id}`,
+    `https://cashif.online/back-end/public/api/download-video/by/${reportNumber}/and/${videoNumber}`,
     {
       responseType: "arraybuffer", // To handle binary data
     }
@@ -13,10 +13,10 @@ export const fetchVideo = async (id) => {
   return res.data;
 };
 
-export default function useDownloadVideoApi(id) {
+export default function useDownloadVideoApi(reportNumber, videoNumber) {
   return useQuery({
-    queryKey: ["video", id],
-    queryFn: () => fetchVideo(id),
-    enabled: !!id, // Only run the query if id is truthy
+    queryKey: ["video", reportNumber, videoNumber],
+    queryFn: () => fetchVideo(reportNumber, videoNumber),
+    enabled: !!reportNumber, // Only run the query if id is truthy
   });
 }

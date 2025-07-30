@@ -208,6 +208,10 @@
     "pleaseLogInToBookAnAppointment": "Please log in to book an appointment.",
     "loading": "Loading..",
     "manufacturer": "Manufacturer",
+    "transmission": "Transmission",
+    "normal": "Normal",
+    "automatic": "Automatic",
+    "model": "Model",
     "noOptionsAvailable": "No options available",
     "yearOfManufacture": "Year of manufacture",
     "examinationDate": "Examination date *",
@@ -285,9 +289,10 @@
     "back": "Back",
     "individualsAccount": "Individuals account",
     "name": "Name",
-    "namePlaceholder": "The full name (in English)",
+    "namePlaceholder": "Full name",
     "mobileNumber": "Mobile number",
-    "create": "Create"
+    "create": "Create",
+    "onlyArabicCharactersAllowed": "Please enter only Arabic characters"
   },
 
   "Companies": {
@@ -447,7 +452,11 @@
     "marketingCode": "Marketing Code",
     "withdrawProfits": "Withdraw",
     "history": "History",
-    "marketerBag": "Marketer's Bag"
+    "marketerBag": "Marketer's Bag",
+    "InfoAboutCashif": "Info about Cashif",
+    "visualContent": "Marketing content",
+    "howWorks": "How it works",
+    "InstructionsBeforePublishing": "Instructions before publishing"
   },
 
   "CouponImages": {
@@ -455,5 +464,73 @@
     "copied": "Copied",
     "download": "Download",
     "off": "Off"
+  },
+
+  "InfoAboutCashif": {
+    "t1": "About Cashif",
+    "t2": "Who is Cashif?",
+    "t3": "Cashif is a specialized center for inspecting used cars, providing a thorough examination of the vehicle's condition and issuing a comprehensive report that helps customers make a confident and assured purchase decision.",
+    "t4": "Target Audience",
+    "t5": "Individuals located in Riyadh, Jeddah, and Dammam who are interested in buying a used car and seek a comprehensive inspection to reveal the vehicle's actual condition before making a purchase decision.",
+    "t6": "What sets Cashif apart?",
+    "t7": "Over 12 years of experience in vehicle inspection",
+    "t8": "Use of the latest devices and technologies",
+    "t9": "Highly skilled technicians",
+    "t10": "Accurate and reliable reports available in both paper and digital formats",
+    "t11": "Easy appointment booking and electronic payment options, including installment payments",
+    "t12": "Download the inspection report from the website anytime without visiting the branch",
+    "t13": "A rewards points system with every visit that can be redeemed for discounts",
+    "t14": "We guarantee the accuracy and reliability of inspection reports",
+    "t15": "Where are Cashif's branches located?",
+    "t16": "Riyadh – Al-Qadisiyah",
+    "t17": "Riyadh – Al-Shifa",
+    "t18": "Jeddah – Al-Jawhara",
+    "t19": "Dammam – King Fahd District",
+    "t20": "Cashif's Core Services",
+    "t21": "Pre-Purchase Inspection: A full inspection of all parts of a used vehicle to identify faults and defects before making a purchase decision, with the option to choose from various packages tailored to the customer's needs.",
+    "t22": "Travel Inspection: Ensures the vehicle's roadworthiness, covering essential checks for a safe and comfortable journey.",
+    "t23": "Makhdoom Service: If you have a car for sale in Riyadh, Jeddah, or Dammam, Cashif Center conducts a thorough and precise inspection on your behalf without the need for travel, reducing costs. The inspection report is available online, with the option to facilitate ownership transfer and insurance procedures.",
+    "t24": "Cashif Services Available Online",
+    "t25": "Learn about services and inspection packages and points",
+    "t26": "View package prices",
+    "t27": "Multiple electronic payment options available",
+    "t28": "Option to pay for the inspection in installments through installment payment companies",
+    "t29": "Book a car inspection appointment",
+    "t30": "View and download the inspection report electronically",
+    "t31": "Check your free rewards balance (loyalty points)"
+  },
+
+  "InstructionsBeforePublishingContent": {
+    "t1": "Important Instructions Before Publishing Content",
+    "t2": "First: Verify the Accuracy of Information",
+    "t3": "Ensure all the information mentioned in the clip is correct.",
+    "t4": "Read the 'About Cashif' section carefully before starting filming.",
+    "t5": "Second: Filming and Content Instructions",
+    "t6": "Do not film the inspection center while it is empty (preferably show normal work activity).",
+    "t7": "Coordinate with the branch manager to prepare the location, ensuring the filming environment is clean and free of any clutter or disorganized tools.",
+    "t8": "Inform the branch manager before starting filming to prepare the technicians in their positions.",
+    "t9": "Do not ask the workers inside the inspection halls to appear or speak during filming.",
+    "t10": "Avoid filming technicians directly while they are performing their work in a way that reveals their identities.",
+    "t11": "Do not clearly film customers or their private vehicles during inspection unless permission is obtained from them.",
+    "t12": "Third: Instructions to Improve Video Visibility in Search (Very Important):",
+    "t13": "Add hashtags in the video description",
+    "t14": "#Cashif #Car_Inspection",
+    "t15": "Clearly display the discount code in the video",
+    "t16": "Include the following information in the video description:",
+    "t17": "Write a description that naturally includes the words 'Cashif' and 'car inspection'.",
+    "t18": "Example: My experience today with Cashif car inspection center",
+    "t19": "Include the discount code, mention branch locations, and add the website link."
+  },
+
+  "HowWorksComponent": {
+    "t1": "We are happy to have you join the 'Falk' program!",
+    "t2": "Using the marketing image that contains your unique code, you can promote the car inspection service.",
+    "t3": "The code gives customers a 20% discount, while you earn a 10% commission for every booking made using the code.",
+    "t4": "How it works:",
+    "t5": "Use the image and code to promote across your digital platforms.",
+    "t6": "Share with your audience that the code gives them a 20% discount when booking a car inspection service.",
+    "t7": "Earn a 10% commission for every booking made using your code.",
+    "t8": "Start promoting now and begin earning profits!",
+    "t9": "Wishing you success!"
   }
 }

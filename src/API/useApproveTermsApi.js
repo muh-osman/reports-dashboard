@@ -1,29 +1,16 @@
-import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 // API base
 import API from "./Api";
 // Toastify
 import { toast } from "react-toastify";
-// Cookies
-import { useCookies } from "react-cookie";
 
-export const useEditAppointmentApi = (id) => {
-  // Cookies
-  const [cookies, setCookie] = useCookies([
-    "tokenApp",
-    "username",
-    "userId",
-    "phoneNumber",
-  ]);
-  const clientId = cookies.userId;
-  //
-  const navigate = useNavigate();
 
-  const qc = useQueryClient();
+export const useApproveTermsApi = () => {
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (data) => {
-      const res = await API.put(`api/Card/${id}`, data, {
+      const res = await API.post("api/Card/TermsApprove", data, {
         headers: {
           "Content-Type": "application/json-patch+json", // this nessesary for sending data as json patch
         },
@@ -32,10 +19,7 @@ export const useEditAppointmentApi = (id) => {
     },
 
     onSuccess: (responseData) => {
-      toast.success("تم التعديل");
-      qc.invalidateQueries(["Appointment", clientId]); // This will refetch the appointments
-
-      navigate(`${process.env.PUBLIC_URL}/booking`, { replace: true });
+      queryClient.invalidateQueries({ queryKey: ["cards"] });
     },
 
     onError: (err) => {

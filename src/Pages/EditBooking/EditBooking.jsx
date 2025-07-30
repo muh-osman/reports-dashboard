@@ -21,9 +21,13 @@ import dayjs from "dayjs";
 // API
 import useGetAllBranchesApi from "../../API/useGetAllBranchesApi";
 import useGetAllManufacturerApi from "../../API/useGetAllManufacturerApi";
+import useGetAllCarModelsApi from "../../API/useGetAllCarModelsApi";
 import useGetServices from "../../API/useGetServices";
+import useGetFullDataOfClientApi from "../../API/useGetFullDataOfClientApi";
 import { useEditAppointmentApi } from "../../API/useEditAppointmentApi";
-import useGetAppointmentApi from "../../API/useGetAppointmentApi";
+// import { useGetAppointmentApi } from "../../API/useGetAppointmentApi";
+import useGetOneCardDataApi from "../../API/useGetOneCardDataApi";
+
 // Lang
 import i18n from "../../i18n";
 import { useTranslation } from "react-i18next";
@@ -58,20 +62,31 @@ export default function EditBooking() {
   // Cookies
   const [cookies, setCookie] = useCookies(["tokenApp", "userId"]);
 
+  // Full Data Of Client
+  const { data: fullDataOfClient } = useGetFullDataOfClientApi();
   // Branches
   const { data: allBranches } = useGetAllBranchesApi();
   // Manufacturers
   const { data: allManufacturers } = useGetAllManufacturerApi();
+  // Models
+  const { data: allCarModels } = useGetAllCarModelsApi();
   // Services
   const { data: allServices } = useGetServices();
 
   // Get All Appointment before edit
-  const { data: allAppointment } = useGetAppointmentApi();
+  // const {
+  //   mutate: getAppointments,
+  //   data: allAppointment,
+  //   status: fetchAppointmentStatus,
+  // } = useGetAppointmentApi();
 
   // Filter appointments based on the provided id to get spacific appointment
-  const oneAppointmentData = allAppointment?.find(
-    (appointment) => appointment.id === parseInt(id)
-  );
+  // const oneAppointmentData = allAppointment?.find(
+  //   (appointment) => appointment.id === parseInt(id)
+  // );
+
+  // Get One Card Data
+  const { data: oneAppointmentData } = useGetOneCardDataApi(id);
 
   const years = [
     {
@@ -212,6 +227,54 @@ export default function EditBooking() {
     }
   }, [allManufacturers, oneAppointmentData]);
 
+  // Model
+  const [selectedModelId, setSelectedModelId] = React.useState("");
+  const [selectedCarClassId, setSelectedCarClassId] = React.useState(null);
+
+  const handleModelChange = (event, newValue) => {
+    if (newValue) {
+      setSelectedModelId(newValue.id);
+      setSelectedCarClassId(newValue.carClassId); // Store the carClassId
+    } else {
+      setSelectedModelId(null);
+      setSelectedCarClassId(null); // Clear the carClassId
+    }
+  };
+
+  // Filter models based on selected manufacturer
+  const filteredModels = selectedManufacturer
+    ? allCarModels?.filter(
+        (model) => model.carManufacturerId === selectedManufacturer
+      )
+    : [];
+
+  React.useEffect(() => {
+    if (allCarModels && oneAppointmentData) {
+      // Find the model from the appointment data
+      const appointmentModel = allCarModels.find(
+        (model) => model.id === oneAppointmentData.carModelId
+      );
+
+      if (appointmentModel) {
+        setSelectedModelId(appointmentModel.id);
+        setSelectedCarClassId(appointmentModel.carClassId);
+      }
+    }
+  }, [allCarModels, oneAppointmentData]);
+
+  // Transmission
+  const [selectedTransmissionID, setSelectedTransmissionID] =
+    React.useState("");
+  const handleTransmissionChange = (event) => {
+    setSelectedTransmissionID(event.target.value || null);
+  };
+
+  React.useEffect(() => {
+    if (oneAppointmentData) {
+      setSelectedTransmissionID(oneAppointmentData?.gearType || "");
+    }
+  }, [oneAppointmentData]);
+
   // Years
   const [selectedYear, setSelectedYear] = React.useState("");
   const handleYearChange = (event) => {
@@ -227,9 +290,9 @@ export default function EditBooking() {
   // Date
   const [date, setDate] = React.useState(null);
   React.useEffect(() => {
-    if (oneAppointmentData && oneAppointmentData.check_Date) {
+    if (oneAppointmentData && oneAppointmentData.checkDate) {
       // Parse the check_Date string and set it to the date state
-      const parsedDate = dayjs(oneAppointmentData.check_Date);
+      const parsedDate = dayjs(oneAppointmentData.checkDate);
       setDate(parsedDate);
     }
   }, [oneAppointmentData]);
@@ -237,9 +300,9 @@ export default function EditBooking() {
   // Time
   const [time, setTime] = React.useState(null);
   React.useEffect(() => {
-    if (oneAppointmentData && oneAppointmentData.check_Time) {
+    if (oneAppointmentData && oneAppointmentData.checkTime) {
       // Parse the check_Time string and set it to the time state
-      const [hours, minutes] = oneAppointmentData.check_Time.split(":");
+      const [hours, minutes] = oneAppointmentData.checkTime.split(":");
       const parsedTime = dayjs()
         .hour(parseInt(hours))
         .minute(parseInt(minutes));
@@ -250,7 +313,7 @@ export default function EditBooking() {
   // Services
   const [selectedServiceId, setSelectedServiceId] = React.useState("");
   const handleServicesChange = (event) => {
-    setSelectedServiceId([event.target.value]);
+    setSelectedServiceId(event.target.value);
   };
 
   // Find the selected service based on the selectedServiceId
@@ -259,8 +322,10 @@ export default function EditBooking() {
   );
 
   React.useEffect(() => {
+    // console.log(oneAppointmentData?.servicesList);
+
     if (allServices && oneAppointmentData) {
-      setSelectedServiceId(oneAppointmentData?.servicesList || "");
+      setSelectedServiceId(oneAppointmentData?.servicesList[0] || "");
     }
   }, [allServices, oneAppointmentData]);
 
@@ -339,16 +404,50 @@ export default function EditBooking() {
     }
 
     let data = {
-      clientId: cookies.userId,
-      check_Place: 1,
-      branchId: selectedBranch,
-      carManufacturerId: selectedManufacturer,
-      year: selectedYear,
-      check_Date: dateAfterFormat,
-      check_Time: timeAfterFormat,
-      check_Time2: timeAfterFormat,
-      servicesList: selectedServiceId,
-      totalCost: selectedService?.pricing,
+      card: {
+        checkPlace: 1,
+        carManufacturerId: selectedManufacturer,
+        carModelId: selectedModelId,
+        carClassId: selectedCarClassId,
+        gearType: selectedTransmissionID,
+        cardStatus: 7, // mean -> appoinment
+        branchId: selectedBranch,
+        totalCost: 0,
+        year: selectedYear,
+        servicesCard: [
+          {
+            serviceId: selectedServiceId,
+            price: 0,
+          },
+        ],
+        checkDate: dateAfterFormat,
+        checkTime: timeAfterFormat,
+      },
+      client: {
+        name: fullDataOfClient?.name,
+        phoneNumber: fullDataOfClient?.phoneNumber,
+        resourceId: fullDataOfClient?.resourceId || 1,
+        categoryId: 1,
+        // 1=>indvisual, 2=> company
+        type: fullDataOfClient?.type === "INDIVIDUAL" ? 1 : 2,
+        countryCode: "sa",
+
+        // Company Section
+        ...(fullDataOfClient?.type !== "INDIVIDUAL" && {
+          email: fullDataOfClient?.email || "Not Found",
+          taxNumber: fullDataOfClient?.taxNumber || "Not Found",
+          commerialRecord: fullDataOfClient?.commerialRecord || "Not Found",
+          streetName: fullDataOfClient?.streetName || "Not Found",
+          additionalStreetName:
+            fullDataOfClient?.additionalStreetName || "Not Found",
+          cityName: fullDataOfClient?.cityName || "Not Found",
+          postalZone: fullDataOfClient?.postalZone || "Not Found",
+          countrySubentity: fullDataOfClient?.countrySubentity || "Not Found",
+          buildingNumber: fullDataOfClient?.buildingNumber || "Not Found",
+          citySubdivisionName:
+            fullDataOfClient?.citySubdivisionName || "Not Found",
+        }),
+      },
     };
 
     mutate(data);
@@ -477,6 +576,67 @@ export default function EditBooking() {
                     : t("EditBooking.noOptionsAvailable")
                 }
               />
+
+              {/* الموديل */}
+              <Autocomplete
+                className={style.autocomplete_input}
+                dir={languageText === "ar" ? "rtl" : "ltr"}
+                sx={{ backgroundColor: "#fff", marginTop: "16px" }}
+                disablePortal
+                onChange={handleModelChange}
+                options={filteredModels || []} // Use the filtered models here
+                getOptionLabel={(option) =>
+                  languageText === "en" ? option.nameEn : option.nameAr
+                }
+                value={
+                  allCarModels?.find((model) => model.id === selectedModelId) ||
+                  null
+                }
+                renderInput={(params) => (
+                  <TextField
+                    dir={languageText === "ar" ? "rtl" : "ltr"}
+                    {...params}
+                    label={t("Booking.model")}
+                  />
+                )}
+                renderOption={(props, option) => (
+                  <li
+                    dir={languageText === "ar" ? "rtl" : "ltr"}
+                    {...props}
+                    key={option.id}
+                  >
+                    {languageText === "en" ? option.nameEn : option.nameAr}
+                  </li>
+                )}
+                disabled={isPending || isSuccess || !selectedManufacturer}
+                clearOnBlur={false}
+                clearIcon={null}
+                noOptionsText={
+                  allCarModels === null
+                    ? t("Booking.loading")
+                    : t("Booking.noOptionsAvailable")
+                }
+              />
+
+              {/*  ناقل الحركة */}
+              <TextField
+                sx={{ backgroundColor: "#fff", marginTop: "16px" }}
+                dir={languageText === "ar" ? "rtl" : "ltr"}
+                required
+                fullWidth
+                select
+                label={t("Booking.transmission")}
+                value={selectedTransmissionID || ""}
+                onChange={handleTransmissionChange}
+                disabled={isPending || isSuccess}
+              >
+                <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} value={1}>
+                  {t("Booking.normal")}
+                </MenuItem>
+                <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} value={2}>
+                  {t("Booking.automatic")}
+                </MenuItem>
+              </TextField>
 
               {/*  سنة الصنع */}
               <TextField

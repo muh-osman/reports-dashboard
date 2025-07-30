@@ -12,6 +12,8 @@ import { Box, Grid, IconButton, Tooltip } from "@mui/material";
 // Lang
 import i18n from "../i18n";
 import { useTranslation } from "react-i18next";
+// Component
+import FalakVideo from "./FalakVideo";
 // Api
 import useGetAllMarketingPostsApi from "../API/useGetAllMarketingPostsApi";
 //
@@ -53,6 +55,7 @@ const Tiktok = () => (
 );
 
 export default function CouponImages({ code, percent }) {
+  const overlayRef = useRef(null); // Create a ref for the overlay
   //
   const { t } = useTranslation();
   const [languageText, setLanguageText] = useState(i18n.language);
@@ -209,87 +212,95 @@ export default function CouponImages({ code, percent }) {
     },
   ];
 
+  // Palceholder Image
   if (!isGetAllPostsSuccess || !AllPosts?.data) {
     return (
-      <div className={style.llc}>
-        <main className={style.zxxc}>
-          <div className={style.img_box}>
-            <img src={palceholderImage} alt="cashif off" />
-          </div>
-        </main>
-      </div>
+      <>
+        <div className={style.llc}>
+          <main className={style.zxxc}>
+            <div className={style.img_box}>
+              <img src={palceholderImage} alt="cashif off" />
+            </div>
+          </main>
+        </div>
+      </>
     );
   }
 
   return (
-    <div className={style.llc}>
-      <main className={style.zxxc}>
-        <div dir="rtl" ref={ref} className={style.img_box}>
-          <img id="img" src={oneImage} alt="cashif off" />
+    <>
+      <div className={style.llc}>
+        <main className={style.zxxc}>
+          <div dir="rtl" ref={ref} className={style.img_box}>
+            <img id="img" src={oneImage} alt="cashif off" />
 
-          <div className={style.down_text}>
-            <div>
-              <h1>{code}</h1>
-            </div>
+            {/* Start Coupon Overlay */}
+            <div ref={overlayRef} className={style.down_text}>
+              <div>
+                <h1>{code}</h1>
+              </div>
 
-            <div className={style.sale}>
-              <p>{t("CouponImages.off")}</p>
-              <p>%{percent}</p>
+              <div className={style.sale}>
+                <p>{t("CouponImages.off")}</p>
+                <p>%{percent}</p>
+              </div>
             </div>
           </div>
-        </div>
+          {/* End Start Coupon Overlay */}
 
-        <div dir="rtl" className={style.bio}>
-          <p style={{ whiteSpace: "pre-line" }}>{post}</p>
-          <button onClick={handleClick}>
-            <ContentCopyIcon />
-          </button>
-        </div>
+          <div dir="rtl" className={style.bio}>
+            <p style={{ whiteSpace: "pre-line" }}>{post}</p>
+            <button onClick={handleClick}>
+              <ContentCopyIcon />
+            </button>
+          </div>
 
-        <div className={style.share_btn}></div>
+          <div className={style.share_btn}></div>
 
-        <Box>
-          <Grid container sx={{ justifyContent: "space-evenly" }}>
-            {sharePlatforms.map((platform) => (
-              <Grid item key={platform.name}>
-                <Tooltip title={platform.name}>
-                  <IconButton
-                    aria-label={`Share on ${platform.name}`}
-                    onClick={platform.onClick}
-                    sx={{
-                      backgroundColor: platform.color,
-                      color: "white",
-                      "&:hover": {
+          <Box>
+            <Grid container sx={{ justifyContent: "space-evenly" }}>
+              {sharePlatforms.map((platform) => (
+                <Grid item key={platform.name}>
+                  <Tooltip title={platform.name}>
+                    <IconButton
+                      aria-label={`Share on ${platform.name}`}
+                      onClick={platform.onClick}
+                      sx={{
                         backgroundColor: platform.color,
-                        opacity: 0.9,
-                      },
-                    }}
-                  >
-                    {platform.icon}
-                  </IconButton>
-                </Tooltip>
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
+                        color: "white",
+                        "&:hover": {
+                          backgroundColor: platform.color,
+                          opacity: 0.9,
+                        },
+                      }}
+                    >
+                      {platform.icon}
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
 
-        <Stack
-          dir="ltr"
-          spacing={2}
-          sx={{ paddingTop: "16px", paddingBottom: "16px" }}
-          direction="row"
-        >
-          <Button variant="outlined" onClick={nextBtn}>
-            <ArrowBackIosNewIcon />
-          </Button>
-          <Button variant="contained" sx={{ flex: 1 }} onClick={downloadImg}>
-            {t("CouponImages.download")}
-          </Button>
-          <Button variant="outlined" onClick={prevBtn}>
-            <ArrowForwardIosIcon />
-          </Button>
-        </Stack>
-      </main>
-    </div>
+          <Stack
+            dir="ltr"
+            spacing={2}
+            sx={{ paddingTop: "16px", paddingBottom: "16px" }}
+            direction="row"
+          >
+            <Button variant="outlined" onClick={nextBtn}>
+              <ArrowBackIosNewIcon />
+            </Button>
+            <Button variant="contained" sx={{ flex: 1 }} onClick={downloadImg}>
+              {t("CouponImages.download")}
+            </Button>
+            <Button variant="outlined" onClick={prevBtn}>
+              <ArrowForwardIosIcon />
+            </Button>
+          </Stack>
+        </main>
+      </div>
+      <FalakVideo code={code} percent={percent} overlayRef={overlayRef} t={t} />
+    </>
   );
 }

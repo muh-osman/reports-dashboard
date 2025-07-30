@@ -46,8 +46,10 @@ import logo from "../../Assets/Images/logo.webp";
 // API
 import useGetAllBranchesApi from "../../API/useGetAllBranchesApi";
 import useGetAllManufacturerApi from "../../API/useGetAllManufacturerApi";
+import useGetAllCarModelsApi from "../../API/useGetAllCarModelsApi";
 import useGetServices from "../../API/useGetServices";
-import useGetAppointmentApi from "../../API/useGetAppointmentApi";
+import useGetFullDataOfClientApi from "../../API/useGetFullDataOfClientApi";
+import { useGetAppointmentApi } from "../../API/useGetAppointmentApi";
 import { useDeleteAppointmentApi } from "../../API/useDeleteAppointmentApi";
 import { usePostApoinmentFormApi } from "../../API/usePostApoinmentFormApi";
 //
@@ -91,15 +93,41 @@ export default function Booking() {
   const navToLoginPage = () => {
     navigate(`${process.env.PUBLIC_URL}/login`);
   };
+  // Full Data Of Client
+  const { data: fullDataOfClient } = useGetFullDataOfClientApi();
+
   // Branches
   const { data: allBranches } = useGetAllBranchesApi();
   // Manufacturers
   const { data: allManufacturers } = useGetAllManufacturerApi();
+  // Models
+  const { data: allCarModels } = useGetAllCarModelsApi();
   // Services
   const { data: allServices } = useGetServices();
   // Appointment
-  const { data: allAppointment, fetchStatus: fetchAppointmentStatus } =
-    useGetAppointmentApi();
+  const {
+    mutate: getAppointments,
+    data: allAppointment,
+    status: fetchAppointmentStatus,
+  } = useGetAppointmentApi();
+
+  // console.log(allAppointment?.items);
+
+  const appointmentQueryParams = {
+    itemsPerPage: 999,
+    currentPage: 0,
+    textSearch: "",
+    status: 7,
+    from: null,
+    to: null,
+    clientId: null,
+    plateNumber: null,
+    branchId: null,
+  };
+
+  useEffect(() => {
+    getAppointments(appointmentQueryParams);
+  }, []);
 
   const years = [
     {
@@ -223,9 +251,41 @@ export default function Booking() {
   const handleManufacturerChange = (event, newValue) => {
     if (newValue) {
       setSelectedManufacturer(newValue.id);
+      setSelectedModelId(null);
+      setSelectedCarClassId(null); // Clear the carClassId
     } else {
       setSelectedManufacturer(null);
+      setSelectedModelId(null);
+      setSelectedCarClassId(null);
     }
+  };
+
+  // Model
+  const [selectedModelId, setSelectedModelId] = React.useState("");
+  const [selectedCarClassId, setSelectedCarClassId] = React.useState(null);
+
+  const handleModelChange = (event, newValue) => {
+    if (newValue) {
+      setSelectedModelId(newValue.id);
+      setSelectedCarClassId(newValue.carClassId); // Store the carClassId
+    } else {
+      setSelectedModelId(null);
+      setSelectedCarClassId(null); // Clear the carClassId
+    }
+  };
+
+  // Filter models based on selected manufacturer
+  const filteredModels = selectedManufacturer
+    ? allCarModels?.filter(
+        (model) => model.carManufacturerId === selectedManufacturer
+      )
+    : [];
+
+  // Transmission
+  const [selectedTransmissionID, setSelectedTransmissionID] =
+    React.useState("");
+  const handleTransmissionChange = (event) => {
+    setSelectedTransmissionID(event.target.value || null);
   };
 
   // Years
@@ -421,35 +481,89 @@ export default function Booking() {
     });
     /////////////////////////////
     const data = {
-      clientId: cookies.userId,
-      check_Place: 1,
-      branchId: selectedBranch,
-      carManufacturerId: selectedManufacturer,
-      year: selectedYear,
-      check_Date: dateAfterFormat,
-      check_Time: timeAfterFormat,
-      check_Time2: timeAfterFormat,
-      servicesList: [selectedServiceId],
-      totalCost: selectedService?.pricing,
+      card: {
+        checkPlace: 1,
+        carManufacturerId: selectedManufacturer,
+        carModelId: selectedModelId,
+        carClassId: selectedCarClassId,
+        gearType: selectedTransmissionID,
+        cardStatus: 7, // mean -> appoinment
+        branchId: selectedBranch,
+        totalCost: 0,
+        year: selectedYear,
+        servicesCard: [
+          {
+            serviceId: selectedServiceId,
+            price: 0,
+          },
+        ],
+        checkDate: dateAfterFormat,
+        checkTime: timeAfterFormat,
+      },
+      client: {
+        name: fullDataOfClient?.name,
+        phoneNumber: fullDataOfClient?.phoneNumber,
+        resourceId: fullDataOfClient?.resourceId || 1,
+        categoryId: 1,
+        // 1=>indvisual, 2=> company
+        type: fullDataOfClient?.type === "INDIVIDUAL" ? 1 : 2,
+        countryCode: "sa",
+
+        // Company Section
+        ...(fullDataOfClient?.type !== "INDIVIDUAL" && {
+          email: fullDataOfClient?.email || "Not Found",
+          taxNumber: fullDataOfClient?.taxNumber || "Not Found",
+          commerialRecord: fullDataOfClient?.commerialRecord || "Not Found",
+          streetName: fullDataOfClient?.streetName || "Not Found",
+          additionalStreetName:
+            fullDataOfClient?.additionalStreetName || "Not Found",
+          cityName: fullDataOfClient?.cityName || "Not Found",
+          postalZone: fullDataOfClient?.postalZone || "Not Found",
+          countrySubentity: fullDataOfClient?.countrySubentity || "Not Found",
+          buildingNumber: fullDataOfClient?.buildingNumber || "Not Found",
+          citySubdivisionName:
+            fullDataOfClient?.citySubdivisionName || "Not Found",
+        }),
+      },
     };
 
-    PostApoinmentFormMutate(data);
+    PostApoinmentFormMutate(data, {
+      onSuccess: () => {
+        // Re-fetch appointments after successful creation
+        getAppointments(appointmentQueryParams);
 
-    handleBookingModalOpen();
+        // Reset form fields
+        setSelectedServiceId("");
+        setTime(null);
+        setDate(null);
+        setSelectedYear("");
+        setSelectedManufacturer("");
+        setSelectedBranch("");
+        setSelectedModelId("");
+        setSelectedCarClassId(null);
+        setSelectedTransmissionID("");
+
+        // Open the success modal
+        handleBookingModalOpen();
+
+        // Scroll to top
+        window.scrollTo(0, 0);
+      },
+    });
   };
 
-  React.useEffect(() => {
-    if (isPostApoinmentFormMutateSuccess) {
-      setSelectedServiceId("");
-      setTime(null);
-      setDate(null);
-      setSelectedYear("");
-      setSelectedManufacturer("");
-      setSelectedBranch("");
+  // React.useEffect(() => {
+  //   if (isPostApoinmentFormMutateSuccess) {
+  //     setSelectedServiceId("");
+  //     setTime(null);
+  //     setDate(null);
+  //     setSelectedYear("");
+  //     setSelectedManufacturer("");
+  //     setSelectedBranch("");
 
-      window.scrollTo(0, 0);
-    }
-  }, [isPostApoinmentFormMutateSuccess]);
+  //     window.scrollTo(0, 0);
+  //   }
+  // }, [isPostApoinmentFormMutateSuccess]);
 
   // Delete Apoinment
   const { mutate: deleteApoinmentMutate } = useDeleteAppointmentApi();
@@ -460,6 +574,10 @@ export default function Booking() {
     if (isConfirmed) {
       setLoadingDelete((prev) => ({ ...prev, [id]: true })); // Set loading for the specific card
       deleteApoinmentMutate(id, {
+        onSuccess: () => {
+          // Re-fetch appointments after successful deletion
+          getAppointments(appointmentQueryParams);
+        },
         onSettled: () => {
           // Reset loading state regardless of success or error
           setLoadingDelete((prev) => ({ ...prev, [id]: false }));
@@ -590,8 +708,69 @@ export default function Booking() {
             />
           )}
 
-          {/*  سنة الصنع */}
+          {/* الموديل */}
           {cookies.tokenApp && selectedManufacturer && (
+            <Autocomplete
+              className={style.autocomplete_input}
+              dir={languageText === "ar" ? "rtl" : "ltr"}
+              sx={{ backgroundColor: "#fff", marginTop: "16px" }}
+              disablePortal
+              onChange={handleModelChange}
+              options={filteredModels} // Use the filtered models here
+              getOptionLabel={(option) =>
+                languageText === "en" ? option.nameEn : option.nameAr
+              }
+              renderInput={(params) => (
+                <TextField
+                  dir={languageText === "ar" ? "rtl" : "ltr"}
+                  {...params}
+                  label={t("Booking.model")}
+                />
+              )}
+              renderOption={(props, option) => (
+                <li
+                  dir={languageText === "ar" ? "rtl" : "ltr"}
+                  {...props}
+                  key={option.id}
+                >
+                  {languageText === "en" ? option.nameEn : option.nameAr}
+                </li>
+              )}
+              disabled={isPostApoinmentFormMutatePending}
+              clearOnBlur={false}
+              clearIcon={null}
+              noOptionsText={
+                allCarModels === null
+                  ? t("Booking.loading")
+                  : t("Booking.noOptionsAvailable")
+              }
+            />
+          )}
+
+          {/*  ناقل الحركة */}
+          {cookies.tokenApp && selectedModelId && (
+            <TextField
+              sx={{ backgroundColor: "#fff", marginTop: "16px" }}
+              dir={languageText === "ar" ? "rtl" : "ltr"}
+              required
+              fullWidth
+              select
+              label={t("Booking.transmission")}
+              value={selectedTransmissionID || ""}
+              onChange={handleTransmissionChange}
+              disabled={isPostApoinmentFormMutatePending}
+            >
+              <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} value={1}>
+                {t("Booking.normal")}
+              </MenuItem>
+              <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} value={2}>
+                {t("Booking.automatic")}
+              </MenuItem>
+            </TextField>
+          )}
+
+          {/*  سنة الصنع */}
+          {cookies.tokenApp && selectedTransmissionID && (
             <TextField
               sx={{ backgroundColor: "#fff", marginTop: "16px" }}
               dir={languageText === "ar" ? "rtl" : "ltr"}
@@ -1018,12 +1197,11 @@ export default function Booking() {
           dir={languageText === "ar" ? "rtl" : "ltr"}
           className={style.appointment_cards_container}
         >
-          {allAppointment && allAppointment.length > 0 ? (
-            allAppointment
+          {allAppointment && allAppointment.items.length > 0 ? (
+            allAppointment?.items
               .slice()
-              .reverse()
               .filter((card) => {
-                const cardDate = new Date(card.check_Date);
+                const cardDate = new Date(card.checkDate);
                 const today = new Date();
                 today.setHours(0, 0, 0, 0); // Set to start of day for accurate comparison
                 return cardDate >= today;
@@ -1093,7 +1271,7 @@ export default function Booking() {
                         style={{ fontSize: "14px" }}
                       >
                         {new Date(
-                          `1970-01-01T${card.check_Time}`
+                          `1970-01-01T${card.checkTime}`
                         ).toLocaleTimeString("en-US", {
                           hour: "2-digit",
                           minute: "2-digit",
@@ -1114,7 +1292,7 @@ export default function Booking() {
                         component="div"
                         style={{ fontSize: "14px" }}
                       >
-                        {formatDate(card.check_Date)}
+                        {formatDate(card.checkDate)}
                       </Typography>
                     </Box>
 

@@ -1,12 +1,12 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 // API base
 import API from "./Api";
-// Toastify
-import { toast } from "react-toastify";
 // Cookies
 import { useCookies } from "react-cookie";
+//
+import { toast } from "react-toastify";
 
-export const useGetAppointmentApi = () => {
+export const useGetCardsPendingApproveCardsApi = () => {
   // Cookies
   const [cookies, setCookie] = useCookies([
     "tokenApp",
@@ -16,20 +16,13 @@ export const useGetAppointmentApi = () => {
   ]);
   const clientId = cookies.userId;
 
-  const qc = useQueryClient();
-
   return useMutation({
     mutationFn: async (data) => {
-      const res = await API.post("api/Card/pagination", data, {
-        headers: {
-          "Content-Type": "application/json-patch+json", // this nessesary for sending data as json patch
-        },
-      });
+      const res = await API.post(`api/Card/GetCardsPendingApprove?id=${clientId}`);
       return res.data;
     },
 
-    onSuccess: (responseData) => {
-    },
+    onSuccess: (responseData) => {},
 
     onError: (err) => {
       console.error(err);

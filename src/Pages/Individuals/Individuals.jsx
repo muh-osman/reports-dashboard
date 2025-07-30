@@ -105,6 +105,24 @@ export default function Individuals() {
     mutate(data);
   };
 
+  //
+  const isArabic = (str) => {
+    // Regular expression to match Arabic characters, spaces, and Arabic punctuation
+    const arabicRegex =
+      /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$/;
+    return arabicRegex.test(str);
+  };
+
+  const handleNameChange = (e) => {
+    const value = e.target.value;
+
+    // If the last entered character is not Arabic, remove it
+    if (value && !isArabic(value)) {
+      e.target.value = value.slice(0, -1);
+      toast.warn(t("Individuals.onlyArabicCharactersAllowed"));
+    }
+  };
+
   return (
     <div style={{ backgroundColor: "#f0f1f3" }}>
       <div className={style.header}>
@@ -186,8 +204,9 @@ export default function Individuals() {
                     type="text"
                     autoFocus
                     required
-                    dir="auto"
+                    dir="rtl"
                     disabled={isPending}
+                    onChange={handleNameChange}
                     InputLabelProps={{
                       className: "custom-label-rtl",
                     }}
