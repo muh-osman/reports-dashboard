@@ -9,8 +9,10 @@ export const fetchVideo = async (reportNumber, videoNumber) => {
       responseType: "arraybuffer", // To handle binary data
     }
   );
+
+  // console.log(res.headers?.get("content-type"));
   // console.log(res);
-  return res.data;
+  return res;
 };
 
 export default function useDownloadVideoApi(reportNumber, videoNumber) {

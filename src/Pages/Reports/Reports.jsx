@@ -316,70 +316,183 @@ export default function Reports() {
 
   const handleDownloadVideo = async (id) => {
     try {
+      console.log(`[Debug] Starting download for video ID: ${id}`);
       setLoadingVideoDownload((prev) => ({ ...prev, [id]: true }));
 
-      // Helper function to delay between requests
-      const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
+      const RETRY_DELAY_MS = 1000;
+      const MAX_RETRIES = 3;
       let downloadedAtLeastOne = false;
+      let lastError = null;
 
-      // Try versions 1, 2, and 3 in sequence
-      for (const version of [1, 2, 3]) {
+      // Enhanced MIME type mapping
+      const videoMimeTypes = {
+        // MP4 and variants
+        ".mp4": "video/mp4",
+        ".m4v": "video/x-m4v",
+
+        // QuickTime/MOV
+        ".mov": "video/quicktime",
+        ".qt": "video/quicktime",
+
+        // Web Formats
+        ".webm": "video/webm",
+        ".ogv": "video/ogg",
+
+        // Microsoft
+        ".avi": "video/x-msvideo",
+        ".wmv": "video/x-ms-wmv",
+
+        // Open/Container
+        ".mkv": "video/x-matroska",
+        ".flv": "video/x-flv",
+
+        // MPEG
+        ".mpeg": "video/mpeg",
+        ".mpg": "video/mpeg",
+        ".ts": "video/mp2t",
+        ".m2ts": "video/mp2t",
+
+        // Mobile
+        ".3gp": "video/3gpp",
+        ".3g2": "video/3gpp2",
+
+        // Codecs
+        ".hevc": "video/hevc",
+        ".h265": "video/hevc",
+        ".vp9": "video/vp9",
+        ".av1": "video/av1",
+
+        // Animation
+        ".gif": "image/gif",
+        ".webp": "image/webp",
+      };
+
+      for (let version = 1; version <= MAX_RETRIES; version++) {
         try {
-          // Call the API to download the video
+          console.log(`[Debug] Attempting version ${version} download`);
           const response = await fetchVideo(id, version);
 
-          // Skip if response indicates video not found
+          // console.log(response);
+
           if (
             response?.success === false &&
             response?.message === "Video file not found"
           ) {
-            await delay(1000); // Wait 1s before next attempt
+            console.log(`[Debug] Version ${version} not found, skipping`);
+            await delay(RETRY_DELAY_MS);
             continue;
           }
 
-          // Determine the video file extension (default to mp4)
-          let fileExtension = ".mp4";
+          // Get content type from headers
+          const contentType = response.headers?.get("content-type") || "";
+          console.log("[Debug] Content-Type header:", contentType);
 
-          // Create a blob from the arraybuffer data
-          const blob = new Blob([response], { type: "video/mp4" });
+          let fileExtension = ".mp4"; // Default fallback
 
-          // Create download link
-          const url = window.URL.createObjectURL(blob);
+          // Enhanced MIME type detection
+          if (contentType) {
+            const normalizedContentType = contentType.toLowerCase().trim();
+
+            // 1. Try exact MIME type match
+            for (const [ext, mime] of Object.entries(videoMimeTypes)) {
+              if (normalizedContentType === mime.toLowerCase()) {
+                fileExtension = ext;
+                console.log(`[Debug] Exact MIME match: ${mime} → ${ext}`);
+                break;
+              }
+            }
+
+            // 2. Try partial match if still using default
+            if (fileExtension === ".mp4") {
+              for (const [ext, mime] of Object.entries(videoMimeTypes)) {
+                const mimeParts = mime.toLowerCase().split("/");
+                const typePart = mimeParts[1];
+
+                if (
+                  normalizedContentType.includes(typePart) ||
+                  normalizedContentType.includes(ext.replace(".", ""))
+                ) {
+                  fileExtension = ext;
+                  console.log(
+                    `[Debug] Partial MIME match: ${contentType} → ${ext}`
+                  );
+                  break;
+                }
+              }
+            }
+
+            // 3. Special case for MOV files (common variations)
+            if (
+              fileExtension === ".mp4" &&
+              (normalizedContentType.includes("mov") ||
+                normalizedContentType.includes("quicktime"))
+            ) {
+              fileExtension = ".mov";
+              console.log(
+                `[Debug] Special MOV handling: ${contentType} → .mov`
+              );
+            }
+          }
+
+          console.log("[Debug] Final extension:", fileExtension);
+
+          // Validate extension
+          if (!/^\.[a-z0-9]{1,5}$/i.test(fileExtension)) {
+            console.log("[Debug] Invalid extension, defaulting to .mp4");
+            fileExtension = ".mp4";
+          }
+
+          // Get MIME type (fallback to video/mp4)
+          const mimeType = videoMimeTypes[fileExtension] || "video/mp4";
+          console.log("[Debug] Determined MIME type:", mimeType);
+
+          // Download logic
+          const blob = new Blob([response.data], { type: mimeType });
+          console.log("[Debug] Blob created with type:", blob.type);
+
+          const url = URL.createObjectURL(blob);
           const link = document.createElement("a");
           link.href = url;
           link.download = `video_${id}_v${version}${fileExtension}`;
+          console.log("[Debug] Download filename will be:", link.download);
+
           document.body.appendChild(link);
           link.click();
 
-          // Cleanup
           setTimeout(() => {
             document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
+            URL.revokeObjectURL(url);
           }, 100);
 
           downloadedAtLeastOne = true;
-          await delay(1000); // Wait 1s before next attempt (even on success)
+          await delay(RETRY_DELAY_MS);
         } catch (error) {
-          // If it's not a "not found" error, log it but continue to next version
-          if (!(error?.response?.data?.message === "Video file not found")) {
-            console.error(`Error downloading video version ${version}:`, error);
-          }
-          await delay(1000); // Wait 1s before next attempt
+          console.error(`[Debug] Version ${version} failed:`, error);
+          lastError = error;
+          await delay(RETRY_DELAY_MS);
         }
       }
 
-      // If none of the versions worked
       if (!downloadedAtLeastOne) {
-        toast.error("No available video versions found for download");
+        console.error("[Debug] All download attempts failed");
+        throw lastError || new Error("No video versions available");
       }
     } catch (error) {
-      console.error("Error in download process:", error);
-      toast.error(error.message || "Failed to download video");
+      console.error("[Debug] Download process failed:", error);
+      toast.error(error.message || "Failed to download video", {
+        autoClose: 5000,
+        position: "bottom-right",
+      });
     } finally {
+      console.log("[Debug] Download process completed");
       setLoadingVideoDownload((prev) => ({ ...prev, [id]: false }));
     }
   };
+
+  // Helper function
+  function delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
 
   // Change color
   const getClientColor = () => {
@@ -911,7 +1024,7 @@ export default function Reports() {
 
           {cardsData && cardsData.length > 0 ? (
             cardsData
-              .filter((card) => card.cardStatus !== 7) //  filter to exclude "Appoinment" cards with status 7
+              .filter((card) => card.cardStatus === 5) //  filter to exclude "Appoinment" cards with status 7
               .slice()
               .reverse()
               .map((card) => (
