@@ -49,7 +49,7 @@ export default function InstructionsBeforePublishingContent() {
           }
         >
           <div>
-            <h1>{t("InstructionsBeforePublishingContent.t1")}:</h1>
+            <h2>{t("InstructionsBeforePublishingContent.t1")}:</h2>
 
             <h6>{t("InstructionsBeforePublishingContent.t2")}</h6>
             <div>

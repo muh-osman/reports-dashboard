@@ -20,12 +20,15 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import GavelIcon from "@mui/icons-material/Gavel";
-import WorkIcon from "@mui/icons-material/Work";
+import CelebrationIcon from "@mui/icons-material/Celebration";
 import Modal from "@mui/material/Modal";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
+
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 //
 import { toast } from "react-toastify";
 // Image
@@ -91,16 +94,12 @@ export default function Marketer() {
     setAnchorEl(null);
   };
   // condetion And Terms Modal
-  const [openCondetionAndTermsModal, setOpenCondetionAndTermsModal] =
-    React.useState(false);
-  const handleCondetionAndTermsModalOpen = () =>
-    setOpenCondetionAndTermsModal(true);
-  const handleCondetionAndTermsModalClose = () =>
-    setOpenCondetionAndTermsModal(false);
+  const [openCondetionAndTermsModal, setOpenCondetionAndTermsModal] = React.useState(false);
+  const handleCondetionAndTermsModalOpen = () => setOpenCondetionAndTermsModal(true);
+  const handleCondetionAndTermsModalClose = () => setOpenCondetionAndTermsModal(false);
 
   // Marketer Data
-  const { data: marketerData, isError: isGetMarketerError } =
-    useGetMarketerApi();
+  const { data: marketerData, isError: isGetMarketerError } = useGetMarketerApi();
   const { data: MarketerSettings } = useMarketerSettingsApi();
   // console.log(marketerData);
 
@@ -150,10 +149,7 @@ export default function Marketer() {
         return <InfoAboutCashif />;
       case 1:
         return (
-          <CouponImages
-            code={marketerData?.code || "-"}
-            percent={MarketerSettings?.codeDiscountPercentage || 0}
-          />
+          <CouponImages code={marketerData?.code || "-"} percent={MarketerSettings?.codeDiscountPercentage || 0} />
         );
       case 2:
         return <HowWorks />;
@@ -166,10 +162,7 @@ export default function Marketer() {
   };
 
   return (
-    <div
-      dir={languageText === "ar" ? "rtl" : "ltr"}
-      className={style.container}
-    >
+    <div dir={languageText === "ar" ? "rtl" : "ltr"} className={style.container}>
       {!cookies.tokenApp ? (
         <div className={style.not_auth_container}>
           <div className={style.not_auth_box}>
@@ -187,10 +180,7 @@ export default function Marketer() {
               <p>{t("Marketer.subTitleOne")}</p>
               <p>{t("Marketer.subTitleTwo")}</p>
               <p>
-                {t("Marketer.subTitleThree")}{" "}
-                <span style={{ fontWeight: "bold" }}>
-                  {t("Marketer.subTitleFour")}
-                </span>
+                {t("Marketer.subTitleThree")} <span style={{ fontWeight: "bold" }}>{t("Marketer.subTitleFour")}</span>
               </p>
             </div>
 
@@ -200,15 +190,39 @@ export default function Marketer() {
               variant="contained"
               component={Link}
               size="large"
-              to={`${process.env.PUBLIC_URL}/login`}
+              to={`${process.env.PUBLIC_URL}/login/?from=falak`}
             >
-              {t("Marketer.joinNow")}
+              {t("Marketer.login")}
+            </Button>
+
+            <Button
+              fullWidth
+              sx={{ marginTop: "16px" }}
+              variant="outlined"
+              component={Link}
+              size="large"
+              to={`${process.env.PUBLIC_URL}/signup/?from=falak`}
+            >
+              {t("Marketer.signup")}
             </Button>
           </div>
         </div>
       ) : (
         <>
+          {/* Banner */}
+          <div className={style.banner}>
+            <Alert
+              sx={{ margin: "0px" }}
+              severity="warning"
+              icon={<CelebrationIcon sx={languageText === "ar" ? { marginLeft: "12px", marginRight: "-12px" } : {}} />}
+            >
+              <AlertTitle>{t("Marketer.bannerTitle")}</AlertTitle>
+              {t("Marketer.bannerDiscreption")}
+            </Alert>
+          </div>
+
           <div className={style.main_container}>
+            {/* Score Card */}
             <div className={style.money_card_container}>
               <div className={style.money_card_header}>
                 <div>
@@ -220,16 +234,10 @@ export default function Marketer() {
                       duration={1500}
                       delay={0}
                       ease="outExpo"
-                      formattingFn={(value) =>
-                        Math.floor(value).toLocaleString()
-                      }
+                      formattingFn={(value) => Math.floor(value).toLocaleString()}
                     />{" "}
                     <span className={style.rial}>
-                      <svg
-                        data-name="Layer 1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 1124.14 1256.39"
-                      >
+                      <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39">
                         <defs></defs>
                         <path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z"></path>
                         <path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z"></path>
@@ -282,16 +290,15 @@ export default function Marketer() {
 
               <div className={style.money_card_footer}>
                 <h3>
-                  {t("Marketer.commissionRate")}{" "}
-                  {MarketerSettings?.marketerCommissionPercentage || 0}%
+                  {t("Marketer.commissionRate")} {MarketerSettings?.marketerCommissionPercentage || 0}%
                 </h3>
                 <h3 style={{ backgroundColor: "#3887d5", color: "#fff" }}>
-                  {t("Marketer.discountRate")}{" "}
-                  {MarketerSettings?.codeDiscountPercentage || 0}%
+                  {t("Marketer.discountRate")} {MarketerSettings?.codeDiscountPercentage || 0}%
                 </h3>
               </div>
             </div>
 
+            {/* Person Card */}
             <div className={style.person_card_container}>
               <Tooltip
                 title={t("Marketer.more")}
@@ -329,9 +336,7 @@ export default function Marketer() {
                       <ListItemIcon>
                         <GavelIcon fontSize="small" />
                       </ListItemIcon>
-                      <ListItemText>
-                        {t("Marketer.termsAndConditions")}
-                      </ListItemText>
+                      <ListItemText>{t("Marketer.termsAndConditions")}</ListItemText>
                     </MenuItem>
                   </MenuList>
                 </Paper>
@@ -372,11 +377,7 @@ export default function Marketer() {
                 >
                   <div
                     className={style.terms_box}
-                    style={
-                      languageText === "ar"
-                        ? { textAlign: "right" }
-                        : { textAlign: "left" }
-                    }
+                    style={languageText === "ar" ? { textAlign: "right" } : { textAlign: "left" }}
                   >
                     <div>
                       <h1>{t("Conditions.termsAndConditions")}:</h1>
@@ -384,13 +385,7 @@ export default function Marketer() {
 
                       <h6>{t("Conditions.definitions")}</h6>
                       <div>
-                        <ul
-                          style={
-                            languageText === "ar"
-                              ? { paddingRight: 16 }
-                              : { paddingLeft: 16 }
-                          }
-                        >
+                        <ul style={languageText === "ar" ? { paddingRight: 16 } : { paddingLeft: 16 }}>
                           <li>{t("Conditions.definitionsA")}</li>
                           <li>{t("Conditions.definitionsB")}</li>
                           <li>{t("Conditions.definitionsC")}</li>
@@ -400,13 +395,7 @@ export default function Marketer() {
 
                       <h6>{t("Conditions.registrationTerms")}</h6>
                       <div>
-                        <ul
-                          style={
-                            languageText === "ar"
-                              ? { paddingRight: 16 }
-                              : { paddingLeft: 16 }
-                          }
-                        >
+                        <ul style={languageText === "ar" ? { paddingRight: 16 } : { paddingLeft: 16 }}>
                           <li>{t("Conditions.registrationTermsA")}</li>
                           <li>{t("Conditions.registrationTermsB")}</li>
                           <li>{t("Conditions.registrationTermsC")}</li>
@@ -419,13 +408,7 @@ export default function Marketer() {
 
                       <h6>{t("Conditions.mechanismOfAction")}</h6>
                       <div>
-                        <ul
-                          style={
-                            languageText === "ar"
-                              ? { paddingRight: 16 }
-                              : { paddingLeft: 16 }
-                          }
-                        >
+                        <ul style={languageText === "ar" ? { paddingRight: 16 } : { paddingLeft: 16 }}>
                           <li>{t("Conditions.mechanismOfActionA")}</li>
                           <li>{t("Conditions.mechanismOfActionB")}</li>
                           <li>{t("Conditions.mechanismOfActionC")}</li>
@@ -438,13 +421,7 @@ export default function Marketer() {
 
                       <h6>{t("Conditions.payment")}</h6>
                       <div>
-                        <ul
-                          style={
-                            languageText === "ar"
-                              ? { paddingRight: 16 }
-                              : { paddingLeft: 16 }
-                          }
-                        >
+                        <ul style={languageText === "ar" ? { paddingRight: 16 } : { paddingLeft: 16 }}>
                           <li>{t("Conditions.paymentA")}</li>
                           <li>{t("Conditions.paymentB")}</li>
                           <li>{t("Conditions.paymentC")}</li>
@@ -455,13 +432,7 @@ export default function Marketer() {
 
                       <h6>{t("Conditions.marketerObligations")}</h6>
                       <div>
-                        <ul
-                          style={
-                            languageText === "ar"
-                              ? { paddingRight: 16 }
-                              : { paddingLeft: 16 }
-                          }
-                        >
+                        <ul style={languageText === "ar" ? { paddingRight: 16 } : { paddingLeft: 16 }}>
                           <li>{t("Conditions.marketerObligationsA")}</li>
                           <li>{t("Conditions.marketerObligationsB")}</li>
                           <li>{t("Conditions.marketerObligationsC")}</li>
@@ -471,13 +442,7 @@ export default function Marketer() {
 
                       <h6>{t("Conditions.companyObligations")}</h6>
                       <div>
-                        <ul
-                          style={
-                            languageText === "ar"
-                              ? { paddingRight: 16 }
-                              : { paddingLeft: 16 }
-                          }
-                        >
+                        <ul style={languageText === "ar" ? { paddingRight: 16 } : { paddingLeft: 16 }}>
                           <li>{t("Conditions.companyObligationsA")}</li>
                           <li>{t("Conditions.companyObligationsB")}</li>
                           <li>{t("Conditions.companyObligationsC")}</li>
@@ -486,13 +451,7 @@ export default function Marketer() {
 
                       <h6>{t("Conditions.cancellation")}</h6>
                       <div>
-                        <ul
-                          style={
-                            languageText === "ar"
-                              ? { paddingRight: 16 }
-                              : { paddingLeft: 16 }
-                          }
-                        >
+                        <ul style={languageText === "ar" ? { paddingRight: 16 } : { paddingLeft: 16 }}>
                           <li>{t("Conditions.cancellationA")}</li>
                           <li>{t("Conditions.cancellationB")}</li>
                           <li>{t("Conditions.cancellationC")}</li>
@@ -502,13 +461,7 @@ export default function Marketer() {
 
                       <h6>{t("Conditions.modifications")}</h6>
                       <div>
-                        <ul
-                          style={
-                            languageText === "ar"
-                              ? { paddingRight: 16 }
-                              : { paddingLeft: 16 }
-                          }
-                        >
+                        <ul style={languageText === "ar" ? { paddingRight: 16 } : { paddingLeft: 16 }}>
                           <li>{t("Conditions.modificationsA")}</li>
                           <li>{t("Conditions.modificationsB")}</li>
                         </ul>
@@ -516,13 +469,7 @@ export default function Marketer() {
 
                       <h6>{t("Conditions.applicableLaws")}</h6>
                       <div>
-                        <ul
-                          style={
-                            languageText === "ar"
-                              ? { paddingRight: 16 }
-                              : { paddingLeft: 16 }
-                          }
-                        >
+                        <ul style={languageText === "ar" ? { paddingRight: 16 } : { paddingLeft: 16 }}>
                           <li>{t("Conditions.applicableLawsA")}</li>
                           <li>{t("Conditions.applicableLawsB")}</li>
                         </ul>
@@ -534,20 +481,12 @@ export default function Marketer() {
 
                     <div>
                       <FormControlLabel
-                        control={
-                          <Checkbox required checked={true} disabled={true} />
-                        }
+                        control={<Checkbox required checked={true} disabled={true} />}
                         label={t("Conditions.label")}
                       />
                     </div>
 
-                    <Button
-                      fullWidth
-                      sx={{ marginTop: "30px" }}
-                      variant="contained"
-                      size="large"
-                      disabled={true}
-                    >
+                    <Button fullWidth sx={{ marginTop: "30px" }} variant="contained" size="large" disabled={true}>
                       {t("Conditions.ok")}
                     </Button>
                   </div>
@@ -571,9 +510,7 @@ export default function Marketer() {
                         color: marketerData?.isActive ? "#25d366" : "#d32f2f",
                       }}
                     >
-                      {marketerData?.isActive
-                        ? t("Marketer.active")
-                        : t("Marketer.inactive")}
+                      {marketerData?.isActive ? t("Marketer.active") : t("Marketer.inactive")}
                     </h3>
                   </div>
 
@@ -584,12 +521,7 @@ export default function Marketer() {
                 </div>
 
                 <div className={style.button_box}>
-                  <Button
-                    fullWidth
-                    sx={{ width: "50%" }}
-                    variant="contained"
-                    onClick={transfer}
-                  >
+                  <Button fullWidth sx={{ width: "50%" }} variant="contained" onClick={transfer}>
                     {t("Marketer.withdrawProfits")}
                   </Button>
 
@@ -612,9 +544,7 @@ export default function Marketer() {
           </div>
 
           {/* Tabs */}
-          <h5 className={style.last_reports_title}>
-            {t("Marketer.marketerBag")}
-          </h5>
+          <h2 className={style.last_reports_title}>{t("Marketer.marketerBag")}</h2>
           <Divider sx={{ marginBottom: "18px" }} />
 
           <Box

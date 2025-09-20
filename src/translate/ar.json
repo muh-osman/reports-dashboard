@@ -3,6 +3,7 @@
     "language": "English",
     "ourBranches": "فروعنا",
     "callUs": "اتصل بنا",
+    "blog": "المدونة",
     "login": "تسجيل الدخول",
     "logout": "تسجيل الخروج",
     "more": "المزيد",
@@ -48,6 +49,36 @@
   },
 
   "Prices": {
+    "selectTheServiese": "حدد الخدمة",
+    "purchaseCheck": "فحص الشراء",
+    "purchaseCheckDescriptionPartOne": "فحص ",
+    "purchaseCheckDescriptionPartTwo": "جميع أجزاء ",
+    "purchaseCheckDescriptionPartThree": "المركبة المستعملة لمعرفة واكتشاف الأعطال والعيوب قبل اتخاذ قرار الشراء",
+    "purchaseCheckListA": "فحص اجزاء السيارة",
+    "purchaseCheckListB": "تجربة السيارة ميدانًيا",
+    "purchaseCheckListC": "تقرير مفصل عن حالة السيارة",
+    "purchaseCheckListD": "نقاط ومكافئات",
+    "askNow": "أطلب الأن",
+
+    "checkItCheck": "خدمة مخدوم",
+    "checkItCheckDescriptionPartOne": "في حال وجدت سيارة للبيع في ",
+    "checkItCheckDescriptionPartTwo": "الرياض، جدة، أو الدمام ",
+    "checkItCheckDescriptionPartThree": "وأنت خارج هذه المدن، مركز كاشف يقوم بفحص شامل ودقيق للسيارة، مع تسهيل إجراءات نقل الملكية والتأمين",
+    "checkItCheckListA": "حضور مالك السيارة لأحد فروع كاشف",
+    "checkItCheckListB": "إجراء فحص شامل ودقيق للسيارة",
+    "checkItCheckListC": "تحميل تقرير الفحص عبر ",
+    "checkItCheckListCPlus": "موقعنا",
+    "checkItCheckListD": "إتمام نقل الملكية والتأمين بكل سهولة",
+
+    "travelerCheck": "فحص المسافر",
+    "travelerCheckDescriptionPartOne": "فحص مخصص ",
+    "travelerCheckDescriptionPartTwo": "قبل السفر ",
+    "travelerCheckDescriptionPartThree": "للتأكد من سلامة السيارة على الطريق، يشمل أهم الفحوصات التي تضمن رحلة آمنة ومريحة",
+    "travelerCheckListA": "فحص الزيوت والسوائل",
+    "travelerCheckListB": "فحص الكفرات والفرامل والأنوار",
+    "travelerCheckListC": "فحص أدوات السلامة والمساحات",
+    "travelerCheckListD": "تجربة السيارة على الطريق",
+
     "pleaseSelectModelAndYear": "الرجاء تحديد النوع وسنة الصنع",
     "enterTheVehicleType": "حدد نوع السيارة",
     "CarModelNotAvailableContactUs": "موديل غير موجود؟، اتصل بنا",
@@ -433,6 +464,8 @@
   },
 
   "Marketer": {
+    "bannerTitle": "بمناسبة اليوم الوطني",
+    "bannerDiscreption": "سيصبح الخصم 30% والعمولة 20% يسري العرض من 09/20 حتى 09/25",
     "minimumWithdrawalAmountIs200Riyals": "الحد الأدنى لسحب الأرباح 200 ريال",
     "title": "'فالك' للتسويق بالعمولة",
     "subTitleOne": "برنامج 'فالك' للتسويق بالعمولة هو منصة تتيح لك كمسوق فرصة ربح المال بسهولة من خلال الترويج لخدمات مركز كاشف لفحص السيارات عبر الإنترنت او من خلال التوصية المباشرة لدوائر المعارف والأصدقاء والمقربين.",
@@ -457,7 +490,9 @@
     "InfoAboutCashif": "معلومات عن كاشف",
     "visualContent": "المحتوى التسويقي",
     "howWorks": "طريقة العمل",
-    "InstructionsBeforePublishing": "تعليمات قبل نشر المحتوى"
+    "InstructionsBeforePublishing": "تعليمات قبل نشر المحتوى",
+    "login": "تسجيل الدخول",
+    "signup": "إنشاء حساب جديد"
   },
 
   "CouponImages": {
@@ -524,7 +559,7 @@
   },
 
   "HowWorksComponent": {
-    "t1": "نحن سعداء لانضمامك إلى برنامج فالك!",
+    "t1": "نحن سعداء لانضمامك إلى فالك!",
     "t2": "باستخدام الصورة التسويقية التي تحتوي على كودك الخاص، يمكنك الترويج لخدمة فحص السيارات.",
     "t3": "الكود يمنح العملاء خصم 20%، بينما تحصل أنت على عمولة 10% عن كل عملية حجز تتم باستخدام الكود.",
     "t4": "كيفية العمل:",

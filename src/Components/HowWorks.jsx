@@ -49,7 +49,7 @@ export default function HowWorks() {
           }
         >
           <div>
-            <h1>{t("HowWorksComponent.t1")}</h1>
+            <h2>{t("HowWorksComponent.t1")}</h2>
 
             <div>
               <ul

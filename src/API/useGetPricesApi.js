@@ -21,6 +21,11 @@ export const fetchPrices = async (modelId, year) => {
 };
 
 export default function useGetPricesApi(modelId, year, trigger) {
+
+  // console.log(modelId);
+  // console.log(year);
+  // console.log(trigger);
+
   return useQuery({
     queryKey: ["prices", modelId, year], // Unique query key
     queryFn: () => fetchPrices(modelId, year),

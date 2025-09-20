@@ -4,13 +4,18 @@ import API from "./Api";
 // Cookies
 import { useCookies } from "react-cookie";
 // React router
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 // Toastify
 import { toast } from "react-toastify";
 // Decode token
 import { jwtDecode } from "jwt-decode";
 
 export const useVerifyApi = () => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+
+  const fromUrlParam = searchParams.get("from");
+  //
   const navigate = useNavigate();
 
   // Cookies
@@ -71,7 +76,7 @@ export const useVerifyApi = () => {
           });
 
           // Navigate to reports
-          navigate(`${process.env.PUBLIC_URL}/reports`, { replace: true });
+          navigate(`${process.env.PUBLIC_URL}/${fromUrlParam ? fromUrlParam : "reports"}`, { replace: true });
         } catch (error) {
           console.error("Failed to decode token:", error);
         }
@@ -85,8 +90,7 @@ export const useVerifyApi = () => {
       removeCookie("phoneNumber", { path: "/dashboard" });
       removeCookie("tokenApp", { path: "/dashboard" });
       removeCookie("auth", { path: "/" });
-      const errorMessage =
-        err?.response?.data?.message || err?.message || "An error occurred";
+      const errorMessage = err?.response?.data?.message || err?.message || "An error occurred";
       // Toastify
       toast.error(errorMessage);
     },

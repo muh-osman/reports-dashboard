@@ -4,9 +4,13 @@ import API from "./Api";
 // Toastify
 import { toast } from "react-toastify";
 // React router
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export const useCreateIndividualsAccountApi = () => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+
+  const fromUrlParam = searchParams.get("from");
   //
   const navigate = useNavigate();
 
@@ -20,17 +24,20 @@ export const useCreateIndividualsAccountApi = () => {
       return res.data;
     },
 
-    onSuccess: (responseData) => {
+    onSuccess: (responseData, variables) => {
       // console.log(responseData.description);
 
       toast.success(responseData.description);
-      navigate(`${process.env.PUBLIC_URL}/login`);
+      navigate(
+        `${process.env.PUBLIC_URL}/login/?phone=${variables.get("phoneNumber")}${
+          fromUrlParam ? "&from=" + fromUrlParam : ""
+        }`
+      );
     },
 
     onError: (err) => {
       console.error(err);
-      const errorMessage =
-        err?.response?.data?.message || err?.message || "An error occurred";
+      const errorMessage = err?.response?.data?.message || err?.message || "An error occurred";
       // Toastify
       toast.error(errorMessage);
     },

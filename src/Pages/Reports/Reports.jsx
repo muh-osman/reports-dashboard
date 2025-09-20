@@ -781,7 +781,7 @@ export default function Reports() {
         >
           {t("Reports.please")}{" "}
           <Link
-            to={`${process.env.PUBLIC_URL}/login`}
+            to={`${process.env.PUBLIC_URL}/login/?from=reports`}
             style={{
               color: "#1976d2",
               textDecoration: isHovered ? "underline" : "none",

@@ -7,17 +7,12 @@ import axios from "axios";
 
 export const fetchMarketingPosts = async () => {
   try {
-    const response = await axios.get(
-      `https://cashif.online/back-end/public/api/marketing-posts/with-images-as-files`
-    );
+    const response = await axios.get(`https://cashif.online/back-end/public/api/marketing-posts/with-images-as-files`);
     return response.data;
   } catch (err) {
     console.error("Error fetching marketing posts:", err);
 
-    const errorMessage =
-      err.response?.data?.message ||
-      err.message ||
-      "Failed to fetch marketing posts";
+    const errorMessage = err.response?.data?.message || err.message || "Failed to fetch marketing posts";
 
     // Only show toast on client-side
     if (typeof window !== "undefined") {

@@ -2,7 +2,7 @@ import style from "./Individuals.module.scss";
 // Mui
 import * as React from "react";
 import TextField from "@mui/material/TextField";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -12,6 +12,9 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import Fab from "@mui/material/Fab"; // Add this import for the floating button
+import Zoom from "@mui/material/Zoom"; // Add this import for smooth animation
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 // Lang
 import i18n from "../../i18n";
 import { useTranslation } from "react-i18next";
@@ -23,6 +26,10 @@ import { toast } from "react-toastify";
 import logo from "../../Assets/Images/logo.webp";
 
 export default function Individuals() {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+
+  const fromUrlParam = searchParams.get("from");
   //
   const { t } = useTranslation();
   const [languageText, setLanguageText] = React.useState(i18n.language);
@@ -42,14 +49,17 @@ export default function Individuals() {
   //
   const navigate = useNavigate();
   const handleBack = () => {
-    navigate(`${process.env.PUBLIC_URL}/signup`);
+    // navigate(`${process.env.PUBLIC_URL}/signup`);
+
+    if (window.history.length > 2) {
+      navigate(-1);
+    } else {
+      navigate(`${process.env.PUBLIC_URL}/signup/${fromUrlParam ? "?from=" + fromUrlParam : ""}`);
+    }
   };
   // Allow only digits (0-9) and control keys (backspace, delete, etc.)
   const handleKeyPress = (event) => {
-    if (
-      !/[0-9]/.test(event.key) &&
-      !["Backspace", "Delete", "ArrowLeft", "ArrowRight"].includes(event.key)
-    ) {
+    if (!/[0-9]/.test(event.key) && !["Backspace", "Delete", "ArrowLeft", "ArrowRight"].includes(event.key)) {
       event.preventDefault();
     }
   };
@@ -83,11 +93,7 @@ export default function Individuals() {
     // check if phone number is 9 characters long
     const phoneNumber = e.currentTarget.elements.phoneNumber.value;
 
-    if (
-      phoneNumber.length < 9 ||
-      phoneNumber.length > 9 ||
-      isNaN(phoneNumber)
-    ) {
+    if (phoneNumber.length < 9 || phoneNumber.length > 9 || isNaN(phoneNumber)) {
       toast.warn(t("Individuals.enterValidPhoneNumber"));
       return;
     }
@@ -108,8 +114,7 @@ export default function Individuals() {
   //
   const isArabic = (str) => {
     // Regular expression to match Arabic characters, spaces, and Arabic punctuation
-    const arabicRegex =
-      /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$/;
+    const arabicRegex = /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$/;
     return arabicRegex.test(str);
   };
 
@@ -131,11 +136,7 @@ export default function Individuals() {
             <img src={logo} alt="cashif logo" />
           </a>
 
-          <Tooltip
-            title={t("Individuals.back")}
-            className={style.three_dots}
-            onClick={handleBack}
-          >
+          <Tooltip title={t("Individuals.back")} className={style.three_dots} onClick={handleBack}>
             <IconButton>
               <ArrowBackIcon sx={{ color: "#fff", fontSize: "32px" }} />
             </IconButton>
@@ -158,12 +159,7 @@ export default function Individuals() {
       </div>
 
       <div className={style.container}>
-        <Container
-          dir="rtl"
-          component="main"
-          maxWidth="xs"
-          className={style.box}
-        >
+        <Container dir="rtl" component="main" maxWidth="xs" className={style.box}>
           <Typography
             sx={{
               marginTop: "16px",
@@ -183,19 +179,9 @@ export default function Individuals() {
               borderRadius: "9px",
             }}
           >
-            <Box
-              onSubmit={handleSubmit}
-              ref={formRef}
-              component="form"
-              noValidate
-              sx={{ mt: 3 }}
-            >
+            <Box onSubmit={handleSubmit} ref={formRef} component="form" noValidate sx={{ mt: 3 }}>
               <Grid container spacing={3}>
-                <Grid
-                  item
-                  xs={12}
-                  sx={{ minWidth: { xs: "auto", md: "396px" } }}
-                >
+                <Grid item xs={12} sx={{ minWidth: { xs: "auto", md: "396px" } }}>
                   <TextField
                     fullWidth
                     label={t("Individuals.name")}
@@ -213,11 +199,7 @@ export default function Individuals() {
                   />
                 </Grid>
 
-                <Grid
-                  item
-                  xs={12}
-                  sx={{ minWidth: { xs: "auto", md: "396px" } }}
-                >
+                <Grid item xs={12} sx={{ minWidth: { xs: "auto", md: "396px" } }}>
                   <TextField
                     fullWidth
                     label={t("Individuals.mobileNumber")}
@@ -232,9 +214,7 @@ export default function Individuals() {
                       className: "custom-label-rtl",
                     }}
                     InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">+966</InputAdornment>
-                      ),
+                      startAdornment: <InputAdornment position="start">+966</InputAdornment>,
                     }}
                     placeholder="5xxxxxxxx"
                   />
@@ -256,6 +236,29 @@ export default function Individuals() {
           </Box>
         </Container>
       </div>
+
+      {/* Floating WhatsApp Button */}
+      <Zoom in={true}>
+        <Fab
+          color="primary"
+          aria-label="whatsapp"
+          sx={{
+            position: "fixed",
+            bottom: { xs: 16, sm: 32 },
+            left: { xs: 16, sm: 32 },
+            zIndex: 1000,
+            backgroundColor: "#25D366", // WhatsApp green color
+            "&:hover": {
+              backgroundColor: "#128C7E", // Darker green on hover
+            },
+          }}
+          onClick={() =>
+            window.open("https://api.whatsapp.com/send?phone=966920019948&text=*اختر من القائمة الرئيسية*", "_blank")
+          }
+        >
+          <WhatsAppIcon sx={{ color: "white", fontSize: 36 }} />
+        </Fab>
+      </Zoom>
     </div>
   );
 }

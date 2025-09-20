@@ -49,7 +49,7 @@ export default function InfoAboutCashif() {
           }
         >
           <div>
-            <h1>{t("InfoAboutCashif.t1")}:</h1>
+            <h2>{t("InfoAboutCashif.t1")}:</h2>
 
             <h6>{t("InfoAboutCashif.t2")}</h6>
             <div>

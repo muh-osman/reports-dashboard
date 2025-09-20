@@ -8,12 +8,7 @@ import { useCookies } from "react-cookie";
 
 export const useGetAppointmentApi = () => {
   // Cookies
-  const [cookies, setCookie] = useCookies([
-    "tokenApp",
-    "username",
-    "userId",
-    "phoneNumber",
-  ]);
+  const [cookies, setCookie] = useCookies(["tokenApp", "username", "userId", "phoneNumber"]);
   const clientId = cookies.userId;
 
   const qc = useQueryClient();
@@ -28,13 +23,11 @@ export const useGetAppointmentApi = () => {
       return res.data;
     },
 
-    onSuccess: (responseData) => {
-    },
+    onSuccess: (responseData) => {},
 
     onError: (err) => {
       console.error(err);
-      const errorMessage =
-        err?.response?.data?.message || err?.message || "An error occurred";
+      const errorMessage = err?.response?.data?.message || err?.message || "An error occurred";
       // Toastify
       toast.error(errorMessage);
     },

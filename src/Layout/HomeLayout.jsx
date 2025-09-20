@@ -6,6 +6,7 @@ import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 // import IosShareIcon from "@mui/icons-material/IosShare";
 import TranslateIcon from "@mui/icons-material/Translate";
 import LoginIcon from "@mui/icons-material/Login";
@@ -24,6 +25,8 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
+import Fab from "@mui/material/Fab"; // Add this import for the floating button
+import Zoom from "@mui/material/Zoom"; // Add this import for smooth animation
 // Lang
 import i18n from "../i18n"; // Make sure to import i18n
 import { useTranslation } from "react-i18next";
@@ -235,6 +238,17 @@ function HomeLayout() {
 
                 <MenuItem
                   onClick={() =>
+                    (window.location.href = "https://cashif.cc/blog/")
+                  }
+                >
+                  <ListItemIcon>
+                    <BookmarkBorderIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>{t("HomeLayout.blog")}</ListItemText>
+                </MenuItem>
+
+                <MenuItem
+                  onClick={() =>
                     (window.location.href =
                       "https://api.whatsapp.com/send?phone=966920019948&text=*اختر من القائمة الرئيسية*")
                   }
@@ -376,6 +390,33 @@ function HomeLayout() {
           </ul>
         </div>
       </nav>
+
+      {/* Floating WhatsApp Button */}
+      <Zoom in={true}>
+        <Fab
+          color="primary"
+          aria-label="whatsapp"
+          sx={{
+            display: { xs: "none", sm: "flex" },
+            position: "fixed",
+            bottom: 32,
+            left: 32,
+            zIndex: 1000,
+            backgroundColor: "#25D366", // WhatsApp green color
+            "&:hover": {
+              backgroundColor: "#128C7E", // Darker green on hover
+            },
+          }}
+          onClick={() =>
+            window.open(
+              "https://api.whatsapp.com/send?phone=966920019948&text=*اختر من القائمة الرئيسية*",
+              "_blank"
+            )
+          }
+        >
+          <WhatsAppIcon sx={{ color: "white", fontSize: 36 }} />
+        </Fab>
+      </Zoom>
     </div>
   );
 }

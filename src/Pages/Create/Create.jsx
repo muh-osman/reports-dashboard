@@ -1,5 +1,5 @@
 import style from "./Create.module.scss";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 //
 import logo from "../../Assets/Images/logo.webp";
@@ -9,6 +9,9 @@ import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import Fab from "@mui/material/Fab"; // Add this import for the floating button
+import Zoom from "@mui/material/Zoom"; // Add this import for smooth animation
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 // MUI Icons
 import PersonIcon from "@mui/icons-material/Person";
 import ApartmentIcon from "@mui/icons-material/Apartment";
@@ -17,6 +20,10 @@ import i18n from "../../i18n";
 import { useTranslation } from "react-i18next";
 
 export default function Create() {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+
+  const fromUrlParam = searchParams.get("from");
   //
   const { t } = useTranslation();
   const [languageText, setLanguageText] = useState(i18n.language);
@@ -35,8 +42,13 @@ export default function Create() {
   }, []);
   //
   const navigate = useNavigate();
+
   const handleBack = () => {
-    navigate(`${process.env.PUBLIC_URL}/login`);
+    if (window.history.length > 2) {
+      navigate(-1);
+    } else {
+      navigate(`${process.env.PUBLIC_URL}/login/${fromUrlParam ? "?from=" + fromUrlParam : ""}`);
+    }
   };
 
   return (
@@ -47,11 +59,7 @@ export default function Create() {
             <img src={logo} alt="cashif logo" />
           </a>
 
-          <Tooltip
-            title={t("Create.back")}
-            className={style.three_dots}
-            onClick={handleBack}
-          >
+          <Tooltip title={t("Create.back")} className={style.three_dots} onClick={handleBack}>
             <IconButton>
               <ArrowBackIcon sx={{ color: "#fff", fontSize: "32px" }} />
             </IconButton>
@@ -92,14 +100,15 @@ export default function Create() {
 
           <div className={style.cards_box}>
             <Link
-              to={`${process.env.PUBLIC_URL}/individuals`}
+              to={`${process.env.PUBLIC_URL}/individuals/${fromUrlParam ? "?from=" + fromUrlParam : ""}`}
               className={style.box}
             >
               <PersonIcon sx={{ fontSize: "48px" }} />
               <h3>{t("Create.individuals")}</h3>
             </Link>
+
             <Link
-              to={`${process.env.PUBLIC_URL}/companies`}
+              to={`${process.env.PUBLIC_URL}/companies/${fromUrlParam ? "?from=" + fromUrlParam : ""}`}
               className={style.box}
             >
               <ApartmentIcon sx={{ fontSize: "48px" }} />
@@ -119,7 +128,7 @@ export default function Create() {
             >
               {t("Create.doYouHaveAccount")}{" "}
               <Link
-                to={`${process.env.PUBLIC_URL}/login`}
+                to={`${process.env.PUBLIC_URL}/login/${fromUrlParam ? "?from=" + fromUrlParam : ""}`}
                 style={{ color: "#1976d2" }}
               >
                 {t("Create.login")}
@@ -128,6 +137,29 @@ export default function Create() {
           </div>
         </div>
       </div>
+
+      {/* Floating WhatsApp Button */}
+      <Zoom in={true}>
+        <Fab
+          color="primary"
+          aria-label="whatsapp"
+          sx={{
+            position: "fixed",
+            bottom: { xs: 16, sm: 32 },
+            left: { xs: 16, sm: 32 },
+            zIndex: 1000,
+            backgroundColor: "#25D366", // WhatsApp green color
+            "&:hover": {
+              backgroundColor: "#128C7E", // Darker green on hover
+            },
+          }}
+          onClick={() =>
+            window.open("https://api.whatsapp.com/send?phone=966920019948&text=*اختر من القائمة الرئيسية*", "_blank")
+          }
+        >
+          <WhatsAppIcon sx={{ color: "white", fontSize: 36 }} />
+        </Fab>
+      </Zoom>
     </div>
   );
 }

@@ -63,6 +63,7 @@ export default function Booking() {
   //
   const { t } = useTranslation();
   const [languageText, setLanguageText] = React.useState(i18n.language);
+
   // Add language change listener
   React.useEffect(() => {
     const handleLanguageChange = (lng) => {
@@ -91,7 +92,7 @@ export default function Booking() {
   //
   const navigate = useNavigate();
   const navToLoginPage = () => {
-    navigate(`${process.env.PUBLIC_URL}/login`);
+    navigate(`${process.env.PUBLIC_URL}/login/?from=booking`);
   };
   // Full Data Of Client
   const { data: fullDataOfClient } = useGetFullDataOfClientApi();
@@ -105,11 +106,7 @@ export default function Booking() {
   // Services
   const { data: allServices } = useGetServices();
   // Appointment
-  const {
-    mutate: getAppointments,
-    data: allAppointment,
-    status: fetchAppointmentStatus,
-  } = useGetAppointmentApi();
+  const { mutate: getAppointments, data: allAppointment, status: fetchAppointmentStatus } = useGetAppointmentApi();
 
   // console.log(allAppointment?.items);
 
@@ -120,13 +117,16 @@ export default function Booking() {
     status: 7,
     from: null,
     to: null,
-    clientId: null,
+    clientId: cookies.userId,
     plateNumber: null,
     branchId: null,
   };
 
   useEffect(() => {
-    getAppointments(appointmentQueryParams);
+    // Fetch only if user login
+    if (cookies.tokenApp) {
+      getAppointments(appointmentQueryParams);
+    }
   }, []);
 
   const years = [
@@ -276,14 +276,11 @@ export default function Booking() {
 
   // Filter models based on selected manufacturer
   const filteredModels = selectedManufacturer
-    ? allCarModels?.filter(
-        (model) => model.carManufacturerId === selectedManufacturer
-      )
+    ? allCarModels?.filter((model) => model.carManufacturerId === selectedManufacturer)
     : [];
 
   // Transmission
-  const [selectedTransmissionID, setSelectedTransmissionID] =
-    React.useState("");
+  const [selectedTransmissionID, setSelectedTransmissionID] = React.useState("");
   const handleTransmissionChange = (event) => {
     setSelectedTransmissionID(event.target.value || null);
   };
@@ -306,9 +303,7 @@ export default function Booking() {
     setSelectedServiceId(event.target.value);
   };
   // Find the selected service based on the selectedServiceId
-  const selectedService = allServices?.find(
-    (service) => service.id === parseInt(selectedServiceId)
-  );
+  const selectedService = allServices?.find((service) => service.id === parseInt(selectedServiceId));
 
   // Submit Apoinment form
   // Submit Modal
@@ -388,10 +383,7 @@ export default function Booking() {
     const maxTime = selectedBranch === 19 || selectedBranch === 20 ? 23.5 : 22;
 
     // Check if time is between minTime of branch and maxTime of branch
-    if (
-      selectedTime.hour() < minTime ||
-      selectedTime.hour() + selectedTime.minute() / 60 > maxTime
-    ) {
+    if (selectedTime.hour() < minTime || selectedTime.hour() + selectedTime.minute() / 60 > maxTime) {
       setTimeError(true);
       toast.warn(t("Booking.timeValidationForWorkHores"));
       return false;
@@ -440,9 +432,7 @@ export default function Booking() {
 
   const submitForm = async () => {
     // Format the date and time using dayjs
-    let dateAfterFormat = date
-      ? dayjs(date).format("YYYY-MM-DDTHH:mm:ss.SSSSSS")
-      : null;
+    let dateAfterFormat = date ? dayjs(date).format("YYYY-MM-DDTHH:mm:ss.SSSSSS") : null;
     let timeAfterFormat = time ? dayjs(time).format("HH:mm:ss") : null;
 
     // Validate the selected time
@@ -452,32 +442,17 @@ export default function Booking() {
 
     //////////////////////////////
     // Store selected data for modal
-    const selectedBranchObj = allBranches?.find(
-      (b) => b.id === parseInt(selectedBranch)
-    );
-    const selectedManufacturerObj = allManufacturers?.find(
-      (m) => m.id === parseInt(selectedManufacturer)
-    );
-    const selectedServiceObj = allServices?.find(
-      (s) => s.id === parseInt(selectedServiceId)
-    );
+    const selectedBranchObj = allBranches?.find((b) => b.id === parseInt(selectedBranch));
+    const selectedManufacturerObj = allManufacturers?.find((m) => m.id === parseInt(selectedManufacturer));
+    const selectedServiceObj = allServices?.find((s) => s.id === parseInt(selectedServiceId));
 
     setSelectedDataForModal({
-      branch:
-        languageText === "en"
-          ? selectedBranchObj?.nameEn
-          : selectedBranchObj?.nameAr,
-      manufacturer:
-        languageText === "en"
-          ? selectedManufacturerObj?.nameEn
-          : selectedManufacturerObj?.nameAr,
+      branch: languageText === "en" ? selectedBranchObj?.nameEn : selectedBranchObj?.nameAr,
+      manufacturer: languageText === "en" ? selectedManufacturerObj?.nameEn : selectedManufacturerObj?.nameAr,
       year: selectedYear,
       date: dateAfterFormat,
       time: timeAfterFormat,
-      service:
-        languageText === "en"
-          ? selectedServiceObj?.nameEn
-          : selectedServiceObj?.nameAr,
+      service: languageText === "en" ? selectedServiceObj?.nameEn : selectedServiceObj?.nameAr,
     });
     /////////////////////////////
     const data = {
@@ -515,14 +490,12 @@ export default function Booking() {
           taxNumber: fullDataOfClient?.taxNumber || "Not Found",
           commerialRecord: fullDataOfClient?.commerialRecord || "Not Found",
           streetName: fullDataOfClient?.streetName || "Not Found",
-          additionalStreetName:
-            fullDataOfClient?.additionalStreetName || "Not Found",
+          additionalStreetName: fullDataOfClient?.additionalStreetName || "Not Found",
           cityName: fullDataOfClient?.cityName || "Not Found",
           postalZone: fullDataOfClient?.postalZone || "Not Found",
           countrySubentity: fullDataOfClient?.countrySubentity || "Not Found",
           buildingNumber: fullDataOfClient?.buildingNumber || "Not Found",
-          citySubdivisionName:
-            fullDataOfClient?.citySubdivisionName || "Not Found",
+          citySubdivisionName: fullDataOfClient?.citySubdivisionName || "Not Found",
         }),
       },
     };
@@ -622,11 +595,7 @@ export default function Booking() {
               value=""
               disabled={isPostApoinmentFormMutatePending}
             >
-              <MenuItem
-                onClick={navToLoginPage}
-                dir={languageText === "ar" ? "rtl" : "ltr"}
-                value={"notAuth"}
-              >
+              <MenuItem onClick={navToLoginPage} dir={languageText === "ar" ? "rtl" : "ltr"} value={"notAuth"}>
                 {t("Booking.pleaseLogInToBookAnAppointment")}
               </MenuItem>
             </TextField>
@@ -646,16 +615,9 @@ export default function Booking() {
             >
               {allBranches && allBranches.length > 0 ? (
                 allBranches
-                  .filter(
-                    (branch) =>
-                      branch.nameAr !== "افتراضي" || branch.nameEn !== "Virtual"
-                  ) // Filter out branches with nameAr "افتراضي"
+                  .filter((branch) => branch.nameAr !== "افتراضي" || branch.nameEn !== "Virtual") // Filter out branches with nameAr "افتراضي"
                   .map((branch) => (
-                    <MenuItem
-                      dir={languageText === "ar" ? "rtl" : "ltr"}
-                      key={branch.id}
-                      value={branch.id}
-                    >
+                    <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} key={branch.id} value={branch.id}>
                       {languageText === "en" ? branch?.nameEn : branch?.nameAr}
                     </MenuItem>
                   ))
@@ -676,23 +638,13 @@ export default function Booking() {
               disablePortal
               onChange={handleManufacturerChange} // Add the onChange handler
               options={allManufacturers ? allManufacturers : []}
-              getOptionLabel={(option) =>
-                languageText === "en" ? option.nameEn : option.nameAr
-              }
+              getOptionLabel={(option) => (languageText === "en" ? option.nameEn : option.nameAr)}
               renderInput={(params) => (
-                <TextField
-                  dir={languageText === "ar" ? "rtl" : "ltr"}
-                  {...params}
-                  label={t("Booking.manufacturer")}
-                />
+                <TextField dir={languageText === "ar" ? "rtl" : "ltr"} {...params} label={t("Booking.manufacturer")} />
               )}
               // Use a unique key for each option
               renderOption={(props, option) => (
-                <li
-                  dir={languageText === "ar" ? "rtl" : "ltr"}
-                  {...props}
-                  key={option.id}
-                >
+                <li dir={languageText === "ar" ? "rtl" : "ltr"} {...props} key={option.id}>
                   {/* {option.nameAr} */}
                   {languageText === "en" ? option.nameEn : option.nameAr}
                 </li>
@@ -700,11 +652,7 @@ export default function Booking() {
               disabled={isPostApoinmentFormMutatePending}
               clearOnBlur={false}
               clearIcon={null}
-              noOptionsText={
-                allManufacturers === null
-                  ? t("Booking.loading")
-                  : t("Booking.noOptionsAvailable")
-              }
+              noOptionsText={allManufacturers === null ? t("Booking.loading") : t("Booking.noOptionsAvailable")}
             />
           )}
 
@@ -716,34 +664,20 @@ export default function Booking() {
               sx={{ backgroundColor: "#fff", marginTop: "16px" }}
               disablePortal
               onChange={handleModelChange}
-              options={filteredModels} // Use the filtered models here
-              getOptionLabel={(option) =>
-                languageText === "en" ? option.nameEn : option.nameAr
-              }
+              options={filteredModels || []} // Use the filtered models here
+              getOptionLabel={(option) => (languageText === "en" ? option.nameEn : option.nameAr)}
               renderInput={(params) => (
-                <TextField
-                  dir={languageText === "ar" ? "rtl" : "ltr"}
-                  {...params}
-                  label={t("Booking.model")}
-                />
+                <TextField dir={languageText === "ar" ? "rtl" : "ltr"} {...params} label={t("Booking.model")} />
               )}
               renderOption={(props, option) => (
-                <li
-                  dir={languageText === "ar" ? "rtl" : "ltr"}
-                  {...props}
-                  key={option.id}
-                >
+                <li dir={languageText === "ar" ? "rtl" : "ltr"} {...props} key={option.id}>
                   {languageText === "en" ? option.nameEn : option.nameAr}
                 </li>
               )}
               disabled={isPostApoinmentFormMutatePending}
               clearOnBlur={false}
               clearIcon={null}
-              noOptionsText={
-                allCarModels === null
-                  ? t("Booking.loading")
-                  : t("Booking.noOptionsAvailable")
-              }
+              noOptionsText={allCarModels === null ? t("Booking.loading") : t("Booking.noOptionsAvailable")}
             />
           )}
 
@@ -784,11 +718,7 @@ export default function Booking() {
             >
               {years && years.length > 0 ? (
                 years.map((year) => (
-                  <MenuItem
-                    dir={languageText === "ar" ? "rtl" : "ltr"}
-                    key={year.id}
-                    value={year.id}
-                  >
+                  <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} key={year.id} value={year.id}>
                     {year.year}
                   </MenuItem>
                 ))
@@ -803,14 +733,8 @@ export default function Booking() {
           <div className={style.date_and_time_container}>
             {/* تاريخ */}
             {cookies.tokenApp && selectedYear && (
-              <div
-                dir={languageText === "ar" ? "rtl" : "ltr"}
-                className={style.datePickerContainer}
-              >
-                <LocalizationProvider
-                  dateAdapter={AdapterDayjs}
-                  adapterLocale="en"
-                >
+              <div dir={languageText === "ar" ? "rtl" : "ltr"} className={style.datePickerContainer}>
+                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en">
                   <DemoContainer components={["MobileDatePicker"]}>
                     <MobileDatePicker
                       fullWidth
@@ -831,14 +755,8 @@ export default function Booking() {
 
             {/* الوقت */}
             {cookies.tokenApp && selectedYear && (
-              <div
-                dir={languageText === "ar" ? "rtl" : "ltr"}
-                className={style.datePickerContainer}
-              >
-                <LocalizationProvider
-                  dateAdapter={AdapterDayjs}
-                  adapterLocale="en"
-                >
+              <div dir={languageText === "ar" ? "rtl" : "ltr"} className={style.datePickerContainer}>
+                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en">
                   <DemoContainer components={["MobileTimePicker"]}>
                     <MobileTimePicker
                       fullWidth
@@ -911,21 +829,12 @@ export default function Booking() {
               >
                 {allServices && allServices.length > 0 ? (
                   allServices.map((service) => (
-                    <MenuItem
-                      dir={languageText === "ar" ? "rtl" : "ltr"}
-                      key={service.id}
-                      value={service.id}
-                    >
-                      {languageText === "en"
-                        ? service?.nameEn
-                        : service?.nameAr}
+                    <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} key={service.id} value={service.id}>
+                      {languageText === "en" ? service?.nameEn : service?.nameAr}
                     </MenuItem>
                   ))
                 ) : (
-                  <MenuItem
-                    dir={languageText === "ar" ? "rtl" : "ltr"}
-                    value=""
-                  >
+                  <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} value="">
                     {t("Booking.loading")}
                   </MenuItem>
                 )}
@@ -966,11 +875,7 @@ export default function Booking() {
         </FormControl>
 
         {/* Booking Modal */}
-        <Modal
-          ref={modalRef}
-          open={openBookingModal}
-          onClose={handleBookingModalClose}
-        >
+        <Modal ref={modalRef} open={openBookingModal} onClose={handleBookingModalClose}>
           <Box
             dir={languageText === "ar" ? "rtl" : "ltr"}
             sx={{
@@ -1023,9 +928,7 @@ export default function Booking() {
             </div>
 
             <div>
-              <h1 style={{ fontSize: "24px", marginBottom: "10px" }}>
-                {t("Booking.reservationDetails")}
-              </h1>
+              <h1 style={{ fontSize: "24px", marginBottom: "10px" }}>{t("Booking.reservationDetails")}</h1>
             </div>
 
             <Card
@@ -1038,71 +941,32 @@ export default function Booking() {
               }}
             >
               <CardContent>
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  gap={1}
-                  marginBottom={"9px"}
-                >
+                <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
                   <LocationOnIcon style={{ color: "#000000de" }} />
-                  <Typography
-                    variant="h5"
-                    component="div"
-                    style={{ fontSize: "14px" }}
-                  >
+                  <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
                     {selectedDataForModal.branch}
                   </Typography>
                 </Box>
 
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  gap={1}
-                  marginBottom={"9px"}
-                >
+                <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
                   <MinorCrashIcon style={{ color: "#000000de" }} />
-                  <Typography
-                    variant="h5"
-                    component="div"
-                    style={{ fontSize: "14px" }}
-                  >
+                  <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
                     {selectedDataForModal.manufacturer}
                   </Typography>
                 </Box>
 
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  gap={1}
-                  marginBottom={"9px"}
-                >
+                <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
                   <HourglassTopIcon style={{ color: "#000000de" }} />
-                  <Typography
-                    variant="h5"
-                    component="div"
-                    style={{ fontSize: "14px" }}
-                  >
+                  <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
                     {selectedDataForModal.year}
                   </Typography>
                 </Box>
 
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  gap={1}
-                  marginBottom={"9px"}
-                >
+                <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
                   <AccessTimeIcon style={{ color: "#000000de" }} />
-                  <Typography
-                    dir="ltr"
-                    variant="h5"
-                    component="div"
-                    style={{ fontSize: "14px" }}
-                  >
+                  <Typography dir="ltr" variant="h5" component="div" style={{ fontSize: "14px" }}>
                     {selectedDataForModal.time &&
-                      new Date(
-                        `1970-01-01T${selectedDataForModal.time}`
-                      ).toLocaleTimeString("en-US", {
+                      new Date(`1970-01-01T${selectedDataForModal.time}`).toLocaleTimeString("en-US", {
                         hour: "2-digit",
                         minute: "2-digit",
                         hour12: true,
@@ -1110,35 +974,16 @@ export default function Booking() {
                   </Typography>
                 </Box>
 
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  gap={1}
-                  marginBottom={"9px"}
-                >
+                <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
                   <CalendarMonthIcon style={{ color: "#000000de" }} />
-                  <Typography
-                    variant="h5"
-                    component="div"
-                    style={{ fontSize: "14px" }}
-                  >
-                    {selectedDataForModal.date &&
-                      formatDate(selectedDataForModal.date)}
+                  <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
+                    {selectedDataForModal.date && formatDate(selectedDataForModal.date)}
                   </Typography>
                 </Box>
 
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  gap={1}
-                  marginBottom={"9px"}
-                >
+                <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
                   <StyleIcon style={{ color: "#000000de" }} />
-                  <Typography
-                    variant="h5"
-                    component="div"
-                    style={{ fontSize: "14px" }}
-                  >
+                  <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
                     {selectedDataForModal.service}
                   </Typography>
                 </Box>
@@ -1164,23 +1009,16 @@ export default function Booking() {
       </Box>
 
       {/* Booking Cards */}
-      <h5
-        dir={languageText === "ar" ? "rtl" : "ltr"}
-        className={style.last_appointment_title}
-      >
+      <h5 dir={languageText === "ar" ? "rtl" : "ltr"} className={style.last_appointment_title}>
         {t("Booking.myReservations")}
       </h5>
       <Divider sx={{ marginBottom: "18px" }} />
 
       {!cookies.tokenApp ? (
-        <Typography
-          variant="h6"
-          component="div"
-          style={{ textAlign: "center", margin: "20px", color: "#757575" }}
-        >
+        <Typography variant="h6" component="div" style={{ textAlign: "center", margin: "20px", color: "#757575" }}>
           {t("Booking.please")}{" "}
           <Link
-            to={`${process.env.PUBLIC_URL}/login`}
+            to={`${process.env.PUBLIC_URL}/login/?from=booking`}
             style={{
               color: "#1976d2",
               textDecoration: isHovered ? "underline" : "none",
@@ -1193,10 +1031,7 @@ export default function Booking() {
           {t("Booking.toViewReservations")}
         </Typography>
       ) : (
-        <div
-          dir={languageText === "ar" ? "rtl" : "ltr"}
-          className={style.appointment_cards_container}
-        >
+        <div dir={languageText === "ar" ? "rtl" : "ltr"} className={style.appointment_cards_container}>
           {allAppointment && allAppointment.items.length > 0 ? (
             allAppointment?.items
               .slice()
@@ -1217,62 +1052,28 @@ export default function Booking() {
                   }}
                 >
                   <CardContent>
-                    <Box
-                      display="flex"
-                      alignItems="center"
-                      gap={1}
-                      marginBottom={"9px"}
-                    >
+                    <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
                       <LocationOnIcon style={{ color: "#000000de" }} />
-                      <Typography
-                        variant="h5"
-                        component="div"
-                        style={{ fontSize: "14px" }}
-                      >
+                      <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
                         {/* {card.branchNameAr} */}
 
-                        {languageText === "en"
-                          ? card?.branchNameEn
-                          : card?.branchNameAr}
+                        {languageText === "en" ? card?.branchNameEn : card?.branchNameAr}
                       </Typography>
                     </Box>
 
-                    <Box
-                      display="flex"
-                      alignItems="center"
-                      gap={1}
-                      marginBottom={"9px"}
-                    >
+                    <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
                       <MinorCrashIcon style={{ color: "#000000de" }} />
-                      <Typography
-                        variant="h5"
-                        component="div"
-                        style={{ fontSize: "14px" }}
-                      >
+                      <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
                         {/* {card.carManufacturerNameAr} */}
 
-                        {languageText === "en"
-                          ? card?.carManufacturerNameEn
-                          : card?.carManufacturerNameAr}
+                        {languageText === "en" ? card?.carManufacturerNameEn : card?.carManufacturerNameAr}
                       </Typography>
                     </Box>
 
-                    <Box
-                      display="flex"
-                      alignItems="center"
-                      gap={1}
-                      marginBottom={"9px"}
-                    >
+                    <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
                       <AccessTimeIcon style={{ color: "#000000de" }} />
-                      <Typography
-                        dir="ltr"
-                        variant="h5"
-                        component="div"
-                        style={{ fontSize: "14px" }}
-                      >
-                        {new Date(
-                          `1970-01-01T${card.checkTime}`
-                        ).toLocaleTimeString("en-US", {
+                      <Typography dir="ltr" variant="h5" component="div" style={{ fontSize: "14px" }}>
+                        {new Date(`1970-01-01T${card.checkTime}`).toLocaleTimeString("en-US", {
                           hour: "2-digit",
                           minute: "2-digit",
                           hour12: true,
@@ -1280,18 +1081,9 @@ export default function Booking() {
                       </Typography>
                     </Box>
 
-                    <Box
-                      display="flex"
-                      alignItems="center"
-                      gap={1}
-                      marginBottom={"9px"}
-                    >
+                    <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
                       <CalendarMonthIcon style={{ color: "#000000de" }} />
-                      <Typography
-                        variant="h5"
-                        component="div"
-                        style={{ fontSize: "14px" }}
-                      >
+                      <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
                         {formatDate(card.checkDate)}
                       </Typography>
                     </Box>
@@ -1314,10 +1106,7 @@ export default function Booking() {
 
                   <Divider />
 
-                  <CardActions
-                    dir={languageText === "ar" ? "ltr" : "rtl"}
-                    sx={{ backgroundColor: "#fdfefe" }}
-                  >
+                  <CardActions dir={languageText === "ar" ? "ltr" : "rtl"} sx={{ backgroundColor: "#fdfefe" }}>
                     <Tooltip title={t("Booking.delete")}>
                       <IconButton
                         onClick={() => handleDeleteApoinment(card.id)}
@@ -1325,20 +1114,12 @@ export default function Booking() {
                         size="small"
                         disabled={loadingDelete[card.id]} // Disable button if loading
                       >
-                        {loadingDelete[card.id] ? (
-                          <CircularProgress size={24} color="inherit" />
-                        ) : (
-                          <DeleteIcon />
-                        )}
+                        {loadingDelete[card.id] ? <CircularProgress size={24} color="inherit" /> : <DeleteIcon />}
                       </IconButton>
                     </Tooltip>
 
                     <Tooltip title={t("Booking.edit")}>
-                      <IconButton
-                        onClick={() => handleEditApoinment(card.id)}
-                        sx={{ color: "#1976d2" }}
-                        size="small"
-                      >
+                      <IconButton onClick={() => handleEditApoinment(card.id)} sx={{ color: "#1976d2" }} size="small">
                         <EditIcon />
                       </IconButton>
                     </Tooltip>
@@ -1352,9 +1133,7 @@ export default function Booking() {
               component="div"
               style={{ textAlign: "center", margin: "20px", color: "#757575" }}
             >
-              {fetchAppointmentStatus === "fetching"
-                ? t("Booking.loading")
-                : t("Booking.noReservations")}
+              {fetchAppointmentStatus === "fetching" ? t("Booking.loading") : t("Booking.noReservations")}
             </Typography>
           )}
         </div>

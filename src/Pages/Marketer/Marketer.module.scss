@@ -43,6 +43,12 @@
 }
 
 //
+.banner {
+  max-width: 1440px;
+  margin: auto;
+  margin-bottom: 16px;
+}
+
 .main_container {
   display: flex;
   align-items: stretch;
@@ -215,11 +221,12 @@
 .last_reports_title {
   margin-top: 55px;
   margin-bottom: 12px;
-  padding: 3px 9px;
+  // padding: 3px 9px;
   // background-color: #f5f5f5;
   width: fit-content;
-  border-radius: 6px;
-  font-weight: 600;
+  // border-radius: 6px;
+  // font-weight: 600;
+  // font-size: 24px;
 }
 
 // Condetion and term modal

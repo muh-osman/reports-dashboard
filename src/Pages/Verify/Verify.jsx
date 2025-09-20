@@ -2,7 +2,7 @@ import style from "./Verify.module.scss";
 //
 import logo from "../../Assets/Images/logo.webp";
 // React router
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate, useLocation } from "react-router-dom";
 // Mui
 import * as React from "react";
 // import Avatar from "@mui/material/Avatar";
@@ -15,6 +15,9 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import Fab from "@mui/material/Fab"; // Add this import for the floating button
+import Zoom from "@mui/material/Zoom"; // Add this import for smooth animation
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 // Lang
 import i18n from "../../i18n";
 import { useTranslation } from "react-i18next";
@@ -24,6 +27,10 @@ import { useVerifyApi } from "../../API/useVerifyApi";
 import { usePhoneNumber } from "../../Contexts/PhoneNumberContext";
 
 export default function Verify() {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+
+  const fromUrlParam = searchParams.get("from");
   //
   const { t } = useTranslation();
   const [languageText, setLanguageText] = React.useState(i18n.language);
@@ -43,7 +50,7 @@ export default function Verify() {
   //
   const navigate = useNavigate();
   const handleBack = () => {
-    navigate(`${process.env.PUBLIC_URL}/login`);
+    navigate(`${process.env.PUBLIC_URL}/login/${fromUrlParam ? "?from=" + fromUrlParam : ""}`);
   };
   const { phoneNumber, setPhoneNumber } = usePhoneNumber();
 
@@ -73,7 +80,7 @@ export default function Verify() {
   };
 
   return !phoneNumber ? (
-    <Navigate to={`${process.env.PUBLIC_URL}/login`} replace />
+    <Navigate to={`${process.env.PUBLIC_URL}/login/${fromUrlParam ? "?from=" + fromUrlParam : ""}`} replace />
   ) : (
     <div style={{ backgroundColor: "#f0f1f3" }}>
       <div className={style.header}>
@@ -81,11 +88,7 @@ export default function Verify() {
           <a href="https://cashif.cc/">
             <img src={logo} alt="cashif logo" />
           </a>
-          <Tooltip
-            title={t("Verify.back")}
-            className={style.three_dots}
-            onClick={handleBack}
-          >
+          <Tooltip title={t("Verify.back")} className={style.three_dots} onClick={handleBack}>
             <IconButton>
               <ArrowBackIcon sx={{ color: "#fff", fontSize: "32px" }} />
             </IconButton>
@@ -188,16 +191,10 @@ export default function Verify() {
             </Box>
           </Box>
 
-          <Typography
-            sx={{ mt: 1 }}
-            dir="auto"
-            variant="body2"
-            color="text.secondary"
-            align="center"
-          >
+          <Typography sx={{ mt: 1 }} dir="auto" variant="body2" color="text.secondary" align="center">
             {t("Verify.didNotReceiveTheCode")}{" "}
             <Link
-              to={`${process.env.PUBLIC_URL}/login`}
+              to={`${process.env.PUBLIC_URL}/login/${fromUrlParam ? "?from=" + fromUrlParam : ""}`}
               style={{ color: "#1976d2" }}
             >
               {t("Verify.ReOrder")}
@@ -205,6 +202,29 @@ export default function Verify() {
           </Typography>
         </Container>
       </div>
+
+      {/* Floating WhatsApp Button */}
+      <Zoom in={true}>
+        <Fab
+          color="primary"
+          aria-label="whatsapp"
+          sx={{
+            position: "fixed",
+            bottom: { xs: 16, sm: 32 },
+            left: { xs: 16, sm: 32 },
+            zIndex: 1000,
+            backgroundColor: "#25D366", // WhatsApp green color
+            "&:hover": {
+              backgroundColor: "#128C7E", // Darker green on hover
+            },
+          }}
+          onClick={() =>
+            window.open("https://api.whatsapp.com/send?phone=966920019948&text=*اختر من القائمة الرئيسية*", "_blank")
+          }
+        >
+          <WhatsAppIcon sx={{ color: "white", fontSize: 36 }} />
+        </Fab>
+      </Zoom>
     </div>
   );
 }

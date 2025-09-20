@@ -9,7 +9,7 @@ import ScopedCssBaseline from "@mui/material/ScopedCssBaseline";
 // Phone number context
 import { PhoneNumberProvider } from "./Contexts/PhoneNumberContext";
 // Toastify
-import { ToastContainer } from "react-toastify";
+import ToastContainerWithLanguage from "./ToastContainerWithLanguage";
 import "react-toastify/dist/ReactToastify.css";
 // React cookie
 import { CookiesProvider } from "react-cookie";
@@ -17,6 +17,7 @@ import { CookiesProvider } from "react-cookie";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 // PWM
 // import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+
 
 // Create a client
 const qc = new QueryClient({
@@ -42,12 +43,13 @@ const defaultTheme = createTheme({
 });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
   // <React.StrictMode>
   <ThemeProvider theme={defaultTheme}>
     <CookiesProvider>
       <QueryClientProvider client={qc}>
-        <ToastContainer />
+        <ToastContainerWithLanguage />
         <ScopedCssBaseline>
           <PhoneNumberProvider>
             <App />
@@ -63,7 +65,6 @@ root.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
-
 
 // Register the service worker
 // serviceWorkerRegistration.register();

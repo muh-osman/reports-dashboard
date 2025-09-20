@@ -3,6 +3,7 @@
     "language": "العربية",
     "ourBranches": "Our branches",
     "callUs": "Call us",
+    "blog": "Blog",
     "login": "Login",
     "logout": "Logout",
     "more": "More",
@@ -47,6 +48,37 @@
     "downloadSummaryReport": "Brief"
   },
   "Prices": {
+    "selectTheServiese": "Select the service",
+    "purchaseCheck": "Purchase check",
+    "purchaseCheckDescriptionPartOne": "Inspect ",
+    "purchaseCheckDescriptionPartTwo": "all parts ",
+    "purchaseCheckDescriptionPartThree": "of the used vehicle to identify and discover faults and defects before making a purchase decision",
+
+    "purchaseCheckListA": "Car parts check",
+    "purchaseCheckListB": "Test drive the car",
+    "purchaseCheckListC": "Vehicle condition report",
+    "purchaseCheckListD": "Points and rewards",
+    "askNow": "Order now",
+
+    "checkItCheck": "We check it for you",
+    "checkItCheckDescriptionPartOne": "If you find a car for sale in ",
+    "checkItCheckDescriptionPartTwo": "Riyadh, Jeddah, or Dammam ",
+    "checkItCheckDescriptionPartThree": "and you are outside these cities, Cashif Center will conduct a comprehensive and accurate inspection of the car, while facilitating the procedures for transferring ownership and insurance",
+    "checkItCheckListA": "The car owner must attend one of the Cashf branches",
+    "checkItCheckListB": "Conduct a comprehensive and thorough inspection of the vehicle",
+    "checkItCheckListC": "Download the inspection report through  ",
+    "checkItCheckListCPlus": "our website",
+    "checkItCheckListD": "Complete the transfer of ownership and insurance with ease",
+
+    "travelerCheck": "A customized",
+    "travelerCheckDescriptionPartOne": "A customized ",
+    "travelerCheckDescriptionPartTwo": "pre-travel ",
+    "travelerCheckDescriptionPartThree": "inspection to ensure your vehicle's roadworthiness, covering essential checks that guarantee a safe and comfortable journey",
+    "travelerCheckListA": "Oil and fluids inspection",
+    "travelerCheckListB": "Tires, brakes, and lights inspection",
+    "travelerCheckListC": "Safety tools and wipers inspection",
+    "travelerCheckListD": "Road test for the vehicle",
+
     "pleaseSelectModelAndYear": "Please select the model and year of manufacture.",
     "enterTheVehicleType": "Select the vehicle model",
     "CarModelNotAvailableContactUs": "Can't find model? Contact us",
@@ -432,6 +464,8 @@
   },
 
   "Marketer": {
+    "bannerTitle": "On the occasion of the National Day",
+    "bannerDiscreption": "the discount will be 30% and the commission will be 20%. The offer is valid from 20/09 to 25/09",
     "minimumWithdrawalAmountIs200Riyals": "The minimum withdrawal amount is 200 Riyals",
     "title": "'Falk' for Affiliate Marketing",
     "subTitleOne": "'Falk' Affiliate Marketing Program is a platform that allows you, as a marketer, the opportunity to earn money easily by promoting the services of 'Kashef' Center for online vehicle inspections or through direct referrals to acquaintances, friends, and close ones.",
@@ -456,7 +490,9 @@
     "InfoAboutCashif": "Info about Cashif",
     "visualContent": "Marketing content",
     "howWorks": "How it works",
-    "InstructionsBeforePublishing": "Instructions before publishing"
+    "InstructionsBeforePublishing": "Instructions before publishing",
+    "login": "Login",
+    "signup": "Create an account"
   },
 
   "CouponImages": {
