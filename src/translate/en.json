@@ -568,5 +568,11 @@
     "t7": "Earn a 10% commission for every booking made using your code.",
     "t8": "Start promoting now and begin earning profits!",
     "t9": "Wishing you success!"
+  },
+
+  "Top5Component": {
+    "title": "Top 5 Marketers",
+    "subTitle": "Sorted by number of points",
+    "point": "points"
   }
 }

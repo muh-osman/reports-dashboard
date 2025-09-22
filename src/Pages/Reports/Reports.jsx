@@ -114,8 +114,7 @@ export default function Reports() {
   const [isHovered, setIsHovered] = useState(false);
 
   //
-  const { mutate: GetCardsPendingApproveCards } =
-    useGetCardsPendingApproveCardsApi();
+  const { mutate: GetCardsPendingApproveCards } = useGetCardsPendingApproveCardsApi();
   //
   useEffect(() => {
     // Scroll to the top of the page
@@ -123,13 +122,10 @@ export default function Reports() {
     // GetCardsPendingApproveCards();
   }, []);
   //
-  const {
-    mutate: checkIfCardsHaveSummeryReportMutate,
-    data: AllSummaryReportsStatus,
-  } = useCheckAllSummaryReportsNumbersApi();
+  const { mutate: checkIfCardsHaveSummeryReportMutate, data: AllSummaryReportsStatus } =
+    useCheckAllSummaryReportsNumbersApi();
   //
-  const { mutate: checkIfCardsHaveVideosMutate, data: AllVideoReportsStatus } =
-    useCheckCardsIfHaveVideosApi();
+  const { mutate: checkIfCardsHaveVideosMutate, data: AllVideoReportsStatus } = useCheckCardsIfHaveVideosApi();
   //
 
   const { data: points } = useGetPoinsApi();
@@ -155,8 +151,7 @@ export default function Reports() {
   const { data: terms } = useGetTermsApi();
 
   // condetion And Terms Modal
-  const [openCondetionAndTermsModal, setOpenCondetionAndTermsModal] =
-    useState(false);
+  const [openCondetionAndTermsModal, setOpenCondetionAndTermsModal] = useState(false);
 
   const [checked, setChecked] = useState(null);
   //
@@ -278,9 +273,7 @@ export default function Reports() {
   };
 
   // Download Summary Reports Button
-  const [loadingSummaryCardDownload, setLoadingSummaryCardDownload] = useState(
-    {}
-  );
+  const [loadingSummaryCardDownload, setLoadingSummaryCardDownload] = useState({});
   const handleDownloadSummaryCard = async (id) => {
     try {
       setLoadingSummaryCardDownload((prev) => ({ ...prev, [id]: true })); // Set loading for the specific card
@@ -374,10 +367,7 @@ export default function Reports() {
 
           // console.log(response);
 
-          if (
-            response?.success === false &&
-            response?.message === "Video file not found"
-          ) {
+          if (response?.success === false && response?.message === "Video file not found") {
             console.log(`[Debug] Version ${version} not found, skipping`);
             await delay(RETRY_DELAY_MS);
             continue;
@@ -408,14 +398,9 @@ export default function Reports() {
                 const mimeParts = mime.toLowerCase().split("/");
                 const typePart = mimeParts[1];
 
-                if (
-                  normalizedContentType.includes(typePart) ||
-                  normalizedContentType.includes(ext.replace(".", ""))
-                ) {
+                if (normalizedContentType.includes(typePart) || normalizedContentType.includes(ext.replace(".", ""))) {
                   fileExtension = ext;
-                  console.log(
-                    `[Debug] Partial MIME match: ${contentType} → ${ext}`
-                  );
+                  console.log(`[Debug] Partial MIME match: ${contentType} → ${ext}`);
                   break;
                 }
               }
@@ -424,13 +409,10 @@ export default function Reports() {
             // 3. Special case for MOV files (common variations)
             if (
               fileExtension === ".mp4" &&
-              (normalizedContentType.includes("mov") ||
-                normalizedContentType.includes("quicktime"))
+              (normalizedContentType.includes("mov") || normalizedContentType.includes("quicktime"))
             ) {
               fileExtension = ".mov";
-              console.log(
-                `[Debug] Special MOV handling: ${contentType} → .mov`
-              );
+              console.log(`[Debug] Special MOV handling: ${contentType} → .mov`);
             }
           }
 
@@ -534,9 +516,7 @@ export default function Reports() {
     const currentLevel = clientTypeAr || "إفتراضي";
     const currentLevelPoints = levelRequirements[currentLevel];
     const nextLevel = getNextLevel(currentLevel);
-    const nextLevelPoints = nextLevel
-      ? levelRequirements[nextLevel]
-      : levelRequirements["نخبة"];
+    const nextLevelPoints = nextLevel ? levelRequirements[nextLevel] : levelRequirements["نخبة"];
 
     // If user is at the highest level (نخبة), show 100%
     if (!nextLevel) return 100;
@@ -546,12 +526,7 @@ export default function Reports() {
     const pointsAchievedTowardsNextLevel = currentPoints - currentLevelPoints;
 
     // Calculate percentage (capped at 100)
-    const progress = Math.min(
-      Math.round(
-        (pointsAchievedTowardsNextLevel / pointsNeededForNextLevel) * 100
-      ),
-      100
-    );
+    const progress = Math.min(Math.round((pointsAchievedTowardsNextLevel / pointsNeededForNextLevel) * 100), 100);
 
     return progress;
   };
@@ -577,20 +552,14 @@ export default function Reports() {
   ];
 
   return (
-    <div
-      dir={languageText === "ar" ? "rtl" : "ltr"}
-      className={style.container}
-    >
+    <div dir={languageText === "ar" ? "rtl" : "ltr"} className={style.container}>
       {/* Points */}
-
       <div className={style.points_container}>
         <div className={style.money_card_container}>
           <div className={style.money_card_header}>
             <div>
               <h3>{t("Reports.points")}</h3>
-              <p style={{ fontSize: "14px" }}>
-                {t("Reports.pointWorthInRiyal")}
-              </p>
+              <p style={{ fontSize: "14px" }}>{t("Reports.pointWorthInRiyal")}</p>
               {/* <h1>
                 {points && points.points !== undefined ? points.points : 0}{" "}
               </h1> */}
@@ -635,13 +604,9 @@ export default function Reports() {
                     transform: "translate(-50%, -50%)",
                   }}
                 >
+                  <h3 style={{ textAlign: "center", color: getClientColor() }}>{t("Reports.rank")}</h3>
                   <h3 style={{ textAlign: "center", color: getClientColor() }}>
-                    {t("Reports.rank")}
-                  </h3>
-                  <h3 style={{ textAlign: "center", color: getClientColor() }}>
-                    {languageText === "ar"
-                      ? points?.clientTypeAr || "-"
-                      : points?.clientTypeEn || "-"}
+                    {languageText === "ar" ? points?.clientTypeAr || "-" : points?.clientTypeEn || "-"}
                   </h3>
                   {/* Adjust size and color as needed */}
                 </div>
@@ -650,16 +615,10 @@ export default function Reports() {
           </div>
 
           <div className={style.money_card_footer}>
-            <Tooltip
-              title={t("Reports.allPointsUsedFromYourAccount")}
-              arrow
-              enterTouchDelay={0}
-            >
+            <Tooltip title={t("Reports.allPointsUsedFromYourAccount")} arrow enterTouchDelay={0}>
               <h3>
                 {t("Reports.totalPointsUsed")}{" "}
-                {points && points.pointsConsumed !== undefined
-                  ? points.pointsConsumed
-                  : 0}
+                {points && points.pointsConsumed !== undefined ? points.pointsConsumed : 0}
               </h3>
             </Tooltip>
           </div>
@@ -713,52 +672,25 @@ export default function Reports() {
             <div dir={languageText === "ar" ? "rtl" : "ltr"}>
               <h1>{t("Reports.customerCategories")}</h1>
 
-              <TableContainer
-                dir={languageText === "ar" ? "rtl" : "ltr"}
-                component={Paper}
-              >
-                <Table
-                  dir={languageText === "ar" ? "rtl" : "ltr"}
-                  aria-label="customized table"
-                >
+              <TableContainer dir={languageText === "ar" ? "rtl" : "ltr"} component={Paper}>
+                <Table dir={languageText === "ar" ? "rtl" : "ltr"} aria-label="customized table">
                   <TableHead>
                     <TableRow>
-                      <StyledTableCell align="center">
-                        {t("Reports.rank")}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {t("Reports.minimumPoints")}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {t("Reports.maximumPoints")}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {t("Reports.pointsPercentage")}
-                      </StyledTableCell>
+                      <StyledTableCell align="center">{t("Reports.rank")}</StyledTableCell>
+                      <StyledTableCell align="center">{t("Reports.minimumPoints")}</StyledTableCell>
+                      <StyledTableCell align="center">{t("Reports.maximumPoints")}</StyledTableCell>
+                      <StyledTableCell align="center">{t("Reports.pointsPercentage")}</StyledTableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {rows.map((row) => (
                       <StyledTableRow key={row.name}>
-                        <StyledTableCell
-                          align="center"
-                          component="th"
-                          scope="row"
-                        >
-                          {row.name}{" "}
-                          <WorkspacePremiumIcon
-                            sx={{ verticalAlign: "middle", color: row.clr }}
-                          />
+                        <StyledTableCell align="center" component="th" scope="row">
+                          {row.name} <WorkspacePremiumIcon sx={{ verticalAlign: "middle", color: row.clr }} />
                         </StyledTableCell>
-                        <StyledTableCell align="center">
-                          {row.calories}
-                        </StyledTableCell>
-                        <StyledTableCell align="center">
-                          {row.fat}
-                        </StyledTableCell>
-                        <StyledTableCell align="center">
-                          {row.carbs}
-                        </StyledTableCell>
+                        <StyledTableCell align="center">{row.calories}</StyledTableCell>
+                        <StyledTableCell align="center">{row.fat}</StyledTableCell>
+                        <StyledTableCell align="center">{row.carbs}</StyledTableCell>
                       </StyledTableRow>
                     ))}
                   </TableBody>
@@ -774,11 +706,7 @@ export default function Reports() {
       <Divider sx={{ marginBottom: "18px" }} />
 
       {!cookies.tokenApp ? (
-        <Typography
-          variant="h6"
-          component="div"
-          style={{ textAlign: "center", margin: "20px", color: "#757575" }}
-        >
+        <Typography variant="h6" component="div" style={{ textAlign: "center", margin: "20px", color: "#757575" }}>
           {t("Reports.please")}{" "}
           <Link
             to={`${process.env.PUBLIC_URL}/login/?from=reports`}
@@ -827,35 +755,18 @@ export default function Reports() {
                 overflowX: "hidden", // Prevent horizontal scrolling
               }}
             >
-              <div
-                className={style.terms_box}
-                style={{ textAlign: languageText === "ar" ? "right" : "left" }}
-              >
+              <div className={style.terms_box} style={{ textAlign: languageText === "ar" ? "right" : "left" }}>
                 <div>
-                  <h1>
-                    {languageText === "ar"
-                      ? "وثيقة ضمان المركبة"
-                      : "Vehicle Warranty Document"}
-                  </h1>
+                  <h1>{languageText === "ar" ? "وثيقة ضمان المركبة" : "Vehicle Warranty Document"}</h1>
 
                   <pre className={style.wrapping_pre}>
-                    {(languageText === "ar"
-                      ? terms?.termsAndCondtionsAr || ""
-                      : terms?.termsAndCondtionsEn || ""
-                    )
+                    {(languageText === "ar" ? terms?.termsAndCondtionsAr || "" : terms?.termsAndCondtionsEn || "")
                       .split("\n")
                       .reduce((acc, paragraph, index) => {
                         if (paragraph.trim() === "") return acc;
 
-                        if (
-                          paragraph.startsWith(
-                            languageText === "ar" ? "البند" : "Clause"
-                          )
-                        ) {
-                          return [
-                            ...acc,
-                            <h6 key={`h6-${index}`}>{paragraph}</h6>,
-                          ];
+                        if (paragraph.startsWith(languageText === "ar" ? "البند" : "Clause")) {
+                          return [...acc, <h6 key={`h6-${index}`}>{paragraph}</h6>];
                         }
 
                         if (/^\d+\.\t/.test(paragraph)) {
@@ -868,10 +779,7 @@ export default function Reports() {
                               <ul
                                 key={lastElement.key}
                                 style={{
-                                  padding:
-                                    languageText === "ar"
-                                      ? "0 24px 0 0"
-                                      : "0 0 0 24px",
+                                  padding: languageText === "ar" ? "0 24px 0 0" : "0 0 0 24px",
                                 }}
                               >
                                 {lastElement.props.children}
@@ -884,10 +792,7 @@ export default function Reports() {
                               <ul
                                 key={`ul-${index}`}
                                 style={{
-                                  padding:
-                                    languageText === "ar"
-                                      ? "0 24px 0 0"
-                                      : "0 0 0 24px",
+                                  padding: languageText === "ar" ? "0 24px 0 0" : "0 0 0 24px",
                                 }}
                               >
                                 <li key={`li-${index}`}>{content}</li>
@@ -896,18 +801,11 @@ export default function Reports() {
                           }
                         }
 
-                        return [
-                          ...acc,
-                          <div key={`div-${index}`}>{paragraph}</div>,
-                        ];
+                        return [...acc, <div key={`div-${index}`}>{paragraph}</div>];
                       }, [])}
                   </pre>
 
-                  <h6>
-                    {languageText === "ar"
-                      ? "حالات الغاء وثيقة ضمان المركبة"
-                      : ""}
-                  </h6>
+                  <h6>{languageText === "ar" ? "حالات الغاء وثيقة ضمان المركبة" : ""}</h6>
 
                   <pre className={style.wrapping_pre}>
                     {(languageText === "ar"
@@ -918,15 +816,8 @@ export default function Reports() {
                       .reduce((acc, paragraph, index) => {
                         if (paragraph.trim() === "") return acc;
 
-                        if (
-                          paragraph.startsWith(
-                            languageText === "ar" ? "البند" : "Clause"
-                          )
-                        ) {
-                          return [
-                            ...acc,
-                            <h6 key={`h6-${index}`}>{paragraph}</h6>,
-                          ];
+                        if (paragraph.startsWith(languageText === "ar" ? "البند" : "Clause")) {
+                          return [...acc, <h6 key={`h6-${index}`}>{paragraph}</h6>];
                         }
 
                         if (/^\d+\.\t/.test(paragraph)) {
@@ -939,10 +830,7 @@ export default function Reports() {
                               <ul
                                 key={lastElement.key}
                                 style={{
-                                  padding:
-                                    languageText === "ar"
-                                      ? "0 24px 0 0"
-                                      : "0 0 0 24px",
+                                  padding: languageText === "ar" ? "0 24px 0 0" : "0 0 0 24px",
                                 }}
                               >
                                 {lastElement.props.children}
@@ -955,10 +843,7 @@ export default function Reports() {
                               <ul
                                 key={`ul-${index}`}
                                 style={{
-                                  padding:
-                                    languageText === "ar"
-                                      ? "0 24px 0 0"
-                                      : "0 0 0 24px",
+                                  padding: languageText === "ar" ? "0 24px 0 0" : "0 0 0 24px",
                                 }}
                               >
                                 <li key={`li-${index}`}>{content}</li>
@@ -967,23 +852,14 @@ export default function Reports() {
                           }
                         }
 
-                        return [
-                          ...acc,
-                          <div key={`div-${index}`}>{paragraph}</div>,
-                        ];
+                        return [...acc, <div key={`div-${index}`}>{paragraph}</div>];
                       }, [])}
                   </pre>
                 </div>
 
                 <div style={{ display: "flex", flexDirection: "column" }}>
                   <FormControlLabel
-                    control={
-                      <Radio
-                        required
-                        checked={checked === true}
-                        onChange={() => handleChange(true)}
-                      />
-                    }
+                    control={<Radio required checked={checked === true} onChange={() => handleChange(true)} />}
                     label={
                       languageText === "ar"
                         ? "أوافق على الشروط والأحكام, وأقر بأنني قرأتها وفهمتها بالكامل"
@@ -991,17 +867,9 @@ export default function Reports() {
                     }
                   />
                   <FormControlLabel
-                    control={
-                      <Radio
-                        required
-                        checked={checked === false}
-                        onChange={() => handleChange(false)}
-                      />
-                    }
+                    control={<Radio required checked={checked === false} onChange={() => handleChange(false)} />}
                     label={
-                      languageText === "ar"
-                        ? "لا أوافق على الشروط والأحكام"
-                        : "I disagree to the terms and conditions"
+                      languageText === "ar" ? "لا أوافق على الشروط والأحكام" : "I disagree to the terms and conditions"
                     }
                   />
                 </div>
@@ -1014,9 +882,7 @@ export default function Reports() {
                   disabled={checked === null}
                   onClick={downloadFromTermsModal}
                 >
-                  {languageText === "ar"
-                    ? "تحميل التقرير"
-                    : "Download the report"}
+                  {languageText === "ar" ? "تحميل التقرير" : "Download the report"}
                 </Button>
               </div>
             </Box>
@@ -1043,62 +909,31 @@ export default function Reports() {
                         style={{
                           position: "absolute",
                           top: 16,
-                          ...(languageText === "en"
-                            ? { right: 16 }
-                            : { left: 16 }),
+                          ...(languageText === "en" ? { right: 16 } : { left: 16 }),
                         }}
                       />
                     </Tooltip>
                   )}
                   <CardContent>
-                    <Box
-                      display="flex"
-                      alignItems="center"
-                      gap={1}
-                      marginBottom={"9px"}
-                    >
+                    <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
                       <MinorCrashIcon style={{ color: "#000000de" }} />
-                      <Typography
-                        variant="h5"
-                        component="div"
-                        style={{ fontSize: "14px" }}
-                      >
+                      <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
                         {languageText === "en"
                           ? card?.carManufacturerNameEn || "-"
                           : card?.carManufacturerNameAr || "-"}
                       </Typography>
                     </Box>
 
-                    <Box
-                      display="flex"
-                      alignItems="center"
-                      gap={1}
-                      marginBottom={"9px"}
-                    >
+                    <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
                       <StyleIcon style={{ color: "#000000de" }} />
-                      <Typography
-                        variant="h5"
-                        component="div"
-                        style={{ fontSize: "14px" }}
-                      >
-                        {languageText === "en"
-                          ? card?.carModelNameEn || "-"
-                          : card?.carModelNameAr || "-"}
+                      <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
+                        {languageText === "en" ? card?.carModelNameEn || "-" : card?.carModelNameAr || "-"}
                       </Typography>
                     </Box>
 
-                    <Box
-                      display="flex"
-                      alignItems="center"
-                      gap={1}
-                      marginBottom={"9px"}
-                    >
+                    <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
                       <ContentPasteSearchIcon style={{ color: "#000000de" }} />
-                      <Typography
-                        variant="h5"
-                        component="div"
-                        style={{ fontSize: "14px" }}
-                      >
+                      <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
                         {/* {card.servicesListNameAr.length > 0
                           ? card.servicesListNameAr.join(", ")
                           : "غير محدد"} */}
@@ -1111,11 +946,7 @@ export default function Reports() {
 
                     <Box display="flex" alignItems="center" gap={1}>
                       <CalendarMonthIcon style={{ color: "#000000de" }} />
-                      <Typography
-                        variant="h5"
-                        component="div"
-                        style={{ fontSize: "14px" }}
-                      >
+                      <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
                         {formatDate(card.createdDate)}
                       </Typography>
                     </Box>
@@ -1132,13 +963,7 @@ export default function Reports() {
                     }}
                   >
                     <Button
-                      onClick={() =>
-                        handleDownloadCard(
-                          card.id,
-                          card.includeImage,
-                          card.approveTerms
-                        )
-                      }
+                      onClick={() => handleDownloadCard(card.id, card.includeImage, card.approveTerms)}
                       size="small"
                       variant="contained"
                       disabled={loadingDownload[card.id]} // Disable button if loading
@@ -1147,19 +972,13 @@ export default function Reports() {
                           <CircularProgress
                             size={18}
                             sx={{
-                              margin:
-                                languageText === "en"
-                                  ? "0px 0px 0px 0px"
-                                  : "0px 8px 0px -8px",
+                              margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
                             }}
                           />
                         ) : (
                           <DownloadIcon
                             sx={{
-                              margin:
-                                languageText === "en"
-                                  ? "0px 0px 0px 0px"
-                                  : "0px 8px 0px -8px",
+                              margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
                             }}
                           />
                         )
@@ -1169,8 +988,7 @@ export default function Reports() {
                     </Button>
 
                     {/* Summary Reports Button */}
-                    {AllSummaryReportsStatus?.data?.[card.id.toString()] ===
-                      true && (
+                    {AllSummaryReportsStatus?.data?.[card.id.toString()] === true && (
                       <Button
                         sx={{ margin: "0 !important" }}
                         onClick={() => handleDownloadSummaryCard(card.id)}
@@ -1182,19 +1000,13 @@ export default function Reports() {
                             <CircularProgress
                               size={18}
                               sx={{
-                                margin:
-                                  languageText === "en"
-                                    ? "0px 0px 0px 0px"
-                                    : "0px 8px 0px -8px",
+                                margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
                               }}
                             />
                           ) : (
                             <DownloadIcon
                               sx={{
-                                margin:
-                                  languageText === "en"
-                                    ? "0px 0px 0px 0px"
-                                    : "0px 8px 0px -8px",
+                                margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
                               }}
                             />
                           )
@@ -1206,8 +1018,7 @@ export default function Reports() {
 
                     {/*  Video Button */}
 
-                    {AllVideoReportsStatus?.data?.[card.id.toString()] ===
-                      true && (
+                    {AllVideoReportsStatus?.data?.[card.id.toString()] === true && (
                       <IconButton
                         sx={{
                           margin: "0 !important",
@@ -1233,14 +1044,8 @@ export default function Reports() {
                 </Card>
               ))
           ) : (
-            <Typography
-              variant="h6"
-              component="div"
-              style={{ textAlign: "center", margin: "20px", color: "#757575" }}
-            >
-              {fetchCardStatus === "fetching"
-                ? t("Reports.loading")
-                : t("Reports.noReports")}
+            <Typography variant="h6" component="div" style={{ textAlign: "center", margin: "20px", color: "#757575" }}>
+              {fetchCardStatus === "fetching" ? t("Reports.loading") : t("Reports.noReports")}
             </Typography>
           )}
         </div>

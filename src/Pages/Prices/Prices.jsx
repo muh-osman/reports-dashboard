@@ -177,6 +177,7 @@ export default function Prices() {
   //   }
   // }, [languageText]);
 
+
   React.useEffect(() => {
     const fiftyDiscountCrownFullPlaneCatcher = document.querySelector(".full-Plane-catcher");
     const fiftyDiscountCrownEnginesCatcher = document.querySelector(".engines-catcher");

@@ -38,6 +38,7 @@ import useGetMarketerApi from "../../API/useGetMarketerApi";
 import useMarketerSettingsApi from "../../API/useMarketerSettingsApi";
 import { useCreateMarketerApi } from "../../API/useCreateMarketerApi";
 // Component
+import Top5UsersList from "../../Components/Top5UsersList";
 import CouponImages from "../../Components/CouponImages";
 import InfoAboutCashif from "../../Components/InfoAboutCashif";
 import HowWorks from "../../Components/HowWorks";
@@ -297,6 +298,8 @@ export default function Marketer() {
                 </h3>
               </div>
             </div>
+
+            <Top5UsersList languageText={languageText} />
 
             {/* Person Card */}
             <div className={style.person_card_container}>
