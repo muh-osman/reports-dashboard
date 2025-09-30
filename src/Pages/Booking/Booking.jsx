@@ -22,17 +22,13 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import IconButton from "@mui/material/IconButton";
 import { LoadingButton } from "@mui/lab";
-import Autocomplete from "@mui/material/Autocomplete";
 import Modal from "@mui/material/Modal";
 // MUI Icons
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import MinorCrashIcon from "@mui/icons-material/MinorCrash";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import StyleIcon from "@mui/icons-material/Style";
-import HourglassTopIcon from "@mui/icons-material/HourglassTop";
 import DoNotDisturbOnIcon from "@mui/icons-material/DoNotDisturbOn";
 // Lang
 import i18n from "../../i18n";
@@ -45,9 +41,6 @@ import { useCookies } from "react-cookie";
 import logo from "../../Assets/Images/logo.webp";
 // API
 import useGetAllBranchesApi from "../../API/useGetAllBranchesApi";
-import useGetAllManufacturerApi from "../../API/useGetAllManufacturerApi";
-import useGetAllCarModelsApi from "../../API/useGetAllCarModelsApi";
-import useGetServices from "../../API/useGetServices";
 import useGetFullDataOfClientApi from "../../API/useGetFullDataOfClientApi";
 import { useGetAppointmentApi } from "../../API/useGetAppointmentApi";
 import { useDeleteAppointmentApi } from "../../API/useDeleteAppointmentApi";
@@ -77,6 +70,7 @@ export default function Booking() {
       i18n.off("languageChanged", handleLanguageChange);
     };
   }, []);
+
   // Utility function to format date to dd/mm/yyyy
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -99,12 +93,7 @@ export default function Booking() {
 
   // Branches
   const { data: allBranches } = useGetAllBranchesApi();
-  // Manufacturers
-  const { data: allManufacturers } = useGetAllManufacturerApi();
-  // Models
-  const { data: allCarModels } = useGetAllCarModelsApi();
-  // Services
-  const { data: allServices } = useGetServices();
+
   // Appointment
   const { mutate: getAppointments, data: allAppointment, status: fetchAppointmentStatus } = useGetAppointmentApi();
 
@@ -129,166 +118,10 @@ export default function Booking() {
     }
   }, []);
 
-  const years = [
-    {
-      id: 2026,
-      year: "2026",
-    },
-    {
-      id: 2025,
-      year: "2025",
-    },
-    {
-      id: 2024,
-      year: "2024",
-    },
-    {
-      id: 2023,
-      year: "2023",
-    },
-    {
-      id: 2022,
-      year: "2022",
-    },
-    {
-      id: 2021,
-      year: "2021",
-    },
-    {
-      id: 2020,
-      year: "2020",
-    },
-    {
-      id: 2019,
-      year: "2019",
-    },
-    {
-      id: 2018,
-      year: "2018",
-    },
-    {
-      id: 2017,
-      year: "2017",
-    },
-    {
-      id: 2016,
-      year: "2016",
-    },
-    {
-      id: 2015,
-      year: "2015",
-    },
-    {
-      id: 2014,
-      year: "2014",
-    },
-    {
-      id: 2013,
-      year: "2013",
-    },
-    {
-      id: 2012,
-      year: "2012",
-    },
-    {
-      id: 2011,
-      year: "2011",
-    },
-    {
-      id: 2010,
-      year: "2010",
-    },
-    {
-      id: 2009,
-      year: "2009",
-    },
-    {
-      id: 2008,
-      year: "2008",
-    },
-    {
-      id: 2007,
-      year: "2007",
-    },
-    {
-      id: 2006,
-      year: "2006",
-    },
-    {
-      id: 2005,
-      year: "2005",
-    },
-    {
-      id: 2004,
-      year: "2004",
-    },
-    {
-      id: 2003,
-      year: "2003",
-    },
-    {
-      id: 2002,
-      year: "2002",
-    },
-    {
-      id: 2001,
-      year: "2001",
-    },
-    {
-      id: 2000,
-      year: "2000",
-    },
-  ];
-
   // Branches
   const [selectedBranch, setSelectedBranch] = React.useState("");
   const handleBranchChange = (event) => {
     setSelectedBranch(event.target.value);
-  };
-
-  // Manufacturers
-  const [selectedManufacturer, setSelectedManufacturer] = React.useState("");
-  const handleManufacturerChange = (event, newValue) => {
-    if (newValue) {
-      setSelectedManufacturer(newValue.id);
-      setSelectedModelId(null);
-      setSelectedCarClassId(null); // Clear the carClassId
-    } else {
-      setSelectedManufacturer(null);
-      setSelectedModelId(null);
-      setSelectedCarClassId(null);
-    }
-  };
-
-  // Model
-  const [selectedModelId, setSelectedModelId] = React.useState("");
-  const [selectedCarClassId, setSelectedCarClassId] = React.useState(null);
-
-  const handleModelChange = (event, newValue) => {
-    if (newValue) {
-      setSelectedModelId(newValue.id);
-      setSelectedCarClassId(newValue.carClassId); // Store the carClassId
-    } else {
-      setSelectedModelId(null);
-      setSelectedCarClassId(null); // Clear the carClassId
-    }
-  };
-
-  // Filter models based on selected manufacturer
-  const filteredModels = selectedManufacturer
-    ? allCarModels?.filter((model) => model.carManufacturerId === selectedManufacturer)
-    : [];
-
-  // Transmission
-  const [selectedTransmissionID, setSelectedTransmissionID] = React.useState("");
-  const handleTransmissionChange = (event) => {
-    setSelectedTransmissionID(event.target.value || null);
-  };
-
-  // Years
-  const [selectedYear, setSelectedYear] = React.useState("");
-  const handleYearChange = (event) => {
-    setSelectedYear(event.target.value);
   };
 
   // Date
@@ -296,14 +129,6 @@ export default function Booking() {
 
   // Time
   const [time, setTime] = React.useState(null);
-
-  // Services
-  const [selectedServiceId, setSelectedServiceId] = React.useState("");
-  const handleServicesChange = (event) => {
-    setSelectedServiceId(event.target.value);
-  };
-  // Find the selected service based on the selectedServiceId
-  const selectedService = allServices?.find((service) => service.id === parseInt(selectedServiceId));
 
   // Submit Apoinment form
   // Submit Modal
@@ -366,11 +191,8 @@ export default function Booking() {
   // Modal Data
   const [selectedDataForModal, setSelectedDataForModal] = React.useState({
     branch: "",
-    manufacturer: "",
-    year: "",
     date: "",
     time: "",
-    service: "",
   });
 
   const [timeError, setTimeError] = React.useState(false);
@@ -378,6 +200,8 @@ export default function Booking() {
     const now = dayjs();
     const selectedTime = dayjs(newTime);
     const isToday = date ? dayjs(date).isSame(now, "day") : false;
+
+    console.log(now);
 
     const minTime = selectedBranch === 19 || selectedBranch === 20 ? 8 : 10;
     const maxTime = selectedBranch === 19 || selectedBranch === 20 ? 23.5 : 22;
@@ -443,35 +267,30 @@ export default function Booking() {
     //////////////////////////////
     // Store selected data for modal
     const selectedBranchObj = allBranches?.find((b) => b.id === parseInt(selectedBranch));
-    const selectedManufacturerObj = allManufacturers?.find((m) => m.id === parseInt(selectedManufacturer));
-    const selectedServiceObj = allServices?.find((s) => s.id === parseInt(selectedServiceId));
 
     setSelectedDataForModal({
       branch: languageText === "en" ? selectedBranchObj?.nameEn : selectedBranchObj?.nameAr,
-      manufacturer: languageText === "en" ? selectedManufacturerObj?.nameEn : selectedManufacturerObj?.nameAr,
-      year: selectedYear,
       date: dateAfterFormat,
       time: timeAfterFormat,
-      service: languageText === "en" ? selectedServiceObj?.nameEn : selectedServiceObj?.nameAr,
     });
     /////////////////////////////
     const data = {
       card: {
         checkPlace: 1,
-        carManufacturerId: selectedManufacturer,
-        carModelId: selectedModelId,
-        carClassId: selectedCarClassId,
-        gearType: selectedTransmissionID,
+        // carManufacturerId: selectedManufacturer,
+        // carModelId: selectedModelId,
+        // carClassId: selectedCarClassId,
+        // gearType: selectedTransmissionID,
         cardStatus: 7, // mean -> appoinment
         branchId: selectedBranch,
         totalCost: 0,
-        year: selectedYear,
-        servicesCard: [
-          {
-            serviceId: selectedServiceId,
-            price: 0,
-          },
-        ],
+        // year: selectedYear,
+        // servicesCard: [
+        //   {
+        //     serviceId: selectedServiceId,
+        //     price: 0,
+        //   },
+        // ],
         checkDate: dateAfterFormat,
         checkTime: timeAfterFormat,
       },
@@ -506,15 +325,9 @@ export default function Booking() {
         getAppointments(appointmentQueryParams);
 
         // Reset form fields
-        setSelectedServiceId("");
         setTime(null);
         setDate(null);
-        setSelectedYear("");
-        setSelectedManufacturer("");
         setSelectedBranch("");
-        setSelectedModelId("");
-        setSelectedCarClassId(null);
-        setSelectedTransmissionID("");
 
         // Open the success modal
         handleBookingModalOpen();
@@ -524,19 +337,6 @@ export default function Booking() {
       },
     });
   };
-
-  // React.useEffect(() => {
-  //   if (isPostApoinmentFormMutateSuccess) {
-  //     setSelectedServiceId("");
-  //     setTime(null);
-  //     setDate(null);
-  //     setSelectedYear("");
-  //     setSelectedManufacturer("");
-  //     setSelectedBranch("");
-
-  //     window.scrollTo(0, 0);
-  //   }
-  // }, [isPostApoinmentFormMutateSuccess]);
 
   // Delete Apoinment
   const { mutate: deleteApoinmentMutate } = useDeleteAppointmentApi();
@@ -629,110 +429,9 @@ export default function Booking() {
             </TextField>
           )}
 
-          {/* الشركة المصنعة */}
-          {cookies.tokenApp && selectedBranch && (
-            <Autocomplete
-              className={style.autocomplete_input}
-              dir={languageText === "ar" ? "rtl" : "ltr"}
-              sx={{ backgroundColor: "#fff", marginTop: "16px" }}
-              disablePortal
-              onChange={handleManufacturerChange} // Add the onChange handler
-              options={allManufacturers ? allManufacturers : []}
-              getOptionLabel={(option) => (languageText === "en" ? option.nameEn : option.nameAr)}
-              renderInput={(params) => (
-                <TextField dir={languageText === "ar" ? "rtl" : "ltr"} {...params} label={t("Booking.manufacturer")} />
-              )}
-              // Use a unique key for each option
-              renderOption={(props, option) => (
-                <li dir={languageText === "ar" ? "rtl" : "ltr"} {...props} key={option.id}>
-                  {/* {option.nameAr} */}
-                  {languageText === "en" ? option.nameEn : option.nameAr}
-                </li>
-              )}
-              disabled={isPostApoinmentFormMutatePending}
-              clearOnBlur={false}
-              clearIcon={null}
-              noOptionsText={allManufacturers === null ? t("Booking.loading") : t("Booking.noOptionsAvailable")}
-            />
-          )}
-
-          {/* الموديل */}
-          {cookies.tokenApp && selectedManufacturer && (
-            <Autocomplete
-              className={style.autocomplete_input}
-              dir={languageText === "ar" ? "rtl" : "ltr"}
-              sx={{ backgroundColor: "#fff", marginTop: "16px" }}
-              disablePortal
-              onChange={handleModelChange}
-              options={filteredModels || []} // Use the filtered models here
-              getOptionLabel={(option) => (languageText === "en" ? option.nameEn : option.nameAr)}
-              renderInput={(params) => (
-                <TextField dir={languageText === "ar" ? "rtl" : "ltr"} {...params} label={t("Booking.model")} />
-              )}
-              renderOption={(props, option) => (
-                <li dir={languageText === "ar" ? "rtl" : "ltr"} {...props} key={option.id}>
-                  {languageText === "en" ? option.nameEn : option.nameAr}
-                </li>
-              )}
-              disabled={isPostApoinmentFormMutatePending}
-              clearOnBlur={false}
-              clearIcon={null}
-              noOptionsText={allCarModels === null ? t("Booking.loading") : t("Booking.noOptionsAvailable")}
-            />
-          )}
-
-          {/*  ناقل الحركة */}
-          {cookies.tokenApp && selectedModelId && (
-            <TextField
-              sx={{ backgroundColor: "#fff", marginTop: "16px" }}
-              dir={languageText === "ar" ? "rtl" : "ltr"}
-              required
-              fullWidth
-              select
-              label={t("Booking.transmission")}
-              value={selectedTransmissionID || ""}
-              onChange={handleTransmissionChange}
-              disabled={isPostApoinmentFormMutatePending}
-            >
-              <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} value={1}>
-                {t("Booking.normal")}
-              </MenuItem>
-              <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} value={2}>
-                {t("Booking.automatic")}
-              </MenuItem>
-            </TextField>
-          )}
-
-          {/*  سنة الصنع */}
-          {cookies.tokenApp && selectedTransmissionID && (
-            <TextField
-              sx={{ backgroundColor: "#fff", marginTop: "16px" }}
-              dir={languageText === "ar" ? "rtl" : "ltr"}
-              required
-              fullWidth
-              select
-              label={t("Booking.yearOfManufacture")}
-              value={selectedYear}
-              onChange={handleYearChange}
-              disabled={isPostApoinmentFormMutatePending}
-            >
-              {years && years.length > 0 ? (
-                years.map((year) => (
-                  <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} key={year.id} value={year.id}>
-                    {year.year}
-                  </MenuItem>
-                ))
-              ) : (
-                <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} value="">
-                  {t("Booking.loading")}
-                </MenuItem>
-              )}
-            </TextField>
-          )}
-
           <div className={style.date_and_time_container}>
             {/* تاريخ */}
-            {cookies.tokenApp && selectedYear && (
+            {cookies.tokenApp && (
               <div dir={languageText === "ar" ? "rtl" : "ltr"} className={style.datePickerContainer}>
                 <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en">
                   <DemoContainer components={["MobileDatePicker"]}>
@@ -754,7 +453,7 @@ export default function Booking() {
             )}
 
             {/* الوقت */}
-            {cookies.tokenApp && selectedYear && (
+            {cookies.tokenApp && (
               <div dir={languageText === "ar" ? "rtl" : "ltr"} className={style.datePickerContainer}>
                 <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en">
                   <DemoContainer components={["MobileTimePicker"]}>
@@ -798,7 +497,7 @@ export default function Booking() {
               </div>
             )}
           </div>
-          {cookies.tokenApp && selectedYear && (
+          {cookies.tokenApp && (
             <p
               dir={languageText === "ar" ? "rtl" : "ltr"}
               style={{
@@ -813,63 +512,17 @@ export default function Booking() {
             </p>
           )}
 
-          {/*  نوع الخدمة */}
-          {cookies.tokenApp && time && date && (
-            <>
-              <TextField
-                sx={{ backgroundColor: "#fff", marginTop: "16px" }}
-                dir={languageText === "ar" ? "rtl" : "ltr"}
-                required
-                fullWidth
-                select
-                label={t("Booking.typeOfService")}
-                value={selectedServiceId}
-                onChange={handleServicesChange}
-                disabled={isPostApoinmentFormMutatePending}
-              >
-                {allServices && allServices.length > 0 ? (
-                  allServices.map((service) => (
-                    <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} key={service.id} value={service.id}>
-                      {languageText === "en" ? service?.nameEn : service?.nameAr}
-                    </MenuItem>
-                  ))
-                ) : (
-                  <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} value="">
-                    {t("Booking.loading")}
-                  </MenuItem>
-                )}
-              </TextField>
-
-              {/* Display the descriptionAr of the selected service */}
-              {cookies.tokenApp && selectedServiceId && (
-                <div className={style.description}>
-                  {selectedService && (
-                    <pre>
-                      {(languageText === "en"
-                        ? selectedService?.descriptionEn
-                        : selectedService?.descriptionAr
-                      )?.replace(/(\d+)[.-]\s*/g, "$1. ")}
-                    </pre>
-                  )}
-                </div>
-              )}
-            </>
-          )}
-
           {/* Button */}
-          {cookies.tokenApp && selectedServiceId && (
+          {cookies.tokenApp && (
             <LoadingButton
               onClick={submitForm}
               style={{ marginTop: "32px" }}
               variant="contained"
               size="large"
               loading={isPostApoinmentFormMutatePending}
+              disabled={!selectedBranch || !time || !date}
             >
               {t("Booking.reservation")}
-              {/* {" "}
-              <span style={{ paddingRight: "9px" }}>
-                ({selectedService?.pricing} ريال تقريبا)
-              </span> */}
             </LoadingButton>
           )}
         </FormControl>
@@ -949,20 +602,6 @@ export default function Booking() {
                 </Box>
 
                 <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
-                  <MinorCrashIcon style={{ color: "#000000de" }} />
-                  <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
-                    {selectedDataForModal.manufacturer}
-                  </Typography>
-                </Box>
-
-                <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
-                  <HourglassTopIcon style={{ color: "#000000de" }} />
-                  <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
-                    {selectedDataForModal.year}
-                  </Typography>
-                </Box>
-
-                <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
                   <AccessTimeIcon style={{ color: "#000000de" }} />
                   <Typography dir="ltr" variant="h5" component="div" style={{ fontSize: "14px" }}>
                     {selectedDataForModal.time &&
@@ -978,13 +617,6 @@ export default function Booking() {
                   <CalendarMonthIcon style={{ color: "#000000de" }} />
                   <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
                     {selectedDataForModal.date && formatDate(selectedDataForModal.date)}
-                  </Typography>
-                </Box>
-
-                <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
-                  <StyleIcon style={{ color: "#000000de" }} />
-                  <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
-                    {selectedDataForModal.service}
                   </Typography>
                 </Box>
 
@@ -1058,15 +690,6 @@ export default function Booking() {
                         {/* {card.branchNameAr} */}
 
                         {languageText === "en" ? card?.branchNameEn : card?.branchNameAr}
-                      </Typography>
-                    </Box>
-
-                    <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
-                      <MinorCrashIcon style={{ color: "#000000de" }} />
-                      <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
-                        {/* {card.carManufacturerNameAr} */}
-
-                        {languageText === "en" ? card?.carManufacturerNameEn : card?.carManufacturerNameAr}
                       </Typography>
                     </Box>
 

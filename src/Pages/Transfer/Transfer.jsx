@@ -73,18 +73,16 @@ export default function Transfer() {
   };
 
   // Get Marketer Id
-  const { data: marketerData, isSuccess: isGetMarketerDataSuccess } =
-    useGetMarketerApi();
+  const { data: marketerData, isSuccess: isGetMarketerDataSuccess } = useGetMarketerApi();
 
   React.useEffect(() => {
     if (isGetMarketerDataSuccess) {
-      setAmount(marketerData?.points || 0);
+      setAmount(Math.floor(marketerData?.points) || 0);
     }
   }, [isGetMarketerDataSuccess]);
 
   // Check If Payment RequestIs Valid
-  const { data: checkIfPaymentRequestIsValid } =
-    useCheckIfPaymentRequestIsValidApi(marketerData?.id);
+  const { data: checkIfPaymentRequestIsValid } = useCheckIfPaymentRequestIsValidApi(marketerData?.id);
 
   // Handle Submit
   const { mutate, isPending } = useMakeTransferPaymentApi();
@@ -96,15 +94,19 @@ export default function Transfer() {
     const validate = formRef.current.reportValidity();
     if (!validate) return;
 
+    // Check if amount is a valid integer
+    if (!/^\d+$/.test(amount)) {
+      toast.warn(t("Transfer.amountMustBeInteger"));
+      return;
+    }
+
     if (amount < 200 || isNaN(amount)) {
       toast.warn(t("Transfer.minimumWithdrawalAmountIs200Riyals"));
       return;
     }
 
     if (amount > marketerData.points) {
-      toast.warn(
-        t("Transfer.theAmountEnteredIsGreaterThanAvailableBalanceInYourAccount")
-      );
+      toast.warn(t("Transfer.theAmountEnteredIsGreaterThanAvailableBalanceInYourAccount"));
       return;
     }
 
@@ -112,7 +114,7 @@ export default function Transfer() {
       const data = {
         // id: 0,
         marketerId: marketerData.id,
-        point: +amount,
+        point: Math.floor(+amount),
         tranferPaymentTypeId: selectedPaymentType,
         accountNumber: accountNumber,
         // actionBy: 0,
@@ -128,10 +130,7 @@ export default function Transfer() {
   return !cookies.tokenApp ? (
     <Navigate to={`${process.env.PUBLIC_URL}/falak/marketer`} replace />
   ) : (
-    <div
-      dir={languageText === "ar" ? "rtl" : "ltr"}
-      className={style.container}
-    >
+    <div dir={languageText === "ar" ? "rtl" : "ltr"} className={style.container}>
       <Typography
         variant="h6"
         component="div"
@@ -167,11 +166,7 @@ export default function Transfer() {
         >
           {paymentTypes && paymentTypes.length > 0 ? (
             paymentTypes.map((type) => (
-              <MenuItem
-                dir={languageText === "ar" ? "rtl" : "ltr"}
-                key={type.id}
-                value={type.id}
-              >
+              <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} key={type.id} value={type.id}>
                 {/* {type.nameAr} */}
                 {languageText === "ar" ? type.nameAr : type.nameEn}
               </MenuItem>
@@ -196,10 +191,21 @@ export default function Transfer() {
         />
 
         <TextField
-          sx={{ backgroundColor: "#fff", marginTop: "16px" }}
+          sx={{
+            backgroundColor: "#fff",
+            marginTop: "16px",
+            "& input[type=number]": {
+              MozAppearance: "textfield",
+              "&::-webkit-outer-spin-button, &::-webkit-inner-spin-button": {
+                WebkitAppearance: "none",
+                margin: 0,
+              },
+            },
+          }}
           fullWidth
           label={t("Transfer.amount")}
-          type="tel"
+          type="number" // Better mobile keyboard
+          pattern="[0-9]*"
           required
           dir="ltr"
           value={amount}
@@ -215,8 +221,7 @@ export default function Transfer() {
             marginTop: "9px",
           }}
         >
-          {t("Transfer.availableBalanceForWithdrawal")} {marketerData?.points}{" "}
-          {t("Transfer.riyal")}
+          {t("Transfer.availableBalanceForWithdrawal")} {Math.floor(marketerData?.points)} {t("Transfer.riyal")}
         </p>
 
         <LoadingButton

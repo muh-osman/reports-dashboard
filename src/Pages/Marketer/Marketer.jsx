@@ -211,7 +211,7 @@ export default function Marketer() {
       ) : (
         <>
           {/* Banner */}
-          <div className={style.banner}>
+          {/* <div className={style.banner}>
             <Alert
               sx={{ margin: "0px" }}
               severity="warning"
@@ -220,7 +220,7 @@ export default function Marketer() {
               <AlertTitle>{t("Marketer.bannerTitle")}</AlertTitle>
               {t("Marketer.bannerDiscreption")}
             </Alert>
-          </div>
+          </div> */}
 
           <div className={style.main_container}>
             {/* Score Card */}
@@ -299,7 +299,7 @@ export default function Marketer() {
               </div>
             </div>
 
-            <Top5UsersList languageText={languageText} />
+            <Top5UsersList languageText={languageText} userId={cookies.userId} />
 
             {/* Person Card */}
             <div className={style.person_card_container}>

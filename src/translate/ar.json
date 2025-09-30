@@ -445,6 +445,7 @@
   "Transfer": {
     "minimumWithdrawalAmountIs200Riyals": "الحد الأدنى لسحب الأرباح 200 ريال",
     "theAmountEnteredIsGreaterThanAvailableBalanceInYourAccount": "المبلغ المدخل أكبر من الرصيد المتاح في حسابك",
+    "amountMustBeInteger": "يجب أن يكون المبلغ عددًا صحيحًا بدون أرقام عشرية",
     "withdrawProfits": "سحب الأرباح",
     "paymentMechanism": "آلية الدفع",
     "loading": "جاري التحميل..",
@@ -572,7 +573,12 @@
 
   "Top5Component": {
     "title": "أفضل 5 مسوقين",
-    "subTitle": "مرتبة حسب عدد النقاط",
-    "point": "نقطة"
+    "forCurrentMonth": "للشهر الحالي",
+    "order": "الترتيب",
+    "name": "الاسم",
+    "code": "الكود",
+    "monthBalance": "رصيد الشهر",
+    "reward": "المكافأة",
+    "percentageOfCommission": "النسبة من قيمة العمولة"
   }
 }

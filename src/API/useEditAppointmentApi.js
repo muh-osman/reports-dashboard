@@ -9,12 +9,7 @@ import { useCookies } from "react-cookie";
 
 export const useEditAppointmentApi = (id) => {
   // Cookies
-  const [cookies, setCookie] = useCookies([
-    "tokenApp",
-    "username",
-    "userId",
-    "phoneNumber",
-  ]);
+  const [cookies, setCookie] = useCookies(["tokenApp", "username", "userId", "phoneNumber"]);
   const clientId = cookies.userId;
   //
   const navigate = useNavigate();
@@ -23,6 +18,8 @@ export const useEditAppointmentApi = (id) => {
 
   return useMutation({
     mutationFn: async (data) => {
+      console.log(data);
+
       const res = await API.put(`api/Card/${id}`, data, {
         headers: {
           "Content-Type": "application/json-patch+json", // this nessesary for sending data as json patch
@@ -40,8 +37,7 @@ export const useEditAppointmentApi = (id) => {
 
     onError: (err) => {
       console.error(err);
-      const errorMessage =
-        err?.response?.data?.message || err?.message || "An error occurred";
+      const errorMessage = err?.response?.data?.message || err?.message || "An error occurred";
       // Toastify
       toast.error(errorMessage);
     },

@@ -385,12 +385,29 @@ nav.mob-phone-nav {
 
 .full-Plane-catcher,
 .engines-catcher,
-.bascic-catcher {
+.bascic-catcher,
+.passenger-plans-catcher {
   position: relative;
   overflow: hidden;
 }
 
-.ar-discount::after {
+.full-Plane-catcher::after,
+.engines-catcher::after,
+.bascic-catcher::after,
+.passenger-plans-catcher::after {
+  position: absolute;
+  top: 15px;
+  width: 175px;
+  height: 47px;
+  font-size: 16px;
+  background-color: #d32f2f;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* .ar-discount::after {
   position: absolute;
   content: "خصم 10%";
   top: 15px;
@@ -404,9 +421,9 @@ nav.mob-phone-nav {
   display: flex;
   align-items: center;
   justify-content: center;
-}
+} */
 
-.en-discount::after {
+/* .en-discount::after {
   position: absolute;
   content: "10% Off";
   top: 15px;
@@ -421,7 +438,7 @@ nav.mob-phone-nav {
   display: flex;
   align-items: center;
   justify-content: center;
-}
+} */
 
 /* New modified styles */
 /* .crown-box.modified::after {
@@ -431,7 +448,7 @@ nav.mob-phone-nav {
   transform: rotate(45deg);
 } */
 
-.ar-fifty-discount::after {
+/* .ar-fifty-discount::after {
   position: absolute;
   content: "خصم 50%";
   top: 15px;
@@ -445,9 +462,9 @@ nav.mob-phone-nav {
   display: flex;
   align-items: center;
   justify-content: center;
-}
+} */
 
-.en-fifty-discount::after {
+/* .en-fifty-discount::after {
   position: absolute;
   content: "50% Off";
   top: 15px;
@@ -462,7 +479,7 @@ nav.mob-phone-nav {
   display: flex;
   align-items: center;
   justify-content: center;
-}
+} */
 
 .text-warning {
   display: none;

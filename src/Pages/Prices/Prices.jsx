@@ -20,6 +20,7 @@ import { toast } from "react-toastify";
 // API
 import useSearchApi from "../../API/useSearchApi";
 import useGetPricesApi from "../../API/useGetPricesApi";
+import useGetPassengerServicesPricesApi from "../../API/useGetPassengerServicesPricesApi";
 // Image
 import A from "../../Assets/Images/1.jpg";
 import B from "../../Assets/Images/2.jpg";
@@ -32,6 +33,14 @@ const redRyalIcon = `<svg width="13" fill="#d32f2f" xmlns="http://www.w3.org/200
 const greenRyalIcon = `<svg width="13" fill="#25d366" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>`;
 
 export default function Prices() {
+  // Get Passenger planes Prices
+  const {
+    data: passengerPlanePrices,
+    // fetchStatus: pricesFetchStatus,
+    // isSuccess: isFetchPricesSuccess,
+  } = useGetPassengerServicesPricesApi();
+
+  //
   React.useEffect(() => {
     // Scroll to the top of the page
     window.scrollTo(0, 0);
@@ -177,41 +186,6 @@ export default function Prices() {
   //   }
   // }, [languageText]);
 
-
-  React.useEffect(() => {
-    const fiftyDiscountCrownFullPlaneCatcher = document.querySelector(".full-Plane-catcher");
-    const fiftyDiscountCrownEnginesCatcher = document.querySelector(".engines-catcher");
-    const fiftyDiscountCrownBasicCatcher = document.querySelector(".bascic-catcher");
-
-    if (dis) {
-      sessionStorage.setItem("dis", "fifty");
-      if (languageText === "ar") {
-        fiftyDiscountCrownFullPlaneCatcher?.classList.remove("en-fifty-discount");
-        fiftyDiscountCrownEnginesCatcher?.classList.remove("en-fifty-discount");
-        fiftyDiscountCrownBasicCatcher?.classList.remove("en-fifty-discount");
-
-        fiftyDiscountCrownFullPlaneCatcher?.classList.add("ar-fifty-discount");
-        fiftyDiscountCrownEnginesCatcher?.classList.add("ar-fifty-discount");
-        fiftyDiscountCrownBasicCatcher?.classList.add("ar-fifty-discount");
-      } else {
-        fiftyDiscountCrownFullPlaneCatcher?.classList.remove("ar-fifty-discount");
-        fiftyDiscountCrownEnginesCatcher?.classList.remove("ar-fifty-discount");
-        fiftyDiscountCrownBasicCatcher?.classList.remove("ar-fifty-discount");
-
-        fiftyDiscountCrownFullPlaneCatcher?.classList.add("en-fifty-discount");
-        fiftyDiscountCrownEnginesCatcher?.classList.add("en-fifty-discount");
-        fiftyDiscountCrownBasicCatcher?.classList.add("en-fifty-discount");
-      }
-    } else {
-      if (languageText === "ar") {
-        fiftyDiscountCrownFullPlaneCatcher?.classList.remove("en-discount");
-        fiftyDiscountCrownFullPlaneCatcher?.classList.add("ar-discount");
-      } else {
-        fiftyDiscountCrownFullPlaneCatcher?.classList.remove("ar-discount");
-        fiftyDiscountCrownFullPlaneCatcher?.classList.add("en-discount");
-      }
-    }
-  }, [dis, languageText, isSelectPurchaseService, checkit, passengerCheck]);
   //
   // Create a component for checklist items with tooltips
   const ChecklistItem = ({ checked, text, tooltip }) => {
@@ -236,6 +210,7 @@ export default function Prices() {
       </li>
     );
   };
+
   // Create a component for checklist items with tooltips
   const PassengerChecklistItem = ({ checked, text, tooltip }) => {
     return (
@@ -502,6 +477,47 @@ export default function Prices() {
     isSuccess: isFetchPricesSuccess,
   } = useGetPricesApi(selectedModelId, selectedYear, trigger);
 
+  React.useEffect(() => {
+    if (dis) {
+      sessionStorage.setItem("dis", "fifty");
+    }
+
+    // Create a new style element
+    const style = document.createElement("style");
+
+    const discountPercentA = prices?.[0]?.prices?.[0]?.discount_percent ?? "0"; // شامل %
+    const discountPercentB = prices?.[0]?.prices?.[1]?.discount_percent ?? "0"; // اساسي %
+    const discountPercentC = prices?.[0]?.prices?.[2]?.discount_percent ?? "0"; // محركات %
+
+    const contentA = languageText === "ar" ? `خصم ${discountPercentA}%` : `${discountPercentA}% Off`;
+    const contentB = languageText === "ar" ? `خصم ${discountPercentB}%` : `${discountPercentB}% Off`;
+    const contentC = languageText === "ar" ? `خصم ${discountPercentC}%` : `${discountPercentC}% Off`;
+
+    style.innerHTML = `
+      .full-Plane-catcher::after,
+      .engines-catcher::after,
+      .bascic-catcher::after
+      {
+        left: ${languageText === "ar" ? "-50px" : "unset"};
+        right: ${languageText === "ar" ? "unset" : "-50px"};
+        transform: ${languageText === "ar" ? "rotate(315deg)" : "rotate(45deg)"};
+      }
+
+      .full-Plane-catcher::after
+      {
+        ${discountPercentA == 0 ? "content: none;" : `content: "${contentA}";`}
+      }
+      .engines-catcher::after
+      {
+        ${discountPercentB == 0 ? "content: none;" : `content: "${contentB}";`}
+      }
+      .bascic-catcher::after
+      {
+        ${discountPercentC == 0 ? "content: none;" : `content: "${contentC}";`}
+      }`;
+    document.head.appendChild(style);
+  }, [dis, languageText, prices, isSelectPurchaseService, checkit, passengerCheck]);
+
   // Check if prices is defined and has at least one element
   let fullPrice = 0;
   let basicPrice = 0;
@@ -517,18 +533,18 @@ export default function Prices() {
   let saveEngainPrice = 0;
 
   if (prices && prices.length > 0) {
+    // شامل
     fullPrice = Math.floor(prices[0]?.prices[0]?.price);
+    oldPriceFullPrice = Math.floor(prices[0]?.prices[0]?.original_price);
+    saveFullPrice = Math.floor(prices[0]?.prices[0]?.you_save);
+    // اساسي
     basicPrice = Math.floor(prices[0]?.prices[1]?.price);
+    oldPriceBasicPrice = Math.floor(prices[0]?.prices[1]?.original_price);
+    saveBasicPrice = Math.floor(prices[0]?.prices[1]?.you_save);
+    // محركات
     engainPrice = Math.floor(prices[0]?.prices[2]?.price);
-
-    oldPriceFullPrice = Math.floor(prices[0]?.prices[0]?.price / (dis ? 0.5 : 0.9));
-    saveFullPrice = Math.floor(oldPriceFullPrice - fullPrice);
-
-    oldPriceBasicPrice = Math.floor(prices[0]?.prices[1]?.price / 0.5);
-    saveBasicPrice = Math.floor(oldPriceBasicPrice - basicPrice);
-
-    oldPriceEngainPrice = Math.floor(prices[0]?.prices[2]?.price / 0.5);
-    saveEngainPrice = Math.floor(oldPriceEngainPrice - engainPrice);
+    oldPriceEngainPrice = Math.floor(prices[0]?.prices[2]?.original_price);
+    saveEngainPrice = Math.floor(prices[0]?.prices[2]?.you_save);
   }
 
   //
@@ -581,6 +597,27 @@ export default function Prices() {
     { value: "suv", label: t("Prices.suv"), image: B },
     { value: "sedan", label: t("Prices.sedan"), image: A },
   ];
+
+  React.useEffect(() => {
+    // Create a new style element
+    const style = document.createElement("style");
+
+    const discountPercentForPassngerPlans =
+      passengerPlanePrices?.data?.[passenger === "luxury" ? 0 : passenger === "suv" ? 1 : 2]?.discount_percent ?? "0";
+
+    const content =
+      languageText === "ar" ? `خصم ${discountPercentForPassngerPlans}%` : `${discountPercentForPassngerPlans}% Off`;
+
+    style.innerHTML = `
+      .passenger-plans-catcher::after
+      {
+        left: ${languageText === "ar" ? "-50px" : "unset"};
+        right: ${languageText === "ar" ? "unset" : "-50px"};
+        transform: ${languageText === "ar" ? "rotate(315deg)" : "rotate(45deg)"};
+        ${discountPercentForPassngerPlans == 0 ? "content: none;" : `content: "${content}";`}
+      }`;
+    document.head.appendChild(style);
+  }, [languageText, passenger]);
 
   return (
     <div className={style.container}>
@@ -907,7 +944,7 @@ export default function Prices() {
                             <span dangerouslySetInnerHTML={{ __html: ryalIcon }} />
                           </h1>
 
-                          {dis && (
+                          {prices?.[0]?.prices?.[2]?.discount_percent != 0 && (
                             <>
                               <h3
                                 dir="rtl"
@@ -981,7 +1018,7 @@ export default function Prices() {
                               selectedYear >= 2017 ? 2 : 1
                             }&car_model_id=${selectedModelId}&price_id=2&full_year=${selectedYear}${
                               dis ? "&dis=fifty" : ""
-                            }&off=0`}
+                            }&off=${prices?.[0]?.prices?.[2]?.discount_percent || "0"}`}
                           >
                             {t("Prices.orderNow")}
                           </a>
@@ -1001,7 +1038,7 @@ export default function Prices() {
                             <span dangerouslySetInnerHTML={{ __html: ryalIcon }} />
                           </h1>
 
-                          {dis && (
+                          {prices?.[0]?.prices?.[1]?.discount_percent != 0 && (
                             <>
                               <h3
                                 dir="rtl"
@@ -1074,7 +1111,7 @@ export default function Prices() {
                               selectedYear >= 2017 ? 2 : 1
                             }&car_model_id=${selectedModelId}&price_id=1&full_year=${selectedYear}${
                               dis ? "&dis=fifty" : ""
-                            }&off=0`}
+                            }&off=${prices?.[0]?.prices?.[1]?.discount_percent || "0"}`}
                           >
                             {t("Prices.orderNow")}
                           </a>
@@ -1096,44 +1133,48 @@ export default function Prices() {
                             {fullPrice}
                             <span dangerouslySetInnerHTML={{ __html: ryalIcon }} />
                           </h1>
-                          <h3
-                            dir="rtl"
-                            style={{
-                              marginTop: "-20px",
-                              marginBottom: "12px",
-                              fontSize: 16,
-                              color: "#d32f2f",
-                              textAlign: "center",
-                            }}
-                          >
-                            <span style={{ textDecoration: "line-through" }}>{oldPriceFullPrice}</span>{" "}
-                            <span>
-                              <span
-                                dangerouslySetInnerHTML={{
-                                  __html: redRyalIcon,
-                                }}
-                              />
-                            </span>
-                            <span
+
+                          {prices?.[0]?.prices?.[0]?.discount_percent != 0 && (
+                            <h3
                               dir="rtl"
                               style={{
-                                textDecoration: "none",
-                                color: "#25d366",
-                                backgroundColor: "#dff1d9",
-                                marginRight: 6,
-                                padding: "0 5px",
-                                borderRadius: 2,
+                                marginTop: "-20px",
+                                marginBottom: "12px",
                                 fontSize: 16,
+                                color: "#d32f2f",
+                                textAlign: "center",
                               }}
                             >
-                              {t("Prices.save")} {saveFullPrice}{" "}
+                              <span style={{ textDecoration: "line-through" }}>{oldPriceFullPrice}</span>{" "}
+                              <span>
+                                <span
+                                  dangerouslySetInnerHTML={{
+                                    __html: redRyalIcon,
+                                  }}
+                                />
+                              </span>
                               <span
-                                dangerouslySetInnerHTML={{
-                                  __html: greenRyalIcon,
+                                dir="rtl"
+                                style={{
+                                  textDecoration: "none",
+                                  color: "#25d366",
+                                  backgroundColor: "#dff1d9",
+                                  marginRight: 6,
+                                  padding: "0 5px",
+                                  borderRadius: 2,
+                                  fontSize: 16,
                                 }}
-                              />
-                            </span>
-                          </h3>
+                              >
+                                {t("Prices.save")} {saveFullPrice}{" "}
+                                <span
+                                  dangerouslySetInnerHTML={{
+                                    __html: greenRyalIcon,
+                                  }}
+                                />
+                              </span>
+                            </h3>
+                          )}
+
                           <h5>{t("Prices.includesExamination")}:</h5>
                           <ul className="list-unstyled mt-3 mb-4">
                             {checklistItems.map((item) => (
@@ -1156,7 +1197,7 @@ export default function Prices() {
                               selectedYear >= 2017 ? 2 : 1
                             }&car_model_id=${selectedModelId}&price_id=0&full_year=${selectedYear}${
                               dis ? "&dis=fifty" : ""
-                            }&off=10`}
+                            }&off=${prices?.[0]?.prices?.[0]?.discount_percent || "0"}`}
                           >
                             {t("Prices.orderNow")}
                           </a>
@@ -1203,7 +1244,7 @@ export default function Prices() {
                   </div>
                   <div className="plane-box">
                     {/* سيدان - دفع رباعي - فارهة */}
-                    <div className="col plane eng-pane dis rounded-3 shadow-sm engines-catcher">
+                    <div className="col plane eng-pane dis rounded-3 shadow-sm passenger-plans-catcher">
                       <div className="card mb-4 card-price eng">
                         <div className="card-header py-3">
                           <h4 className="my-0 fw-normal">
@@ -1212,13 +1253,65 @@ export default function Prices() {
                             {passenger && passenger === "luxury" && t("Prices.luxury")}
                           </h4>
                         </div>
+
                         <div className="card-body">
                           <h1 dir="rtl" id="engain-price" className="card-title pricing-card-title">
-                            {passenger && passenger === "sedan" && 100}
-                            {passenger && passenger === "suv" && 150}
-                            {passenger && passenger === "luxury" && 200}
+                            {passenger && passenger === "sedan" && Math.floor(passengerPlanePrices?.data[2]?.price)}
+                            {passenger && passenger === "suv" && Math.floor(passengerPlanePrices?.data[1]?.price)}
+                            {passenger && passenger === "luxury" && Math.floor(passengerPlanePrices?.data[0]?.price)}
                             <span dangerouslySetInnerHTML={{ __html: ryalIcon }} />
                           </h1>
+
+                          {passengerPlanePrices?.data?.[passenger === "luxury" ? 0 : passenger === "suv" ? 1 : 2]
+                            ?.discount_percent != 0 && (
+                            <h3
+                              dir="rtl"
+                              style={{
+                                marginTop: "-20px",
+                                marginBottom: "12px",
+                                fontSize: 16,
+                                color: "#d32f2f",
+                                textAlign: "center",
+                              }}
+                            >
+                              <span style={{ textDecoration: "line-through" }}>
+                                {Math.floor(
+                                  passengerPlanePrices?.data?.[passenger === "luxury" ? 0 : passenger === "suv" ? 1 : 2]
+                                    ?.original_price
+                                )}
+                              </span>{" "}
+                              <span>
+                                <span
+                                  dangerouslySetInnerHTML={{
+                                    __html: redRyalIcon,
+                                  }}
+                                />
+                              </span>
+                              <span
+                                dir="rtl"
+                                style={{
+                                  textDecoration: "none",
+                                  color: "#25d366",
+                                  backgroundColor: "#dff1d9",
+                                  marginRight: 6,
+                                  padding: "0 5px",
+                                  borderRadius: 2,
+                                  fontSize: 16,
+                                }}
+                              >
+                                {t("Prices.save")}{" "}
+                                {Math.floor(
+                                  passengerPlanePrices?.data?.[passenger === "luxury" ? 0 : passenger === "suv" ? 1 : 2]
+                                    ?.you_save
+                                )}{" "}
+                                <span
+                                  dangerouslySetInnerHTML={{
+                                    __html: greenRyalIcon,
+                                  }}
+                                />
+                              </span>
+                            </h3>
+                          )}
 
                           <h5>{t("Prices.includesExamination")}:</h5>
                           <ul className="list-unstyled mt-3 mb-4">
@@ -1231,19 +1324,25 @@ export default function Prices() {
                               />
                             ))}
                           </ul>
-                          <a
-                            aria-label="Ask now Button"
-                            id="plane-one"
-                            className="ask-now"
-                            rel="noopener noreferrer"
-                            href={`https://cashif.cc/pay${
-                              languageText === "ar" ? "" : "/en"
-                            }/?plan=passenger&year_id=1&car_model_id=9&price_id=2&full_year=0${
-                              dis ? "&dis=fifty" : ""
-                            }${passenger ? `&passenger=${passenger}` : ""}&off=0`}
-                          >
-                            {t("Prices.orderNow")}
-                          </a>
+
+                          {passengerPlanePrices && (
+                            <a
+                              aria-label="Ask now Button"
+                              id="plane-one"
+                              className="ask-now"
+                              rel="noopener noreferrer"
+                              href={`https://cashif.cc/pay${
+                                languageText === "ar" ? "" : "/en"
+                              }/?plan=passenger&year_id=1&car_model_id=9&price_id=2&full_year=0${
+                                dis ? "&dis=fifty" : ""
+                              }${passenger ? `&passenger=${passenger}` : ""}&off=${
+                                passengerPlanePrices?.data[passenger === "luxury" ? 0 : passenger === "suv" ? 1 : 2]
+                                  ?.discount_percent || "0"
+                              }`}
+                            >
+                              {t("Prices.orderNow")}
+                            </a>
+                          )}
                         </div>
                       </div>
                     </div>
