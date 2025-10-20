@@ -1,27 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 // API
 import API from "./Api";
-// Cookies
-import { useCookies } from "react-cookie";
 
 export const fetchBranches = async () => {
-  const res = await API.get(`api/Branch`);
+  const res = await API.get(`api/Branch/AllBranch`);
   return res.data;
 };
 
 export default function useGetAllBranchesApi() {
-  const [cookies, setCookie] = useCookies([
-    "tokenApp",
-    "username",
-    "userId",
-    "phoneNumber",
-  ]);
-
-  const token = cookies.tokenApp;
-
   return useQuery({
-    queryKey: ["Branches", token],
+    queryKey: ["Branches"],
     queryFn: fetchBranches,
-    enabled: !!token, // Only run the query if the token exists
   });
 }

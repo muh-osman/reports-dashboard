@@ -6,8 +6,9 @@ import reportWebVitals from "./reportWebVitals";
 // MUI theme
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import ScopedCssBaseline from "@mui/material/ScopedCssBaseline";
-// Phone number context
+// Context
 import { PhoneNumberProvider } from "./Contexts/PhoneNumberContext";
+import { BookingProvider } from "./Contexts/BookingContext";
 // Toastify
 import ToastContainerWithLanguage from "./ToastContainerWithLanguage";
 import "react-toastify/dist/ReactToastify.css";
@@ -17,7 +18,6 @@ import { CookiesProvider } from "react-cookie";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 // PWM
 // import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-
 
 // Create a client
 const qc = new QueryClient({
@@ -52,7 +52,9 @@ root.render(
         <ToastContainerWithLanguage />
         <ScopedCssBaseline>
           <PhoneNumberProvider>
-            <App />
+            <BookingProvider>
+              <App />
+            </BookingProvider>
           </PhoneNumberProvider>
         </ScopedCssBaseline>
       </QueryClientProvider>

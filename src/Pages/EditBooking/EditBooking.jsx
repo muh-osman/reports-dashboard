@@ -352,9 +352,7 @@ export default function EditBooking() {
                   color: "#757575",
                 }}
               >
-                {selectedBranch === 19 || selectedBranch === 20
-                  ? t("Booking.timeValidationForAlqadisiaAndAlshifa")
-                  : t("Booking.timeValidationForJeddahAndDammam")}
+                {selectedBranch === 19 || selectedBranch === 20 ? t("Booking.timeValidationForAlqadisiaAndAlshifa") : t("Booking.timeValidationForJeddahAndDammam")}
               </p>
 
               {/* Button */}

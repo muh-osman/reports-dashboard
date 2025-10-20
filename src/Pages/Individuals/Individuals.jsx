@@ -24,8 +24,17 @@ import { useCreateIndividualsAccountApi } from "../../API/useCreateIndividualsAc
 import { toast } from "react-toastify";
 //
 import logo from "../../Assets/Images/logo.webp";
+// PhoneNumber Context
+import { usePhoneNumber } from "../../Contexts/PhoneNumberContext";
 
 export default function Individuals() {
+  // Context
+  const { phoneNumber, setPhoneNumber } = usePhoneNumber();
+  const [phoneNumberState, setPhoneNumberState] = React.useState(
+    !phoneNumber ? "" : phoneNumber.startsWith("0") ? phoneNumber.slice(1) : phoneNumber
+  );
+
+  //
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
 
@@ -77,6 +86,8 @@ export default function Individuals() {
 
     // Update the input value
     e.target.value = value;
+
+    setPhoneNumberState(value);
   };
 
   // handle submit
@@ -210,6 +221,7 @@ export default function Individuals() {
                     disabled={isPending}
                     onKeyPress={handleKeyPress}
                     onChange={handlPhoneNumbereChange}
+                    value={phoneNumberState}
                     InputLabelProps={{
                       className: "custom-label-rtl",
                     }}

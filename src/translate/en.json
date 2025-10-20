@@ -70,7 +70,7 @@
     "checkItCheckListCPlus": "our website",
     "checkItCheckListD": "Complete the transfer of ownership and insurance with ease",
 
-    "travelerCheck": "A customized",
+    "travelerCheck": "Passenger check",
     "travelerCheckDescriptionPartOne": "A customized ",
     "travelerCheckDescriptionPartTwo": "pre-travel ",
     "travelerCheckDescriptionPartThree": "inspection to ensure your vehicle's roadworthiness, covering essential checks that guarantee a safe and comfortable journey",
@@ -478,6 +478,7 @@
     "howItWorks": "How It Works",
     "termsAndConditions": "Terms and Conditions",
     "currentBalance": "Current Balance",
+    "monthPoints": "Monthly balance",
     "commissionRate": "Commission Rate",
     "discountRate": "Discount Rate",
     "useTheCode": "Use the Code",

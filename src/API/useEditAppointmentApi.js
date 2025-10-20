@@ -30,7 +30,7 @@ export const useEditAppointmentApi = (id) => {
 
     onSuccess: (responseData) => {
       toast.success("تم التعديل");
-      qc.invalidateQueries(["Appointment", clientId]); // This will refetch the appointments
+      qc.invalidateQueries(["appointments", clientId]); // This will refetch the appointments
 
       navigate(`${process.env.PUBLIC_URL}/booking`, { replace: true });
     },

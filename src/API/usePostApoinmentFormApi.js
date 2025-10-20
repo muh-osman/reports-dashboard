@@ -25,7 +25,7 @@ export const usePostApoinmentFormApi = () => {
 
     onSuccess: (responseData) => {
       toast.success("تم الحجز");
-      qc.invalidateQueries(["Appointment", clientId]); // This will refetch the appointments
+      // qc.invalidateQueries(["Appointment", clientId]); // This will refetch the appointments
     },
 
     onError: (err) => {

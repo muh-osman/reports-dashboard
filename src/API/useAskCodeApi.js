@@ -25,11 +25,18 @@ export const useAskCodeApi = () => {
     },
 
     onSuccess: (responseData, variables) => {
+      const phoneNumber = variables.get("phoneNumber");
+      setPhoneNumber(phoneNumber); // Store phoneNumber in context
+
       if (responseData.status === false) {
-        toast.warn(responseData.description);
+        // toast.warn(responseData.description);
+        console.log(responseData.description);
+
+        // Ask and redirect user to signup if the phone number not register yet
+        if (responseData.description === "This Phone Not Found | رقم الجوال غير موجود") {
+          navigate(`${process.env.PUBLIC_URL}/individuals/${fromUrlParam ? "?from=" + fromUrlParam : ""}`);
+        }
       } else {
-        const phoneNumber = variables.get("phoneNumber");
-        setPhoneNumber(phoneNumber); // Store phoneNumber in context
         navigate(`${process.env.PUBLIC_URL}/verify/${fromUrlParam ? "?from=" + fromUrlParam : ""}`);
       }
     },
@@ -37,6 +44,7 @@ export const useAskCodeApi = () => {
     onError: (err) => {
       console.error(err);
       const errorMessage = err?.response?.data?.message || err?.message || "An error occurred";
+
       // Toastify
       toast.error(errorMessage);
     },

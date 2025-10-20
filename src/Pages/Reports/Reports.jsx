@@ -122,8 +122,7 @@ export default function Reports() {
     // GetCardsPendingApproveCards();
   }, []);
   //
-  const { mutate: checkIfCardsHaveSummeryReportMutate, data: AllSummaryReportsStatus } =
-    useCheckAllSummaryReportsNumbersApi();
+  const { mutate: checkIfCardsHaveSummeryReportMutate, data: AllSummaryReportsStatus } = useCheckAllSummaryReportsNumbersApi();
   //
   const { mutate: checkIfCardsHaveVideosMutate, data: AllVideoReportsStatus } = useCheckCardsIfHaveVideosApi();
   //
@@ -407,10 +406,7 @@ export default function Reports() {
             }
 
             // 3. Special case for MOV files (common variations)
-            if (
-              fileExtension === ".mp4" &&
-              (normalizedContentType.includes("mov") || normalizedContentType.includes("quicktime"))
-            ) {
+            if (fileExtension === ".mp4" && (normalizedContentType.includes("mov") || normalizedContentType.includes("quicktime"))) {
               fileExtension = ".mov";
               console.log(`[Debug] Special MOV handling: ${contentType} → .mov`);
             }
@@ -564,13 +560,7 @@ export default function Reports() {
                 {points && points.points !== undefined ? points.points : 0}{" "}
               </h1> */}
               <h1>
-                <NumberFlow
-                  value={points?.points || 0}
-                  duration={1500}
-                  delay={0}
-                  ease="outExpo"
-                  formattingFn={(value) => Math.floor(value).toLocaleString()}
-                />
+                <NumberFlow value={points?.points || 0} duration={1500} delay={0} ease="outExpo" formattingFn={(value) => Math.floor(value).toLocaleString()} />
               </h1>
             </div>
 
@@ -605,9 +595,7 @@ export default function Reports() {
                   }}
                 >
                   <h3 style={{ textAlign: "center", color: getClientColor() }}>{t("Reports.rank")}</h3>
-                  <h3 style={{ textAlign: "center", color: getClientColor() }}>
-                    {languageText === "ar" ? points?.clientTypeAr || "-" : points?.clientTypeEn || "-"}
-                  </h3>
+                  <h3 style={{ textAlign: "center", color: getClientColor() }}>{languageText === "ar" ? points?.clientTypeAr || "-" : points?.clientTypeEn || "-"}</h3>
                   {/* Adjust size and color as needed */}
                 </div>
               </Box>
@@ -617,8 +605,7 @@ export default function Reports() {
           <div className={style.money_card_footer}>
             <Tooltip title={t("Reports.allPointsUsedFromYourAccount")} arrow enterTouchDelay={0}>
               <h3>
-                {t("Reports.totalPointsUsed")}{" "}
-                {points && points.pointsConsumed !== undefined ? points.pointsConsumed : 0}
+                {t("Reports.totalPointsUsed")} {points && points.pointsConsumed !== undefined ? points.pointsConsumed : 0}
               </h3>
             </Tooltip>
           </div>
@@ -637,12 +624,7 @@ export default function Reports() {
       </div>
 
       {/* Client types modal */}
-      <Modal
-        open={isClientTypesModalOpen}
-        onClose={handleClientTypesModalClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
+      <Modal open={isClientTypesModalOpen} onClose={handleClientTypesModalClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box
           dir={languageText === "ar" ? "rtl" : "ltr"}
           sx={{
@@ -724,12 +706,7 @@ export default function Reports() {
       ) : (
         <div className={style.reports_cards_container}>
           {/* Condetion And Terms Modal */}
-          <Modal
-            open={openCondetionAndTermsModal}
-            onClose={handleCondetionAndTermsModalClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-          >
+          <Modal open={openCondetionAndTermsModal} onClose={handleCondetionAndTermsModalClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
             <Box
               dir={languageText === "ar" ? "rtl" : "ltr"}
               sx={{
@@ -760,100 +737,93 @@ export default function Reports() {
                   <h1>{languageText === "ar" ? "وثيقة ضمان المركبة" : "Vehicle Warranty Document"}</h1>
 
                   <pre className={style.wrapping_pre}>
-                    {(languageText === "ar" ? terms?.termsAndCondtionsAr || "" : terms?.termsAndCondtionsEn || "")
-                      .split("\n")
-                      .reduce((acc, paragraph, index) => {
-                        if (paragraph.trim() === "") return acc;
+                    {(languageText === "ar" ? terms?.termsAndCondtionsAr || "" : terms?.termsAndCondtionsEn || "").split("\n").reduce((acc, paragraph, index) => {
+                      if (paragraph.trim() === "") return acc;
 
-                        if (paragraph.startsWith(languageText === "ar" ? "البند" : "Clause")) {
-                          return [...acc, <h6 key={`h6-${index}`}>{paragraph}</h6>];
+                      if (paragraph.startsWith(languageText === "ar" ? "البند" : "Clause")) {
+                        return [...acc, <h6 key={`h6-${index}`}>{paragraph}</h6>];
+                      }
+
+                      if (/^\d+\.\t/.test(paragraph)) {
+                        const content = paragraph.replace(/^\d+\.\t/, "");
+                        const lastElement = acc[acc.length - 1];
+
+                        if (lastElement && lastElement.type === "ul") {
+                          return [
+                            ...acc.slice(0, -1),
+                            <ul
+                              key={lastElement.key}
+                              style={{
+                                padding: languageText === "ar" ? "0 24px 0 0" : "0 0 0 24px",
+                              }}
+                            >
+                              {lastElement.props.children}
+                              <li key={`li-${index}`}>{content}</li>
+                            </ul>,
+                          ];
+                        } else {
+                          return [
+                            ...acc,
+                            <ul
+                              key={`ul-${index}`}
+                              style={{
+                                padding: languageText === "ar" ? "0 24px 0 0" : "0 0 0 24px",
+                              }}
+                            >
+                              <li key={`li-${index}`}>{content}</li>
+                            </ul>,
+                          ];
                         }
+                      }
 
-                        if (/^\d+\.\t/.test(paragraph)) {
-                          const content = paragraph.replace(/^\d+\.\t/, "");
-                          const lastElement = acc[acc.length - 1];
-
-                          if (lastElement && lastElement.type === "ul") {
-                            return [
-                              ...acc.slice(0, -1),
-                              <ul
-                                key={lastElement.key}
-                                style={{
-                                  padding: languageText === "ar" ? "0 24px 0 0" : "0 0 0 24px",
-                                }}
-                              >
-                                {lastElement.props.children}
-                                <li key={`li-${index}`}>{content}</li>
-                              </ul>,
-                            ];
-                          } else {
-                            return [
-                              ...acc,
-                              <ul
-                                key={`ul-${index}`}
-                                style={{
-                                  padding: languageText === "ar" ? "0 24px 0 0" : "0 0 0 24px",
-                                }}
-                              >
-                                <li key={`li-${index}`}>{content}</li>
-                              </ul>,
-                            ];
-                          }
-                        }
-
-                        return [...acc, <div key={`div-${index}`}>{paragraph}</div>];
-                      }, [])}
+                      return [...acc, <div key={`div-${index}`}>{paragraph}</div>];
+                    }, [])}
                   </pre>
 
                   <h6>{languageText === "ar" ? "حالات الغاء وثيقة ضمان المركبة" : ""}</h6>
 
                   <pre className={style.wrapping_pre}>
-                    {(languageText === "ar"
-                      ? terms?.cancelWarrantyDocumentAr || ""
-                      : terms?.cancelWarrantyDocumentEn || ""
-                    )
-                      .split("\n")
-                      .reduce((acc, paragraph, index) => {
-                        if (paragraph.trim() === "") return acc;
+                    {(languageText === "ar" ? terms?.cancelWarrantyDocumentAr || "" : terms?.cancelWarrantyDocumentEn || "").split("\n").reduce((acc, paragraph, index) => {
+                      if (paragraph.trim() === "") return acc;
 
-                        if (paragraph.startsWith(languageText === "ar" ? "البند" : "Clause")) {
-                          return [...acc, <h6 key={`h6-${index}`}>{paragraph}</h6>];
+                      if (paragraph.startsWith(languageText === "ar" ? "البند" : "Clause")) {
+                        return [...acc, <h6 key={`h6-${index}`}>{paragraph}</h6>];
+                      }
+
+                      if (/^\d+\.\t/.test(paragraph)) {
+                        const content = paragraph.replace(/^\d+\.\t/, "");
+                        const lastElement = acc[acc.length - 1];
+
+                        if (lastElement && lastElement.type === "ul") {
+                          return [
+                            ...acc.slice(0, -1),
+                            <ul
+                              key={lastElement.key}
+                              style={{
+                                padding: languageText === "ar" ? "0 24px 0 0" : "0 0 0 24px",
+                              }}
+                            >
+                              {lastElement.props.children}
+                              <li key={`li-${index}`}>{content}</li>
+                            </ul>,
+                          ];
+                        } else {
+                          return [
+                            ...acc,
+                            <ul
+                              key={`ul-${index}`}
+                              style={{
+                                padding: languageText === "ar" ? "0 24px 0 0" : "0 0 0 24px",
+                              }}
+                            >
+                              <li key={`li-${index}`}>{content}</li>
+                            </ul>,
+                          ];
                         }
+                      }
 
-                        if (/^\d+\.\t/.test(paragraph)) {
-                          const content = paragraph.replace(/^\d+\.\t/, "");
-                          const lastElement = acc[acc.length - 1];
-
-                          if (lastElement && lastElement.type === "ul") {
-                            return [
-                              ...acc.slice(0, -1),
-                              <ul
-                                key={lastElement.key}
-                                style={{
-                                  padding: languageText === "ar" ? "0 24px 0 0" : "0 0 0 24px",
-                                }}
-                              >
-                                {lastElement.props.children}
-                                <li key={`li-${index}`}>{content}</li>
-                              </ul>,
-                            ];
-                          } else {
-                            return [
-                              ...acc,
-                              <ul
-                                key={`ul-${index}`}
-                                style={{
-                                  padding: languageText === "ar" ? "0 24px 0 0" : "0 0 0 24px",
-                                }}
-                              >
-                                <li key={`li-${index}`}>{content}</li>
-                              </ul>,
-                            ];
-                          }
-                        }
-
-                        return [...acc, <div key={`div-${index}`}>{paragraph}</div>];
-                      }, [])}
+                      return [...acc, <div key={`div-${index}`}>{paragraph}</div>];
+                    }, [])}
                   </pre>
                 </div>
 
@@ -868,20 +838,11 @@ export default function Reports() {
                   />
                   <FormControlLabel
                     control={<Radio required checked={checked === false} onChange={() => handleChange(false)} />}
-                    label={
-                      languageText === "ar" ? "لا أوافق على الشروط والأحكام" : "I disagree to the terms and conditions"
-                    }
+                    label={languageText === "ar" ? "لا أوافق على الشروط والأحكام" : "I disagree to the terms and conditions"}
                   />
                 </div>
 
-                <Button
-                  fullWidth
-                  sx={{ marginTop: "30px" }}
-                  variant="contained"
-                  size="large"
-                  disabled={checked === null}
-                  onClick={downloadFromTermsModal}
-                >
+                <Button fullWidth sx={{ marginTop: "30px" }} variant="contained" size="large" disabled={checked === null} onClick={downloadFromTermsModal}>
                   {languageText === "ar" ? "تحميل التقرير" : "Download the report"}
                 </Button>
               </div>
@@ -918,9 +879,7 @@ export default function Reports() {
                     <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
                       <MinorCrashIcon style={{ color: "#000000de" }} />
                       <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
-                        {languageText === "en"
-                          ? card?.carManufacturerNameEn || "-"
-                          : card?.carManufacturerNameAr || "-"}
+                        {languageText === "en" ? card?.carManufacturerNameEn || "-" : card?.carManufacturerNameAr || "-"}
                       </Typography>
                     </Box>
 
@@ -938,9 +897,7 @@ export default function Reports() {
                           ? card.servicesListNameAr.join(", ")
                           : "غير محدد"} */}
 
-                        {languageText === "en"
-                          ? card?.servicesListNameEn.join(", ") || "-"
-                          : card?.servicesListNameAr.join(", ") || "-"}
+                        {languageText === "en" ? card?.servicesListNameEn.join(", ") || "-" : card?.servicesListNameAr.join(", ") || "-"}
                       </Typography>
                     </Box>
 
@@ -1017,7 +974,6 @@ export default function Reports() {
                     )}
 
                     {/*  Video Button */}
-
                     {AllVideoReportsStatus?.data?.[card.id.toString()] === true && (
                       <IconButton
                         sx={{

@@ -136,16 +136,8 @@ export default function SignUp() {
           </Tooltip>
         </div>
         <div className={style.introCurve}>
-          <svg
-            style={{ width: "100%", height: "auto" }}
-            viewBox="0 0 1920 74"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M0 0H1920V0.96521C1920 0.96521 1335.71 74 960 74C584.29 74 0 0.96521 0 0.96521V0Z"
-              fill="#174545"
-            />
+          <svg style={{ width: "100%", height: "auto" }} viewBox="0 0 1920 74" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 0H1920V0.96521C1920 0.96521 1335.71 74 960 74C584.29 74 0 0.96521 0 0.96521V0Z" fill="#174545" />
           </svg>
         </div>
       </div>
@@ -195,15 +187,7 @@ export default function SignUp() {
                 </Grid>
               </Grid>
 
-              <LoadingButton
-                type="submit"
-                fullWidth
-                variant="contained"
-                disableRipple
-                size="large"
-                loading={isPending}
-                sx={{ mt: 3, mb: 2, transition: "0.1s" }}
-              >
+              <LoadingButton type="submit" fullWidth variant="contained" disableRipple size="large" loading={isPending} sx={{ mt: 3, mb: 2, transition: "0.1s" }}>
                 {t("SignUp.sendCode")}
               </LoadingButton>
             </Box>
@@ -222,10 +206,7 @@ export default function SignUp() {
             }}
           >
             {t("SignUp.donNotHaveAccount")}{" "}
-            <Link
-              to={`${process.env.PUBLIC_URL}/signup/${fromUrlParam ? "?from=" + fromUrlParam : ""}`}
-              style={{ color: "#1976d2" }}
-            >
+            <Link to={`${process.env.PUBLIC_URL}/signup/${fromUrlParam ? "?from=" + fromUrlParam : ""}`} style={{ color: "#1976d2" }}>
               {t("SignUp.createAccount")}
             </Link>
           </Typography>
@@ -247,9 +228,7 @@ export default function SignUp() {
               backgroundColor: "#128C7E", // Darker green on hover
             },
           }}
-          onClick={() =>
-            window.open("https://api.whatsapp.com/send?phone=966920019948&text=*اختر من القائمة الرئيسية*", "_blank")
-          }
+          onClick={() => window.open("https://api.whatsapp.com/send?phone=966920019948&text=*اختر من القائمة الرئيسية*", "_blank")}
         >
           <WhatsAppIcon sx={{ color: "white", fontSize: 36 }} />
         </Fab>

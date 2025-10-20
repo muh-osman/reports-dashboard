@@ -8,12 +8,7 @@ import { toast } from "react-toastify";
 
 export const useDeleteAppointmentApi = () => {
   // Cookies
-  const [cookies, setCookie] = useCookies([
-    "tokenApp",
-    "username",
-    "userId",
-    "phoneNumber",
-  ]);
+  const [cookies, setCookie] = useCookies(["tokenApp", "username", "userId", "phoneNumber"]);
   const clientId = cookies.userId;
 
   const qc = useQueryClient();
@@ -26,7 +21,7 @@ export const useDeleteAppointmentApi = () => {
 
     onSuccess: () => {
       toast.success("تم الحذف");
-      qc.invalidateQueries(["Appointment", clientId]); // This will refetch the appointments
+      // qc.invalidateQueries(["Appointment", clientId]); // This will refetch the appointments
 
       // qc.prefetchQuery({
       //   queryKey: ["Appointment", clientId],
@@ -36,8 +31,7 @@ export const useDeleteAppointmentApi = () => {
 
     onError: (err) => {
       console.error(err);
-      const errorMessage =
-        err?.response?.data?.message || err?.message || "An error occurred";
+      const errorMessage = err?.response?.data?.message || err?.message || "An error occurred";
       // Toastify
       toast.error(errorMessage);
     },

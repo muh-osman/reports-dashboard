@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useRef, useEffect } from "react";
 // npm install --save html-to-image --legacy-peer-deps
 import { toPng } from "html-to-image"; //html-to-image library
+// Context
+import { useBooking } from "../../Contexts/BookingContext";
 // MUI
 import * as React from "react";
 import Box from "@mui/material/Box";
@@ -40,15 +42,58 @@ import { useCookies } from "react-cookie";
 // Logo
 import logo from "../../Assets/Images/logo.webp";
 // API
-import useGetAllBranchesApi from "../../API/useGetAllBranchesApi";
 import useGetFullDataOfClientApi from "../../API/useGetFullDataOfClientApi";
+import { usePostApoinmentFormApi } from "../../API/usePostApoinmentFormApi";
+import useGetAllBranchesApi from "../../API/useGetAllBranchesApi";
 import { useGetAppointmentApi } from "../../API/useGetAppointmentApi";
 import { useDeleteAppointmentApi } from "../../API/useDeleteAppointmentApi";
-import { usePostApoinmentFormApi } from "../../API/usePostApoinmentFormApi";
 //
 import { toast } from "react-toastify";
 
 export default function Booking() {
+  // Full Data Of Client API
+  const { data: fullDataOfClient, status: fullDataStatus } = useGetFullDataOfClientApi();
+
+  // Branches API
+  const { data: allBranches, status: allBranchesStatus } = useGetAllBranchesApi();
+
+  // State to track if we should auto-submit
+  const [shouldAutoSubmit, setShouldAutoSubmit] = React.useState(false);
+  // Cookies
+  const [cookies, setCookie] = useCookies(["tokenApp", "userId"]);
+  // Context
+  const { savePendingBooking, pendingBooking, clearPendingBooking } = useBooking();
+
+  useEffect(() => {
+    console.log(pendingBooking);
+
+    if (cookies.tokenApp && pendingBooking) {
+      // User is now logged in and has a pending booking
+      // Pre-fill the form with the pending booking data
+      setSelectedBranch(pendingBooking.branchId);
+      setDate(pendingBooking.rawDate);
+      setTime(pendingBooking.rawTime);
+
+      // Set flag to auto-submit once fullDataOfClient is loaded
+      setShouldAutoSubmit(true);
+    }
+  }, [cookies.tokenApp, pendingBooking]);
+
+  //  Wait submit untill get fullDataOfClient and allBranches
+  useEffect(() => {
+    if (shouldAutoSubmit && fullDataStatus === "success" && fullDataOfClient) {
+      // Clear the pending booking first
+      clearPendingBooking();
+
+      // Submit the form
+      submitForm();
+
+      // Reset the auto-submit flag
+      setShouldAutoSubmit(false);
+    }
+  }, [shouldAutoSubmit, fullDataStatus, fullDataOfClient, clearPendingBooking]);
+
+  //
   React.useEffect(() => {
     // Scroll to the top of the page
     window.scrollTo(0, 0);
@@ -81,24 +126,13 @@ export default function Booking() {
   };
   //
   const [isHovered, setIsHovered] = React.useState(false);
-  // Cookies
-  const [cookies, setCookie] = useCookies(["tokenApp", "userId"]);
   //
   const navigate = useNavigate();
   const navToLoginPage = () => {
     navigate(`${process.env.PUBLIC_URL}/login/?from=booking`);
   };
-  // Full Data Of Client
-  const { data: fullDataOfClient } = useGetFullDataOfClientApi();
-
-  // Branches
-  const { data: allBranches } = useGetAllBranchesApi();
 
   // Appointment
-  const { mutate: getAppointments, data: allAppointment, status: fetchAppointmentStatus } = useGetAppointmentApi();
-
-  // console.log(allAppointment?.items);
-
   const appointmentQueryParams = {
     itemsPerPage: 999,
     currentPage: 0,
@@ -111,12 +145,7 @@ export default function Booking() {
     branchId: null,
   };
 
-  useEffect(() => {
-    // Fetch only if user login
-    if (cookies.tokenApp) {
-      getAppointments(appointmentQueryParams);
-    }
-  }, []);
+  const { refetch: refetchAppointment, data: allAppointment, status: fetchAppointmentStatus } = useGetAppointmentApi(appointmentQueryParams);
 
   // Branches
   const [selectedBranch, setSelectedBranch] = React.useState("");
@@ -182,11 +211,7 @@ export default function Booking() {
     saveModalAsImage();
   }, [openBookingModal]);
 
-  const {
-    mutate: PostApoinmentFormMutate,
-    isPending: isPostApoinmentFormMutatePending,
-    isSuccess: isPostApoinmentFormMutateSuccess,
-  } = usePostApoinmentFormApi();
+  const { mutate: PostApoinmentFormMutate, isPending: isPostApoinmentFormMutatePending, isSuccess: isPostApoinmentFormMutateSuccess } = usePostApoinmentFormApi();
 
   // Modal Data
   const [selectedDataForModal, setSelectedDataForModal] = React.useState({
@@ -201,7 +226,7 @@ export default function Booking() {
     const selectedTime = dayjs(newTime);
     const isToday = date ? dayjs(date).isSame(now, "day") : false;
 
-    console.log(now);
+    // console.log(now);
 
     const minTime = selectedBranch === 19 || selectedBranch === 20 ? 8 : 10;
     const maxTime = selectedBranch === 19 || selectedBranch === 20 ? 23.5 : 22;
@@ -268,12 +293,42 @@ export default function Booking() {
     // Store selected data for modal
     const selectedBranchObj = allBranches?.find((b) => b.id === parseInt(selectedBranch));
 
-    setSelectedDataForModal({
+    const modalData = {
       branch: languageText === "en" ? selectedBranchObj?.nameEn : selectedBranchObj?.nameAr,
       date: dateAfterFormat,
       time: timeAfterFormat,
-    });
+    };
+
+    setSelectedDataForModal(modalData);
     /////////////////////////////
+
+    // If user is NOT logged in, save to context and redirect to login
+    if (!cookies.tokenApp) {
+      // Save the booking data to context
+      savePendingBooking({
+        branchId: selectedBranch,
+        branchName: modalData.branch,
+        date: dateAfterFormat,
+        time: timeAfterFormat,
+        rawDate: date, // Keep the original date object for potential reuse
+        rawTime: time, // Keep the original time object for potential reuse
+      });
+
+      // console.log({
+      //   branchId: selectedBranch,
+      //   branchName: modalData.branch,
+      //   date: dateAfterFormat,
+      //   time: timeAfterFormat,
+      //   rawDate: date,
+      //   rawTime: time,
+      // });
+
+      // Redirect to login page
+      navToLoginPage();
+      return; // Stop further execution
+    }
+
+    // If user IS logged in, proceed with the API call
     const data = {
       card: {
         checkPlace: 1,
@@ -319,23 +374,29 @@ export default function Booking() {
       },
     };
 
-    PostApoinmentFormMutate(data, {
-      onSuccess: () => {
-        // Re-fetch appointments after successful creation
-        getAppointments(appointmentQueryParams);
+    if (cookies.tokenApp) {
+      PostApoinmentFormMutate(data, {
+        onSuccess: () => {
+          // Re-fetch appointments after successful creation
+          // getAppointments(appointmentQueryParams);
+          refetchAppointment();
 
-        // Reset form fields
-        setTime(null);
-        setDate(null);
-        setSelectedBranch("");
+          // Reset form fields
+          setTime(null);
+          setDate(null);
+          setSelectedBranch("");
 
-        // Open the success modal
-        handleBookingModalOpen();
+          // Open the success modal
+          handleBookingModalOpen();
 
-        // Scroll to top
-        window.scrollTo(0, 0);
-      },
-    });
+          // Clear Context
+          clearPendingBooking();
+
+          // Scroll to top
+          window.scrollTo(0, 0);
+        },
+      });
+    }
   };
 
   // Delete Apoinment
@@ -349,7 +410,8 @@ export default function Booking() {
       deleteApoinmentMutate(id, {
         onSuccess: () => {
           // Re-fetch appointments after successful deletion
-          getAppointments(appointmentQueryParams);
+          // getAppointments(appointmentQueryParams);
+          refetchAppointment();
         },
         onSettled: () => {
           // Reset loading state regardless of success or error
@@ -384,147 +446,118 @@ export default function Booking() {
         {/*  مكان الفحص */}
         <FormControl fullWidth dir={languageText === "ar" ? "rtl" : "ltr"}>
           {/* الفرع  */}
-          {!cookies.tokenApp && (
-            <TextField
-              sx={{ backgroundColor: "#fff" }}
-              dir={languageText === "ar" ? "rtl" : "ltr"}
-              required
-              fullWidth
-              select
-              label={t("Booking.branch")}
-              value=""
-              disabled={isPostApoinmentFormMutatePending}
-            >
-              <MenuItem onClick={navToLoginPage} dir={languageText === "ar" ? "rtl" : "ltr"} value={"notAuth"}>
-                {t("Booking.pleaseLogInToBookAnAppointment")}
+          <TextField
+            sx={{ backgroundColor: "#fff", marginTop: "16px" }}
+            dir={languageText === "ar" ? "rtl" : "ltr"}
+            required
+            fullWidth
+            select
+            label={t("Booking.branch")}
+            value={selectedBranch}
+            onChange={handleBranchChange}
+            disabled={isPostApoinmentFormMutatePending || shouldAutoSubmit}
+          >
+            {allBranches && allBranches.length > 0 ? (
+              allBranches
+                .filter((branch) => branch.nameAr !== "افتراضي" || branch.nameEn !== "Virtual") // Filter out branches with nameAr "افتراضي"
+                .map((branch) => (
+                  <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} key={branch.id} value={branch.id}>
+                    {languageText === "en" ? branch?.nameEn : branch?.nameAr}
+                  </MenuItem>
+                ))
+            ) : (
+              <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} value="">
+                {t("Booking.loading")}
               </MenuItem>
-            </TextField>
-          )}
-
-          {cookies.tokenApp && (
-            <TextField
-              sx={{ backgroundColor: "#fff", marginTop: "16px" }}
-              dir={languageText === "ar" ? "rtl" : "ltr"}
-              required
-              fullWidth
-              select
-              label={t("Booking.branch")}
-              value={selectedBranch}
-              onChange={handleBranchChange}
-              disabled={isPostApoinmentFormMutatePending}
-            >
-              {allBranches && allBranches.length > 0 ? (
-                allBranches
-                  .filter((branch) => branch.nameAr !== "افتراضي" || branch.nameEn !== "Virtual") // Filter out branches with nameAr "افتراضي"
-                  .map((branch) => (
-                    <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} key={branch.id} value={branch.id}>
-                      {languageText === "en" ? branch?.nameEn : branch?.nameAr}
-                    </MenuItem>
-                  ))
-              ) : (
-                <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} value="">
-                  {t("Booking.loading")}
-                </MenuItem>
-              )}
-            </TextField>
-          )}
+            )}
+          </TextField>
 
           <div className={style.date_and_time_container}>
             {/* تاريخ */}
-            {cookies.tokenApp && (
-              <div dir={languageText === "ar" ? "rtl" : "ltr"} className={style.datePickerContainer}>
-                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en">
-                  <DemoContainer components={["MobileDatePicker"]}>
-                    <MobileDatePicker
-                      fullWidth
-                      dir={languageText === "ar" ? "rtl" : "ltr"}
-                      sx={{ backgroundColor: "#fff", width: "100%" }}
-                      label={t("Booking.examinationDate")}
-                      format="DD/MM/YYYY"
-                      value={date}
-                      onChange={(newValue) => setDate(newValue)}
-                      minDate={dayjs()}
-                      required
-                      disabled={isPostApoinmentFormMutatePending}
-                    />
-                  </DemoContainer>
-                </LocalizationProvider>
-              </div>
-            )}
+            <div dir={languageText === "ar" ? "rtl" : "ltr"} className={style.datePickerContainer}>
+              <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en">
+                <DemoContainer components={["MobileDatePicker"]}>
+                  <MobileDatePicker
+                    fullWidth
+                    dir={languageText === "ar" ? "rtl" : "ltr"}
+                    sx={{ backgroundColor: "#fff", width: "100%" }}
+                    label={t("Booking.examinationDate")}
+                    format="DD/MM/YYYY"
+                    value={date}
+                    onChange={(newValue) => setDate(newValue)}
+                    minDate={dayjs()}
+                    required
+                    disabled={isPostApoinmentFormMutatePending || shouldAutoSubmit}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
+            </div>
 
             {/* الوقت */}
-            {cookies.tokenApp && (
-              <div dir={languageText === "ar" ? "rtl" : "ltr"} className={style.datePickerContainer}>
-                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en">
-                  <DemoContainer components={["MobileTimePicker"]}>
-                    <MobileTimePicker
-                      fullWidth
-                      dir={languageText === "ar" ? "rtl" : "ltr"}
-                      sx={{
-                        backgroundColor: "#fff",
-                        width: "100%",
-                        "& .MuiOutlinedInput-root": {
-                          "& fieldset": {
-                            borderColor: timeError ? "red" : undefined,
-                          },
-                          "&:hover fieldset": {
-                            borderColor: timeError ? "red" : undefined,
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: timeError ? "red" : undefined,
-                          },
+            <div dir={languageText === "ar" ? "rtl" : "ltr"} className={style.datePickerContainer}>
+              <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en">
+                <DemoContainer components={["MobileTimePicker"]}>
+                  <MobileTimePicker
+                    fullWidth
+                    dir={languageText === "ar" ? "rtl" : "ltr"}
+                    sx={{
+                      backgroundColor: "#fff",
+                      width: "100%",
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: timeError ? "red" : undefined,
                         },
-                      }}
-                      label={t("Booking.examinationTime")}
-                      // format=""
-                      value={time}
-                      onChange={(newValue) => {
+                        "&:hover fieldset": {
+                          borderColor: timeError ? "red" : undefined,
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: timeError ? "red" : undefined,
+                        },
+                      },
+                    }}
+                    label={t("Booking.examinationTime")}
+                    // format=""
+                    value={time}
+                    onChange={(newValue) => {
+                      setTime(newValue);
+                      setTimeError(false); // Reset error when user changes the time
+                    }}
+                    required
+                    disabled={isPostApoinmentFormMutatePending || shouldAutoSubmit}
+                    onAccept={(newValue) => {
+                      // Only validate when user clicks OK
+                      if (validateTime(newValue)) {
                         setTime(newValue);
-                        setTimeError(false); // Reset error when user changes the time
-                      }}
-                      required
-                      disabled={isPostApoinmentFormMutatePending}
-                      onAccept={(newValue) => {
-                        // Only validate when user clicks OK
-                        if (validateTime(newValue)) {
-                          setTime(newValue);
-                        }
-                      }}
-                      error={timeError}
-                    />
-                  </DemoContainer>
-                </LocalizationProvider>
-              </div>
-            )}
+                      }
+                    }}
+                    error={timeError}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
+            </div>
           </div>
-          {cookies.tokenApp && (
-            <p
-              dir={languageText === "ar" ? "rtl" : "ltr"}
-              style={{
-                fontSize: "14px",
-                padding: "3px 3px 0 0",
-                color: "#757575",
-              }}
-            >
-              {selectedBranch === 19 || selectedBranch === 20
-                ? t("Booking.timeValidationForAlqadisiaAndAlshifa")
-                : t("Booking.timeValidationForJeddahAndDammam")}
-            </p>
-          )}
+          <p
+            dir={languageText === "ar" ? "rtl" : "ltr"}
+            style={{
+              fontSize: "14px",
+              padding: "3px 3px 0 0",
+              color: "#757575",
+            }}
+          >
+            {selectedBranch === 19 || selectedBranch === 20 ? t("Booking.timeValidationForAlqadisiaAndAlshifa") : t("Booking.timeValidationForJeddahAndDammam")}
+          </p>
 
           {/* Button */}
-          {cookies.tokenApp && (
-            <LoadingButton
-              onClick={submitForm}
-              style={{ marginTop: "32px" }}
-              variant="contained"
-              size="large"
-              loading={isPostApoinmentFormMutatePending}
-              disabled={!selectedBranch || !time || !date}
-            >
-              {t("Booking.reservation")}
-            </LoadingButton>
-          )}
+          <LoadingButton
+            onClick={submitForm}
+            style={{ marginTop: "32px" }}
+            variant="contained"
+            size="large"
+            loading={isPostApoinmentFormMutatePending || shouldAutoSubmit}
+            disabled={!selectedBranch || !time || !date || shouldAutoSubmit}
+          >
+            {t("Booking.reservation")}
+          </LoadingButton>
         </FormControl>
 
         {/* Booking Modal */}
@@ -563,16 +596,8 @@ export default function Booking() {
               }}
             ></div>
             <div className={style.introCurve}>
-              <svg
-                style={{ width: "100%", height: "auto" }}
-                viewBox="0 0 1920 74"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M0 0H1920V0.96521C1920 0.96521 1335.71 74 960 74C584.29 74 0 0.96521 0 0.96521V0Z"
-                  fill="#174545"
-                />
+              <svg style={{ width: "100%", height: "auto" }} viewBox="0 0 1920 74" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 0H1920V0.96521C1920 0.96521 1335.71 74 960 74C584.29 74 0 0.96521 0 0.96521V0Z" fill="#174545" />
               </svg>
             </div>
 
@@ -750,12 +775,7 @@ export default function Booking() {
                 </Card>
               ))
           ) : (
-            <Typography
-              dir={languageText === "ar" ? "rtl" : "ltr"}
-              variant="h6"
-              component="div"
-              style={{ textAlign: "center", margin: "20px", color: "#757575" }}
-            >
+            <Typography dir={languageText === "ar" ? "rtl" : "ltr"} variant="h6" component="div" style={{ textAlign: "center", margin: "20px", color: "#757575" }}>
               {fetchAppointmentStatus === "fetching" ? t("Booking.loading") : t("Booking.noReservations")}
             </Typography>
           )}

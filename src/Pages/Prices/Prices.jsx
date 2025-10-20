@@ -471,11 +471,7 @@ export default function Prices() {
   };
 
   // Get Prices
-  const {
-    data: prices,
-    fetchStatus: pricesFetchStatus,
-    isSuccess: isFetchPricesSuccess,
-  } = useGetPricesApi(selectedModelId, selectedYear, trigger);
+  const { data: prices, fetchStatus: pricesFetchStatus, isSuccess: isFetchPricesSuccess } = useGetPricesApi(selectedModelId, selectedYear, trigger);
 
   React.useEffect(() => {
     if (dis) {
@@ -558,13 +554,7 @@ export default function Prices() {
 
   const searchBtn = React.useRef(null);
   React.useEffect(() => {
-    if (
-      isFetchPricesSuccess ||
-      (prices &&
-        prices.length > 0 &&
-        prices[0]?.car_model_id === selectedModelId &&
-        (selectedYear >= 2017 ? 2 : 1) === prices[0]?.year_id)
-    ) {
+    if (isFetchPricesSuccess || (prices && prices.length > 0 && prices[0]?.car_model_id === selectedModelId && (selectedYear >= 2017 ? 2 : 1) === prices[0]?.year_id)) {
       // overlay.current.style.padding = "16px";
       overlay.current.style.gridTemplateRows = "1fr";
 
@@ -602,11 +592,9 @@ export default function Prices() {
     // Create a new style element
     const style = document.createElement("style");
 
-    const discountPercentForPassngerPlans =
-      passengerPlanePrices?.data?.[passenger === "luxury" ? 0 : passenger === "suv" ? 1 : 2]?.discount_percent ?? "0";
+    const discountPercentForPassngerPlans = passengerPlanePrices?.data?.[passenger === "luxury" ? 0 : passenger === "suv" ? 1 : 2]?.discount_percent ?? "0";
 
-    const content =
-      languageText === "ar" ? `خصم ${discountPercentForPassngerPlans}%` : `${discountPercentForPassngerPlans}% Off`;
+    const content = languageText === "ar" ? `خصم ${discountPercentForPassngerPlans}%` : `${discountPercentForPassngerPlans}% Off`;
 
     style.innerHTML = `
       .passenger-plans-catcher::after
@@ -646,8 +634,7 @@ export default function Prices() {
             </div>
             <h4>{t("Prices.purchaseCheck")}</h4>
             <p>
-              {t("Prices.purchaseCheckDescriptionPartOne")}{" "}
-              <u style={{ fontWeight: "bold" }}>{t("Prices.purchaseCheckDescriptionPartTwo")} </u>{" "}
+              {t("Prices.purchaseCheckDescriptionPartOne")} <u style={{ fontWeight: "bold" }}>{t("Prices.purchaseCheckDescriptionPartTwo")} </u>{" "}
               {t("Prices.purchaseCheckDescriptionPartThree")}
             </p>
             <ul>
@@ -703,8 +690,7 @@ export default function Prices() {
             </div>
             <h4>{t("Prices.checkItCheck")}</h4>
             <p>
-              {t("Prices.checkItCheckDescriptionPartOne")}{" "}
-              <u style={{ fontWeight: "bold" }}>{t("Prices.checkItCheckDescriptionPartTwo")}</u>{" "}
+              {t("Prices.checkItCheckDescriptionPartOne")} <u style={{ fontWeight: "bold" }}>{t("Prices.checkItCheckDescriptionPartTwo")}</u>{" "}
               {t("Prices.checkItCheckDescriptionPartThree")}
             </p>
             <ul>
@@ -731,8 +717,7 @@ export default function Prices() {
                   </svg>
                 </span>
                 <span>
-                  {t("Prices.checkItCheckListC")}{" "}
-                  <Link to={`${process.env.PUBLIC_URL}/reports`}> {t("Prices.checkItCheckListCPlus")}</Link>
+                  {t("Prices.checkItCheckListC")} <Link to={`${process.env.PUBLIC_URL}/reports`}> {t("Prices.checkItCheckListCPlus")}</Link>
                 </span>
               </li>
               <li>
@@ -857,10 +842,7 @@ export default function Prices() {
                 )}
                 noOptionsText={
                   isSuccess ? (
-                    <div
-                      dir={languageText === "ar" ? "rtl" : "ltr"}
-                      style={{ padding: "8px 16px", textAlign: "center" }}
-                    >
+                    <div dir={languageText === "ar" ? "rtl" : "ltr"} style={{ padding: "8px 16px", textAlign: "center" }}>
                       <a
                         href="https://wa.me/966920019948?text=استعلام عن موديل غير موجود"
                         target="_blank"
@@ -871,10 +853,7 @@ export default function Prices() {
                       </a>
                     </div>
                   ) : (
-                    <div
-                      dir={languageText === "ar" ? "rtl" : "ltr"}
-                      style={{ padding: "8px 16px", textAlign: "center" }}
-                    >
+                    <div dir={languageText === "ar" ? "rtl" : "ltr"} style={{ padding: "8px 16px", textAlign: "center" }}>
                       {t("Prices.loading")}
                     </div>
                   )
@@ -1012,13 +991,11 @@ export default function Prices() {
                             id="plane-one"
                             className="ask-now"
                             rel="noopener noreferrer"
-                            href={`https://cashif.cc${checkit ? "/check-it/receipt" : "/pay"}${
-                              languageText === "ar" ? "" : "/en"
-                            }/?plan=${languageText === "ar" ? "محركات" : "Engine"}&year_id=${
-                              selectedYear >= 2017 ? 2 : 1
-                            }&car_model_id=${selectedModelId}&price_id=2&full_year=${selectedYear}${
-                              dis ? "&dis=fifty" : ""
-                            }&off=${prices?.[0]?.prices?.[2]?.discount_percent || "0"}`}
+                            href={`https://cashif.cc${checkit ? "/check-it/receipt" : "/pay"}${languageText === "ar" ? "" : "/en"}/?plan=${
+                              languageText === "ar" ? "محركات" : "Engine"
+                            }&year_id=${selectedYear >= 2017 ? 2 : 1}&car_model_id=${selectedModelId}&price_id=2&full_year=${selectedYear}${dis ? "&dis=fifty" : ""}&off=${
+                              prices?.[0]?.prices?.[2]?.discount_percent || "0"
+                            }`}
                           >
                             {t("Prices.orderNow")}
                           </a>
@@ -1105,13 +1082,11 @@ export default function Prices() {
                             id="plane-two"
                             className="ask-now"
                             rel="noopener noreferrer"
-                            href={`https://cashif.cc${checkit ? "/check-it/receipt" : "/pay"}${
-                              languageText === "ar" ? "" : "/en"
-                            }/?plan=${languageText === "ar" ? "أساسي" : "Basic"}&year_id=${
-                              selectedYear >= 2017 ? 2 : 1
-                            }&car_model_id=${selectedModelId}&price_id=1&full_year=${selectedYear}${
-                              dis ? "&dis=fifty" : ""
-                            }&off=${prices?.[0]?.prices?.[1]?.discount_percent || "0"}`}
+                            href={`https://cashif.cc${checkit ? "/check-it/receipt" : "/pay"}${languageText === "ar" ? "" : "/en"}/?plan=${
+                              languageText === "ar" ? "أساسي" : "Basic"
+                            }&year_id=${selectedYear >= 2017 ? 2 : 1}&car_model_id=${selectedModelId}&price_id=1&full_year=${selectedYear}${dis ? "&dis=fifty" : ""}&off=${
+                              prices?.[0]?.prices?.[1]?.discount_percent || "0"
+                            }`}
                           >
                             {t("Prices.orderNow")}
                           </a>
@@ -1120,10 +1095,7 @@ export default function Prices() {
                     </div>
 
                     {/* الشامل */}
-                    <div
-                      className="col plane crown-box full-pane dis rounded-3 shadow-sm full-Plane-catcher"
-                      style={{ border: "2px solid #174545" }}
-                    >
+                    <div className="col plane crown-box full-pane dis rounded-3 shadow-sm full-Plane-catcher" style={{ border: "2px solid #174545" }}>
                       <div className="card mb-0 card-price">
                         <div className="card-header py-3 crown">
                           <h4 className="my-0 fw-normal">{t("Prices.fullInspection")}</h4>
@@ -1191,13 +1163,11 @@ export default function Prices() {
                             id="plane-three"
                             className="ask-now"
                             rel="noopener noreferrer"
-                            href={`https://cashif.cc${checkit ? "/check-it/receipt" : "/pay"}${
-                              languageText === "ar" ? "" : "/en"
-                            }/?plan=${languageText === "ar" ? "شامل" : "Full-Inspection"}&year_id=${
-                              selectedYear >= 2017 ? 2 : 1
-                            }&car_model_id=${selectedModelId}&price_id=0&full_year=${selectedYear}${
-                              dis ? "&dis=fifty" : ""
-                            }&off=${prices?.[0]?.prices?.[0]?.discount_percent || "0"}`}
+                            href={`https://cashif.cc${checkit ? "/check-it/receipt" : "/pay"}${languageText === "ar" ? "" : "/en"}/?plan=${
+                              languageText === "ar" ? "شامل" : "Full-Inspection"
+                            }&year_id=${selectedYear >= 2017 ? 2 : 1}&car_model_id=${selectedModelId}&price_id=0&full_year=${selectedYear}${dis ? "&dis=fifty" : ""}&off=${
+                              prices?.[0]?.prices?.[0]?.discount_percent || "0"
+                            }`}
                           >
                             {t("Prices.orderNow")}
                           </a>
@@ -1219,14 +1189,7 @@ export default function Prices() {
                     <img src={option.image} alt={`Option ${option.value}`} />
                   </div>
                   <div className={style.label_text_box}>
-                    <input
-                      type="radio"
-                      name="options"
-                      value={option.value}
-                      checked={passenger === option.value}
-                      onChange={() => handleCarTypesChange(option.value)}
-                      required
-                    />
+                    <input type="radio" name="options" value={option.value} checked={passenger === option.value} onChange={() => handleCarTypesChange(option.value)} required />
                     {option.label}
                   </div>
                 </label>
@@ -1262,8 +1225,7 @@ export default function Prices() {
                             <span dangerouslySetInnerHTML={{ __html: ryalIcon }} />
                           </h1>
 
-                          {passengerPlanePrices?.data?.[passenger === "luxury" ? 0 : passenger === "suv" ? 1 : 2]
-                            ?.discount_percent != 0 && (
+                          {passengerPlanePrices?.data?.[passenger === "luxury" ? 0 : passenger === "suv" ? 1 : 2]?.discount_percent != 0 && (
                             <h3
                               dir="rtl"
                               style={{
@@ -1275,10 +1237,7 @@ export default function Prices() {
                               }}
                             >
                               <span style={{ textDecoration: "line-through" }}>
-                                {Math.floor(
-                                  passengerPlanePrices?.data?.[passenger === "luxury" ? 0 : passenger === "suv" ? 1 : 2]
-                                    ?.original_price
-                                )}
+                                {Math.floor(passengerPlanePrices?.data?.[passenger === "luxury" ? 0 : passenger === "suv" ? 1 : 2]?.original_price)}
                               </span>{" "}
                               <span>
                                 <span
@@ -1299,11 +1258,7 @@ export default function Prices() {
                                   fontSize: 16,
                                 }}
                               >
-                                {t("Prices.save")}{" "}
-                                {Math.floor(
-                                  passengerPlanePrices?.data?.[passenger === "luxury" ? 0 : passenger === "suv" ? 1 : 2]
-                                    ?.you_save
-                                )}{" "}
+                                {t("Prices.save")} {Math.floor(passengerPlanePrices?.data?.[passenger === "luxury" ? 0 : passenger === "suv" ? 1 : 2]?.you_save)}{" "}
                                 <span
                                   dangerouslySetInnerHTML={{
                                     __html: greenRyalIcon,
@@ -1331,13 +1286,10 @@ export default function Prices() {
                               id="plane-one"
                               className="ask-now"
                               rel="noopener noreferrer"
-                              href={`https://cashif.cc/pay${
-                                languageText === "ar" ? "" : "/en"
-                              }/?plan=passenger&year_id=1&car_model_id=9&price_id=2&full_year=0${
+                              href={`https://cashif.cc/pay${languageText === "ar" ? "" : "/en"}/?plan=passenger&year_id=1&car_model_id=9&price_id=2&full_year=0${
                                 dis ? "&dis=fifty" : ""
                               }${passenger ? `&passenger=${passenger}` : ""}&off=${
-                                passengerPlanePrices?.data[passenger === "luxury" ? 0 : passenger === "suv" ? 1 : 2]
-                                  ?.discount_percent || "0"
+                                passengerPlanePrices?.data[passenger === "luxury" ? 0 : passenger === "suv" ? 1 : 2]?.discount_percent || "0"
                               }`}
                             >
                               {t("Prices.orderNow")}
