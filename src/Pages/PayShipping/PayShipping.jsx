@@ -235,16 +235,16 @@ export default function PayShipping() {
         currency: "SAR",
         language: languageText === "ar" ? "ar" : "en",
         description: "Cashif for car inspection",
-        publishable_api_key: "pk_live_jEdE8NoP5w2jz1kxK2DcF6MzdSdbmXCVNYqnxTNm",
+        publishable_api_key: "My_PK",
         callback_url: `${window.location.origin}${process.env.PUBLIC_URL}/pay/shipping/thanks`,
         supported_networks: ["visa", "mastercard", "mada"],
-        methods: ["creditcard"],
+        methods: ["creditcard", "applepay"],
 
-        // apple_pay: {
-        //   country: "SA",
-        //   label: "Cashif for car inspection",
-        //   validate_merchant_url: "https://api.moyasar.com/v1/applepay/initiate",
-        // },
+        apple_pay: {
+          country: "SA",
+          label: "Cashif for car inspection",
+          validate_merchant_url: "https://api.moyasar.com/v1/applepay/initiate",
+        },
 
         metadata: {
           name: oneCardData?.clientName,
