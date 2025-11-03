@@ -25,6 +25,7 @@
   "Reports": {
     "points": "رصيد النقاط",
     "pointWorthInRiyal": "كل نقطة تساوي ريال واحد",
+    "YouCanRedeemYourPointsOnThePaymentPage": "تستبدال النقاط في صفحة الدفع",
     "rank": "الرتبة",
     "allPointsUsedFromYourAccount": "جميع النقاط التي تم استخدامها من حسابك",
     "totalPointsUsed": "مجموع النقاط المستخدمة",
@@ -44,8 +45,10 @@
     "photoReport": "تقرير مصور",
     "loading": "جاري التحميل..",
     "noReports": "لا يوجد تقارير",
-    "downloadReport": "تقرير الفحص",
-    "downloadSummaryReport": "تقرير موجز"
+    "downloadReport": "تحميل تقرير الفحص",
+    "downloadSummaryReport": "تقرير موجز",
+    "shippingTheCar": "شحن السيارة",
+    "nsuranceAndTransferOfOwnership": "تأمين ونقل ملكية"
   },
 
   "Prices": {
@@ -581,5 +584,38 @@
     "monthBalance": "رصيد الشهر",
     "reward": "المكافأة",
     "percentageOfCommission": "النسبة من قيمة العمولة"
+  },
+
+  "Shippings": {
+    "carSharging": "شحن السيارة",
+    "thisServiceOnlyAvailableToCashifCenterCustomers": "هذه الخدمة متاحة فقط لعملاء مركز كاشف",
+    "WhoHaveValidInspectionReport": "الذين لديهم تقرير فحص صالح",
+    "withinWeek": "خلال أسبوع",
+    "fromItsHistory": "من تاريخه.",
+    "importantNotice": "تنويه هام:",
+    "noticeDescription": "مركز كاشف لا يقدم خدمة الشحن , بل يعمل كوسيط فقط بالتعاون مع شركة سعيد البسامي، ولا يتحمل أي مسؤولية عن عملية الشحن أو التأخير أو الأضرار الناتجة عنها.",
+    "model": "السيارة",
+    "plateNumber": "رقم اللوحة",
+    "shippingFrom": "شحن السيارة من:",
+    "shippingTo": "شحن السيارة الى:",
+    "orderNow": "أطلب الآن",
+    "disclaimer": "اقرار اخلاء المسؤولية",
+    "disclaimerDescription": "أقرّ بأن مركز كاشف وسيط فقط في خدمة الشحن بالتعاون مع شركة سعيد البسامي، ولا يتحمل أي مسؤولية عن عملية التسليم أو الاستلام أو أي التزامات أو مسؤوليات أخرى ناتجة عن الشحن.",
+    "agree": "أوافق",
+    "allDataIsRequired": "جميع البيانات مطلوبة.",
+    "youMustAgreeToTheDisclaimerToContinue": "يجب الموافقة على اقرار اخلاء المسؤولية للمتابعة"
+  },
+
+  "PayShipping": {
+    "loading": "جاري تحميل البيانات...",
+    "details": "تفاصيل الطلب",
+    "model": "موديل",
+    "plateId": "رقم اللوحة",
+    "from": "شحن من",
+    "to": "شحن الى",
+    "shippingType": "نوع الشحن",
+    "total": "الاجمالي:",
+    "ePayment": "دفع الكتروني",
+    "payWithMadaMasterAndVisa": "ادفع باستخدام بطاقة الإئتمان, Mada, Visa, MasterCard"
   }
 }

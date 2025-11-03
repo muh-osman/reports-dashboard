@@ -81,6 +81,7 @@ function HomeLayout() {
     removeCookie("username", { path: "/dashboard" });
     removeCookie("tokenApp", { path: "/dashboard" });
     removeCookie("auth", { path: "/" });
+    removeCookie("phone", { path: "/" });
 
     // Refresh the page after logout
     // window.location.reload();

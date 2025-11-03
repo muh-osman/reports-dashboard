@@ -1,6 +1,6 @@
 import style from "./Reports.module.scss";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // MUI
 import Divider from "@mui/material/Divider";
 import Card from "@mui/material/Card";
@@ -25,6 +25,9 @@ import StyleIcon from "@mui/icons-material/Style";
 import InfoIcon from "@mui/icons-material/Info";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 import VideocamIcon from "@mui/icons-material/Videocam";
+import SecurityIcon from "@mui/icons-material/Security";
+import CarRepairIcon from "@mui/icons-material/CarRepair";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 // Toastify
 import { toast } from "react-toastify";
 // Cookies
@@ -547,11 +550,40 @@ export default function Reports() {
     createData(t("Reports.elite"), 851, 100000, 10, "#000000"),
   ];
 
+  //
+  const handleClickOninsuranceBtn = (cardId) => {
+    const phoneNumber = "966920019948";
+    const message = `طلب تأمين ونقل ملكية، رقم التقرير: ${cardId}`;
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+
+    window.open(whatsappUrl, "_blank");
+  };
+  //
+  const navigate = useNavigate();
+  const handleClickOnShippingCarBtn = (cardId) => {
+    navigate(`${process.env.PUBLIC_URL}/shipping/${cardId}`);
+  };
+
+  //
+  const [isPointsBoxExpanded, setIsPointsBoxExpanded] = useState(false);
+
+  const handleExpandPointsBox = () => {
+    setIsPointsBoxExpanded(!isPointsBoxExpanded);
+  };
+
   return (
     <div dir={languageText === "ar" ? "rtl" : "ltr"} className={style.container}>
       {/* Points */}
       <div className={style.points_container}>
-        <div className={style.money_card_container}>
+        <div
+          className={style.money_card_container}
+          style={{
+            height: isPointsBoxExpanded ? (window.innerWidth <= 1000 ? "264.5px" : "296.5px") : window.innerWidth <= 1000 ? "182px" : "213px",
+            transition: "all 0.3s ease-in-out",
+            overflow: "hidden",
+          }}
+        >
           <div className={style.money_card_header}>
             <div>
               <h3>{t("Reports.points")}</h3>
@@ -602,12 +634,13 @@ export default function Reports() {
             </div>
           </div>
 
-          <div className={style.money_card_footer}>
-            <Tooltip title={t("Reports.allPointsUsedFromYourAccount")} arrow enterTouchDelay={0}>
+          <div className={style.money_card_footer} style={{ opacity: isPointsBoxExpanded ? "1" : "0", transition: "0.3s" }}>
+            <Tooltip title={t("Reports.allPointsUsedFromYourAccount")} arrow enterTouchDelay={0} style={{ width: "100%" }}>
               <h3>
                 {t("Reports.totalPointsUsed")} {points && points.pointsConsumed !== undefined ? points.pointsConsumed : 0}
               </h3>
             </Tooltip>
+            <p style={{ fontSize: "13px", textAlign: "center", marginTop: "9px" }}>{t("Reports.YouCanRedeemYourPointsOnThePaymentPage")}</p>
           </div>
 
           <div
@@ -618,6 +651,19 @@ export default function Reports() {
           >
             <IconButton onClick={handleOpenClientTypesModal}>
               <InfoIcon sx={{ color: "#fff" }} />
+            </IconButton>
+          </div>
+
+          <div className={style.expand_more_icon}>
+            <IconButton onClick={handleExpandPointsBox} disabled={isPointsBoxExpanded ? true : false}>
+              <ExpandMoreIcon
+                sx={{
+                  color: "#fff",
+                  // transform: isPointsBoxExpanded ? "rotate(180deg)" : "rotate(0deg)",
+                  opacity: isPointsBoxExpanded ? "0" : "1",
+                  transition: "transform 0.3s ease-in-out",
+                }}
+              />
             </IconButton>
           </div>
         </div>
@@ -858,7 +904,7 @@ export default function Reports() {
                 <Card
                   key={card.id}
                   sx={{
-                    width: { xs: "100%", sm: 310 },
+                    width: { xs: "100%", sm: 329 },
                     position: "relative",
                     borderRadius: "9px",
                     boxShadow: "none",
@@ -917,43 +963,22 @@ export default function Reports() {
                       backgroundColor: "#fdfefe",
                       justifyContent: "center",
                       gap: "16px",
+                      flexWrap: "wrap",
                     }}
                   >
-                    <Button
-                      onClick={() => handleDownloadCard(card.id, card.includeImage, card.approveTerms)}
-                      size="small"
-                      variant="contained"
-                      disabled={loadingDownload[card.id]} // Disable button if loading
-                      endIcon={
-                        loadingDownload[card.id] ? (
-                          <CircularProgress
-                            size={18}
-                            sx={{
-                              margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
-                            }}
-                          />
-                        ) : (
-                          <DownloadIcon
-                            sx={{
-                              margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
-                            }}
-                          />
-                        )
-                      }
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "16px",
+                      }}
                     >
-                      {t("Reports.downloadReport")}
-                    </Button>
-
-                    {/* Summary Reports Button */}
-                    {AllSummaryReportsStatus?.data?.[card.id.toString()] === true && (
                       <Button
-                        sx={{ margin: "0 !important" }}
-                        onClick={() => handleDownloadSummaryCard(card.id)}
+                        onClick={() => handleDownloadCard(card.id, card.includeImage, card.approveTerms)}
                         size="small"
-                        variant="outlined"
-                        disabled={loadingSummaryCardDownload[card.id]} // Disable button if loading
+                        variant="contained"
+                        disabled={loadingDownload[card.id]} // Disable button if loading
                         endIcon={
-                          loadingSummaryCardDownload[card.id] ? (
+                          loadingDownload[card.id] ? (
                             <CircularProgress
                               size={18}
                               sx={{
@@ -969,33 +994,102 @@ export default function Reports() {
                           )
                         }
                       >
-                        {t("Reports.downloadSummaryReport")}
+                        {t("Reports.downloadReport")}
                       </Button>
-                    )}
 
-                    {/*  Video Button */}
-                    {AllVideoReportsStatus?.data?.[card.id.toString()] === true && (
-                      <IconButton
-                        sx={{
-                          margin: "0 !important",
-                          backgroundColor: "#0000000a",
-                        }}
-                        onClick={() => handleDownloadVideo(card.id)}
+                      {/* Summary Reports Button */}
+                      {AllSummaryReportsStatus?.data?.[card.id.toString()] === true && (
+                        <Button
+                          sx={{ margin: "0 !important" }}
+                          onClick={() => handleDownloadSummaryCard(card.id)}
+                          size="small"
+                          variant="outlined"
+                          disabled={loadingSummaryCardDownload[card.id]} // Disable button if loading
+                          endIcon={
+                            loadingSummaryCardDownload[card.id] ? (
+                              <CircularProgress
+                                size={18}
+                                sx={{
+                                  margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
+                                }}
+                              />
+                            ) : (
+                              <DownloadIcon
+                                sx={{
+                                  margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
+                                }}
+                              />
+                            )
+                          }
+                        >
+                          {t("Reports.downloadSummaryReport")}
+                        </Button>
+                      )}
+
+                      {/*  Video Button */}
+                      {AllVideoReportsStatus?.data?.[card.id.toString()] === true && (
+                        <IconButton
+                          sx={{
+                            margin: "0 !important",
+                            backgroundColor: "#0000000a",
+                          }}
+                          onClick={() => handleDownloadVideo(card.id)}
+                          size="small"
+                          disabled={loadingvideoDownload[card.id]} // Disable button if loading
+                        >
+                          {loadingvideoDownload[card.id] ? (
+                            <CircularProgress size={24} />
+                          ) : (
+                            <VideocamIcon
+                              fontSize="medium"
+                              sx={{
+                                color: "#103030",
+                              }}
+                            />
+                          )}
+                        </IconButton>
+                      )}
+                    </div>
+
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "16px",
+                      }}
+                    >
+                      <Button
+                        sx={{ margin: "0 !important" }}
+                        onClick={() => handleClickOninsuranceBtn(card.id)}
                         size="small"
-                        disabled={loadingvideoDownload[card.id]} // Disable button if loading
-                      >
-                        {loadingvideoDownload[card.id] ? (
-                          <CircularProgress size={24} />
-                        ) : (
-                          <VideocamIcon
-                            fontSize="medium"
+                        variant="outlined"
+                        endIcon={
+                          <SecurityIcon
                             sx={{
-                              color: "#103030",
+                              margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
                             }}
                           />
-                        )}
-                      </IconButton>
-                    )}
+                        }
+                      >
+                        {t("Reports.nsuranceAndTransferOfOwnership")}
+                      </Button>
+
+                      <Button
+                        sx={{ margin: "0 !important" }}
+                        onClick={() => handleClickOnShippingCarBtn(card.id)}
+                        size="small"
+                        variant="outlined"
+                        disabled={loadingSummaryCardDownload[card.id]} // Disable button if loading
+                        endIcon={
+                          <CarRepairIcon
+                            sx={{
+                              margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
+                            }}
+                          />
+                        }
+                      >
+                        {t("Reports.shippingTheCar")}
+                      </Button>
+                    </div>
                   </CardActions>
                 </Card>
               ))

@@ -25,6 +25,7 @@
   "Reports": {
     "points": "Points balance",
     "pointWorthInRiyal": "Each point is worth one riyal.",
+    "YouCanRedeemYourPointsOnThePaymentPage": "Points can be redeemed on the payment page.",
     "rank": "Rank",
     "allPointsUsedFromYourAccount": "All points used from your account",
     "totalPointsUsed": "Total points used",
@@ -44,8 +45,10 @@
     "photoReport": "Photo report",
     "loading": "Loading..",
     "noReports": "No reports",
-    "downloadReport": "Report",
-    "downloadSummaryReport": "Brief"
+    "downloadReport": "Download report",
+    "downloadSummaryReport": "Brief",
+    "shippingTheCar": "Car shipping",
+    "nsuranceAndTransferOfOwnership": "Insurance & ownership"
   },
   "Prices": {
     "selectTheServiese": "Select the service",
@@ -581,5 +584,38 @@
     "monthBalance": "Monthly balance",
     "reward": "Reward",
     "percentageOfCommission": "Percentage of commission value"
+  },
+
+  "Shippings": {
+    "carSharging": "Car Shipping",
+    "thisServiceOnlyAvailableToCashifCenterCustomers": "This service is only available to Cashif center customers",
+    "WhoHaveValidInspectionReport": "Who have a valid inspection report",
+    "withinWeek": "within a week",
+    "fromItsHistory": "from its date.",
+    "importantNotice": "Important Notice:",
+    "noticeDescription": "Cashif center does not provide shipping service, but acts only as an intermediary in cooperation with Saeed Al-Bassami Company, and is not responsible for the shipping process, delay, or any resulting damages.",
+    "model": "Car Model",
+    "plateNumber": "Plate Number",
+    "shippingFrom": "Shipping From:",
+    "shippingTo": "Shipping To:",
+    "orderNow": "Order Now",
+    "disclaimer": "Disclaimer",
+    "disclaimerDescription": "I acknowledge that Cashif Center is only an intermediary in the shipping service in cooperation with Saeed Al-Bassami Company, and does not bear any responsibility for the delivery or receipt process or any other obligations or responsibilities resulting from the shipping",
+    "agree": "I agree",
+    "allDataIsRequired": "All data is required.",
+    "youMustAgreeToTheDisclaimerToContinue": "You must agree to the disclaimer to continue"
+  },
+
+  "PayShipping": {
+    "loading": "Loading data...",
+    "details": "Order Details",
+    "model": "Model",
+    "plateId": "Plate Number",
+    "from": "Ship From",
+    "to": "Ship To",
+    "shippingType": "Shipping Type",
+    "total": "Total:",
+    "ePayment": "Electronic Payment",
+    "payWithMadaMasterAndVisa": "Pay with Credit Card, Mada, Visa, MasterCard"
   }
 }

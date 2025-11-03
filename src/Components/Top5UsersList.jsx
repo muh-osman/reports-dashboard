@@ -181,27 +181,18 @@ const Top5UsersList = ({ languageText, userId }) => {
                 <Table dir={languageText === "ar" ? "rtl" : "ltr"} aria-label="customized table">
                   <TableHead>
                     <TableRow>
-                      <StyledTableCell
-                        sx={{ backgroundColor: "#164547 !important", fontWeight: "bold", width: "10%" }}
-                        align="center"
-                      >
+                      <StyledTableCell sx={{ backgroundColor: "#164547 !important", fontWeight: "bold", width: "10%" }} align="center">
                         {t("Top5Component.order")}
                       </StyledTableCell>
-                      <StyledTableCell
-                        sx={{ backgroundColor: "#164547 !important", fontWeight: "bold", width: "30%" }}
-                        align="center"
-                      >
+                      <StyledTableCell sx={{ backgroundColor: "#164547 !important", fontWeight: "bold", width: "30%" }} align="center">
                         {t("Top5Component.name")}
                       </StyledTableCell>
-                      <StyledTableCell
-                        sx={{ backgroundColor: "#164547 !important", fontWeight: "bold", width: "30%" }}
-                        align="center"
-                      >
+                      <StyledTableCell sx={{ backgroundColor: "#164547 !important", fontWeight: "bold", width: "30%" }} align="center">
                         {t("Top5Component.code")}
                       </StyledTableCell>
 
                       {/* الرصيد الشهري */}
-                      {shouldShowColumn && (
+                      {/* {shouldShowColumn && (
                         <StyledTableCell
                           sx={{
                             backgroundColor: "#164547 !important",
@@ -213,7 +204,7 @@ const Top5UsersList = ({ languageText, userId }) => {
                         >
                           {t("Top5Component.monthBalance")}
                         </StyledTableCell>
-                      )}
+                      )} */}
 
                       <StyledTableCell
                         dir={languageText === "ar" ? "ltr" : "rtl"}
@@ -280,11 +271,11 @@ const Top5UsersList = ({ languageText, userId }) => {
                         </StyledTableCell>
 
                         {/* الرصيد الشهري */}
-                        {shouldShowColumn && (
+                        {/* {shouldShowColumn && (
                           <StyledTableCell sx={{ width: "30%" }} align="center">
                             {row.clientId === userId ? row.monthBalance : "-"}
                           </StyledTableCell>
-                        )}
+                        )} */}
 
                         <StyledTableCell sx={{ width: "30%" }} align="center">
                           {row.reward}

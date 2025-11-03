@@ -18,6 +18,7 @@ export default function Logout() {
 
   useEffect(() => {
     removeCookie("auth", { path: "/" });
+    removeCookie("phone", { path: "/" });
     removeCookie("userId", { path: "/dashboard" });
     removeCookie("phoneNumber", { path: "/dashboard" });
     removeCookie("username", { path: "/dashboard" });

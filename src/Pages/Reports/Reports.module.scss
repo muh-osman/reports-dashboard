@@ -222,7 +222,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 16px;
+    gap: 0px;
+    flex-direction: column;
 
     h3 {
       font-size: 16px;
@@ -251,4 +252,11 @@
       margin-bottom: 16px;
     }
   }
+}
+
+.expand_more_icon {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
 }

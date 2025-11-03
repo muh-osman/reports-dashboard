@@ -23,6 +23,9 @@ import Transfer from "./Pages/Transfer/Transfer";
 import History from "./Pages/History/History";
 import AcceptedNumbers from "./Utils/AcceptedNumbers";
 import Logout from "./Pages/Logout/Logout";
+import Shipping from "./Pages/Shippings/Shippings";
+import PayShipping from "./Pages/PayShipping/PayShipping";
+import ThanksShipping from "./Pages/ThanksShipping/ThanksShipping";
 
 export default function App() {
   const router = createBrowserRouter(
@@ -58,6 +61,10 @@ export default function App() {
           <Route path={`${process.env.PUBLIC_URL}/edit-booking/:id`} element={<EditBooking />} />
           <Route path={`${process.env.PUBLIC_URL}/contact`} element={<ContactUs />} />
           <Route path={`${process.env.PUBLIC_URL}/logout`} element={<Logout />} />
+
+          <Route path={`${process.env.PUBLIC_URL}/shipping/:cardId`} element={<Shipping />} />
+          <Route path={`${process.env.PUBLIC_URL}/pay/shipping`} element={<PayShipping />} />
+          <Route path={`${process.env.PUBLIC_URL}/pay/shipping/thanks`} element={<ThanksShipping />} />
         </Route>
         {/* End protected route */}
 

@@ -70,7 +70,12 @@ export const useVerifyApi = () => {
             path: "/dashboard",
             expires: expirationDate,
           });
-          setCookie("auth", "true", {
+          // This for home page & payment page (cashif.cc)
+          setCookie("auth", token, {
+            path: "/",
+            expires: expirationDate,
+          });
+          setCookie("phone", phoneNumber, {
             path: "/",
             expires: expirationDate,
           });
@@ -90,6 +95,7 @@ export const useVerifyApi = () => {
       removeCookie("phoneNumber", { path: "/dashboard" });
       removeCookie("tokenApp", { path: "/dashboard" });
       removeCookie("auth", { path: "/" });
+      removeCookie("phone", { path: "/" });
       const errorMessage = err?.response?.data?.message || err?.message || "An error occurred";
       // Toastify
       toast.error(errorMessage);
