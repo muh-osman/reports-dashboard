@@ -171,7 +171,6 @@ export default function PayShipping() {
     }
   }, [isFetchDataLoading, isFetchDataSuccess]);
 
-
   // Price calculation function
   function calculateShippingPrice(fromCity, modelCategory, toCity, shippingType) {
     // Validate inputs
@@ -418,9 +417,6 @@ export default function PayShipping() {
           >
             <Typography component="h5">
               <span style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-                {/* <span style={{ display: "flex" }}>
-                  <img src={tamaraLogo} alt="tamara" />
-                </span> */}
                 <span style={{ fontWeight: "700" }}>{t("PayShipping.ePayment")}</span>
               </span>
               <span style={{ display: "inline-block", color: "#747a79", fontSize: "12px" }}>{t("PayShipping.payWithMadaMasterAndVisa")}</span>
