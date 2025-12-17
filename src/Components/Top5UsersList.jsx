@@ -50,7 +50,7 @@ const Top5UsersList = ({ languageText, userId }) => {
   //
   const { data: users, fetchStatus, isSuccess } = useGetTop5MarketerApi();
   // Check if userId exists in any of the clientId values in the API data to show/hide "الرصيد الشهري" column
-  const shouldShowColumn = users?.some((item) => item?.clientId === userId);
+  // const shouldShowColumn = users?.some((item) => item?.clientId === userId);
   //
   const [expanded, setExpanded] = useState(isSuccess);
   //
@@ -73,22 +73,27 @@ const Top5UsersList = ({ languageText, userId }) => {
     return `${allExceptLast}`;
   };
 
-  // Sort users by monthPoints in descending order and take top 5
-  const top5Users = users?.sort((a, b) => b.monthPoints - a.monthPoints).slice(0, 5);
+  // Sort users by monthlyBalance in descending order
+  // const top5Users = users?.sort((a, b) => b.monthlyBalance - a.monthlyBalance).slice(0, 5);
+
+  // Filter out users with monthlyBalance 0, then sort by monthlyBalance in descending order
+  const top5Users = users
+    ?.filter((user) => user.monthlyBalance > 0) // Ignore users with monthlyBalance 0
+    ?.sort((a, b) => b.monthlyBalance - a.monthlyBalance);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
   // Create table rows from API data
-  const fixedRewards = ["100%", "60%", "40%", "20%", "10%"];
+  const fixedRewards = ["100%", "60%", "40%", "20%", "10%", "0%", "0%", "0%", "0%", "0%"];
   const rows =
     top5Users?.map((user, index) =>
       createData(
         index + 1, // order
         formatName(user.clientName), // formatted name
         user.code, // code from API
-        Math.floor(user?.monthPoints),
+        Math.floor(user?.monthlyBalance),
         fixedRewards[index] || 0,
         user?.clientId // For comparison with userId
       )
@@ -154,7 +159,7 @@ const Top5UsersList = ({ languageText, userId }) => {
               marginBottom: "4px",
             }}
           >
-            Top 5
+            Top {top5Users?.length}
           </Typography>
         }
         subheader={
@@ -190,21 +195,6 @@ const Top5UsersList = ({ languageText, userId }) => {
                       <StyledTableCell sx={{ backgroundColor: "#164547 !important", fontWeight: "bold", width: "30%" }} align="center">
                         {t("Top5Component.code")}
                       </StyledTableCell>
-
-                      {/* الرصيد الشهري */}
-                      {/* {shouldShowColumn && (
-                        <StyledTableCell
-                          sx={{
-                            backgroundColor: "#164547 !important",
-                            fontWeight: "bold",
-                            width: "30%",
-                            whiteSpace: "nowrap",
-                          }}
-                          align="center"
-                        >
-                          {t("Top5Component.monthBalance")}
-                        </StyledTableCell>
-                      )} */}
 
                       <StyledTableCell
                         dir={languageText === "ar" ? "ltr" : "rtl"}
@@ -269,13 +259,6 @@ const Top5UsersList = ({ languageText, userId }) => {
                             }}
                           />
                         </StyledTableCell>
-
-                        {/* الرصيد الشهري */}
-                        {/* {shouldShowColumn && (
-                          <StyledTableCell sx={{ width: "30%" }} align="center">
-                            {row.clientId === userId ? row.monthBalance : "-"}
-                          </StyledTableCell>
-                        )} */}
 
                         <StyledTableCell sx={{ width: "30%" }} align="center">
                           {row.reward}

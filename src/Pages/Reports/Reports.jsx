@@ -28,6 +28,7 @@ import VideocamIcon from "@mui/icons-material/Videocam";
 import SecurityIcon from "@mui/icons-material/Security";
 import CarRepairIcon from "@mui/icons-material/CarRepair";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import CreditCardIcon from "@mui/icons-material/CreditCard";
 // Toastify
 import { toast } from "react-toastify";
 // Cookies
@@ -131,21 +132,19 @@ export default function Reports() {
   //
 
   const { data: points } = useGetPoinsApi();
+
   const { data: cardsData, fetchStatus: fetchCardStatus } = useGetAllCardsApi();
 
   // All Card IDs
-  const [cardIds, setCardIds] = useState([]);
+  const [cardsNumbers, setCardsNumbers] = useState([]);
   useEffect(() => {
     if (cardsData && cardsData.length > 0) {
       // Extract all IDs from cardsData and store them in state
-      const ids = cardsData.map((card) => card.id);
-      setCardIds(ids);
+      const cardsNumbersArray = cardsData.map((card) => card.cardNumber);
+      setCardsNumbers(cardsNumbersArray);
 
-      checkIfCardsHaveSummeryReportMutate(ids);
-      checkIfCardsHaveVideosMutate(ids);
-
-      // Optional: log the IDs to verify
-      // console.log(ids);
+      checkIfCardsHaveSummeryReportMutate(cardsNumbersArray);
+      checkIfCardsHaveVideosMutate(cardsNumbersArray);
     }
   }, [cardsData]);
 
@@ -276,11 +275,11 @@ export default function Reports() {
 
   // Download Summary Reports Button
   const [loadingSummaryCardDownload, setLoadingSummaryCardDownload] = useState({});
-  const handleDownloadSummaryCard = async (id) => {
+  const handleDownloadSummaryCard = async (cardNumber) => {
     try {
-      setLoadingSummaryCardDownload((prev) => ({ ...prev, [id]: true })); // Set loading for the specific card
+      setLoadingSummaryCardDownload((prev) => ({ ...prev, [cardNumber]: true })); // Set loading for the specific card
       // Call the API to download the card
-      let response = await fetchDownloadSummaryReport(id);
+      let response = await fetchDownloadSummaryReport(cardNumber);
 
       // Create a blob from the response data
       const blob = new Blob([response], { type: "application/pdf" });
@@ -288,7 +287,7 @@ export default function Reports() {
       // Create a link element
       const link = document.createElement("a");
       link.href = window.URL.createObjectURL(blob);
-      link.download = `card_${id}.pdf`; // Set the file name
+      link.download = `card_${cardNumber}.pdf`; // Set the file name
 
       // Append to the body
       document.body.appendChild(link);
@@ -302,7 +301,7 @@ export default function Reports() {
       console.error("Error downloading the card:", error);
       toast.error(error.message);
     } finally {
-      setLoadingSummaryCardDownload((prev) => ({ ...prev, [id]: false })); // Reset loading for the specific card
+      setLoadingSummaryCardDownload((prev) => ({ ...prev, [cardNumber]: false })); // Reset loading for the specific card
     }
   };
 
@@ -498,8 +497,8 @@ export default function Reports() {
   const calculateProgressValue = (pointsData) => {
     if (!pointsData) return 0;
 
-    const { points, clientTypeAr } = pointsData;
-    const currentPoints = points || 0;
+    const { points, clientTypeAr, pointsConsumed } = pointsData;
+    const currentPoints = points + pointsConsumed || 0; // points (Consumed & Not Consumed )
 
     // Define the minimum points required for each level
     const levelRequirements = {
@@ -513,21 +512,22 @@ export default function Reports() {
 
     // Get current level and next level requirements
     const currentLevel = clientTypeAr || "إفتراضي";
-    const currentLevelPoints = levelRequirements[currentLevel];
     const nextLevel = getNextLevel(currentLevel);
+
+    // Get the target points (If no next level, we assume max progress)
     const nextLevelPoints = nextLevel ? levelRequirements[nextLevel] : levelRequirements["نخبة"];
 
     // If user is at the highest level (نخبة), show 100%
     if (!nextLevel) return 100;
 
-    // Calculate progress towards next level
-    const pointsNeededForNextLevel = nextLevelPoints - currentLevelPoints;
-    const pointsAchievedTowardsNextLevel = currentPoints - currentLevelPoints;
+    // --- SIMPLIFIED CALCULATION ---
 
-    // Calculate percentage (capped at 100)
-    const progress = Math.min(Math.round((pointsAchievedTowardsNextLevel / pointsNeededForNextLevel) * 100), 100);
+    // 1. Calculate percentage: (Current Points / Target for Next Level) * 100
+    // We use Math.max(currentPoints, 0) just in case the API returns a negative number by mistake
+    let progress = (Math.max(currentPoints, 0) / nextLevelPoints) * 100;
 
-    return progress;
+    // 2. Cap the result at 100% and round it
+    return Math.min(Math.round(progress), 100);
   };
 
   // Helper function to get the next level
@@ -551,9 +551,9 @@ export default function Reports() {
   ];
 
   //
-  const handleClickOninsuranceBtn = (cardId) => {
-    const phoneNumber = "966920019948";
-    const message = `طلب تأمين ونقل ملكية، رقم التقرير: ${cardId}`;
+  const handleClickOninsuranceBtn = (cardNumber) => {
+    const phoneNumber = "966548682102";
+    const message = `*أرغب بنقل ملكية السيارة - كاشف*\n[رقم التقرير: ${cardNumber}]`;
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 
@@ -902,7 +902,7 @@ export default function Reports() {
               .reverse()
               .map((card) => (
                 <Card
-                  key={card.id}
+                  key={card.cardNumber}
                   sx={{
                     width: { xs: "100%", sm: 329 },
                     position: "relative",
@@ -944,6 +944,13 @@ export default function Reports() {
                           : "غير محدد"} */}
 
                         {languageText === "en" ? card?.servicesListNameEn.join(", ") || "-" : card?.servicesListNameAr.join(", ") || "-"}
+                      </Typography>
+                    </Box>
+
+                    <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
+                      <CreditCardIcon style={{ color: "#000000de" }} />
+                      <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
+                        {card.cardNumber}
                       </Typography>
                     </Box>
 
@@ -998,15 +1005,15 @@ export default function Reports() {
                       </Button>
 
                       {/* Summary Reports Button */}
-                      {AllSummaryReportsStatus?.data?.[card.id.toString()] === true && (
+                      {AllSummaryReportsStatus?.data?.[card.cardNumber.toString()] === true && (
                         <Button
                           sx={{ margin: "0 !important" }}
-                          onClick={() => handleDownloadSummaryCard(card.id)}
+                          onClick={() => handleDownloadSummaryCard(card.cardNumber)}
                           size="small"
                           variant="outlined"
-                          disabled={loadingSummaryCardDownload[card.id]} // Disable button if loading
+                          disabled={loadingSummaryCardDownload[card.cardNumber]} // Disable button if loading
                           endIcon={
-                            loadingSummaryCardDownload[card.id] ? (
+                            loadingSummaryCardDownload[card.cardNumber] ? (
                               <CircularProgress
                                 size={18}
                                 sx={{
@@ -1027,17 +1034,17 @@ export default function Reports() {
                       )}
 
                       {/*  Video Button */}
-                      {AllVideoReportsStatus?.data?.[card.id.toString()] === true && (
+                      {AllVideoReportsStatus?.data?.[card.cardNumber.toString()] === true && (
                         <IconButton
                           sx={{
                             margin: "0 !important",
                             backgroundColor: "#0000000a",
                           }}
-                          onClick={() => handleDownloadVideo(card.id)}
+                          onClick={() => handleDownloadVideo(card.cardNumber)}
                           size="small"
-                          disabled={loadingvideoDownload[card.id]} // Disable button if loading
+                          disabled={loadingvideoDownload[card.cardNumber]} // Disable button if loading
                         >
-                          {loadingvideoDownload[card.id] ? (
+                          {loadingvideoDownload[card.cardNumber] ? (
                             <CircularProgress size={24} />
                           ) : (
                             <VideocamIcon
@@ -1059,7 +1066,7 @@ export default function Reports() {
                     >
                       <Button
                         sx={{ margin: "0 !important" }}
-                        onClick={() => handleClickOninsuranceBtn(card.id)}
+                        onClick={() => handleClickOninsuranceBtn(card.cardNumber)}
                         size="small"
                         variant="outlined"
                         endIcon={

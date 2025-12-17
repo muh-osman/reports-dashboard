@@ -103,9 +103,9 @@ export default function Marketer() {
   // Marketer Data
   const { data: marketerData, isError: isGetMarketerError } = useGetMarketerApi();
   const { data: MarketerSettings } = useMarketerSettingsApi();
-  // Get monthPoints for the current user
+  // Get MonthlyBalance for the current user
   const { data: allMarketersMonthlyBalance } = useGetAllMarketersMonthlyBalanceApi();
-  const userMonthPoints = Math.trunc(allMarketersMonthlyBalance?.find((user) => user.clientId === parseInt(cookies.userId))?.monthPoints || 0);
+  const userMonthlyBalance = Math.trunc(allMarketersMonthlyBalance?.find((user) => user.clientId === parseInt(cookies.userId))?.monthlyBalance || 0);
 
   // Create Marketer if Get Marketer Faild
   const { mutate: createMarketer } = useCreateMarketerApi();
@@ -231,7 +231,7 @@ export default function Marketer() {
                   <p style={{ fontSize: "14px" }}>
                     {t("Marketer.monthPoints")}:{" "}
                     <span dir="rtl">
-                      {userMonthPoints}{" "}
+                      {userMonthlyBalance}{" "}
                       <span className={style.small_rial}>
                         <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39">
                           <defs></defs>

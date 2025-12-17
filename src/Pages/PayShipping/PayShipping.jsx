@@ -57,25 +57,25 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 }));
 
 //
-function getCarModelCategory(model) {
-  if (!model) return null;
+// function getCarModelCategory(model) {
+//   if (!model) return null;
 
-  const normalizedModel = model.toLowerCase().trim();
+//   const normalizedModel = model.toLowerCase().trim();
 
-  if (carData.low_models.some((lowModel) => lowModel.toLowerCase().trim() === normalizedModel)) {
-    return "Low";
-  }
+//   if (carData.low_models.some((lowModel) => lowModel.toLowerCase().trim() === normalizedModel)) {
+//     return "Low";
+//   }
 
-  if (carData.medium_models.some((mediumModel) => mediumModel.toLowerCase().trim() === normalizedModel)) {
-    return "Medium";
-  }
+//   if (carData.medium_models.some((mediumModel) => mediumModel.toLowerCase().trim() === normalizedModel)) {
+//     return "Medium";
+//   }
 
-  if (carData.high_models.some((highModel) => highModel.toLowerCase().trim() === normalizedModel)) {
-    return "High";
-  }
+//   if (carData.high_models.some((highModel) => highModel.toLowerCase().trim() === normalizedModel)) {
+//     return "High";
+//   }
 
-  return null; // Model not found
-}
+//   return null; // Model not found
+// }
 
 export default function PayShipping() {
   //
@@ -114,7 +114,7 @@ export default function PayShipping() {
   const searchParams = new URLSearchParams(window.location.search);
 
   // Get individual parameters
-  const reportNumber = searchParams.get("report_number");
+  const reportNumber = searchParams.get("report_number"); // this is id NOT cardNumber
   // const model = searchParams.get("model");
   // const modelCategory = searchParams.get("model_category");
   // const plateNumber = searchParams.get("plate_number");
@@ -146,7 +146,7 @@ export default function PayShipping() {
   // };
 
   //
-  const [modelCategory, setModelCategory] = useState(null); // Low, Medium, High or null (if model not exist in json file)
+  // const [modelCategory, setModelCategory] = useState(null); // Low, Medium, High or null (if model not exist in json file)
   // State for loading data overlay
   const [showOverlay, setShowOverlay] = useState(true);
   const [overlayMessage, setOverlayMessage] = useState("");
@@ -154,16 +154,27 @@ export default function PayShipping() {
     if (isFetchDataLoading) {
       setShowOverlay(true);
       setOverlayMessage("");
-    } else if (isFetchDataSuccess) {
-      let category = getCarModelCategory(oneCardData?.carModelNameAr);
-      if (category) {
-        setModelCategory(category);
+    }
+
+    // else if (isFetchDataSuccess) {
+    //   let category = getCarModelCategory(oneCardData?.carModelNameAr);
+    //   if (category) {
+    //     setModelCategory(category);
+    //     setShowOverlay(false);
+    //     setOverlayMessage("");
+    //   } else {
+    //     setShowOverlay(true);
+    //     // هذا الخطأ سيظهر في حال موديل السيارة غير موجود في ملف الـ (JSON)
+    //     setOverlayMessage(`خطأ في تحميل بيانات: ${oneCardData?.carModelNameAr}`);
+    //   }
+    // }
+    else if (isFetchDataSuccess) {
+      if (oneCardData?.branchNameAr === "افتراضي") {
+        setShowOverlay(true);
+        setOverlayMessage("الفرع 'افتراضي' غير مدعوم");
+      } else {
         setShowOverlay(false);
         setOverlayMessage("");
-      } else {
-        setShowOverlay(true);
-        // هذا الخطأ سيظهر في حال موديل السيارة غير موجود في ملف الـ (JSON)
-        setOverlayMessage(`خطأ في تحميل بيانات: ${oneCardData?.carModelNameAr}`);
       }
     } else {
       setShowOverlay(true);
@@ -172,9 +183,9 @@ export default function PayShipping() {
   }, [isFetchDataLoading, isFetchDataSuccess]);
 
   // Price calculation function
-  function calculateShippingPrice(fromCity, modelCategory, toCity, shippingType) {
+  function calculateShippingPrice(fromCity, toCity, shippingType) {
     // Validate inputs
-    if (!fromCity || !modelCategory || !toCity || !shippingType) {
+    if (!fromCity || !toCity || !shippingType) {
       return null;
     }
 
@@ -185,45 +196,51 @@ export default function PayShipping() {
     }
 
     // Get the category data (Low, Medium, High)
-    const categoryData = cityData[modelCategory];
-    if (!categoryData) {
-      return null;
-    }
+    // const categoryData = cityData[modelCategory];
+    // if (!categoryData) {
+    //   return null;
+    // }
 
     // Get prices based on shipping type
     let price;
 
-    if (modelCategory === "Low") {
-      // Low category has both public and private options
-      if (shippingType === "نقل عام") {
-        price = categoryData.prices.public[toCity];
-      } else if (shippingType === "سطحة خاصة") {
-        price = categoryData.prices.private[toCity];
-      } else {
-        return null;
-      }
+    if (shippingType === "نقل عام") {
+      price = cityData.public[toCity];
     } else {
-      // Medium and High categories only have heavy option
-      if (shippingType === "نقل ثقيل") {
-        price = categoryData.prices.heavy[toCity];
-      } else {
-        return null;
-      }
+      price = cityData.private[toCity];
     }
+
+    // if (modelCategory === "Low") {
+    //   // Low category has both public and private options
+    //   if (shippingType === "نقل عام") {
+    //     price = categoryData.prices.public[toCity];
+    //   } else if (shippingType === "سطحة خاصة") {
+    //     price = categoryData.prices.private[toCity];
+    //   } else {
+    //     return null;
+    //   }
+    // } else {
+    //   // Medium and High categories only have heavy option
+    //   if (shippingType === "نقل ثقيل") {
+    //     price = categoryData.prices.heavy[toCity];
+    //   } else {
+    //     return null;
+    //   }
+    // }
 
     // Return the price (could be a number or 99999 for unavailable routes)
     return price;
   }
 
   useEffect(() => {
-    if (oneCardData?.branchNameAr && modelCategory && to && shippingType) {
+    if (oneCardData?.branchNameAr && to && shippingType && isFetchDataSuccess) {
       // console.log(oneCardData?.branchNameAr);
       // console.log(modelCategory);
       // console.log(to);
       // console.log(shippingType);
-      setPrice(calculateShippingPrice(oneCardData?.branchNameAr, modelCategory, to, shippingType));
+      setPrice(calculateShippingPrice(oneCardData?.branchNameAr, to, shippingType));
     }
-  }, [modelCategory, to, shippingType]);
+  }, [isFetchDataSuccess]);
 
   // Moyasar
   useEffect(() => {
@@ -235,7 +252,9 @@ export default function PayShipping() {
         currency: "SAR",
         language: languageText === "ar" ? "ar" : "en",
         description: "Cashif for car inspection",
-        publishable_api_key: "My_PK",
+        // publishable_api_key: "pk_live_jEdE8NoP5w2jz1kxK2DcF6MzdSdbmXCVNYqnxTNm",
+        // publishable_api_key: "pk_test_mnK3NxqkWZzScvnix7UFbad4qbwgzoLcD3DKvYRr",
+        publishable_api_key: window.location.hostname === "localhost" ? process.env.REACT_APP_SHIPPING_MOYASAR_TEST_KEY : process.env.REACT_APP_SHIPPING_MOYASAR_LIVE_KEY,
         callback_url: `${window.location.origin}${process.env.PUBLIC_URL}/pay/shipping/thanks`,
         supported_networks: ["visa", "mastercard", "mada"],
         methods: ["creditcard", "applepay"],
@@ -248,9 +267,9 @@ export default function PayShipping() {
 
         metadata: {
           name: oneCardData?.clientName,
-          reportNumber: reportNumber,
+          reportNumber: oneCardData?.cardNumber, // this is cardNumber NOT id
           model: oneCardData?.carModelNameAr,
-          modelCategory: modelCategory,
+          modelCategory: "N/A",
           plateNumber: oneCardData?.plateNumber,
           from: oneCardData?.branchNameAr,
           to: to,
@@ -272,7 +291,7 @@ export default function PayShipping() {
         formElement.innerHTML = "";
       }
     };
-  }, [price, languageText, oneCardData, reportNumber, modelCategory, to, shippingType]);
+  }, [price, languageText, oneCardData, reportNumber, to, shippingType]);
 
   return (
     <div className={style.container} dir={languageText === "ar" ? "rtl" : "ltr"}>

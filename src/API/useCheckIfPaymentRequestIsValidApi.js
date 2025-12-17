@@ -3,9 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import API from "./Api";
 
 export const fetchCheckIfPaymentRequestIsValid = async (marketerId) => {
-  const res = await API.get(
-    `api/TransferRequests/CheckWattingRequest?marketerId=${marketerId}`
-  );
+  const res = await API.get(`api/TransferRequests/CheckWattingRequest?marketerId=${marketerId}`);
   return res.data;
 };
 

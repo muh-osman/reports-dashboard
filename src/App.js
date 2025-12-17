@@ -26,6 +26,12 @@ import Logout from "./Pages/Logout/Logout";
 import Shipping from "./Pages/Shippings/Shippings";
 import PayShipping from "./Pages/PayShipping/PayShipping";
 import ThanksShipping from "./Pages/ThanksShipping/ThanksShipping";
+import Plans from "./Pages/Plans/Plans";
+import PayPurchaseCheck from "./Pages/PayPurchaseCheck/PayPurchaseCheck";
+import ThanksPurchaseCheck from "./Pages/ThanksPurchaseCheck/ThanksPurchaseCheck";
+import PayMakdomCheck from "./Pages/PayMakdomCheck/PayMakdomCheck";
+import ThanksMakdomCheck from "./Pages/ThanksMakdomCheck/ThanksMakdomCheck";
+import PayPassengerCheck from "./Pages/PayPassengerCheck/PayPassengerCheck";
 
 export default function App() {
   const router = createBrowserRouter(
@@ -57,6 +63,7 @@ export default function App() {
 
           <Route path={`${process.env.PUBLIC_URL}/reports`} element={<Reports />} />
           <Route path={`${process.env.PUBLIC_URL}/prices`} element={<Prices />} />
+          <Route path={`${process.env.PUBLIC_URL}/plans`} element={<Plans />} />
           <Route path={`${process.env.PUBLIC_URL}/booking`} element={<Booking />} />
           <Route path={`${process.env.PUBLIC_URL}/edit-booking/:id`} element={<EditBooking />} />
           <Route path={`${process.env.PUBLIC_URL}/contact`} element={<ContactUs />} />
@@ -65,6 +72,14 @@ export default function App() {
           <Route path={`${process.env.PUBLIC_URL}/shipping/:cardId`} element={<Shipping />} />
           <Route path={`${process.env.PUBLIC_URL}/pay/shipping`} element={<PayShipping />} />
           <Route path={`${process.env.PUBLIC_URL}/pay/shipping/thanks`} element={<ThanksShipping />} />
+
+          <Route path={`${process.env.PUBLIC_URL}/pay/purchase-check`} element={<PayPurchaseCheck />} />
+          <Route path={`${process.env.PUBLIC_URL}/pay/purchase-check/thanks`} element={<ThanksPurchaseCheck />} />
+
+          <Route path={`${process.env.PUBLIC_URL}/pay/makdom-check`} element={<PayMakdomCheck />} />
+          <Route path={`${process.env.PUBLIC_URL}/pay/makdom-check/thanks`} element={<ThanksMakdomCheck />} />
+
+          <Route path={`${process.env.PUBLIC_URL}/pay/passenger-check`} element={<PayPassengerCheck />} />
         </Route>
         {/* End protected route */}
 

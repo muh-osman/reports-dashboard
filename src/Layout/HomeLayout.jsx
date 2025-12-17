@@ -56,13 +56,7 @@ function HomeLayout() {
   };
 
   // Logout
-  const [cookies, setCookie, removeCookie] = useCookies([
-    "tokenApp",
-    "username",
-    "userId",
-    "phoneNumber",
-    "auth",
-  ]);
+  const [cookies, setCookie, removeCookie] = useCookies(["tokenApp", "username", "userId", "phoneNumber", "auth"]);
 
   //
   const [languageText, setLanguageText] = React.useState(i18n.language);
@@ -124,12 +118,13 @@ function HomeLayout() {
     const currentPath = location.pathname.replace(/\/$/, ""); // Remove trailing slash from current path
 
     // Check if the current path starts with '/falak'
-    const isFalakPath = currentPath.startsWith(
-      `${process.env.PUBLIC_URL}/falak`
-    );
+    const isFalakPath = currentPath.startsWith(`${process.env.PUBLIC_URL}/falak`);
+
+    // Check if the current path is either '/prices' or '/plans'
+    const isPricesOrPlansPath = currentPath === `${process.env.PUBLIC_URL}/prices` || currentPath === `${process.env.PUBLIC_URL}/plans`;
 
     // If the current path is not in the list of paths and not a falak path
-    if (!paths.includes(currentPath) && !isFalakPath) {
+    if (!paths.includes(currentPath) && !isFalakPath && !isPricesOrPlansPath) {
       // Remove 'act' class from all <li> tags
       listRefs.current.forEach((item) => item.classList.remove("act"));
       // Hide the indicator
@@ -139,16 +134,23 @@ function HomeLayout() {
     } else {
       // If the current path is in the list or is a falak path, set the active class
       indicat.current.style.display = "block";
-      const index = paths.findIndex((path) => path === currentPath);
-      if (index !== -1) {
-        activeLink(index);
-      } else if (isFalakPath) {
-        // If it's a falak sub-path, set the active class for falak
-        const falakIndex = paths.findIndex(
-          (path) => path === `${process.env.PUBLIC_URL}/falak`
-        );
-        if (falakIndex !== -1) {
-          activeLink(falakIndex);
+
+      if (isPricesOrPlansPath) {
+        // If it's a prices or plans path, set the active class for prices
+        const pricesIndex = paths.findIndex((path) => path === `${process.env.PUBLIC_URL}/prices`);
+        if (pricesIndex !== -1) {
+          activeLink(pricesIndex);
+        }
+      } else {
+        const index = paths.findIndex((path) => path === currentPath);
+        if (index !== -1) {
+          activeLink(index);
+        } else if (isFalakPath) {
+          // If it's a falak sub-path, set the active class for falak
+          const falakIndex = paths.findIndex((path) => path === `${process.env.PUBLIC_URL}/falak`);
+          if (falakIndex !== -1) {
+            activeLink(falakIndex);
+          }
         }
       }
     }
@@ -178,29 +180,13 @@ function HomeLayout() {
                 aria-expanded={open ? "true" : undefined}
                 onClick={handleClick}
               >
-                <IconButton>
-                  {cookies.tokenApp ? (
-                    <AccountCircleIcon
-                      sx={{ color: "#fff", fontSize: "44px" }}
-                    />
-                  ) : (
-                    <MenuIcon sx={{ color: "#fff", fontSize: "32px" }} />
-                  )}
-                </IconButton>
+                <IconButton>{cookies.tokenApp ? <AccountCircleIcon sx={{ color: "#fff", fontSize: "44px" }} /> : <MenuIcon sx={{ color: "#fff", fontSize: "32px" }} />}</IconButton>
               </Tooltip>
             </div>
 
             <div className={style.introCurve}>
-              <svg
-                style={{ width: "100%", height: "auto" }}
-                viewBox="0 0 1920 74"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M0 0H1920V0.96521C1920 0.96521 1335.71 74 960 74C584.29 74 0 0.96521 0 0.96521V0Z"
-                  fill="#174545"
-                />
+              <svg style={{ width: "100%", height: "auto" }} viewBox="0 0 1920 74" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 0H1920V0.96521C1920 0.96521 1335.71 74 960 74C584.29 74 0 0.96521 0 0.96521V0Z" fill="#174545" />
               </svg>
             </div>
           </div>
@@ -237,23 +223,14 @@ function HomeLayout() {
                   <ListItemText>{t("HomeLayout.ourBranches")}</ListItemText>
                 </MenuItem>
 
-                <MenuItem
-                  onClick={() =>
-                    (window.location.href = "https://cashif.cc/blog/")
-                  }
-                >
+                <MenuItem onClick={() => (window.location.href = "https://cashif.cc/blog/")}>
                   <ListItemIcon>
                     <BookmarkBorderIcon fontSize="small" />
                   </ListItemIcon>
                   <ListItemText>{t("HomeLayout.blog")}</ListItemText>
                 </MenuItem>
 
-                <MenuItem
-                  onClick={() =>
-                    (window.location.href =
-                      "https://api.whatsapp.com/send?phone=966920019948&text=*اختر من القائمة الرئيسية*")
-                  }
-                >
+                <MenuItem onClick={() => (window.location.href = "https://api.whatsapp.com/send?phone=966920019948&text=*اختر من القائمة الرئيسية*")}>
                   <ListItemIcon>
                     <WhatsAppIcon fontSize="small" />
                   </ListItemIcon>
@@ -301,11 +278,7 @@ function HomeLayout() {
             >
               <Link to={`${process.env.PUBLIC_URL}/falak/marketer`}>
                 <span className="icon">
-                  <svg
-                    style={{ width: "44px", transform: "translateY(2px)" }}
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 640 512"
-                  >
+                  <svg style={{ width: "44px", transform: "translateY(2px)" }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
                     <path d="M323.4 85.2l-96.8 78.4c-16.1 13-19.2 36.4-7 53.1c12.9 17.8 38 21.3 55.3 7.8l99.3-77.2c7-5.4 17-4.2 22.5 2.8s4.2 17-2.8 22.5l-20.9 16.2L512 316.8 512 128l-.7 0-3.9-2.5L434.8 79c-15.3-9.8-33.2-15-51.4-15c-21.8 0-43 7.5-60 21.2zm22.8 124.4l-51.7 40.2C263 274.4 217.3 268 193.7 235.6c-22.2-30.5-16.6-73.1 12.7-96.8l83.2-67.3c-11.6-4.9-24.1-7.4-36.8-7.4C234 64 215.7 69.6 200 80l-72 48 0 224 28.2 0 91.4 83.4c19.6 17.9 49.9 16.5 67.8-3.1c5.5-6.1 9.2-13.2 11.1-20.6l17 15.6c19.5 17.9 49.9 16.6 67.8-2.9c4.5-4.9 7.8-10.6 9.9-16.5c19.4 13 45.8 10.3 62.1-7.5c17.9-19.5 16.6-49.9-2.9-67.8l-134.2-123zM16 128c-8.8 0-16 7.2-16 16L0 352c0 17.7 14.3 32 32 32l32 0c17.7 0 32-14.3 32-32l0-224-80 0zM48 320a16 16 0 1 1 0 32 16 16 0 1 1 0-32zM544 128l0 224c0 17.7 14.3 32 32 32l32 0c17.7 0 32-14.3 32-32l0-208c0-8.8-7.2-16-16-16l-80 0zm32 208a16 16 0 1 1 32 0 16 16 0 1 1 -32 0z" />
                   </svg>
                 </span>
@@ -337,13 +310,7 @@ function HomeLayout() {
               onClick={() => activeLink(2)}
               ref={(el) => (listRefs.current[2] = el)} // Assign ref
             >
-              <a
-                href={
-                  languageText === "ar"
-                    ? "https://cashif.cc/"
-                    : "https://cashif.cc/en"
-                }
-              >
+              <a href={languageText === "ar" ? "https://cashif.cc/" : "https://cashif.cc/en"}>
                 <span className="icon">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
                     <path d="M575.8 255.5c0 18-15 32.1-32 32.1l-32 0 .7 160.2c0 2.7-.2 5.4-.5 8.1l0 16.2c0 22.1-17.9 40-40 40l-16 0c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1L416 512l-24 0c-22.1 0-40-17.9-40-40l0-24 0-64c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32 14.3-32 32l0 64 0 24c0 22.1-17.9 40-40 40l-24 0-31.9 0c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2l-16 0c-22.1 0-40-17.9-40-40l0-112c0-.9 0-1.9 .1-2.8l0-69.7-32 0c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z" />
@@ -408,12 +375,7 @@ function HomeLayout() {
               backgroundColor: "#128C7E", // Darker green on hover
             },
           }}
-          onClick={() =>
-            window.open(
-              "https://api.whatsapp.com/send?phone=966920019948&text=*اختر من القائمة الرئيسية*",
-              "_blank"
-            )
-          }
+          onClick={() => window.open("https://api.whatsapp.com/send?phone=966920019948&text=*اختر من القائمة الرئيسية*", "_blank")}
         >
           <WhatsAppIcon sx={{ color: "white", fontSize: 36 }} />
         </Fab>

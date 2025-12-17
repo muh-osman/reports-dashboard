@@ -22,7 +22,7 @@ import carData from "./data.json";
 // Image
 import single from "../../Assets/Images/single.png";
 import multible from "../../Assets/Images/multible.png";
-import heavy from "../../Assets/Images/heavy.png";
+// import heavy from "../../Assets/Images/heavy.png";
 
 // Modal style
 const modalStyle = {
@@ -37,25 +37,25 @@ const modalStyle = {
   borderRadius: 2,
 };
 
-function getCarModelCategory(model) {
-  if (!model) return null;
+// function getCarModelCategory(model) {
+//   if (!model) return null;
 
-  const normalizedModel = model.toLowerCase().trim();
+//   const normalizedModel = model.toLowerCase().trim();
 
-  if (carData.low_models.some((lowModel) => lowModel.toLowerCase().trim() === normalizedModel)) {
-    return "Low";
-  }
+//   if (carData.low_models.some((lowModel) => lowModel.toLowerCase().trim() === normalizedModel)) {
+//     return "Low";
+//   }
 
-  if (carData.medium_models.some((mediumModel) => mediumModel.toLowerCase().trim() === normalizedModel)) {
-    return "Medium";
-  }
+//   if (carData.medium_models.some((mediumModel) => mediumModel.toLowerCase().trim() === normalizedModel)) {
+//     return "Medium";
+//   }
 
-  if (carData.high_models.some((highModel) => highModel.toLowerCase().trim() === normalizedModel)) {
-    return "High";
-  }
+//   if (carData.high_models.some((highModel) => highModel.toLowerCase().trim() === normalizedModel)) {
+//     return "High";
+//   }
 
-  return null; // Model not found
-}
+//   return null; // Model not found
+// }
 
 export default function Shippings() {
   //
@@ -95,21 +95,31 @@ export default function Shippings() {
   const { data: oneCardData, isLoading: isFetchDataLoading, isSuccess: isFetchDataSuccess } = useGetOneCardDataApi(cardId);
 
   //
-  const [modelCategory, setModelCategory] = useState(null); // Low, Medium, High or null (if model not exist in json file)
+  // const [modelCategory, setModelCategory] = useState(null); // Low, Medium, High or null (if model not exist in json file)
   useEffect(() => {
     if (isFetchDataLoading) {
       setShowOverlay(true);
       setOverlayMessage("");
-    } else if (isFetchDataSuccess) {
-      let category = getCarModelCategory(oneCardData?.carModelNameAr);
-      if (category) {
-        setModelCategory(category);
+    }
+    // else if (isFetchDataSuccess) {
+    //   let category = getCarModelCategory(oneCardData?.carModelNameAr);
+    //   if (category) {
+    //     setModelCategory(category);
+    //     setShowOverlay(false);
+    //     setOverlayMessage("");
+    //   } else {
+    //     setShowOverlay(true);
+    //     // هذا الخطأ سيظهر في حال موديل السيارة غير موجود في ملف الـ (JSON)
+    //     setOverlayMessage(`خطأ في تحميل بيانات: ${oneCardData?.carModelNameAr}`);
+    //   }
+    // }
+    else if (isFetchDataSuccess) {
+      if (oneCardData?.branchNameAr === "افتراضي") {
+        setShowOverlay(true);
+        setOverlayMessage("الفرع 'افتراضي' غير مدعوم");
+      } else {
         setShowOverlay(false);
         setOverlayMessage("");
-      } else {
-        setShowOverlay(true);
-        // هذا الخطأ سيظهر في حال موديل السيارة غير موجود في ملف الـ (JSON)
-        setOverlayMessage(`خطأ في تحميل بيانات: ${oneCardData?.carModelNameAr}`);
       }
     } else {
       setShowOverlay(true);
@@ -133,38 +143,38 @@ export default function Shippings() {
     },
     {
       id: 2,
-      nameAr: "بريدة",
-      nameEn: "Buraidah",
+      nameAr: "الدمام",
+      nameEn: "Dammam",
     },
     {
       id: 3,
-      nameAr: "وادي الدواسر",
-      nameEn: "Wadi Al-Dawasir",
-    },
-    {
-      id: 4,
-      nameAr: "الخرج",
-      nameEn: "Al-Kharj",
-    },
-    {
-      id: 5,
-      nameAr: "حائل",
-      nameEn: "Hail",
-    },
-    {
-      id: 6,
       nameAr: "جدة",
       nameEn: "Jeddah",
     },
     {
+      id: 4,
+      nameAr: "ابها",
+      nameEn: "Abha",
+    },
+    {
+      id: 5,
+      nameAr: "الطائف",
+      nameEn: "Taif",
+    },
+    {
+      id: 6,
+      nameAr: "تبوك",
+      nameEn: "Tabuk",
+    },
+    {
       id: 7,
-      nameAr: "مكة المكرمة",
-      nameEn: "Makkah",
+      nameAr: "القريات",
+      nameEn: "Al-Qurayyat",
     },
     {
       id: 8,
-      nameAr: "الطائف",
-      nameEn: "Taif",
+      nameAr: "مكة المكرمة",
+      nameEn: "Makkah",
     },
     {
       id: 9,
@@ -173,33 +183,34 @@ export default function Shippings() {
     },
     {
       id: 10,
-      nameAr: "ينبع",
-      nameEn: "Yanbu",
+      nameAr: "جيزان",
+      nameEn: "Jizan",
     },
     {
       id: 11,
-      nameAr: "الباحة",
-      nameEn: "Al-Baha",
+      nameAr: "نجران",
+      nameEn: "Najran",
     },
+
     {
       id: 12,
-      nameAr: "الدمام",
-      nameEn: "Dammam",
+      nameAr: "القصيم",
+      nameEn: "Al Qassim",
     },
     {
       id: 13,
-      nameAr: "الخبر",
-      nameEn: "Al-Khobar",
+      nameAr: "بيشة",
+      nameEn: "Bisha",
     },
     {
       id: 14,
-      nameAr: "الاحساء",
-      nameEn: "Al-Ahsa",
+      nameAr: "عرعر",
+      nameEn: "Arar",
     },
     {
       id: 15,
-      nameAr: "الجبيل",
-      nameEn: "Al-Jubail",
+      nameAr: "سكاكا الجوف",
+      nameEn: "Sakaka",
     },
     {
       id: 16,
@@ -208,63 +219,49 @@ export default function Shippings() {
     },
     {
       id: 17,
-      nameAr: "الخفجي",
-      nameEn: "Al-Khafji",
+      nameAr: "حائل",
+      nameEn: "Hail",
     },
     {
       id: 18,
-      nameAr: "عرعر",
-      nameEn: "Arar",
+      nameAr: "الجبيل",
+      nameEn: "Al-Jubail",
     },
     {
       id: 19,
-      nameAr: "سكاكا",
-      nameEn: "Sakaka",
+      nameAr: "ينبع",
+      nameEn: "Yanbu",
     },
     {
       id: 20,
-      nameAr: "تبوك",
-      nameEn: "Tabuk",
+      nameAr: "شرورة",
+      nameEn: "Sharorah",
     },
+
     {
       id: 21,
-      nameAr: "القريات",
-      nameEn: "Al-Qurayyat",
-    },
-    {
-      id: 22,
-      nameAr: "ابها",
-      nameEn: "Abha",
-    },
-    {
-      id: 23,
-      nameAr: "الخميس",
-      nameEn: "Al-Khamis",
-    },
-    {
-      id: 24,
-      nameAr: "بيشة",
-      nameEn: "Bisha",
-    },
-    {
-      id: 25,
-      nameAr: "نجران",
-      nameEn: "Najran",
-    },
-    {
-      id: 26,
       nameAr: "النماص",
       nameEn: "Al-Namas",
     },
     {
-      id: 27,
-      nameAr: "جيزان",
-      nameEn: "Jizan",
+      id: 22,
+      nameAr: "الهفوف",
+      nameEn: "Al Hofuf",
     },
     {
-      id: 28,
-      nameAr: "صبيا",
-      nameEn: "Sabya",
+      id: 23,
+      nameAr: "ضبا",
+      nameEn: "Duba",
+    },
+    {
+      id: 24,
+      nameAr: "الباحة",
+      nameEn: "Al-Baha",
+    },
+    {
+      id: 25,
+      nameAr: "الخفجي",
+      nameEn: "Al-Khafji",
     },
   ];
 
@@ -272,6 +269,7 @@ export default function Shippings() {
 
   const handleCityChange = (event) => {
     setSelectedCity(event.target.value);
+    setShippingType("");
   };
 
   // Shipping types options
@@ -282,9 +280,9 @@ export default function Shippings() {
 
   //
   // Price calculation function
-  function calculateShippingPrice(fromCity, modelCategory, toCity, shippingType) {
+  function calculateShippingPrice(fromCity, toCity, shippingType) {
     // Validate inputs
-    if (!fromCity || !modelCategory || !toCity || !shippingType) {
+    if (!fromCity || !toCity || !shippingType) {
       return null;
     }
 
@@ -295,31 +293,37 @@ export default function Shippings() {
     }
 
     // Get the category data (Low, Medium, High)
-    const categoryData = cityData[modelCategory];
-    if (!categoryData) {
-      return null;
-    }
+    // const categoryData = cityData[modelCategory];
+    // if (!categoryData) {
+    //   return null;
+    // }
 
     // Get prices based on shipping type
     let price;
 
-    if (modelCategory === "Low") {
-      // Low category has both public and private options
-      if (shippingType === "نقل عام") {
-        price = categoryData.prices.public[toCity];
-      } else if (shippingType === "سطحة خاصة") {
-        price = categoryData.prices.private[toCity];
-      } else {
-        return null;
-      }
+    if (shippingType === "نقل عام") {
+      price = cityData.public[toCity];
     } else {
-      // Medium and High categories only have heavy option
-      if (shippingType === "نقل ثقيل") {
-        price = categoryData.prices.heavy[toCity];
-      } else {
-        return null;
-      }
+      price = cityData.private[toCity];
     }
+
+    // if (modelCategory === "Low") {
+    //   // Low category has both public and private options
+    //   if (shippingType === "نقل عام") {
+    //     price = categoryData.prices.public[toCity];
+    //   } else if (shippingType === "سطحة خاصة") {
+    //     price = categoryData.prices.private[toCity];
+    //   } else {
+    //     return null;
+    //   }
+    // } else {
+    //   // Medium and High categories only have heavy option
+    //   if (shippingType === "نقل ثقيل") {
+    //     price = categoryData.prices.heavy[toCity];
+    //   } else {
+    //     return null;
+    //   }
+    // }
 
     // Return the price (could be a number or 99999 for unavailable routes)
     return price;
@@ -327,20 +331,27 @@ export default function Shippings() {
 
   const [price, setPrice] = useState(null);
   useEffect(() => {
-    if (oneCardData?.branchNameAr && modelCategory && selectedCity && shippingType) {
+    if (oneCardData?.branchNameAr && selectedCity && shippingType) {
       // console.log(oneCardData?.branchNameAr);
       // console.log(modelCategory);
       // console.log(selectedCity);
       // console.log(shippingType);
 
-      setPrice(calculateShippingPrice(oneCardData?.branchNameAr, modelCategory, selectedCity, shippingType));
+      setPrice(calculateShippingPrice(oneCardData?.branchNameAr, selectedCity, shippingType));
     }
-  }, [modelCategory, selectedCity, shippingType]);
+  }, [selectedCity, shippingType]);
 
   //
   const submitForm = () => {
     if (!selectedCity || !shippingType) {
       toast.warn(t("Shippings.allDataIsRequired"));
+      return;
+    }
+
+    // Check if today is Friday (5 = Friday, 0 = Sunday, 1 = Monday, etc.)
+    const today = new Date();
+    if (today.getDay() === 5) {
+      toast.warn(t("Shippings.cannotSubmitOnFriday"));
       return;
     }
 
@@ -366,9 +377,9 @@ export default function Shippings() {
 
     // URL encode parameters to handle special characters and spaces
     const encodedParams = {
-      report_number: encodeURIComponent(cardId || ""),
+      report_number: encodeURIComponent(cardId || ""), // this is id NOT cardNumber
       model: encodeURIComponent(oneCardData?.carModelNameAr || ""),
-      model_category: encodeURIComponent(modelCategory || ""),
+      // model_category: encodeURIComponent(modelCategory || ""),
       plate_number: encodeURIComponent(oneCardData?.plateNumber || ""),
       from: encodeURIComponent(oneCardData?.branchNameAr || ""),
       to: encodeURIComponent(selectedCity || ""),
@@ -380,7 +391,7 @@ export default function Shippings() {
     // window.location.href = url;
 
     navigate(
-      `${process.env.PUBLIC_URL}/pay/shipping/?report_number=${encodedParams.report_number}&model=${encodedParams.model}&plate_number=${encodedParams.plate_number}&model_category=${encodedParams.model_category}&from=${encodedParams.from}&to=${encodedParams.to}&shipping_type=${encodedParams.shipping_type}&price=${encodedParams.price}`
+      `${process.env.PUBLIC_URL}/pay/shipping/?report_number=${encodedParams.report_number}&model=${encodedParams.model}&plate_number=${encodedParams.plate_number}&from=${encodedParams.from}&to=${encodedParams.to}&shipping_type=${encodedParams.shipping_type}&price=${encodedParams.price}`
     );
   };
 
@@ -437,6 +448,7 @@ export default function Shippings() {
       {/*  */}
       <div dir={languageText === "ar" ? "rtl" : "ltr"} className={style.header_text}>
         <h1>{t("Shippings.carSharging")}</h1>
+        <p style={{ textAlign: "center", marginTop: "6px", fontSize: "13px" }}>{t("Shippings.shippingTakesPlaceEveryDayOfTheWeekExceptFriday")}</p>
       </div>
 
       <Box sx={{ minWidth: 120, maxWidth: "400px", margin: "auto", marginTop: "6px" }}>
@@ -525,34 +537,35 @@ export default function Shippings() {
 
           {/* Shipping Type */}
           <Box className={style.label_box} sx={{ marginTop: "32px" }} dir="rtl">
-            {/* Show for white group car (Low) */}
-            {modelCategory === "Low" && (
+            {/* Show "نقل عام" only if price is not 0 and selectedCity is not branch */}
+            {selectedCity && calculateShippingPrice(oneCardData?.branchNameAr, selectedCity, "نقل عام") !== 0 && (
               <label dir="rtl" style={{ cursor: "pointer" }}>
                 <div className={style.image_box} onClick={() => handleShippingTypesChange("نقل عام")}>
                   <img src={multible} alt="icon" />
                 </div>
                 <div className={style.label_text_box}>
-                  <input type="radio" name="options" value="نقل عام" onChange={() => handleShippingTypesChange("نقل عام")} required />
+                  <input checked={shippingType === "نقل عام"} type="radio" name="options" value="نقل عام" onChange={() => handleShippingTypesChange("نقل عام")} required />
                   {languageText === "en" ? "Public transport" : "نقل عام"}
                 </div>
               </label>
             )}
 
             {/* Show for white group car (Low) */}
-            {modelCategory === "Low" && (
+            {/* Show "سطحة خاصة" only if price is not 0 */}
+            {selectedCity && calculateShippingPrice(oneCardData?.branchNameAr, selectedCity, "سطحة خاصة") !== 0 && (
               <label dir="rtl" style={{ cursor: "pointer" }}>
                 <div className={style.image_box} onClick={() => handleShippingTypesChange("سطحة خاصة")}>
                   <img src={single} alt="icon" />
                 </div>
                 <div className={style.label_text_box}>
-                  <input type="radio" name="options" value="سطحة خاصة" onChange={() => handleShippingTypesChange("سطحة خاصة")} required />
+                  <input checked={shippingType === "سطحة خاصة"} type="radio" name="options" value="سطحة خاصة" onChange={() => handleShippingTypesChange("سطحة خاصة")} required />
                   {languageText === "en" ? "Private flatbed truck" : "سطحة خاصة"}
                 </div>
               </label>
             )}
 
             {/* Show for yellow and red group car (Medium & High) */}
-            {(modelCategory === "Medium" || modelCategory === "High") && (
+            {/* {(modelCategory === "Medium" || modelCategory === "High") && (
               <label dir="rtl" style={{ cursor: "pointer" }}>
                 <div className={style.image_box} onClick={() => handleShippingTypesChange("نقل ثقيل")}>
                   <img src={heavy} alt="icon" />
@@ -562,7 +575,7 @@ export default function Shippings() {
                   {languageText === "en" ? "heavy transport" : "نقل ثقيل"}
                 </div>
               </label>
-            )}
+            )} */}
           </Box>
 
           {/* Button */}
@@ -575,7 +588,7 @@ export default function Shippings() {
             // loading={isPostApoinmentFormMutatePending || shouldAutoSubmit}
             // disabled={price === null}
           >
-            {modelCategory && selectedCity && shippingType ? (
+            {selectedCity && shippingType ? (
               <>
                 <span style={{ fontWeight: "700" }}>{price}.00</span>
                 <span style={{ lineHeight: "1" }}>
