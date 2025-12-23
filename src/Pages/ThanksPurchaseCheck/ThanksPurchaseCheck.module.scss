@@ -77,6 +77,8 @@
   width: 100%;
   font-size: 12px;
   max-width: 600px;
+  flex-wrap: wrap;
+  gap: 12px;
 
   a {
     // text-decoration: none;

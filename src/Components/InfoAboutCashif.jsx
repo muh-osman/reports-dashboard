@@ -40,52 +40,27 @@ export default function InfoAboutCashif() {
           backgroundColor: "#fff",
         }}
       >
-        <div
-          className={style.terms_box}
-          style={
-            languageText === "ar"
-              ? { textAlign: "right" }
-              : { textAlign: "left" }
-          }
-        >
+        <div className={style.terms_box} style={languageText === "ar" ? { textAlign: "right" } : { textAlign: "left" }}>
           <div>
             <h2>{t("InfoAboutCashif.t1")}:</h2>
 
             <h6>{t("InfoAboutCashif.t2")}</h6>
             <div>
-              <ul
-                style={
-                  languageText === "ar"
-                    ? { paddingRight: 16 }
-                    : { paddingLeft: 16 }
-                }
-              >
+              <ul style={languageText === "ar" ? { paddingRight: 16 } : { paddingLeft: 16 }}>
                 <li>{t("InfoAboutCashif.t3")}</li>
               </ul>
             </div>
 
             <h6>{t("InfoAboutCashif.t4")}</h6>
             <div>
-              <ul
-                style={
-                  languageText === "ar"
-                    ? { paddingRight: 16 }
-                    : { paddingLeft: 16 }
-                }
-              >
+              <ul style={languageText === "ar" ? { paddingRight: 16 } : { paddingLeft: 16 }}>
                 <li>{t("InfoAboutCashif.t5")}</li>
               </ul>
             </div>
 
             <h6>{t("InfoAboutCashif.t6")}</h6>
             <div>
-              <ul
-                style={
-                  languageText === "ar"
-                    ? { paddingRight: 16 }
-                    : { paddingLeft: 16 }
-                }
-              >
+              <ul style={languageText === "ar" ? { paddingRight: 16 } : { paddingLeft: 16 }}>
                 <li>{t("InfoAboutCashif.t7")}</li>
                 <li>{t("InfoAboutCashif.t8")}</li>
                 <li>{t("InfoAboutCashif.t9")}</li>
@@ -99,29 +74,18 @@ export default function InfoAboutCashif() {
 
             <h6>{t("InfoAboutCashif.t15")}</h6>
             <div>
-              <ul
-                style={
-                  languageText === "ar"
-                    ? { paddingRight: 16 }
-                    : { paddingLeft: 16 }
-                }
-              >
+              <ul style={languageText === "ar" ? { paddingRight: 16 } : { paddingLeft: 16 }}>
                 <li>{t("InfoAboutCashif.t16")}</li>
                 <li>{t("InfoAboutCashif.t17")}</li>
                 <li>{t("InfoAboutCashif.t18")}</li>
+                <li>{t("InfoAboutCashif.t190")}</li>
                 <li>{t("InfoAboutCashif.t19")}</li>
               </ul>
             </div>
 
             <h6>{t("InfoAboutCashif.t20")}</h6>
             <div>
-              <ul
-                style={
-                  languageText === "ar"
-                    ? { paddingRight: 16 }
-                    : { paddingLeft: 16 }
-                }
-              >
+              <ul style={languageText === "ar" ? { paddingRight: 16 } : { paddingLeft: 16 }}>
                 <li>{t("InfoAboutCashif.t21")}</li>
                 <li>{t("InfoAboutCashif.t22")}</li>
                 <li>{t("InfoAboutCashif.t23")}</li>
@@ -130,13 +94,7 @@ export default function InfoAboutCashif() {
 
             <h6>{t("InfoAboutCashif.t24")}</h6>
             <div>
-              <ul
-                style={
-                  languageText === "ar"
-                    ? { paddingRight: 16 }
-                    : { paddingLeft: 16 }
-                }
-              >
+              <ul style={languageText === "ar" ? { paddingRight: 16 } : { paddingLeft: 16 }}>
                 <li>{t("InfoAboutCashif.t25")}</li>
                 <li>{t("InfoAboutCashif.t26")}</li>
                 <li>{t("InfoAboutCashif.t27")}</li>

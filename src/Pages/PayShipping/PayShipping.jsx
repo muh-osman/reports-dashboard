@@ -252,8 +252,6 @@ export default function PayShipping() {
         currency: "SAR",
         language: languageText === "ar" ? "ar" : "en",
         description: "Cashif for car inspection",
-        // publishable_api_key: "pk_live_jEdE8NoP5w2jz1kxK2DcF6MzdSdbmXCVNYqnxTNm",
-        // publishable_api_key: "pk_test_mnK3NxqkWZzScvnix7UFbad4qbwgzoLcD3DKvYRr",
         publishable_api_key: window.location.hostname === "localhost" ? process.env.REACT_APP_SHIPPING_MOYASAR_TEST_KEY : process.env.REACT_APP_SHIPPING_MOYASAR_LIVE_KEY,
         callback_url: `${window.location.origin}${process.env.PUBLIC_URL}/pay/shipping/thanks`,
         supported_networks: ["visa", "mastercard", "mada"],

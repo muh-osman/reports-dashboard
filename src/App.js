@@ -32,6 +32,7 @@ import ThanksPurchaseCheck from "./Pages/ThanksPurchaseCheck/ThanksPurchaseCheck
 import PayMakdomCheck from "./Pages/PayMakdomCheck/PayMakdomCheck";
 import ThanksMakdomCheck from "./Pages/ThanksMakdomCheck/ThanksMakdomCheck";
 import PayPassengerCheck from "./Pages/PayPassengerCheck/PayPassengerCheck";
+import PricesList from "./Pages/PricesList/PricesList";
 
 export default function App() {
   const router = createBrowserRouter(
@@ -80,6 +81,8 @@ export default function App() {
           <Route path={`${process.env.PUBLIC_URL}/pay/makdom-check/thanks`} element={<ThanksMakdomCheck />} />
 
           <Route path={`${process.env.PUBLIC_URL}/pay/passenger-check`} element={<PayPassengerCheck />} />
+
+          <Route path={`${process.env.PUBLIC_URL}/prices-list`} element={<PricesList />} />
         </Route>
         {/* End protected route */}
 

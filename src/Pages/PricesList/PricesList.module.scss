@@ -1,0 +1,114 @@
+.container {
+  padding: 32px;
+  padding-bottom: 124px;
+
+  @media (max-width: 550px) {
+    padding: 16px;
+    padding-top: 134px;
+    padding-bottom: 110px;
+  }
+}
+
+.progressContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+
+  span {
+    height: 2px !important;
+  }
+}
+
+.header_text {
+  text-align: center;
+
+  h1 {
+    color: #174545;
+  }
+
+  p {
+  }
+}
+
+//
+
+//
+.label_box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  // flex-wrap: wrap;
+  gap: 32px;
+}
+
+.image_box {
+  border-radius: 16px;
+  overflow: hidden;
+  object-fit: cover;
+
+  img {
+    width: 100%;
+    transition: 0.2s;
+  }
+}
+
+// .check_box {
+//   margin: auto;
+
+//   label {
+//     margin: auto;
+//   }
+// }
+
+@media (max-width: 575.98px) {
+  .label_box {
+    gap: 16px;
+    justify-content: space-evenly;
+  }
+
+  .image_box {
+    width: 100px !important;
+  }
+}
+
+.label_text_box {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+
+  @media (max-width: 575.98px) {
+    font-size: 14px;
+  }
+}
+
+//
+.steps_box {
+  padding: 22px;
+  background-color: #fff;
+  margin: auto;
+  max-width: 450px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  margin-top: 32px;
+
+  h1 {
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  ol {
+    li::marker {
+      color: #000000de;
+      font-weight: bold;
+    }
+
+    li {
+      color: #747a79;
+      margin-bottom: 9px;
+    }
+  }
+}

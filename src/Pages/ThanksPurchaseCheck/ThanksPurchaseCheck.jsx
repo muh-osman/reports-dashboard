@@ -151,6 +151,7 @@ export default function ThanksPurchaseCheck() {
               {[
                 { name: "الرياض-القادسية", url: "https://maps.app.goo.gl/MiFGsgakfo62on7u8" },
                 { name: "الرياض-الشفا", url: "https://maps.app.goo.gl/pXCnG7RPXJ2CDLqe7?g_st=aw" },
+                { name: "القصيم", url: "https://maps.app.goo.gl/Gd7g3VScomNQP8DR7" },
                 { name: "الدمام", url: "https://maps.app.goo.gl/9UiHq4kW7Mjh1Aik8" },
                 { name: "جدة", url: "https://maps.app.goo.gl/697yXkaS4o6kYsos8" },
               ].map((location, index) => (

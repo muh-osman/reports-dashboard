@@ -4,16 +4,17 @@ import { useEffect, useState } from "react";
 // react-qr-code
 import QRCode from "react-qr-code";
 // Material-UI
-import { Button, Box } from "@mui/material";
+import { Button, Box, Typography } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+// import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 // Images
 import imageA from "../../Assets/Images/A.png";
 import imageB from "../../Assets/Images/B.png";
 import imageC from "../../Assets/Images/C.png";
 import imageD from "../../Assets/Images/D.png";
+import WhatsAppLogo from "../../Assets/Images/WhatsApp_logo.png";
+import AlAassamiTransport from "../../Assets/Images/albassamitransport.jpg";
 
 export default function ThanksMakdomCheck() {
   useEffect(() => {
@@ -101,35 +102,214 @@ export default function ThanksMakdomCheck() {
     handleDownloadQRCode();
   };
 
+  // handleOpenWhatsApp
+  const handleOpenWhatsApp = () => {
+    const phoneNumber = "966548682102";
+    // Open WhatsApp chat with the specific number
+    const whatsappUrl = `https://wa.me/${phoneNumber}`;
+    window.open(whatsappUrl, "_blank");
+  };
+
+  // handleOpenPricesPage
+  const handleOpenPricesPage = () => {
+    window.open(`${process.env.PUBLIC_URL}/prices-list`, "_blank");
+  };
+
+  // handleAskSippingService
+  const handleAskSippingService = () => {
+    window.open(`${process.env.PUBLIC_URL}/XXXXX`, "_blank");
+  };
+
   return (
     <div className={style.container}>
       {paySuccess ? (
         <>
-          <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
-            <div style={{ background: "white", padding: "16px" }}>
-              <QRCode id="qr-code-svg" value={id || (tamaraOrderId ? `tamara${tamaraOrderId}` : "") || (tabbyPaymentId ? `tabby${tabbyPaymentId}` : "")} size={250} level="H" />
+          {/* تم الدفع */}
+          <div className={style.success_box}>
+            <CheckCircleIcon sx={{ fontSize: 48, color: "#1fb952" }} />
+            <h2>تم الدفع</h2>
+            {/* <h4>اطلب من صاحب السيارة التوجه إلى الفرع المحدد، وإبراز الباركود التالي لموظف الاستقبال لإتمام إجراءات الفحص</h4> */}
+          </div>
+
+          {/* <Typography variant="h3" sx={{ mb: 1 }}>
+            الخطوة اﻻولى
+          </Typography> */}
+          {/* <Typography variant="h5" sx={{ mb: 3, color: "rgb(211, 47, 47)" }}>
+            (فحص السيارة)
+          </Typography> */}
+
+          {/* Steps Box */}
+          <div dir="rtl" className={style.steps_box}>
+            <Typography variant="h4" sx={{ mb: 1, textAlign: "center" }}>
+              الخطوة اﻻولى
+            </Typography>
+            <Typography variant="h5" sx={{ mb: 3, color: "rgb(211, 47, 47)", textAlign: "center" }}>
+              (فحص السيارة)
+            </Typography>
+            <ol
+              style={{
+                paddingRight: "18px",
+              }}
+            >
+              <li>قم بتنزيل صورة الباركود وارسلها لصاحب السيارة.</li>
+              <li>
+                اطلب من صاحب السيارة التوجه الى{" "}
+                <a href="https://cashif.cc/dashboard/contact" target="_blank">
+                  الفرع المحدد
+                </a>
+                .
+              </li>
+              <li>بعد اﻻنتهاء من الفحص سيتم ارفاق تقرير الفحص عبر الواتساب وعبر الموقع اﻻلكتروني.</li>
+            </ol>
+
+            <Box display="flex" flexDirection="column" alignItems="center">
+              <div style={{ background: "white", padding: "16px" }}>
+                <QRCode id="qr-code-svg" value={id || (tamaraOrderId ? `tamara${tamaraOrderId}` : "") || (tabbyPaymentId ? `tabby${tabbyPaymentId}` : "")} size={250} level="H" />
+              </div>
+              <Button
+                dir="rtl"
+                variant="contained"
+                onClick={handleManualDownload}
+                className={style.download_btn}
+                sx={{
+                  padding: "8px 20px",
+                  fontWeight: "bold",
+                }}
+              >
+                تحميل الـ QR Code
+              </Button>
+
+              {/* Locations */}
+              {/* <div style={{ marginBottom: "16px", marginTop: "16px", width: "100%" }}>
+                <ul dir="rtl" className={style.locations_box}>
+                  {[
+                    { name: "الرياض-القادسية", url: "https://maps.app.goo.gl/MiFGsgakfo62on7u8" },
+                    { name: "الرياض-الشفا", url: "https://maps.app.goo.gl/pXCnG7RPXJ2CDLqe7?g_st=aw" },
+                    { name: "القصيم", url: "https://maps.app.goo.gl/Gd7g3VScomNQP8DR7" },
+                    { name: "الدمام", url: "https://maps.app.goo.gl/9UiHq4kW7Mjh1Aik8" },
+                    { name: "جدة", url: "https://maps.app.goo.gl/697yXkaS4o6kYsos8" },
+                  ].map((location, index) => (
+                    <li key={index}>
+                      <Button
+                        variant="text"
+                        endIcon={<OpenInNewIcon sx={{ fontSize: "12px !important" }} />}
+                        href={location.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        sx={{
+                          textDecoration: "underline",
+                          p: 0,
+                          color: "#1976d2",
+                          textTransform: "none",
+                          fontWeight: "normal",
+                          fontSize: "12px",
+                          "& .MuiButton-endIcon": {
+                            m: 0,
+                            marginRight: "2px",
+                          },
+                          "&:hover": {
+                            backgroundColor: "rgba(25, 118, 210, 0.04)",
+                          },
+                        }}
+                      >
+                        {location.name}
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              </div> */}
+            </Box>
+          </div>
+
+          {/* Steps Box */}
+          <div dir="rtl" className={style.steps_box}>
+            <Typography variant="h4" sx={{ mb: 1, textAlign: "center" }}>
+              الخطوة الثانية
+            </Typography>
+            <Typography variant="h5" sx={{ mb: 3, color: "rgb(211, 47, 47)", textAlign: "center" }}>
+              (نقل الملكية والتأمين)
+            </Typography>
+            <ol
+              style={{
+                paddingRight: "18px",
+              }}
+            >
+              <li>تواصل مع مسؤول النقل والتأمين في حال رغبت بنقل ملكية وتأمين السيارة.</li>
+            </ol>
+
+            <div style={{ width: "175px", margin: "auto" }}>
+              <img style={{ width: "100%", padding: "16px" }} src={WhatsAppLogo} alt="WhatsApp Logo" />
             </div>
+
             <Button
               dir="rtl"
               variant="contained"
-              onClick={handleManualDownload}
+              onClick={handleOpenWhatsApp}
               className={style.download_btn}
               sx={{
                 padding: "8px 20px",
                 fontWeight: "bold",
               }}
             >
-              تحميل الـ QR Code
+              اضغط هنا للمراسلة
             </Button>
-          </Box>
+          </div>
 
-          <div className={style.success_box}>
-            <CheckCircleIcon sx={{ fontSize: 48, color: "#1fb952" }} />
+          {/* Steps Box */}
+          <div dir="rtl" className={style.steps_box}>
+            <Typography variant="h4" sx={{ mb: 1, textAlign: "center" }}>
+              الخطوة الثالثة
+            </Typography>
+            <Typography variant="h5" sx={{ mb: 3, color: "rgb(211, 47, 47)", textAlign: "center" }}>
+              (شحن السيارة)
+            </Typography>
+            <ol
+              style={{
+                paddingRight: "18px",
+              }}
+            >
+              <li>مركز كاشف لا يستلم السيارة من صاحب السيارة.</li>
+              <li>بعد إتمام الدفع عبر موقعنا الإلكتروني، يمكن لصاحب السيارة التوجه إلى شركة البسامي مباشرة.</li>
+              <li>أو يمكنه الانتظار حتى وصول السطحة التابعة للبسامي لاستلام السيارة وشحنها إلى مدينتك.</li>
+            </ol>
 
-            <h2>تم الدفع</h2>
-            <h4>اطلب من صاحب السيارة التوجه إلى الفرع المحدد، وإبراز الباركود التالي لموظف الاستقبال لإتمام إجراءات الفحص</h4>
+            <div style={{ width: "250px", margin: "auto" }}>
+              <img style={{ width: "100%" }} src={AlAassamiTransport} alt="WhatsApp Logo" />
+            </div>
 
             <Button
+              dir="rtl"
+              // variant="outlined"
+              variant="contained"
+              onClick={handleOpenPricesPage}
+              // className={style.download_btn}
+              sx={{
+                padding: "8px 20px",
+                fontWeight: "bold",
+                width: "100%",
+                // marginBottom: "16px",
+              }}
+            >
+              التعرف على الأسعار
+            </Button>
+
+            {/* <Button
+              dir="rtl"
+              variant="contained"
+              onClick={handleAskSippingService}
+              className={style.download_btn}
+              sx={{
+                padding: "8px 20px",
+                fontWeight: "bold",
+              }}
+            >
+              اطلب الخدمة الآن
+            </Button> */}
+          </div>
+
+          {/* Partner Coupon */}
+          <div>
+            {/* <Button
               variant="outlined"
               href="http://cashif.cc/"
               sx={{
@@ -144,45 +324,7 @@ export default function ThanksMakdomCheck() {
               }}
             >
               عودة
-            </Button>
-
-            {/* Locations */}
-            <ul dir="rtl" className={style.locations_box}>
-              {[
-                { name: "الرياض-القادسية", url: "https://maps.app.goo.gl/MiFGsgakfo62on7u8" },
-                { name: "الرياض-الشفا", url: "https://maps.app.goo.gl/pXCnG7RPXJ2CDLqe7?g_st=aw" },
-                { name: "الدمام", url: "https://maps.app.goo.gl/9UiHq4kW7Mjh1Aik8" },
-                { name: "جدة", url: "https://maps.app.goo.gl/697yXkaS4o6kYsos8" },
-              ].map((location, index) => (
-                <li key={index}>
-                  <Button
-                    variant="text"
-                    endIcon={<OpenInNewIcon sx={{ fontSize: "14px !important" }} />}
-                    href={location.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    sx={{
-                      textDecoration: "underline",
-                      p: 0,
-                      color: "#1976d2",
-                      textTransform: "none",
-                      fontWeight: "normal",
-                      "& .MuiButton-endIcon": {
-                        m: 0,
-                        marginRight: "2px",
-                      },
-                      "&:hover": {
-                        backgroundColor: "rgba(25, 118, 210, 0.04)",
-                      },
-                    }}
-                  >
-                    {location.name}
-                  </Button>
-                </li>
-              ))}
-            </ul>
-
-            {/* Partner Coupon */}
+            </Button> */}
             <div className={style.partner_container}>
               <h2 dir="rtl">
                 خصم خاص <span>لعملاء كاشف!</span>

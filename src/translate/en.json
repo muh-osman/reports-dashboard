@@ -19,7 +19,8 @@
     "RiyadhAlQadisiyah": "Riyadh - Al-Qadisiyah Exhibitions",
     "RiyadhAlShifa": "Riyadh - Al-Shifa Exhibitions",
     "Dammam": "Dammam - Dammam Exhibitions",
-    "Jeddah": "Jeddah - Jeddah Exhibitions"
+    "Jeddah": "Jeddah - Jeddah Exhibitions",
+    "alQassim": "Al-Qassim - Qurtuba Street"
   },
 
   "Reports": {
@@ -65,7 +66,7 @@
 
     "checkItCheck": "Makhdoom Check",
     "checkItCheckDescriptionPartOne": "If you find a car for sale in ",
-    "checkItCheckDescriptionPartTwo": "Riyadh, Jeddah, or Dammam ",
+    "checkItCheckDescriptionPartTwo": "Riyadh, Jeddah, Al-Qassim, or Dammam ",
     "checkItCheckDescriptionPartThree": "and you are outside these cities, Khashef Center will conduct a comprehensive and accurate vehicle inspection, while facilitating ownership transfer, insurance, and shipping the car to your city",
     "checkItCheckListA": "The car owner must attend one of the Cashf branches",
     "checkItCheckListB": "Conduct a comprehensive and thorough inspection of the vehicle",
@@ -518,7 +519,7 @@
     "t2": "Who is Cashif?",
     "t3": "Cashif is a specialized center for inspecting used cars, providing a thorough examination of the vehicle's condition and issuing a comprehensive report that helps customers make a confident and assured purchase decision.",
     "t4": "Target Audience",
-    "t5": "Individuals located in Riyadh, Jeddah, and Dammam who are interested in buying a used car and seek a comprehensive inspection to reveal the vehicle's actual condition before making a purchase decision.",
+    "t5": "Individuals located in Riyadh, Jeddah, Al-Qassim and Dammam who are interested in buying a used car and seek a comprehensive inspection to reveal the vehicle's actual condition before making a purchase decision.",
     "t6": "What sets Cashif apart?",
     "t7": "Over 12 years of experience in vehicle inspection",
     "t8": "Use of the latest devices and technologies",
@@ -533,10 +534,11 @@
     "t17": "Riyadh – Al-Shifa",
     "t18": "Jeddah – Al-Jawhara",
     "t19": "Dammam – King Fahd District",
+    "t190": "Al-Qassim - Qurtuba Street",
     "t20": "Cashif's Core Services",
     "t21": "Pre-Purchase Inspection: A full inspection of all parts of a used vehicle to identify faults and defects before making a purchase decision, with the option to choose from various packages tailored to the customer's needs.",
     "t22": "Travel Inspection: Ensures the vehicle's roadworthiness, covering essential checks for a safe and comfortable journey.",
-    "t23": "Makhdoom Service: If you have a car for sale in Riyadh, Jeddah, or Dammam, Cashif Center conducts a thorough and precise inspection on your behalf without the need for travel, reducing costs. The inspection report is available online, with the option to facilitate ownership transfer and insurance procedures.",
+    "t23": "Makhdoom Service: If you have a car for sale in Riyadh, Jeddah, Al-Qassim or Dammam, Cashif Center conducts a thorough and precise inspection on your behalf without the need for travel, reducing costs. The inspection report is available online, with the option to facilitate ownership transfer and insurance procedures.",
     "t24": "Cashif Services Available Online",
     "t25": "Learn about services and inspection packages and points",
     "t26": "View package prices",
@@ -611,6 +613,8 @@
     "allDataIsRequired": "All data is required.",
     "youMustAgreeToTheDisclaimerToContinue": "You must agree to the disclaimer to continue",
     "shippingTakesPlaceEveryDayOfTheWeekExceptFriday": "Shipping takes place every day of the week except Friday",
+    "shippingPrice": "Shipping Price",
+    "thisServiceForCachifClientOnly": "This service for Cachif client only",
     "cannotSubmitOnFriday": "Shipping takes place every day of the week except Friday"
   },
 
@@ -676,6 +680,12 @@
     "step4": "In cooperation with our partners, we facilitate the procedures for transferring ownership, insurance, and shipping the car to your city for you.",
     "address": "Address *",
     "addressPlaceholder": "District, Street, Building Number, Nearest Landmark",
-    "addressHelperText": "* Enter the vehicle pickup/delivery address"
+    "addressHelperText": "* Enter the vehicle pickup/delivery address",
+    "termsCheckbox": "I agree to the terms of service of Mertah *",
+    "agreementTitle": "Agreement to the terms of service of 'Mertah'",
+    "liabilityClause": "By requesting the 'Mertah' service, you agree that the full responsibility for receiving, transporting, and returning the vehicle lies with Al-Bassami Transport Company, and that Khashef Center is not responsible for any damages or liabilities arising from the transportation process.",
+    "nonRefundClause": "You also acknowledge that the service fees are non-refundable after the vehicle is received.",
+    "agreeButton": "Agree",
+    "cancelButton": "Cancel"
   }
 }

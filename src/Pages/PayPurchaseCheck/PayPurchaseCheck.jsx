@@ -470,8 +470,9 @@ export default function PayPurchaseCheck() {
   const branches = [
     { id: "1", value: "الرياض-القادسية", label: "الرياض - القادسية" },
     { id: "2", value: "الرياض-الشفا", label: "الرياض - الشفا" },
-    { id: "3", value: "الدمام", label: "الدمام" },
-    { id: "4", value: "جدة", label: "جدة" },
+    { id: "3", value: "القصيم", label: "القصيم" },
+    { id: "4", value: "الدمام", label: "الدمام" },
+    { id: "5", value: "جدة", label: "جدة" },
   ];
   // Handle branch change
   const handleBranchChange = (e) => {
@@ -512,40 +513,33 @@ export default function PayPurchaseCheck() {
   ///////////////////////////////////////// End address input /////////////////////////////////////////
 
   ///////////////////////////////////////// Start Mertah Modal states /////////////////////////////////////////
+  // checkbox
+  const [acceptTerms, setAcceptTerms] = useState(false);
+  // Modal
   const [openModal, setOpenModal] = useState(false);
   const [isAcceptMertahTerms, setIsAcceptMertahTerms] = useState(false);
-  const resolvePromiseRef = useRef(null); // Ref to store the resolve function
+  const acceptMertahTermsRef = useRef(isAcceptMertahTerms);
+  useEffect(() => {
+    acceptMertahTermsRef.current = isAcceptMertahTerms;
+  }, [isAcceptMertahTerms]);
+
+  const handleTermsChange = (e) => {
+    setAcceptTerms(e.target.checked);
+    setOpenModal(true);
+  };
 
   // Handle modal confirmation
   const handleModalConfirm = () => {
+    setAcceptTerms(true);
     setIsAcceptMertahTerms(true);
     setOpenModal(false);
-
-    // Resolve the promise if it exists
-    if (resolvePromiseRef.current) {
-      resolvePromiseRef.current(true);
-      resolvePromiseRef.current = null;
-    }
   };
 
   // Handle modal close/cancel
   const handleModalClose = () => {
     setOpenModal(false);
-
-    // Resolve with false if user cancels
-    if (resolvePromiseRef.current) {
-      resolvePromiseRef.current(false);
-      resolvePromiseRef.current = null;
-    }
-  };
-
-  // Function to wait for user confirmation
-  const waitForUserConfirmation = () => {
-    return new Promise((resolve) => {
-      // Store the resolve function in ref
-      resolvePromiseRef.current = resolve;
-      setOpenModal(true);
-    });
+    setAcceptTerms(false);
+    setIsAcceptMertahTerms(false);
   };
   ///////////////////////////////////////// End Mertah Modal states /////////////////////////////////////////
 
@@ -573,12 +567,9 @@ export default function PayPurchaseCheck() {
       return;
     }
     // Check if user accept Mertah terms
-    if (comfortService === "yes" && !isAcceptMertahTerms) {
-      const userAccepted = await waitForUserConfirmation();
-      if (!userAccepted) {
-        console.log("User cancelled/rejected the terms agreement modal");
-        return;
-      }
+    if (comfortService === "yes" && !acceptMertahTermsRef.current) {
+      toast.warn("يرجى الموافقة على شروط خدمة مرتاح");
+      return;
     }
 
     setIsTamaraBtnLoading(true);
@@ -723,12 +714,9 @@ export default function PayPurchaseCheck() {
       return;
     }
     // Check if user accept Mertah terms
-    if (comfortService === "yes" && !isAcceptMertahTerms) {
-      const userAccepted = await waitForUserConfirmation();
-      if (!userAccepted) {
-        console.log("User cancelled/rejected the terms agreement modal");
-        return;
-      }
+    if (comfortService === "yes" && !acceptMertahTermsRef.current) {
+      toast.warn("يرجى الموافقة على شروط خدمة مرتاح");
+      return;
     }
 
     setIsTabbyBtnLoading(true);
@@ -996,12 +984,9 @@ export default function PayPurchaseCheck() {
           }
 
           // Check if user accept Mertah terms
-          if (comfortService === "yes" && !isAcceptMertahTerms) {
-            const userAccepted = await waitForUserConfirmation();
-            if (!userAccepted) {
-              console.log("User cancelled/rejected the terms agreement modal");
-              return false;
-            }
+          if (comfortService === "yes" && !acceptMertahTermsRef.current) {
+            toast.warn("يرجى الموافقة على شروط خدمة مرتاح");
+            return false;
           }
 
           // Update the data
@@ -1380,34 +1365,74 @@ export default function PayPurchaseCheck() {
           </FormHelperText>
         </FormControl>
 
-        {/* Address */}
+        {/* Address & accept terms */}
         {comfortService === "yes" && (
-          <FormControl fullWidth sx={{ marginTop: "16px" }}>
-            <InputLabel htmlFor="user-address">{t("PayPurchaseCheck.address")}</InputLabel>
-            <OutlinedInput
-              id="user-address"
-              label={t("PayPurchaseCheck.address")}
-              value={address}
-              onChange={handleAddressChange}
-              onBlur={handleAddressBlur}
-              error={!!addressError}
-              placeholder={t("PayPurchaseCheck.addressPlaceholder")}
-              inputProps={{
-                maxLength: 200,
-              }}
-            />
+          <div>
+            <FormControl fullWidth sx={{ marginTop: "16px" }}>
+              <InputLabel htmlFor="user-address">{t("PayPurchaseCheck.address")}</InputLabel>
+              <OutlinedInput
+                id="user-address"
+                label={t("PayPurchaseCheck.address")}
+                value={address}
+                onChange={handleAddressChange}
+                onBlur={handleAddressBlur}
+                error={!!addressError}
+                placeholder={t("PayPurchaseCheck.addressPlaceholder")}
+                inputProps={{
+                  maxLength: 200,
+                }}
+              />
 
-            <FormHelperText
-              sx={{
-                margin: 0,
-                marginTop: "3px",
-                textAlign: languageText === "ar" ? "right" : "left",
-                color: "text.secondary",
-              }}
-            >
-              {t("PayPurchaseCheck.addressHelperText")}
-            </FormHelperText>
-          </FormControl>
+              <FormHelperText
+                sx={{
+                  margin: 0,
+                  marginTop: "3px",
+                  textAlign: languageText === "ar" ? "right" : "left",
+                  color: "text.secondary",
+                }}
+              >
+                {t("PayPurchaseCheck.addressHelperText")}
+              </FormHelperText>
+            </FormControl>
+
+            {/* Terms Acceptance Checkbox */}
+            <FormControl fullWidth sx={{ marginTop: "16px" }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    disabled={isAcceptMertahTerms}
+                    checked={acceptTerms}
+                    onChange={handleTermsChange}
+                    sx={{
+                      // color: "primary.main",
+                      padding: 0,
+                      "&.Mui-checked": {
+                        // color: "primary.main",
+                      },
+                      ...(languageText === "ar" && {
+                        marginLeft: "8px",
+                        marginRight: "0",
+                      }),
+                      ...(languageText === "en" && {
+                        marginRight: "8px",
+                        marginLeft: "0",
+                      }),
+                    }}
+                  />
+                }
+                label={
+                  <Typography variant="body1" sx={{ color: isAcceptMertahTerms ? "#747a79" : "" }}>
+                    {t("PayPurchaseCheck.termsCheckbox")}
+                  </Typography>
+                }
+                sx={{
+                  margin: 0,
+                  width: "100%",
+                  alignItems: "flex-start",
+                }}
+              />
+            </FormControl>
+          </div>
         )}
       </div>
 
@@ -1517,7 +1542,7 @@ export default function PayPurchaseCheck() {
 
       {/* MUI Modal for Comfort Service Terms Confirmation */}
       <Modal
-        dir="rtl"
+        dir={languageText === "ar" ? "rtl" : "ltr"}
         open={openModal}
         onClose={handleModalClose}
         closeAfterTransition
@@ -1555,7 +1580,7 @@ export default function PayPurchaseCheck() {
                 mb: 3,
               }}
             >
-              موافقة على شروط خدمة «مرتاح»
+              {t("PayPurchaseCheck.agreementTitle")}
             </Typography>
 
             <Box
@@ -1576,8 +1601,7 @@ export default function PayPurchaseCheck() {
                   textAlign: "center",
                 }}
               >
-                بطلبك خدمة «مرتاح»، أنت توافق على أن مسؤولية استلام المركبة ونقلها وإعادتها تقع بالكامل على شركة البسامي للنقل، وأن مركز كاشف غير مسؤول عن أي أضرار أو التزامات
-                ناتجة عن عملية النقل.
+                {t("PayPurchaseCheck.liabilityClause")}
               </Typography>
               <Typography
                 variant="body1"
@@ -1588,7 +1612,7 @@ export default function PayPurchaseCheck() {
                   textAlign: "center",
                 }}
               >
-                كما تقرّ بأنه لا يحق استرجاع رسوم الخدمة بعد استلام المركبة.
+                {t("PayPurchaseCheck.nonRefundClause")}
               </Typography>
             </Box>
 
@@ -1604,7 +1628,7 @@ export default function PayPurchaseCheck() {
                   },
                 }}
               >
-                أوافق
+                {t("PayPurchaseCheck.agreeButton")}
               </Button>
               <Button
                 onClick={handleModalClose}
@@ -1619,7 +1643,7 @@ export default function PayPurchaseCheck() {
                   },
                 }}
               >
-                إلغاء
+                {t("PayPurchaseCheck.cancelButton")}
               </Button>
             </Box>
           </Box>

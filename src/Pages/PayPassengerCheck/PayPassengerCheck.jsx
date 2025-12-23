@@ -442,8 +442,9 @@ export default function PayPassengerCheck() {
   const branches = [
     { id: "1", value: "الرياض-القادسية", label: "الرياض - القادسية" },
     { id: "2", value: "الرياض-الشفا", label: "الرياض - الشفا" },
-    { id: "3", value: "الدمام", label: "الدمام" },
-    { id: "4", value: "جدة", label: "جدة" },
+    { id: "3", value: "القصيم", label: "القصيم" },
+    { id: "4", value: "الدمام", label: "الدمام" },
+    { id: "5", value: "جدة", label: "جدة" },
   ];
   // Handle branch change
   const handleBranchChange = (e) => {
@@ -522,7 +523,7 @@ export default function PayPassengerCheck() {
         phone_number: formatedPhoneNumberRef.current,
       },
       country_code: "SA",
-      description: year || null, // fullYear
+      description: year || "N/A", // fullYear
       merchant_url: {
         cancel: `${window.location.origin}${process.env.PUBLIC_URL}/pay/purchase-check/thanks?cancel=true`,
         failure: `${window.location.origin}${process.env.PUBLIC_URL}/pay/purchase-check/thanks?fail=true`,

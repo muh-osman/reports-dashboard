@@ -1094,7 +1094,7 @@ export default function Plans() {
                           id="plane-one"
                           className="ask-now"
                           rel="noopener noreferrer"
-                          href={`${process.env.PUBLIC_URL}/pay/passenger-check/?plan=passenger&year_id=1&car_model_id=9&price_id=2&full_year=0${dis ? "&dis=fifty" : ""}${
+                          href={`${process.env.PUBLIC_URL}/pay/passenger-check/?plan=passenger&year_id=1&car_model_id=9&price_id=2${dis ? "&dis=fifty" : ""}${
                             passenger ? `&passenger=${passenger}` : ""
                           }&off=${passengerPlanePrices?.data[passenger === "luxury" ? 0 : passenger === "suv" ? 1 : 2]?.discount_percent || "0"}`}
                         >
