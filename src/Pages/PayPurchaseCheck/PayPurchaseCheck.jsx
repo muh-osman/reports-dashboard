@@ -939,25 +939,6 @@ export default function PayPurchaseCheck() {
         },
 
         on_initiating: async function () {
-          console.log({
-            // name: userNameRef.current,
-            // phone: formatedPhoneNumberRef.current,
-            // branch: selectedBranchRef.current,
-            // year: yearId,
-            // fy: year || null,
-            // plan: plan,
-            // model: model,
-            // price: totalRef.current,
-            service: comfortService === "yes" ? "مرتاح" : null,
-            // additionalServices: checkedAdditionalServicesRef.current.join(", ") || "لايوجد",
-            affiliate: affiliate || null,
-            dc: appliedDiscountRef?.current?.code || null,
-            msh: marketerShareRef?.current || null,
-            cd: cookies?.userId || null,
-            rv: appliedPointsRef.current || null,
-            ad: addressRef.current || null,
-          });
-
           if (!userNameRef.current) {
             toast.warn("حقل الاسم مطلوب!");
             return false;
