@@ -1,9 +1,8 @@
 import style from "./Prices.module.scss";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 // MUI
 import * as React from "react";
 import Typography from "@mui/material/Typography";
-
 // Lang
 import i18n from "../../i18n";
 import { useTranslation } from "react-i18next";
@@ -53,6 +52,18 @@ export default function Prices() {
     navigate(`${process.env.PUBLIC_URL}/plans?passengerCheck=true`);
   };
 
+  // Get phone param and and store it in session storage
+  // const location = useLocation();
+  // const queryParams = new URLSearchParams(location.search);
+
+  // React.useEffect(() => {
+  //   const phoneParam = queryParams.get("phone");
+  //   if (phoneParam) {
+  //     // Store in session storage
+  //     sessionStorage.setItem("phone", phoneParam);
+  //   }
+  // }, [location.search]); // Re-run when URL changes
+
   return (
     <div className={style.container}>
       {/* Our Services */}
@@ -71,7 +82,9 @@ export default function Prices() {
         >
           {t("Prices.selectTheServiese")}
         </Typography>
+
         <div className={style.services_box}>
+          {/* فحص الشراء */}
           <div className={style.services_card}>
             <div className={style.service_img}>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512">
@@ -120,6 +133,7 @@ export default function Prices() {
             <button onClick={handleClickOnPurchaseInspectionButton}>{t("Prices.askNow")}</button>
           </div>
 
+          {/* مخدوم */}
           <div className={style.services_card}>
             <div className={style.service_img}>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
@@ -170,6 +184,7 @@ export default function Prices() {
             <button onClick={handleClickOnCheckitInspectionButton}>{t("Prices.askNow")}</button>
           </div>
 
+          {/* فحص المسافر */}
           <div className={style.services_card}>
             <div className={style.service_img}>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">

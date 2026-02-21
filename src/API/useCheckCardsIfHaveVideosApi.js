@@ -7,12 +7,9 @@ import { toast } from "react-toastify";
 export const useCheckCardsIfHaveVideosApi = () => {
   return useMutation({
     mutationFn: async (data) => {
-      const res = await axios.post(
-        "https://cashif.online/back-end/public/api/check-if-cards-have-videos",
-        {
-          card_ids: data,
-        }
-      );
+      const res = await axios.post("https://cashif.online/back-end/public/api/new-check-if-cards-have-videos", {
+        card_ids: data,
+      });
       return res.data;
     },
 
@@ -22,8 +19,7 @@ export const useCheckCardsIfHaveVideosApi = () => {
 
     onError: (err) => {
       console.error(err);
-      const errorMessage =
-        err?.response?.data?.message || err?.message || "An error occurred";
+      const errorMessage = err?.response?.data?.message || err?.message || "An error occurred";
       // Toastify
       toast.error(errorMessage);
     },

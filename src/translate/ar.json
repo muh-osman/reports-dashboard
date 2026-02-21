@@ -48,6 +48,7 @@
     "noReports": "لا يوجد تقارير",
     "downloadReport": "تحميل تقرير الفحص",
     "downloadSummaryReport": "تقرير موجز",
+    "video": "فيديو",
     "shippingTheCar": "شحن السيارة",
     "nsuranceAndTransferOfOwnership": "تأمين ونقل ملكية"
   },
@@ -69,10 +70,12 @@
     "checkItCheckDescriptionPartTwo": "الرياض، جدة، القصيم، أو الدمام ",
     "checkItCheckDescriptionPartThree": "وأنت خارج هذه المدن، مركز كاشف يقوم بفحص شامل ودقيق للسيارة، مع تسهيل إجراءات نقل الملكية والتأمين وشحن السيارة إلى مدينتك",
     "checkItCheckListA": "حضور مالك السيارة لأحد فروع كاشف",
-    "checkItCheckListB": "إجراء فحص شامل ودقيق للسيارة",
+    "checkItCheckListB": "فحص دقيق للسيارة مع تسجيل مرئي وشرح التقرير بمقطع فيديو مسجل",
     "checkItCheckListC": "تحميل تقرير الفحص عبر ",
     "checkItCheckListCPlus": "موقعنا",
     "checkItCheckListD": "إتمام نقل الملكية والتأمين وشحن السيارة",
+    "carPhotography": "تصوير السيارة",
+    "explainedReportInVideo": "شرح التقرير بفيديو",
 
     "travelerCheck": "فحص المسافر",
     "travelerCheckDescriptionPartOne": "فحص مخصص ",
@@ -612,10 +615,10 @@
     "agree": "أوافق",
     "allDataIsRequired": "جميع البيانات مطلوبة.",
     "youMustAgreeToTheDisclaimerToContinue": "يجب الموافقة على اقرار اخلاء المسؤولية للمتابعة",
-    "shippingTakesPlaceEveryDayOfTheWeekExceptFriday": "تتم عملية الشحن كل أيام الأسبوع ما عدا الجمعة",
+    "shippingTakesPlaceEveryDayOfTheWeekExceptFriday": "تتم عملية الشحن جميع أيام الأسبوع ما عدا الجمعة",
     "shippingPrice": "أسعار الشحن",
     "thisServiceForCachifClientOnly": "هذه الخدمة مخصصة لعملاء كاشف",
-    "cannotSubmitOnFriday": "تتم عملية الشحن كل أيام الأسبوع ما عدا الجمعة"
+    "cannotSubmitOnFriday": "تتم عملية الشحن جميع أيام الأسبوع ما عدا الجمعة"
   },
 
   "PayShipping": {
@@ -654,7 +657,7 @@
     "noInterestOrFees": "بدون أي فوائد، أو رسوم",
     "noLateFeesCompliantWithIslamicLaw": "بدون رسوم تأخير، متوافقة مع الشريعة الإسلامية",
     "confirmOrder": "تأكيد الطلب",
-    "fullName": "الاسم الكامل *",
+    "fullName": "الاسم الكامل",
     "enterTheFullName": "أدخل اسمك الكامل",
     "nameRequiredToCompletePayment": "* الاسم مطلوب لإتمام عملية الدفع",
     "phoneNumber": "رقم الجوال *",
@@ -686,6 +689,17 @@
     "liabilityClause": "بطلبك خدمة «مرتاح»، أنت توافق على أن مسؤولية استلام المركبة ونقلها وإعادتها تقع بالكامل على شركة البسامي للنقل، وأن مركز كاشف غير مسؤول عن أي أضرار أو التزامات ناتجة عن عملية النقل.",
     "nonRefundClause": "كما تقرّ بأنه لا يحق استرجاع رسوم الخدمة بعد استلام المركبة.",
     "agreeButton": "أوافق",
-    "cancelButton": "إلغاء"
+    "cancelButton": "إلغاء",
+
+    "firstName": "الأول",
+    "middleName": "الأوسط",
+    "lastName": "العائلة",
+    "enterFirstName": "أدخل الاسم الأول",
+    "enterMiddleName": "أدخل الاسم الأوسط",
+    "enterLastName": "أدخل اسم العائلة",
+    "firstNameRequired": "الاسم الأول مطلوب لإتمام عملية الدفع",
+    "middleNameOptional": "الاسم الأوسط اختياري",
+    "lastNameRequired": "*مطلوب",
+    "optional": "اختياري"
   }
 }

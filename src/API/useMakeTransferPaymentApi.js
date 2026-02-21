@@ -6,15 +6,12 @@ import API from "./Api";
 import { useCookies } from "react-cookie";
 //
 import { toast } from "react-toastify";
+// Axios
+import axios from "axios";
 
 export const useMakeTransferPaymentApi = () => {
   // Cookies
-  const [cookies, setCookie] = useCookies([
-    "tokenApp",
-    "username",
-    "userId",
-    "phoneNumber",
-  ]);
+  const [cookies, setCookie] = useCookies(["tokenApp", "username", "userId", "phoneNumber"]);
   const clientId = cookies.userId;
   //
   const navigate = useNavigate();
@@ -23,6 +20,8 @@ export const useMakeTransferPaymentApi = () => {
 
   return useMutation({
     mutationFn: async (data) => {
+      console.log(data);
+
       const res = await API.post(`api/TransferRequests`, data, {
         headers: {
           "Content-Type": "application/json-patch+json", // this nessesary for sending data as json patch
@@ -31,8 +30,20 @@ export const useMakeTransferPaymentApi = () => {
       return res.data;
     },
 
-    onSuccess: (responseData) => {
+    onSuccess: async (responseData, variables) => {
       toast.success("تم ارسال الطلب");
+
+      // console.log(variables.accountNumber);
+      // console.log(variables.marketerId);
+      // console.log(variables.point);
+      // console.log(variables.tranferPaymentTypeId);
+
+      await axios.post("https://cashif.online/back-end/public/api/send-withdraw-notification", {
+        accountNumber: variables.accountNumber,
+        marketerId: variables.marketerId,
+        point: variables.point,
+        tranferPaymentTypeId: variables.tranferPaymentTypeId,
+      });
 
       qc.invalidateQueries(["PaymentHistory", clientId]); // This will refetch
       navigate(`${process.env.PUBLIC_URL}/falak/marketer`, { replace: true });
@@ -40,8 +51,7 @@ export const useMakeTransferPaymentApi = () => {
 
     onError: (err) => {
       console.error(err);
-      const errorMessage =
-        err?.response?.data?.message || err?.message || "An error occurred";
+      const errorMessage = err?.response?.data?.message || err?.message || "An error occurred";
       // Toastify
       toast.error(errorMessage);
     },

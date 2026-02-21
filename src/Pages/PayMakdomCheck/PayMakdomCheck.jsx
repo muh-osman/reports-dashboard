@@ -133,7 +133,7 @@ export default function PayMakdomCheck() {
 
   ///////////////////////////////////////// Start fetch APIs /////////////////////////////////////////
   const { data: points } = useGetPoinsApi();
-  const { data: prices, fetchStatus: pricesFetchStatus, isSuccess: isFetchPricesSuccess } = useGetPricesApi(modelId, year, comfortService, true);
+  const { data: prices, fetchStatus: pricesFetchStatus, isSuccess: isFetchPricesSuccess } = useGetPricesApi(modelId, year, comfortService, true, true);
   ///////////////////////////////////////// End fetch APIs /////////////////////////////////////////
 
   ///////////////////////////////////////// Start overlay /////////////////////////////////////////
@@ -304,7 +304,7 @@ export default function PayMakdomCheck() {
   ///////////////////////////////////////// End redeem points /////////////////////////////////////////
 
   ///////////////////////////////////////// Start logic that updata the total /////////////////////////////////////////
-  const [capturePhotosAndVideosForCarPrice, setCapturePhotosAndVideosForCarPrice] = useState(45);
+  const [capturePhotosAndVideosForCarPrice, setCapturePhotosAndVideosForCarPrice] = useState(50);
   const [isCapturePhotosAndVideosForCarChecked, setIsCapturePhotosAndVideosForCarChecked] = useState(false);
 
   const [explainReportByVideoPrice, setExplainReportByVideoPrice] = useState(50);
@@ -331,7 +331,8 @@ export default function PayMakdomCheck() {
 
         // Apply discount to base price if exists
         if (appliedDiscount) {
-          calculatedTotal = calculatedBasePrice - appliedDiscount.amount;
+          setBasePrice(calculatedBasePrice / (1 - +off / 100));
+          calculatedTotal = calculatedBasePrice / (1 - +off / 100) - appliedDiscount.amount;
         }
 
         // Update checkedAdditionalServices based on isBriefReportChecked
@@ -436,35 +437,139 @@ export default function PayMakdomCheck() {
   ///////////////////////////////////////// End logic that updata the total /////////////////////////////////////////
 
   ///////////////////////////////////////// Start Username input /////////////////////////////////////////
-  const [userName, setUserName] = useState("");
-  const userNameRef = useRef(userName);
+  // const [userName, setUserName] = useState("");
+  // const userNameRef = useRef(userName);
+  // useEffect(() => {
+  //   userNameRef.current = userName;
+  // }, [userName]);
+  // const [userNameError, setUserNameError] = useState(false);
+  // // Handle user name change
+  // const handleUserNameChange = (e) => {
+  //   const value = e.target.value;
+  //   setUserName(value);
+  // };
+  // // validate user name
+  // const handleUserNameBlur = () => {
+  //   if (!userName.trim()) {
+  //     toast.warn("الرجاء إدخال الاسم");
+  //     setUserNameError(true);
+  //     return;
+  //   }
+
+  //   // Check if starts with 5 (Saudi mobile numbers start with 5)
+  //   if (userName.trim().length < 4) {
+  //     toast.warn("يرجى ادخال الاسم كامل");
+  //     setUserNameError(true);
+  //     return;
+  //   }
+
+  //   setUserNameError(false);
+  // };
+  ///////////////////////////////////////// End Username input /////////////////////////////////////////
+
+  ///////////////////////////////////////// Start Name inputs (First, Middle, Last) /////////////////////////////////////////
+  const [firstName, setFirstName] = useState("");
+  const firstNameRef = useRef("");
+  const [middleName, setMiddleName] = useState("");
+  const middleNameRef = useRef("");
+  const [lastName, setLastName] = useState("");
+  const lastNameRef = useRef("");
+
+  // Combine all name parts
+  const [userName, setUserName] = useState(""); // Full name
+  const userNameRef = useRef(""); // Create a ref for the full name (concatenated)
+
+  useEffect(() => {
+    setUserName([firstName, middleName, lastName].filter(Boolean).join(" ").trim());
+  }, [firstName, middleName, lastName]);
   useEffect(() => {
     userNameRef.current = userName;
   }, [userName]);
-  const [userNameError, setUserNameError] = useState(false);
-  // Handle user name change
-  const handleUserNameChange = (e) => {
+
+  useEffect(() => {
+    firstNameRef.current = firstName;
+  }, [firstName]);
+  useEffect(() => {
+    middleNameRef.current = middleName;
+  }, [middleName]);
+  useEffect(() => {
+    lastNameRef.current = lastName;
+  }, [lastName]);
+
+  // Error states for each field
+  const [firstNameError, setFirstNameError] = useState(false);
+  const [lastNameError, setLastNameError] = useState(false);
+  const [middleNameError, setMiddleNameError] = useState(false);
+
+  // Handle first name change
+  const handleFirstNameChange = (e) => {
     const value = e.target.value;
-    setUserName(value);
+    setFirstName(value);
   };
-  // validate user name
-  const handleUserNameBlur = () => {
-    if (!userName.trim()) {
-      toast.warn("الرجاء إدخال الاسم");
-      setUserNameError(true);
+
+  // Handle middle name change
+  const handleMiddleNameChange = (e) => {
+    const value = e.target.value;
+    setMiddleName(value);
+  };
+
+  // Handle last name change
+  const handleLastNameChange = (e) => {
+    const value = e.target.value;
+    setLastName(value);
+  };
+
+  // Validate first name
+  const handleFirstNameBlur = () => {
+    if (!firstName.trim()) {
+      toast.warn("الرجاء إدخال الاسم الأول");
+      setFirstNameError(true);
       return;
     }
 
-    // Check if starts with 5 (Saudi mobile numbers start with 5)
-    if (userName.trim().length < 4) {
-      toast.warn("يرجى ادخال الاسم كامل");
-      setUserNameError(true);
+    if (firstName.trim().length < 2) {
+      toast.warn("الاسم الأول يجب أن يكون على الأقل حرفين");
+      setFirstNameError(true);
       return;
     }
 
-    setUserNameError(false);
+    setFirstNameError(false);
   };
-  ///////////////////////////////////////// End Username input /////////////////////////////////////////
+
+  // Validate last name
+  const handleLastNameBlur = () => {
+    if (!lastName.trim()) {
+      toast.warn("الرجاء إدخال اسم العائلة");
+      setLastNameError(true);
+      return;
+    }
+
+    if (lastName.trim().length < 2) {
+      toast.warn("اسم العائلة يجب أن يكون على الأقل حرفين");
+      setLastNameError(true);
+      return;
+    }
+
+    setLastNameError(false);
+  };
+
+  // Validate middle name (optional)
+  const handleMiddleNameBlur = () => {
+    if (!middleName.trim()) {
+      toast.warn("الرجاء إدخال الاسم الأوسط");
+      setMiddleNameError(true);
+      return;
+    }
+
+    if (middleName.trim().length < 2) {
+      toast.warn("الاسم الأوسط يجب أن يكون على الأقل حرفين");
+      setMiddleNameError(true);
+      return;
+    }
+
+    setMiddleNameError(false);
+  };
+  ///////////////////////////////////////// End Name inputs (First, Middle, Last) /////////////////////////////////////////
 
   ///////////////////////////////////////// Start Phone Number input /////////////////////////////////////////
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -604,8 +709,8 @@ export default function PayMakdomCheck() {
   ///////////////////////////////////////// Start Tamara /////////////////////////////////////////
   const [isTamaraBtnLoading, setIsTamaraBtnLoading] = useState(false);
   const handleClickTamaraBtn = async () => {
-    if (!userNameRef.current) {
-      toast.warn("حقل الاسم مطلوب!");
+    if (!firstNameRef.current || !middleNameRef.current || !lastNameRef.current || !userNameRef.current || userNameRef.current.trim().length < 6) {
+      toast.warn("الاسم الكامل مطلوب!");
       return;
     }
     if (!formatedPhoneNumberRef.current) {
@@ -751,8 +856,8 @@ export default function PayMakdomCheck() {
   ///////////////////////////////////////// Start Tabby /////////////////////////////////////////
   const [isTabbyLoading, setIsTabbyBtnLoading] = useState(false);
   const handleClickTabbyBtn = async () => {
-    if (!userNameRef.current) {
-      toast.warn("حقل الاسم مطلوب!");
+    if (!firstNameRef.current || !middleNameRef.current || !lastNameRef.current || !userNameRef.current || userNameRef.current.trim().length < 6) {
+      toast.warn("الاسم الكامل مطلوب!");
       return;
     }
     if (!formatedPhoneNumberRef.current) {
@@ -1018,8 +1123,8 @@ export default function PayMakdomCheck() {
             ad: addressRef.current || null,
           });
 
-          if (!userNameRef.current) {
-            toast.warn("حقل الاسم مطلوب!");
+          if (!firstNameRef.current || !middleNameRef.current || !lastNameRef.current || !userNameRef.current || userNameRef.current.trim().length < 6) {
+            toast.warn("الاسم الكامل مطلوب!");
             return false;
           }
 
@@ -1154,7 +1259,7 @@ export default function PayMakdomCheck() {
               <p style={{ fontSize: "12px" }}>{model}</p>
             </div>
             <p style={{ display: "flex", alignItems: "center", gap: "3px", fontWeight: 700 }}>
-              {Math.trunc(prices?.[0]?.prices?.[priceId]?.price || 0)} <CurrencyIcon fill="#747a79" style={{ width: "20px", height: "20px" }} />
+              {Math.trunc(basePrice || 0)} <CurrencyIcon fill="#747a79" style={{ width: "20px", height: "20px" }} />
             </p>
           </div>
 
@@ -1196,7 +1301,7 @@ export default function PayMakdomCheck() {
           </div>
 
           {/* شرح التقرير عبر فيديو */}
-          <div>
+          {/* <div>
             <FormControlLabel
               control={
                 <Checkbox
@@ -1230,7 +1335,7 @@ export default function PayMakdomCheck() {
             <p style={{ textDecoration: isExplainReportByVideoChecked ? "none" : "line-through", display: "flex", alignItems: "center", gap: "3px", fontWeight: 700 }}>
               {explainReportByVideoPrice} <CurrencyIcon fill="#747a79" style={{ width: "20px", height: "20px" }} />
             </p>
-          </div>
+          </div> */}
 
           {/* تقرير موجز */}
           <div>
@@ -1451,7 +1556,7 @@ export default function PayMakdomCheck() {
       {/* Name/phone/branch */}
       <div className={style.user_data_box}>
         {/* Name */}
-        <FormControl fullWidth sx={{ marginBottom: "16px" }}>
+        {/* <FormControl fullWidth sx={{ marginBottom: "16px" }}>
           <InputLabel htmlFor="user-name">{t("PayPurchaseCheck.fullName")}</InputLabel>
           <OutlinedInput
             id="user-name"
@@ -1470,11 +1575,94 @@ export default function PayMakdomCheck() {
           <FormHelperText sx={{ margin: 0, marginTop: "3px", textAlign: languageText === "ar" ? "right" : "left", color: "text.secondary" }}>
             {t("PayPurchaseCheck.nameRequiredToCompletePayment")}
           </FormHelperText>
-        </FormControl>
+        </FormControl> */}
+
+        <h4 style={{ color: "#0009", marginBottom: "16px" }}>{t("PayPurchaseCheck.fullName")}</h4>
+        <div style={{ display: "flex", gap: "6px" }}>
+          <div>
+            {/* First Name */}
+            <FormControl fullWidth sx={{ marginBottom: "16px" }}>
+              <InputLabel className={languageText === "ar" ? "custom-label-rtl" : ""} htmlFor="first-name">
+                {t("PayPurchaseCheck.firstName")}
+              </InputLabel>
+              <OutlinedInput
+                id="first-name"
+                label={t("PayPurchaseCheck.firstName")}
+                value={firstName}
+                onChange={handleFirstNameChange}
+                onBlur={handleFirstNameBlur}
+                // placeholder={t("PayPurchaseCheck.enterFirstName")}
+                error={!!firstNameError}
+                sx={{
+                  "& .MuiOutlinedInput-input": {
+                    textAlign: languageText === "ar" ? "right" : "left",
+                  },
+                }}
+              />
+              <FormHelperText sx={{ margin: 0, marginTop: "3px", textAlign: languageText === "ar" ? "right" : "left", color: "text.secondary" }}>
+                {t("PayPurchaseCheck.lastNameRequired")}
+              </FormHelperText>
+            </FormControl>
+          </div>
+
+          <div>
+            {/* Middle Name (Optional) */}
+            <FormControl fullWidth sx={{ marginBottom: "16px" }}>
+              <InputLabel className={languageText === "ar" ? "custom-label-rtl" : ""} htmlFor="middle-name">
+                {t("PayPurchaseCheck.middleName")}
+              </InputLabel>
+              <OutlinedInput
+                id="middle-name"
+                label={t("PayPurchaseCheck.middleName")}
+                value={middleName}
+                onChange={handleMiddleNameChange}
+                onBlur={handleMiddleNameBlur}
+                // placeholder={t("PayPurchaseCheck.enterMiddleName")}
+                error={!!middleNameError}
+                sx={{
+                  "& .MuiOutlinedInput-input": {
+                    textAlign: languageText === "ar" ? "right" : "left",
+                  },
+                }}
+              />
+              <FormHelperText sx={{ margin: 0, marginTop: "3px", textAlign: languageText === "ar" ? "right" : "left", color: "text.secondary" }}>
+                {t("PayPurchaseCheck.lastNameRequired")}
+              </FormHelperText>
+            </FormControl>
+          </div>
+
+          <div>
+            {/* Last Name */}
+            <FormControl fullWidth sx={{ marginBottom: "16px" }}>
+              <InputLabel className={languageText === "ar" ? "custom-label-rtl" : ""} className={languageText === "ar" ? "custom-label-rtl" : ""} htmlFor="last-name">
+                {t("PayPurchaseCheck.lastName")}
+              </InputLabel>
+              <OutlinedInput
+                id="last-name"
+                label={t("PayPurchaseCheck.lastName")}
+                value={lastName}
+                onChange={handleLastNameChange}
+                onBlur={handleLastNameBlur}
+                // placeholder={t("PayPurchaseCheck.enterLastName")}
+                error={!!lastNameError}
+                sx={{
+                  "& .MuiOutlinedInput-input": {
+                    textAlign: languageText === "ar" ? "right" : "left",
+                  },
+                }}
+              />
+              <FormHelperText sx={{ margin: 0, marginTop: "3px", textAlign: languageText === "ar" ? "right" : "left", color: "text.secondary" }}>
+                {t("PayPurchaseCheck.lastNameRequired")}
+              </FormHelperText>
+            </FormControl>
+          </div>
+        </div>
 
         {/* Phone */}
         <FormControl fullWidth sx={{ marginBottom: "16px" }}>
-          <InputLabel htmlFor="user-phone">{t("PayPurchaseCheck.phoneNumber")}</InputLabel>
+          <InputLabel className={languageText === "ar" ? "custom-label-rtl" : ""} htmlFor="user-phone">
+            {t("PayPurchaseCheck.phoneNumber")}
+          </InputLabel>
           <OutlinedInput
             onBlur={handlePhoneNumberBlur}
             value={phoneNumber}
@@ -1496,13 +1684,25 @@ export default function PayMakdomCheck() {
 
         {/* Branch */}
         <FormControl fullWidth>
-          <InputLabel id="branch-select-label">{t("PayPurchaseCheck.selectTheBranch")}</InputLabel>
+          <InputLabel className={languageText === "ar" ? "custom-label-rtl" : ""} id="branch-select-label">
+            {t("PayPurchaseCheck.selectTheBranch")}
+          </InputLabel>
           <Select
             labelId="branch-select-label"
             id="branch-select"
             value={selectedBranch}
             label={t("PayPurchaseCheck.selectTheBranch")}
             onChange={handleBranchChange}
+            sx={{
+              "& .MuiSelect-icon": {
+                right: languageText === "ar" ? "auto" : "14px",
+                left: languageText === "ar" ? "14px" : "auto",
+              },
+              textAlign: languageText === "ar" ? "right" : "left",
+              "& .MuiSelect-select": {
+                textAlign: languageText === "ar" ? "right" : "left",
+              },
+            }}
             MenuProps={{
               PaperProps: {
                 sx: {
@@ -1534,7 +1734,9 @@ export default function PayMakdomCheck() {
         {comfortService === "yes" && (
           <div>
             <FormControl fullWidth sx={{ marginTop: "16px" }}>
-              <InputLabel htmlFor="user-address">{t("PayPurchaseCheck.address")}</InputLabel>
+              <InputLabel className={languageText === "ar" ? "custom-label-rtl" : ""} htmlFor="user-address">
+                {t("PayPurchaseCheck.address")}
+              </InputLabel>
               <OutlinedInput
                 id="user-address"
                 label={t("PayPurchaseCheck.address")}

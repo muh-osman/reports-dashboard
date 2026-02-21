@@ -12,11 +12,14 @@ import MuiAccordionSummary, { accordionSummaryClasses } from "@mui/material/Acco
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import { Backdrop, CircularProgress, Modal, Button } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 // Image
 // import tamaraLogo from "../../Assets/Images/tamara-logo.svg";
 // import tabbyLogo from "../../Assets/Images/tabby.png";
 // API
 import useGetOneCardDataApi from "../../API/useGetOneCardDataApi";
+import { useAddSippingCarOrderApi } from "../../API/useAddSippingCarOrderApi";
 // JSON
 import carData from "../Shippings/data.json";
 // Cookies
@@ -121,6 +124,7 @@ export default function PayShipping() {
   // const from = searchParams.get("from");
   const to = searchParams.get("to");
   const shippingType = searchParams.get("shipping_type");
+  const deliveryMethod = searchParams.get("delivery_method");
   // const price = searchParams.get("price");
 
   const [price, setPrice] = useState(null);
@@ -129,18 +133,46 @@ export default function PayShipping() {
   const { data: oneCardData, isLoading: isFetchDataLoading, isSuccess: isFetchDataSuccess } = useGetOneCardDataApi(reportNumber);
 
   //
-  const [expanded, setExpanded] = useState("panel3");
+  const [expanded, setExpanded] = useState("panel1");
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
   //
-  const [isTamaraBtnLoading, setIsTamaraBtnLoading] = useState(false);
-  const [isTabbyLoading, setIsTabbyBtnLoading] = useState(false);
+  const [isPayInCenterLoading, setIsPayInCenterLoading] = useState(false);
+  // const [isTamaraBtnLoading, setIsTamaraBtnLoading] = useState(false);
+  // const [isTabbyLoading, setIsTabbyBtnLoading] = useState(false);
 
-  // const handleClickTamaraBtn = () => {
-  //   setIsTamaraBtnLoading(true);
-  // };
+  const { mutate, data: mutateData, isSuccess: isMutateSuccess } = useAddSippingCarOrderApi();
+  const handlePayInCenterBtn = () => {
+    setIsPayInCenterLoading(true);
+
+    let data = {
+      payment_id: "N/A",
+      name: oneCardData?.clientName,
+      reportNumber: oneCardData?.cardNumber, // this is cardNumber NOT id
+      model: oneCardData?.carModelNameAr,
+      modelCategory: deliveryMethod === "1" ? "ذهاب صاحب السيارة إلى شركة الشحن" : "سطحة من مركز الفحص إلى شركة الشحن", // this is now delivery Method "The car owner went to the shipping company" or "Flatbed truck from the inspection center to the shipping company"
+      plateNumber: oneCardData?.plateNumber || "N/A",
+      from: oneCardData?.branchNameAr,
+      to: to,
+      shippingType: shippingType,
+      price: price,
+      phoneNumber: oneCardData?.clientPhoneNumber,
+      status: "الدفع عند الاستلام",
+      isShipped: false,
+      accountant_status: false,
+    };
+
+    mutate(data);
+  };
+
+  useEffect(() => {
+    if (isMutateSuccess) {
+      window.location.replace(`https://cashif.online/shipping-client/${mutateData?.database_id}`);
+    }
+  }, [isMutateSuccess]);
+
   // const handleClickTabbyBtn = () => {
   //   setIsTabbyBtnLoading(true);
   // };
@@ -243,53 +275,53 @@ export default function PayShipping() {
   }, [isFetchDataSuccess]);
 
   // Moyasar
-  useEffect(() => {
-    // Initialize Moyasar after script loads
-    if (price && window.Moyasar) {
-      window.Moyasar.init({
-        element: ".mysr-form",
-        amount: price * 100,
-        currency: "SAR",
-        language: languageText === "ar" ? "ar" : "en",
-        description: "Cashif for car inspection",
-        publishable_api_key: window.location.hostname === "localhost" ? process.env.REACT_APP_SHIPPING_MOYASAR_TEST_KEY : process.env.REACT_APP_SHIPPING_MOYASAR_LIVE_KEY,
-        callback_url: `${window.location.origin}${process.env.PUBLIC_URL}/pay/shipping/thanks`,
-        supported_networks: ["visa", "mastercard", "mada"],
-        methods: ["creditcard", "applepay"],
+  // useEffect(() => {
+  //   // Initialize Moyasar after script loads
+  //   if (price && window.Moyasar) {
+  //     window.Moyasar.init({
+  //       element: ".mysr-form",
+  //       amount: price * 100,
+  //       currency: "SAR",
+  //       language: languageText === "ar" ? "ar" : "en",
+  //       description: "Cashif for car inspection",
+  //       publishable_api_key: window.location.hostname === "localhost" ? process.env.REACT_APP_SHIPPING_MOYASAR_TEST_KEY : process.env.REACT_APP_SHIPPING_MOYASAR_LIVE_KEY,
+  //       callback_url: `${window.location.origin}${process.env.PUBLIC_URL}/pay/shipping/thanks`,
+  //       supported_networks: ["visa", "mastercard", "mada"],
+  //       methods: ["creditcard", "applepay"],
 
-        apple_pay: {
-          country: "SA",
-          label: "Cashif for car inspection",
-          validate_merchant_url: "https://api.moyasar.com/v1/applepay/initiate",
-        },
+  //       apple_pay: {
+  //         country: "SA",
+  //         label: "Cashif for car inspection",
+  //         validate_merchant_url: "https://api.moyasar.com/v1/applepay/initiate",
+  //       },
 
-        metadata: {
-          name: oneCardData?.clientName,
-          reportNumber: oneCardData?.cardNumber, // this is cardNumber NOT id
-          model: oneCardData?.carModelNameAr,
-          modelCategory: "N/A",
-          plateNumber: oneCardData?.plateNumber,
-          from: oneCardData?.branchNameAr,
-          to: to,
-          shippingType: shippingType,
-          price: price,
-          phoneNumber: oneCardData?.clientPhoneNumber,
-        },
+  //       metadata: {
+  //         name: oneCardData?.clientName,
+  //         reportNumber: oneCardData?.cardNumber, // this is cardNumber NOT id
+  //         model: oneCardData?.carModelNameAr,
+  //         modelCategory: "N/A",
+  //         plateNumber: oneCardData?.plateNumber,
+  //         from: oneCardData?.branchNameAr,
+  //         to: to,
+  //         shippingType: shippingType,
+  //         price: price,
+  //         phoneNumber: oneCardData?.clientPhoneNumber,
+  //       },
 
-        on_failure: async function (error) {
-          console.log(error);
-        },
-      });
-    }
+  //       on_failure: async function (error) {
+  //         console.log(error);
+  //       },
+  //     });
+  //   }
 
-    return () => {
-      // Clean up Moyasar form when component unmounts
-      const formElement = document.querySelector(".mysr-form");
-      if (formElement) {
-        formElement.innerHTML = "";
-      }
-    };
-  }, [price, languageText, oneCardData, reportNumber, to, shippingType]);
+  //   return () => {
+  //     // Clean up Moyasar form when component unmounts
+  //     const formElement = document.querySelector(".mysr-form");
+  //     if (formElement) {
+  //       formElement.innerHTML = "";
+  //     }
+  //   };
+  // }, [price, languageText, oneCardData, reportNumber, to, shippingType]);
 
   return (
     <div className={style.container} dir={languageText === "ar" ? "rtl" : "ltr"}>
@@ -360,7 +392,7 @@ export default function PayShipping() {
       </div>
 
       <div className={style.payment_methods_box}>
-        {/* <Accordion expanded={expanded === "panel1"} onChange={handleChange("panel1")}>
+        <Accordion expanded={expanded === "panel1"} onChange={handleChange("panel1")}>
           <AccordionSummary
             aria-controls="panel1d-content"
             id="panel1d-header"
@@ -371,26 +403,33 @@ export default function PayShipping() {
             <Typography component="h5">
               <span style={{ display: "flex", gap: "6px", alignItems: "center" }}>
                 <span style={{ display: "flex" }}>
-                  <img src={tamaraLogo} alt="tamara" />
+                  {/* <img src={tamaraLogo} alt="tamara" /> */}
+                  <AccountBalanceIcon />
                 </span>
-                <span style={{ fontWeight: "700" }}>قسمها على 4 دفعات</span>
+                <span style={{ fontWeight: "700" }}>الدفع عند الاستلام</span>
               </span>
-              <span style={{ display: "inline-block", color: "#747a79", fontSize: "12px" }}>بدون رسوم تأخير، متوافقة مع الشريعة الإسلامية</span>
+              {/* <span style={{ display: "inline-block", color: "#747a79", fontSize: "12px" }}>بدون رسوم تأخير، متوافقة مع الشريعة الإسلامية</span> */}
             </Typography>
           </AccordionSummary>
           <AccordionDetails style={{ padding: "8px 0px 16px" }}>
             <LoadingButton
-              style={{ width: "100%", backgroundColor: "#6a00cb", fontWeight: "700", color: isTamaraBtnLoading ? "#6a00cb" : "#fff" }}
+              style={{ width: "100%", backgroundColor: "#174545", fontWeight: "700" }}
               variant="contained"
               size="large"
-              onClick={handleClickTamaraBtn}
-              loading={isTamaraBtnLoading}
-              disabled={isTamaraBtnLoading}
+              onClick={handlePayInCenterBtn}
+              loading={isPayInCenterLoading}
+              disabled={isPayInCenterLoading}
+              loadingIndicator={
+                <CircularProgress
+                  size={16}
+                  sx={{ color: "#fff" }} // Change spinner color here
+                />
+              }
             >
               تأكيد الطلب
             </LoadingButton>
           </AccordionDetails>
-        </Accordion> */}
+        </Accordion>
 
         {/* <Accordion expanded={expanded === "panel2"} onChange={handleChange("panel2")}>
           <AccordionSummary
@@ -424,7 +463,8 @@ export default function PayShipping() {
           </AccordionDetails>
         </Accordion> */}
 
-        <Accordion expanded={expanded === "panel3"} onChange={handleChange("panel3")}>
+        {/* Moyasar Form */}
+        {/* <Accordion expanded={expanded === "panel3"} onChange={handleChange("panel3")}>
           <AccordionSummary
             aria-controls="panel3d-content"
             id="panel3d-header"
@@ -440,10 +480,9 @@ export default function PayShipping() {
             </Typography>
           </AccordionSummary>
           <AccordionDetails style={{ padding: "8px 0px 16px" }}>
-            {/* Moyasar Form */}
             <div className="mysr-form"></div>
           </AccordionDetails>
-        </Accordion>
+        </Accordion> */}
       </div>
     </div>
   );

@@ -13,6 +13,8 @@ import FormControl from "@mui/material/FormControl";
 import { TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { Backdrop, CircularProgress, Typography, Modal, Button } from "@mui/material";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import Chip from "@mui/material/Chip";
 // Toastify
 import { toast } from "react-toastify";
 // Cookies
@@ -385,13 +387,14 @@ export default function Shippings() {
       to: encodeURIComponent(selectedCity || ""),
       shipping_type: encodeURIComponent(shippingType || ""),
       price: encodeURIComponent(price || ""),
+      delivery_method: encodeURIComponent(deliveryMethod || ""),
     };
 
     // const url = `https://cashif.cc/shipping/?report_number=${encodedParams.report_number}&model=${encodedParams.model}&model_category=${encodedParams.model_category}&from=${encodedParams.from}&to=${encodedParams.to}&shipping_type=${encodedParams.shipping_type}&price=${encodedParams.price}`;
     // window.location.href = url;
 
     navigate(
-      `${process.env.PUBLIC_URL}/pay/shipping/?report_number=${encodedParams.report_number}&model=${encodedParams.model}&plate_number=${encodedParams.plate_number}&from=${encodedParams.from}&to=${encodedParams.to}&shipping_type=${encodedParams.shipping_type}&price=${encodedParams.price}`
+      `${process.env.PUBLIC_URL}/pay/shipping/?report_number=${encodedParams.report_number}&model=${encodedParams.model}&plate_number=${encodedParams.plate_number}&from=${encodedParams.from}&to=${encodedParams.to}&shipping_type=${encodedParams.shipping_type}&price=${encodedParams.price}&delivery_method=${encodedParams.delivery_method}`
     );
   };
 
@@ -400,6 +403,40 @@ export default function Shippings() {
     setOpenTermsModal(false);
     toast.warn(t("Shippings.youMustAgreeToTheDisclaimerToContinue"));
   };
+
+  // Selected Type Of Delivery method
+  const [deliveryMethod, setDeliveryMethod] = useState(0);
+
+  // Albasami branches
+  const albasamiBranches = [
+    {
+      nameAr: "القادسية",
+      address: "الرياض - القادسية",
+      link: "https://maps.app.goo.gl/P4b9rnktgWAAGen4A",
+    },
+    {
+      nameAr: "الشفا",
+      address: "الرياض - الشفا",
+      link: "https://maps.app.goo.gl/PRmnNYrGhBCXgvxV8",
+    },
+    {
+      nameAr: "جدة",
+      address: "جدة - الجوهرة",
+      link: "https://maps.app.goo.gl/eHeFLRxzLAf4TBQJ8",
+    },
+    {
+      nameAr: "الدمام",
+      address: "الدمام - ضاحية الملك فهد",
+      link: "https://maps.app.goo.gl/mkjAu3KRDBWnLFgz6",
+    },
+    {
+      nameAr: "القصيم",
+      address: "بريدة - شارع قرطبة",
+      link: "https://maps.app.goo.gl/ooynnSB14yZQjUvaA",
+    },
+  ];
+  // Find the matching Albasami branch
+  const matchedBranch = albasamiBranches.find((branch) => branch.nameAr === oneCardData?.branchNameAr);
 
   return (
     <div className={style.container}>
@@ -446,126 +483,140 @@ export default function Shippings() {
       </Backdrop>
 
       {/*  */}
-      <div dir={languageText === "ar" ? "rtl" : "ltr"} className={style.header_text}>
-        <h1>{t("Shippings.carSharging")}</h1>
-        <p style={{ textAlign: "center", marginTop: "6px", fontSize: "13px" }}>{t("Shippings.shippingTakesPlaceEveryDayOfTheWeekExceptFriday")}</p>
-      </div>
+      {deliveryMethod ? (
+        <>
+          <div dir={languageText === "ar" ? "rtl" : "ltr"} className={style.header_text}>
+            <h1>{t("Shippings.carSharging")}</h1>
+            <Chip
+              style={{ backgroundColor: "#fff", marginTop: "3px" }}
+              label={deliveryMethod === 1 ? "ذهاب صاحب السيارة إلى شركة الشحن" : "سطحة من مركز الفحص إلى شركة الشحن"}
+              variant="outlined"
+            />
+            <p style={{ textAlign: "center", marginTop: "6px", fontSize: "13px" }}>{t("Shippings.shippingTakesPlaceEveryDayOfTheWeekExceptFriday")}</p>
+          </div>
 
-      <Box sx={{ minWidth: 120, maxWidth: "400px", margin: "auto", marginTop: "6px" }}>
-        <FormControl fullWidth dir={languageText === "ar" ? "rtl" : "ltr"}>
-          {/* السيارة  */}
-          <TextField
-            sx={{ backgroundColor: "#fff", marginTop: "16px" }}
-            dir={languageText === "ar" ? "rtl" : "ltr"}
-            fullWidth
-            label={t("Shippings.model")}
-            value={(languageText === "ar" ? oneCardData?.carModelNameAr : oneCardData?.carModelNameEn) || ""}
-            disabled={true}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
+          <Box sx={{ minWidth: 120, maxWidth: "400px", margin: "auto", marginTop: "6px" }}>
+            <FormControl fullWidth dir={languageText === "ar" ? "rtl" : "ltr"}>
+              {/* السيارة  */}
+              <TextField
+                sx={{ backgroundColor: "#fff", marginTop: "16px" }}
+                dir={languageText === "ar" ? "rtl" : "ltr"}
+                fullWidth
+                label={t("Shippings.model")}
+                value={(languageText === "ar" ? oneCardData?.carModelNameAr : oneCardData?.carModelNameEn) || ""}
+                disabled={true}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
 
-          {/* رقم اللوحة  */}
-          <TextField
-            sx={{ backgroundColor: "#fff", marginTop: "16px" }}
-            dir={languageText === "ar" ? "rtl" : "ltr"}
-            fullWidth
-            label={t("Shippings.plateNumber")}
-            value={oneCardData?.plateNumber || ""}
-            disabled={true}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
+              {/* رقم اللوحة  */}
+              <TextField
+                sx={{ backgroundColor: "#fff", marginTop: "16px" }}
+                dir={languageText === "ar" ? "rtl" : "ltr"}
+                fullWidth
+                label={t("Shippings.plateNumber")}
+                value={oneCardData?.plateNumber || ""}
+                disabled={true}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
 
-          {/* شحن السيارة من:  */}
-          <TextField
-            sx={{ backgroundColor: "#fff", marginTop: "16px" }}
-            dir={languageText === "ar" ? "rtl" : "ltr"}
-            fullWidth
-            label={t("Shippings.shippingFrom")}
-            value={(languageText === "ar" ? oneCardData?.branchNameAr : oneCardData?.branchNameEn) || ""}
-            disabled={true}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
+              {/* شحن السيارة من:  */}
+              <TextField
+                sx={{ backgroundColor: "#fff", marginTop: "16px" }}
+                dir={languageText === "ar" ? "rtl" : "ltr"}
+                fullWidth
+                label={t("Shippings.shippingFrom")}
+                value={(languageText === "ar" ? oneCardData?.branchNameAr : oneCardData?.branchNameEn) || ""}
+                disabled={true}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
 
-          {/* شحن السيارة الى  */}
-          <TextField
-            sx={{ backgroundColor: "#fff", marginTop: "16px" }}
-            dir={languageText === "ar" ? "rtl" : "ltr"}
-            required
-            fullWidth
-            select
-            label={t("Shippings.shippingTo")}
-            value={selectedCity || ""} // Make sure you have state for this
-            onChange={handleCityChange}
-            // disabled={isPostApoinmentFormMutatePending || shouldAutoSubmit}
+              {/* شحن السيارة الى  */}
+              <TextField
+                sx={{ backgroundColor: "#fff", marginTop: "16px" }}
+                dir={languageText === "ar" ? "rtl" : "ltr"}
+                required
+                fullWidth
+                select
+                label={t("Shippings.shippingTo")}
+                value={selectedCity || ""} // Make sure you have state for this
+                onChange={handleCityChange}
+                // disabled={isPostApoinmentFormMutatePending || shouldAutoSubmit}
 
-            SelectProps={{
-              displayEmpty: true,
-              renderValue: (selected) => {
-                if (!selected) {
-                  return languageText === "en" ? "Select city" : "اختر المدينة";
-                }
-                return selected;
-              },
-            }}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          >
-            {/* Placeholder option */}
-            <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} value="" disabled>
-              {languageText === "en" ? "Select city" : "اختر المدينة"}
-            </MenuItem>
-
-            {cities && cities.length > 0 ? (
-              cities.map((city) => (
-                <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} key={city.id} value={city.nameAr}>
-                  {languageText === "en" ? city?.nameEn : city?.nameAr}
+                SelectProps={{
+                  displayEmpty: true,
+                  renderValue: (selected) => {
+                    if (!selected) {
+                      return languageText === "en" ? "Select city" : "اختر المدينة";
+                    }
+                    return selected;
+                  },
+                }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              >
+                {/* Placeholder option */}
+                <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} value="" disabled>
+                  {languageText === "en" ? "Select city" : "اختر المدينة"}
                 </MenuItem>
-              ))
-            ) : (
-              <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} value="">
-                {t("Booking.loading")}
-              </MenuItem>
-            )}
-          </TextField>
 
-          {/* Shipping Type */}
-          <Box className={style.label_box} sx={{ marginTop: "32px" }} dir="rtl">
-            {/* Show "نقل عام" only if price is not 0 and selectedCity is not branch */}
-            {selectedCity && calculateShippingPrice(oneCardData?.branchNameAr, selectedCity, "نقل عام") !== 0 && (
-              <label dir="rtl" style={{ cursor: "pointer" }}>
-                <div className={style.image_box} onClick={() => handleShippingTypesChange("نقل عام")}>
-                  <img src={multible} alt="icon" />
-                </div>
-                <div className={style.label_text_box}>
-                  <input checked={shippingType === "نقل عام"} type="radio" name="options" value="نقل عام" onChange={() => handleShippingTypesChange("نقل عام")} required />
-                  {languageText === "en" ? "Public transport" : "نقل عام"}
-                </div>
-              </label>
-            )}
+                {cities && cities.length > 0 ? (
+                  cities.map((city) => (
+                    <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} key={city.id} value={city.nameAr}>
+                      {languageText === "en" ? city?.nameEn : city?.nameAr}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} value="">
+                    {t("Booking.loading")}
+                  </MenuItem>
+                )}
+              </TextField>
 
-            {/* Show for white group car (Low) */}
-            {/* Show "سطحة خاصة" only if price is not 0 */}
-            {selectedCity && calculateShippingPrice(oneCardData?.branchNameAr, selectedCity, "سطحة خاصة") !== 0 && (
-              <label dir="rtl" style={{ cursor: "pointer" }}>
-                <div className={style.image_box} onClick={() => handleShippingTypesChange("سطحة خاصة")}>
-                  <img src={single} alt="icon" />
-                </div>
-                <div className={style.label_text_box}>
-                  <input checked={shippingType === "سطحة خاصة"} type="radio" name="options" value="سطحة خاصة" onChange={() => handleShippingTypesChange("سطحة خاصة")} required />
-                  {languageText === "en" ? "Private flatbed truck" : "سطحة خاصة"}
-                </div>
-              </label>
-            )}
+              {/* Shipping Type */}
+              <Box className={style.label_box} sx={{ marginTop: "32px" }} dir="rtl">
+                {/* Show "نقل عام" only if price is not 0 and selectedCity is not branch */}
+                {selectedCity && calculateShippingPrice(oneCardData?.branchNameAr, selectedCity, "نقل عام") !== 0 && (
+                  <label dir="rtl" style={{ cursor: "pointer" }}>
+                    <div className={style.image_box} onClick={() => handleShippingTypesChange("نقل عام")}>
+                      <img src={multible} alt="icon" />
+                    </div>
+                    <div className={style.label_text_box}>
+                      <input checked={shippingType === "نقل عام"} type="radio" name="options" value="نقل عام" onChange={() => handleShippingTypesChange("نقل عام")} required />
+                      {languageText === "en" ? "Public transport" : "نقل عام"}
+                    </div>
+                  </label>
+                )}
 
-            {/* Show for yellow and red group car (Medium & High) */}
-            {/* {(modelCategory === "Medium" || modelCategory === "High") && (
+                {/* Show for white group car (Low) */}
+                {/* Show "سطحة خاصة" only if price is not 0 */}
+                {selectedCity && calculateShippingPrice(oneCardData?.branchNameAr, selectedCity, "سطحة خاصة") !== 0 && (
+                  <label dir="rtl" style={{ cursor: "pointer" }}>
+                    <div className={style.image_box} onClick={() => handleShippingTypesChange("سطحة خاصة")}>
+                      <img src={single} alt="icon" />
+                    </div>
+                    <div className={style.label_text_box}>
+                      <input
+                        checked={shippingType === "سطحة خاصة"}
+                        type="radio"
+                        name="options"
+                        value="سطحة خاصة"
+                        onChange={() => handleShippingTypesChange("سطحة خاصة")}
+                        required
+                      />
+                      {languageText === "en" ? "Private flatbed truck" : "سطحة خاصة"}
+                    </div>
+                  </label>
+                )}
+
+                {/* Show for yellow and red group car (Medium & High) */}
+                {/* {(modelCategory === "Medium" || modelCategory === "High") && (
               <label dir="rtl" style={{ cursor: "pointer" }}>
                 <div className={style.image_box} onClick={() => handleShippingTypesChange("نقل ثقيل")}>
                   <img src={heavy} alt="icon" />
@@ -576,35 +627,99 @@ export default function Shippings() {
                 </div>
               </label>
             )} */}
-          </Box>
+              </Box>
 
-          {/* Button */}
-          <LoadingButton
-            dir="rtl"
-            style={{ marginTop: "32px", gap: "6px", fontSize: "16px" }}
-            variant="contained"
-            size="large"
-            onClick={submitForm}
-            // loading={isPostApoinmentFormMutatePending || shouldAutoSubmit}
-            // disabled={price === null}
+              {/* Button */}
+              <LoadingButton
+                dir="rtl"
+                style={{ marginTop: "32px", gap: "6px", fontSize: "16px" }}
+                variant="contained"
+                size="large"
+                onClick={submitForm}
+                // loading={isPostApoinmentFormMutatePending || shouldAutoSubmit}
+                // disabled={price === null}
+              >
+                {selectedCity && shippingType ? (
+                  <>
+                    <span style={{ fontWeight: "700" }}>{price}.00</span>
+                    <span style={{ lineHeight: "1" }}>
+                      <svg style={{ width: "18px", fill: "#fff" }} data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39">
+                        <defs></defs>
+                        <path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z"></path>
+                        <path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z"></path>
+                      </svg>
+                    </span>
+                  </>
+                ) : (
+                  <span>{t("Shippings.orderNow")}</span>
+                )}
+              </LoadingButton>
+            </FormControl>
+          </Box>
+        </>
+      ) : (
+        <>
+          <Typography
+            variant="h6"
+            component="div"
+            style={{
+              textAlign: "center",
+              margin: "20px",
+              marginTop: "8px",
+              marginBottom: "32px",
+              fontSize: "28px",
+              fontWeight: "800",
+              color: "#164544",
+            }}
           >
-            {selectedCity && shippingType ? (
-              <>
-                <span style={{ fontWeight: "700" }}>{price}.00</span>
-                <span style={{ lineHeight: "1" }}>
-                  <svg style={{ width: "18px", fill: "#fff" }} data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39">
-                    <defs></defs>
-                    <path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z"></path>
-                    <path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z"></path>
+            اختر طريقة تسليم السيارة للشحن
+          </Typography>
+
+          <section className={style.services_container} dir={languageText === "ar" ? "rtl" : "ltr"}>
+            <div className={style.services_box}>
+              <div className={style.services_card}>
+                <div className={style.service_img}>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512">
+                    <path d="M160 64c0-11.8-6.5-22.6-16.9-28.2s-23-5-32.8 1.6l-96 64C-.5 111.2-4.4 131 5.4 145.8s29.7 18.7 44.4 8.9L96 123.8V416H32c-17.7 0-32 14.3-32 32s14.3 32 32 32h96 96c17.7 0 32-14.3 32-32s-14.3-32-32-32H160V64z" />
                   </svg>
-                </span>
-              </>
-            ) : (
-              <span>{t("Shippings.orderNow")}</span>
-            )}
-          </LoadingButton>
-        </FormControl>
-      </Box>
+                </div>
+                <div>
+                  <h4>ذهاب صاحب السيارة إلى شركة الشحن</h4>
+                  <p style={{ margin: 0 }}>سوف تطلب من صاحب السيارة التوجه مباشرة إلى فرع البسامي لتسليم السيارة</p>
+                  <p style={{ fontWeight: "bold", margin: 0, marginTop: "16px" }}>تنويه:</p>
+                  <p style={{ margin: 0 }}>فرع البسامي يبعد حوالي 10 دقائق عن مركز الفحص</p>
+
+                  <a
+                    style={{ color: "#1976d2", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "36px" }}
+                    href={matchedBranch?.link || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span>{matchedBranch?.address || ""}</span> <LocationOnIcon />
+                  </a>
+                </div>
+                <button onClick={() => setDeliveryMethod(1)}>اختيار</button>
+              </div>
+
+              <div className={style.services_card}>
+                <div className={style.service_img}>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                    <path d="M142.9 96c-21.5 0-42.2 8.5-57.4 23.8L54.6 150.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L40.2 74.5C67.5 47.3 104.4 32 142.9 32C223 32 288 97 288 177.1c0 38.5-15.3 75.4-42.5 102.6L109.3 416H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-12.9 0-24.6-7.8-29.6-19.8s-2.2-25.7 6.9-34.9L200.2 234.5c15.2-15.2 23.8-35.9 23.8-57.4c0-44.8-36.3-81.1-81.1-81.1z" />
+                  </svg>
+                </div>
+                <div>
+                  <h4>سطحة من مركز الفحص إلى شركة الشحن</h4>
+                  <p style={{ margin: 0 }}>سوف تصل سطحة تستلم السيارة من المركز والذهاب بها الى فرع البسامي لشحنها</p>
+                  <p style={{ fontWeight: "bold", margin: 0, marginTop: "16px" }}>تنويه:</p>
+                  <p style={{ margin: 0 }}>مدة وصول السطحة إلى مركز الفحص تتراوح من 15 إلى 60 دقيقة.</p>
+                  <p>يجب على صاحب السيارة تسليم السيارة للسطحة بنفسه.</p>
+                </div>
+                <button onClick={() => setDeliveryMethod(2)}>اختيار</button>
+              </div>
+            </div>
+          </section>
+        </>
+      )}
     </div>
   );
 }

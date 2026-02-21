@@ -48,6 +48,7 @@
     "noReports": "No reports",
     "downloadReport": "Download report",
     "downloadSummaryReport": "Brief",
+    "video": "Video",
     "shippingTheCar": "Car shipping",
     "nsuranceAndTransferOfOwnership": "Insurance & ownership"
   },
@@ -69,10 +70,12 @@
     "checkItCheckDescriptionPartTwo": "Riyadh, Jeddah, Al-Qassim, or Dammam ",
     "checkItCheckDescriptionPartThree": "and you are outside these cities, Khashef Center will conduct a comprehensive and accurate vehicle inspection, while facilitating ownership transfer, insurance, and shipping the car to your city",
     "checkItCheckListA": "The car owner must attend one of the Cashf branches",
-    "checkItCheckListB": "Conduct a comprehensive and thorough inspection of the vehicle",
+    "checkItCheckListB": "A thorough inspection of the vehicle with video recording and explanation of the report in a recorded video clip",
     "checkItCheckListC": "Download the inspection report through  ",
     "checkItCheckListCPlus": "our website",
     "checkItCheckListD": "Completing ownership transfer, insurance, and vehicle shipping",
+    "carPhotography": "Car Photography",
+    "explainedReportInVideo": "Report explained in a recorded video",
 
     "travelerCheck": "Passenger Check",
     "travelerCheckDescriptionPartOne": "A customized ",
@@ -686,6 +689,16 @@
     "liabilityClause": "By requesting the 'Mertah' service, you agree that the full responsibility for receiving, transporting, and returning the vehicle lies with Al-Bassami Transport Company, and that Khashef Center is not responsible for any damages or liabilities arising from the transportation process.",
     "nonRefundClause": "You also acknowledge that the service fees are non-refundable after the vehicle is received.",
     "agreeButton": "Agree",
-    "cancelButton": "Cancel"
+    "cancelButton": "Cancel",
+    "firstName": "First Name",
+    "middleName": "Middle Name",
+    "lastName": "Last Name",
+    "enterFirstName": "Enter first name",
+    "enterMiddleName": "Enter middle name",
+    "enterLastName": "Enter last name",
+    "firstNameRequired": "First name is required to complete payment",
+    "middleNameOptional": "Middle name is optional",
+    "lastNameRequired": "*Required",
+    "optional": "Optional"
   }
 }

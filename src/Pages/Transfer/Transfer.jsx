@@ -146,13 +146,7 @@ export default function Transfer() {
         {t("Transfer.withdrawProfits")}
       </Typography>
 
-      <Box
-        onSubmit={handleSubmit}
-        ref={formRef}
-        component="form"
-        noValidate
-        sx={{ minWidth: 120, maxWidth: "400px", margin: "auto" }}
-      >
+      <Box onSubmit={handleSubmit} ref={formRef} component="form" noValidate sx={{ minWidth: 120, maxWidth: "400px", margin: "auto" }}>
         <TextField
           sx={{ backgroundColor: "#fff", marginTop: "16px" }}
           dir={languageText === "ar" ? "rtl" : "ltr"}
@@ -234,9 +228,7 @@ export default function Transfer() {
           loading={isPending}
           disabled={!checkIfPaymentRequestIsValid}
         >
-          {checkIfPaymentRequestIsValid
-            ? t("Transfer.submitApplication")
-            : t("Transfer.pleaseWaitForApprovalOfThePreviousRequest")}
+          {checkIfPaymentRequestIsValid ? t("Transfer.submitApplication") : t("Transfer.pleaseWaitForApprovalOfThePreviousRequest")}
         </LoadingButton>
       </Box>
     </div>

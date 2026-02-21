@@ -1,0 +1,73 @@
+.container {
+  padding: 32px;
+  padding-bottom: 124px;
+
+  @media (max-width: 550px) {
+    padding: 16px;
+    padding-top: 134px;
+    padding-bottom: 110px;
+  }
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 85vh;
+
+  @media (max-width: 550px) {
+    min-height: 100vh;
+  }
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 24px;
+  padding: 40px 24px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  text-align: center;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+}
+
+.header {
+  margin-bottom: 32px;
+  h1 {
+    margin-bottom: 8px;
+    color: #1a1a1a;
+  }
+}
+
+.buttonStack {
+  width: 100%;
+}
+
+.socialButton {
+  border-radius: 12px !important;
+  text-transform: none !important;
+  font-weight: 600 !important;
+  font-size: 1.1rem !important;
+  padding: 12px 24px !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  justify-content: flex-start !important;
+  padding-left: 32px !important;
+  transition: transform 0.2s ease !important;
+
+  svg {
+    font-size: 1.5rem !important;
+    margin-right: 12px;
+  }
+
+  &:hover {
+    transform: scale(1.02);
+  }
+}
+
+.instagram {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important;
+}

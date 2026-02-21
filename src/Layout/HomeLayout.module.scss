@@ -56,3 +56,13 @@
     background-color: #203840 !important;
   }
 }
+
+//
+.svg_icon {
+  fill: #d33030;
+
+  width: 36px;
+  @media (max-width: 599px) {
+    width: 28px;
+  }
+}

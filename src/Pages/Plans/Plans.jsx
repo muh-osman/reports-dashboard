@@ -12,8 +12,10 @@ import IconButton from "@mui/material/IconButton";
 import InfoIcon from "@mui/icons-material/Info";
 import SearchIcon from "@mui/icons-material/Search";
 import { CircularProgress, FormControlLabel, Radio } from "@mui/material";
+import Chip from "@mui/material/Chip";
 // MUI Icons
-import LocationOnIcon from "@mui/icons-material/LocationOn";
+// import LocationOnIcon from "@mui/icons-material/LocationOn";
+import CheckIcon from "@mui/icons-material/Check";
 // Lang
 import i18n from "../../i18n";
 import { useTranslation } from "react-i18next";
@@ -378,7 +380,7 @@ export default function Plans() {
   };
 
   // Get Prices
-  const { data: prices, fetchStatus: pricesFetchStatus, isSuccess: isFetchPricesSuccess } = useGetPricesApi(selectedModelId, selectedYear, comfortService, trigger);
+  const { data: prices, fetchStatus: pricesFetchStatus, isSuccess: isFetchPricesSuccess } = useGetPricesApi(selectedModelId, selectedYear, comfortService, trigger, checkit);
 
   React.useEffect(() => {
     if (dis) {
@@ -659,22 +661,6 @@ export default function Plans() {
             >
               <FormControlLabel
                 sx={{ flexDirection: languageText === "ar" ? "row-reverse" : "row", margin: 0 }}
-                control={<Radio checked={comfortService === "yes"} onChange={(e) => handleComfortServiceChange(e.target.value)} value="yes" name="comfort-service" />}
-                label={
-                  <Typography
-                    dir={languageText === "ar" ? "rtl" : "ltr"}
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: "600",
-                      color: "#164544",
-                    }}
-                  >
-                    {t("Prices.Yes")} <span style={{ color: "#d33030", marginRight: "3px" }}>{t("Prices.OneHundresRiyalsDiscountOnTheScreeningPackage")}</span>
-                  </Typography>
-                }
-              />
-              <FormControlLabel
-                sx={{ flexDirection: languageText === "ar" ? "row-reverse" : "row", margin: 0 }}
                 control={<Radio checked={comfortService === "no"} onChange={(e) => handleComfortServiceChange(e.target.value)} value="no" name="comfort-service" />}
                 label={
                   <Typography
@@ -686,6 +672,23 @@ export default function Plans() {
                     }}
                   >
                     {t("Prices.No")}
+                  </Typography>
+                }
+              />
+
+              <FormControlLabel
+                sx={{ flexDirection: languageText === "ar" ? "row-reverse" : "row", margin: 0 }}
+                control={<Radio checked={comfortService === "yes"} onChange={(e) => handleComfortServiceChange(e.target.value)} value="yes" name="comfort-service" />}
+                label={
+                  <Typography
+                    dir={languageText === "ar" ? "rtl" : "ltr"}
+                    style={{
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      color: "#164544",
+                    }}
+                  >
+                    {t("Prices.Yes")} <span style={{ color: "#d33030", marginRight: "3px" }}>{t("Prices.OneHundresRiyalsDiscountOnTheScreeningPackage")}</span>
                   </Typography>
                 }
               />
@@ -783,6 +786,17 @@ export default function Plans() {
                         </>
                       )}
 
+                      {checkit && (
+                        <div dir="ltr" style={{ display: "flex", flexWrap: "wrap", marginTop: "24px", marginBottom: "24px", gap: "12px" }}>
+                          <Chip
+                            style={{ margin: "auto", backgroundColor: "#f0f1f3" }}
+                            icon={<CheckIcon style={{ color: "#25d366" }} />}
+                            label={t("Prices.explainedReportInVideo")}
+                          />
+                          {/* <Chip style={{ margin: "auto", backgroundColor: "#f0f1f3" }} icon={<CheckIcon style={{ color: "#25d366" }} />} label={t("Prices.carPhotography")} /> */}
+                        </div>
+                      )}
+
                       <h5>{t("Prices.includesExamination")}:</h5>
                       <ul className="list-unstyled mt-3 mb-4">
                         {checklistItems.map((item, index) => (
@@ -874,6 +888,18 @@ export default function Plans() {
                           </h3>
                         </>
                       )}
+
+                      {checkit && (
+                        <div dir="ltr" style={{ display: "flex", flexWrap: "wrap", marginTop: "24px", marginBottom: "24px", gap: "12px" }}>
+                          <Chip
+                            style={{ margin: "auto", backgroundColor: "#f0f1f3" }}
+                            icon={<CheckIcon style={{ color: "#25d366" }} />}
+                            label={t("Prices.explainedReportInVideo")}
+                          />
+                          {/* <Chip style={{ margin: "auto", backgroundColor: "#f0f1f3" }} icon={<CheckIcon style={{ color: "#25d366" }} />} label={t("Prices.carPhotography")} /> */}
+                        </div>
+                      )}
+
                       <h5>{t("Prices.includesExamination")}:</h5>
                       <ul className="list-unstyled mt-3 mb-4">
                         {checklistItems.map((item, index) => (
@@ -953,6 +979,17 @@ export default function Plans() {
                             />
                           </span>
                         </h3>
+                      )}
+
+                      {checkit && (
+                        <div dir="ltr" style={{ display: "flex", flexWrap: "wrap", marginTop: "24px", marginBottom: "24px", gap: "12px" }}>
+                          <Chip
+                            style={{ margin: "auto", backgroundColor: "#f0f1f3" }}
+                            icon={<CheckIcon style={{ color: "#25d366" }} />}
+                            label={t("Prices.explainedReportInVideo")}
+                          />
+                          {/* <Chip style={{ margin: "auto", backgroundColor: "#f0f1f3" }} icon={<CheckIcon style={{ color: "#25d366" }} />} label={t("Prices.carPhotography")} /> */}
+                        </div>
                       )}
 
                       <h5>{t("Prices.includesExamination")}:</h5>

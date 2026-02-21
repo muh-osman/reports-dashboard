@@ -1,0 +1,240 @@
+.container {
+  padding: 32px;
+  padding-bottom: 124px;
+
+  @media (max-width: 550px) {
+    padding: 16px;
+    padding-top: 134px;
+    padding-bottom: 110px;
+  }
+}
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  direction: rtl;
+}
+
+.wrapper {
+  border-radius: 16px !important;
+}
+
+.headerTitle {
+  font-size: 26px !important;
+  font-weight: bold !important;
+  color: #fff;
+
+  @media (max-width: 550px) {
+    font-size: 17.5px !important;
+  }
+}
+
+.headerSub {
+  font-size: 16px;
+  margin-bottom: 4px;
+  color: #174545;
+  background-color: #e3d298;
+  // border-radius: 4px;
+  width: fit-content;
+  // padding: 3px 6px;
+  margin: auto !important;
+  margin-top: 16px !important;
+  margin-bottom: 32px !important;
+  font-weight: 700 !important;
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+}
+
+.headerText {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.prizesBox {
+  position: relative;
+
+  img {
+    width: 100%;
+    display: block;
+  }
+}
+
+.prizesTitle {
+  font-size: 26px !important;
+  font-weight: bold !important;
+  color: #fff;
+  margin-top: 32px !important;
+  margin-bottom: 16px !important;
+
+  @media (max-width: 550px) {
+    font-size: 32px !important;
+  }
+}
+
+.prizesDetails {
+  h3 {
+    color: #174545;
+    background-color: #fff;
+    margin-bottom: 16px;
+    padding: 16px;
+    border-radius: 9px;
+  }
+}
+
+.formBox {
+  padding: 24px;
+  text-align: center;
+  background-color: #fff !important;
+  margin-top: 32px;
+  border-radius: 16px !important;
+
+  @media (max-width: 550px) {
+    padding: 16px;
+  }
+}
+
+.formTitle {
+  font-size: 26px !important;
+  font-weight: bold !important;
+  color: #174545;
+  //   margin-bottom: 24px !important;
+
+  @media (max-width: 550px) {
+    font-size: 22px !important;
+  }
+}
+
+.formSupTitle {
+  font-size: 16px;
+  margin-bottom: 4px;
+  color: #747a79;
+  width: fit-content;
+  padding: 3px 6px;
+  margin: auto !important;
+  //   margin-top: 8px !important;
+  margin-bottom: 32px !important;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 32px;
+
+  input {
+    text-align: center !important;
+  }
+}
+
+.notes {
+  text-align: right;
+  font-size: 14px;
+
+  ul {
+    padding-right: 16px;
+    color: #747a79;
+
+    li {
+      margin-bottom: 4px;
+    }
+  }
+}
+
+.notesTitle {
+  font-weight: bold;
+  margin-bottom: 6px !important;
+  margin-top: 32px !important;
+}
+
+.successBox {
+  text-align: center;
+  margin-bottom: 10px;
+
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30L30 0z' fill='none' stroke='%23d4b86a' stroke-opacity='0.05' stroke-width='1'/%3E%3C/svg%3E");
+  background-size: 30px 30px;
+  // background: linear-gradient(180deg, hsl(168 45% 16%) 0%, hsl(168 50% 12%) 100%);
+  border: 1px solid hsl(45 55% 72 / 0.2);
+  box-shadow: 0 0 40px hsl(45 55% 72% / 0.15), 0 8px 32px hsl(168 60% 5% / 0.4);
+}
+
+.successTitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.couponBox {
+  text-align: center;
+  padding: 10px;
+}
+
+.couponHeader {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.couponDiscount {
+  font-size: 16px;
+  color: #d32f2f;
+  font-weight: bold;
+  margin: 8px 0;
+}
+
+.couponCodeBox {
+  border: 2px dashed #174545;
+  border-radius: 12px;
+  padding: 12px;
+  margin: 10px 0 16px;
+  background-color: #fff;
+}
+
+.couponLabel {
+  font-size: 13px;
+  color: #666;
+}
+
+.couponCode {
+  font-size: 22px;
+  letter-spacing: 4px;
+  font-weight: bold;
+}
+
+//
+.steps_box {
+  padding: 22px;
+  background-color: #fff;
+  margin: auto;
+  // max-width: 450px;
+  border-radius: 10px;
+  overflow: hidden;
+  // margin-bottom: 16px;
+  margin-top: 24px;
+
+  h1 {
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  ul {
+    li::marker {
+      color: #e3d298;
+      font-weight: bold;
+    }
+
+    li {
+      color: #747a79;
+      margin-bottom: 9px;
+
+      a {
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: #fff !important;
+      }
+    }
+  }
+}

@@ -33,6 +33,10 @@ import PayMakdomCheck from "./Pages/PayMakdomCheck/PayMakdomCheck";
 import ThanksMakdomCheck from "./Pages/ThanksMakdomCheck/ThanksMakdomCheck";
 import PayPassengerCheck from "./Pages/PayPassengerCheck/PayPassengerCheck";
 import PricesList from "./Pages/PricesList/PricesList";
+import ViewVideosPage from "./Pages/ViewVideosPage/ViewVideosPage";
+import SocialMedia from "./Pages/SocialMedia/SocialMedia";
+// import Lottery from "./Pages/Lottery/Lottery";
+// import LotteryAlreadyRegistered from "./Pages/LotteryAlreadyRegistered/LotteryAlreadyRegistered";
 
 export default function App() {
   const router = createBrowserRouter(
@@ -69,10 +73,11 @@ export default function App() {
           <Route path={`${process.env.PUBLIC_URL}/edit-booking/:id`} element={<EditBooking />} />
           <Route path={`${process.env.PUBLIC_URL}/contact`} element={<ContactUs />} />
           <Route path={`${process.env.PUBLIC_URL}/logout`} element={<Logout />} />
+          <Route path={`${process.env.PUBLIC_URL}/videos/:cardId`} element={<ViewVideosPage />} />
 
           <Route path={`${process.env.PUBLIC_URL}/shipping/:cardId`} element={<Shipping />} />
           <Route path={`${process.env.PUBLIC_URL}/pay/shipping`} element={<PayShipping />} />
-          <Route path={`${process.env.PUBLIC_URL}/pay/shipping/thanks`} element={<ThanksShipping />} />
+          {/* <Route path={`${process.env.PUBLIC_URL}/pay/shipping/thanks`} element={<ThanksShipping />} /> */}
 
           <Route path={`${process.env.PUBLIC_URL}/pay/purchase-check`} element={<PayPurchaseCheck />} />
           <Route path={`${process.env.PUBLIC_URL}/pay/purchase-check/thanks`} element={<ThanksPurchaseCheck />} />
@@ -83,6 +88,9 @@ export default function App() {
           <Route path={`${process.env.PUBLIC_URL}/pay/passenger-check`} element={<PayPassengerCheck />} />
 
           <Route path={`${process.env.PUBLIC_URL}/prices-list`} element={<PricesList />} />
+          <Route path={`${process.env.PUBLIC_URL}/social-media`} element={<SocialMedia />} />
+          {/* <Route path={`${process.env.PUBLIC_URL}/1`} element={<Lottery />} /> */}
+          {/* <Route path={`${process.env.PUBLIC_URL}/lottery-already-registered`} element={<LotteryAlreadyRegistered />} /> */}
         </Route>
         {/* End protected route */}
 

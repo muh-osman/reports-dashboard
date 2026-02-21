@@ -46,7 +46,7 @@ import { useCheckAllSummaryReportsNumbersApi } from "../../API/useCheckAllSummar
 import { fetchDownloadSummaryReport } from "../../API/useDownloadSummaryReportsApi";
 
 import { useCheckCardsIfHaveVideosApi } from "../../API/useCheckCardsIfHaveVideosApi";
-import { fetchVideo } from "../../API/useDownloadVideoApi";
+// import { fetchVideo } from "../../API/useDownloadVideoApi";
 // NumberFlow
 import NumberFlow from "@number-flow/react";
 // MUI Table
@@ -309,170 +309,172 @@ export default function Reports() {
   const [loadingvideoDownload, setLoadingVideoDownload] = useState({});
 
   const handleDownloadVideo = async (id) => {
-    try {
-      console.log(`[Debug] Starting download for video ID: ${id}`);
-      setLoadingVideoDownload((prev) => ({ ...prev, [id]: true }));
+    navigate(`${process.env.PUBLIC_URL}/videos/${id}`);
 
-      const RETRY_DELAY_MS = 1000;
-      const MAX_RETRIES = 3;
-      let downloadedAtLeastOne = false;
-      let lastError = null;
+    // try {
+    //   console.log(`[Debug] Starting download for video ID: ${id}`);
+    //   setLoadingVideoDownload((prev) => ({ ...prev, [id]: true }));
 
-      // Enhanced MIME type mapping
-      const videoMimeTypes = {
-        // MP4 and variants
-        ".mp4": "video/mp4",
-        ".m4v": "video/x-m4v",
+    //   const RETRY_DELAY_MS = 1000;
+    //   const MAX_RETRIES = 3;
+    //   let downloadedAtLeastOne = false;
+    //   let lastError = null;
 
-        // QuickTime/MOV
-        ".mov": "video/quicktime",
-        ".qt": "video/quicktime",
+    //   // Enhanced MIME type mapping
+    //   const videoMimeTypes = {
+    //     // MP4 and variants
+    //     ".mp4": "video/mp4",
+    //     ".m4v": "video/x-m4v",
 
-        // Web Formats
-        ".webm": "video/webm",
-        ".ogv": "video/ogg",
+    //     // QuickTime/MOV
+    //     ".mov": "video/quicktime",
+    //     ".qt": "video/quicktime",
 
-        // Microsoft
-        ".avi": "video/x-msvideo",
-        ".wmv": "video/x-ms-wmv",
+    //     // Web Formats
+    //     ".webm": "video/webm",
+    //     ".ogv": "video/ogg",
 
-        // Open/Container
-        ".mkv": "video/x-matroska",
-        ".flv": "video/x-flv",
+    //     // Microsoft
+    //     ".avi": "video/x-msvideo",
+    //     ".wmv": "video/x-ms-wmv",
 
-        // MPEG
-        ".mpeg": "video/mpeg",
-        ".mpg": "video/mpeg",
-        ".ts": "video/mp2t",
-        ".m2ts": "video/mp2t",
+    //     // Open/Container
+    //     ".mkv": "video/x-matroska",
+    //     ".flv": "video/x-flv",
 
-        // Mobile
-        ".3gp": "video/3gpp",
-        ".3g2": "video/3gpp2",
+    //     // MPEG
+    //     ".mpeg": "video/mpeg",
+    //     ".mpg": "video/mpeg",
+    //     ".ts": "video/mp2t",
+    //     ".m2ts": "video/mp2t",
 
-        // Codecs
-        ".hevc": "video/hevc",
-        ".h265": "video/hevc",
-        ".vp9": "video/vp9",
-        ".av1": "video/av1",
+    //     // Mobile
+    //     ".3gp": "video/3gpp",
+    //     ".3g2": "video/3gpp2",
 
-        // Animation
-        ".gif": "image/gif",
-        ".webp": "image/webp",
-      };
+    //     // Codecs
+    //     ".hevc": "video/hevc",
+    //     ".h265": "video/hevc",
+    //     ".vp9": "video/vp9",
+    //     ".av1": "video/av1",
 
-      for (let version = 1; version <= MAX_RETRIES; version++) {
-        try {
-          console.log(`[Debug] Attempting version ${version} download`);
-          const response = await fetchVideo(id, version);
+    //     // Animation
+    //     ".gif": "image/gif",
+    //     ".webp": "image/webp",
+    //   };
 
-          // console.log(response);
+    //   for (let version = 1; version <= MAX_RETRIES; version++) {
+    //     try {
+    //       console.log(`[Debug] Attempting version ${version} download`);
+    //       const response = await fetchVideo(id, version);
 
-          if (response?.success === false && response?.message === "Video file not found") {
-            console.log(`[Debug] Version ${version} not found, skipping`);
-            await delay(RETRY_DELAY_MS);
-            continue;
-          }
+    //       // console.log(response);
 
-          // Get content type from headers
-          const contentType = response.headers?.get("content-type") || "";
-          console.log("[Debug] Content-Type header:", contentType);
+    //       if (response?.success === false && response?.message === "Video file not found") {
+    //         console.log(`[Debug] Version ${version} not found, skipping`);
+    //         await delay(RETRY_DELAY_MS);
+    //         continue;
+    //       }
 
-          let fileExtension = ".mp4"; // Default fallback
+    //       // Get content type from headers
+    //       const contentType = response.headers?.get("content-type") || "";
+    //       console.log("[Debug] Content-Type header:", contentType);
 
-          // Enhanced MIME type detection
-          if (contentType) {
-            const normalizedContentType = contentType.toLowerCase().trim();
+    //       let fileExtension = ".mp4"; // Default fallback
 
-            // 1. Try exact MIME type match
-            for (const [ext, mime] of Object.entries(videoMimeTypes)) {
-              if (normalizedContentType === mime.toLowerCase()) {
-                fileExtension = ext;
-                console.log(`[Debug] Exact MIME match: ${mime} → ${ext}`);
-                break;
-              }
-            }
+    //       // Enhanced MIME type detection
+    //       if (contentType) {
+    //         const normalizedContentType = contentType.toLowerCase().trim();
 
-            // 2. Try partial match if still using default
-            if (fileExtension === ".mp4") {
-              for (const [ext, mime] of Object.entries(videoMimeTypes)) {
-                const mimeParts = mime.toLowerCase().split("/");
-                const typePart = mimeParts[1];
+    //         // 1. Try exact MIME type match
+    //         for (const [ext, mime] of Object.entries(videoMimeTypes)) {
+    //           if (normalizedContentType === mime.toLowerCase()) {
+    //             fileExtension = ext;
+    //             console.log(`[Debug] Exact MIME match: ${mime} → ${ext}`);
+    //             break;
+    //           }
+    //         }
 
-                if (normalizedContentType.includes(typePart) || normalizedContentType.includes(ext.replace(".", ""))) {
-                  fileExtension = ext;
-                  console.log(`[Debug] Partial MIME match: ${contentType} → ${ext}`);
-                  break;
-                }
-              }
-            }
+    //         // 2. Try partial match if still using default
+    //         if (fileExtension === ".mp4") {
+    //           for (const [ext, mime] of Object.entries(videoMimeTypes)) {
+    //             const mimeParts = mime.toLowerCase().split("/");
+    //             const typePart = mimeParts[1];
 
-            // 3. Special case for MOV files (common variations)
-            if (fileExtension === ".mp4" && (normalizedContentType.includes("mov") || normalizedContentType.includes("quicktime"))) {
-              fileExtension = ".mov";
-              console.log(`[Debug] Special MOV handling: ${contentType} → .mov`);
-            }
-          }
+    //             if (normalizedContentType.includes(typePart) || normalizedContentType.includes(ext.replace(".", ""))) {
+    //               fileExtension = ext;
+    //               console.log(`[Debug] Partial MIME match: ${contentType} → ${ext}`);
+    //               break;
+    //             }
+    //           }
+    //         }
 
-          console.log("[Debug] Final extension:", fileExtension);
+    //         // 3. Special case for MOV files (common variations)
+    //         if (fileExtension === ".mp4" && (normalizedContentType.includes("mov") || normalizedContentType.includes("quicktime"))) {
+    //           fileExtension = ".mov";
+    //           console.log(`[Debug] Special MOV handling: ${contentType} → .mov`);
+    //         }
+    //       }
 
-          // Validate extension
-          if (!/^\.[a-z0-9]{1,5}$/i.test(fileExtension)) {
-            console.log("[Debug] Invalid extension, defaulting to .mp4");
-            fileExtension = ".mp4";
-          }
+    //       console.log("[Debug] Final extension:", fileExtension);
 
-          // Get MIME type (fallback to video/mp4)
-          const mimeType = videoMimeTypes[fileExtension] || "video/mp4";
-          console.log("[Debug] Determined MIME type:", mimeType);
+    //       // Validate extension
+    //       if (!/^\.[a-z0-9]{1,5}$/i.test(fileExtension)) {
+    //         console.log("[Debug] Invalid extension, defaulting to .mp4");
+    //         fileExtension = ".mp4";
+    //       }
 
-          // Download logic
-          const blob = new Blob([response.data], { type: mimeType });
-          console.log("[Debug] Blob created with type:", blob.type);
+    //       // Get MIME type (fallback to video/mp4)
+    //       const mimeType = videoMimeTypes[fileExtension] || "video/mp4";
+    //       console.log("[Debug] Determined MIME type:", mimeType);
 
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.href = url;
-          link.download = `video_${id}_v${version}${fileExtension}`;
-          console.log("[Debug] Download filename will be:", link.download);
+    //       // Download logic
+    //       const blob = new Blob([response.data], { type: mimeType });
+    //       console.log("[Debug] Blob created with type:", blob.type);
 
-          document.body.appendChild(link);
-          link.click();
+    //       const url = URL.createObjectURL(blob);
+    //       const link = document.createElement("a");
+    //       link.href = url;
+    //       link.download = `video_${id}_v${version}${fileExtension}`;
+    //       console.log("[Debug] Download filename will be:", link.download);
 
-          setTimeout(() => {
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-          }, 100);
+    //       document.body.appendChild(link);
+    //       link.click();
 
-          downloadedAtLeastOne = true;
-          await delay(RETRY_DELAY_MS);
-        } catch (error) {
-          console.error(`[Debug] Version ${version} failed:`, error);
-          lastError = error;
-          await delay(RETRY_DELAY_MS);
-        }
-      }
+    //       setTimeout(() => {
+    //         document.body.removeChild(link);
+    //         URL.revokeObjectURL(url);
+    //       }, 100);
 
-      if (!downloadedAtLeastOne) {
-        console.error("[Debug] All download attempts failed");
-        throw lastError || new Error("No video versions available");
-      }
-    } catch (error) {
-      console.error("[Debug] Download process failed:", error);
-      toast.error(error.message || "Failed to download video", {
-        autoClose: 5000,
-        position: "bottom-right",
-      });
-    } finally {
-      console.log("[Debug] Download process completed");
-      setLoadingVideoDownload((prev) => ({ ...prev, [id]: false }));
-    }
+    //       downloadedAtLeastOne = true;
+    //       await delay(RETRY_DELAY_MS);
+    //     } catch (error) {
+    //       console.error(`[Debug] Version ${version} failed:`, error);
+    //       lastError = error;
+    //       await delay(RETRY_DELAY_MS);
+    //     }
+    //   }
+
+    //   if (!downloadedAtLeastOne) {
+    //     console.error("[Debug] All download attempts failed");
+    //     throw lastError || new Error("No video versions available");
+    //   }
+    // } catch (error) {
+    //   console.error("[Debug] Download process failed:", error);
+    //   toast.error(error.message || "Failed to download video", {
+    //     autoClose: 5000,
+    //     position: "bottom-right",
+    //   });
+    // } finally {
+    //   console.log("[Debug] Download process completed");
+    //   setLoadingVideoDownload((prev) => ({ ...prev, [id]: false }));
+    // }
   };
 
   // Helper function
-  function delay(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
+  // function delay(ms) {
+  //   return new Promise((resolve) => setTimeout(resolve, ms));
+  // }
 
   // Change color
   const getClientColor = () => {
@@ -1035,26 +1037,34 @@ export default function Reports() {
 
                       {/*  Video Button */}
                       {AllVideoReportsStatus?.data?.[card.cardNumber.toString()] === true && (
-                        <IconButton
+                        <Button
                           sx={{
                             margin: "0 !important",
                             backgroundColor: "#0000000a",
                           }}
+                          variant="outlined"
                           onClick={() => handleDownloadVideo(card.cardNumber)}
                           size="small"
                           disabled={loadingvideoDownload[card.cardNumber]} // Disable button if loading
+                          endIcon={
+                            loadingvideoDownload[card.cardNumber] ? (
+                              <CircularProgress
+                                size={18}
+                                sx={{
+                                  margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
+                                }}
+                              />
+                            ) : (
+                              <VideocamIcon
+                                sx={{
+                                  margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
+                                }}
+                              />
+                            )
+                          }
                         >
-                          {loadingvideoDownload[card.cardNumber] ? (
-                            <CircularProgress size={24} />
-                          ) : (
-                            <VideocamIcon
-                              fontSize="medium"
-                              sx={{
-                                color: "#103030",
-                              }}
-                            />
-                          )}
-                        </IconButton>
+                          {t("Reports.video")}
+                        </Button>
                       )}
                     </div>
 
