@@ -16,6 +16,8 @@ import Chip from "@mui/material/Chip";
 // MUI Icons
 // import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CheckIcon from "@mui/icons-material/Check";
+//
+import dayjs from "dayjs";
 // Lang
 import i18n from "../../i18n";
 import { useTranslation } from "react-i18next";
@@ -37,6 +39,8 @@ const redRyalIcon = `<svg width="13" fill="#d32f2f" xmlns="http://www.w3.org/200
 const greenRyalIcon = `<svg width="13" fill="#25d366" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>`;
 
 export default function Plans() {
+  const isFriday = dayjs().day() === 5; // 5 = Friday
+  //
   const autoCompleteInputRef = React.useRef(null);
   // Get Passenger planes Prices
   const {
@@ -609,91 +613,93 @@ export default function Plans() {
           </Box>
 
           {/* خدمة مرتاح */}
-          <div
-            style={{
-              marginTop: "24px",
-              padding: "16px",
-              backgroundColor: "#fff",
-              borderRadius: "9px",
-            }}
-          >
-            <Typography
-              dir={languageText === "ar" ? "rtl" : "ltr"}
-              variant="h6"
-              component="div"
+          {!isFriday && (
+            <div
               style={{
-                textAlign: "center",
-                // margin: "20px",
-                // marginTop: "24px",
-                fontSize: "24px",
-                fontWeight: "800",
-                color: "#164544",
+                marginTop: "24px",
+                padding: "16px",
+                backgroundColor: "#fff",
+                borderRadius: "9px",
               }}
             >
-              {t("Prices.WouldYouLikeToRequestComfortableService")}
-            </Typography>
+              <Typography
+                dir={languageText === "ar" ? "rtl" : "ltr"}
+                variant="h6"
+                component="div"
+                style={{
+                  textAlign: "center",
+                  // margin: "20px",
+                  // marginTop: "24px",
+                  fontSize: "24px",
+                  fontWeight: "800",
+                  color: "#164544",
+                }}
+              >
+                {t("Prices.WouldYouLikeToRequestComfortableService")}
+              </Typography>
 
-            <Typography
-              dir={languageText === "ar" ? "rtl" : "ltr"}
-              variant="h6"
-              component="div"
-              style={{
-                textAlign: "center",
-                marginTop: "8px",
-                fontSize: "16px",
-                fontWeight: "600",
-                color: "#757575",
-              }}
-            >
-              {t("Prices.WePickUpTheCarFromYourLocationViaFlatbedTruckInspectItAtTheInspectionCenterAndReturnItToTheSameLocation")}
-            </Typography>
+              <Typography
+                dir={languageText === "ar" ? "rtl" : "ltr"}
+                variant="h6"
+                component="div"
+                style={{
+                  textAlign: "center",
+                  marginTop: "8px",
+                  fontSize: "16px",
+                  fontWeight: "600",
+                  color: "#757575",
+                }}
+              >
+                {t("Prices.WePickUpTheCarFromYourLocationViaFlatbedTruckInspectItAtTheInspectionCenterAndReturnItToTheSameLocation")}
+              </Typography>
 
-            {/*  Radio buttons here */}
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                gap: 1,
-                marginTop: "20px",
-                // flexDirection: languageText === "ar" ? "row-reverse" : "row",
-              }}
-            >
-              <FormControlLabel
-                sx={{ flexDirection: languageText === "ar" ? "row-reverse" : "row", margin: 0 }}
-                control={<Radio checked={comfortService === "no"} onChange={(e) => handleComfortServiceChange(e.target.value)} value="no" name="comfort-service" />}
-                label={
-                  <Typography
-                    dir={languageText === "ar" ? "rtl" : "ltr"}
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: "600",
-                      color: "#164544",
-                    }}
-                  >
-                    {t("Prices.No")}
-                  </Typography>
-                }
-              />
+              {/*  Radio buttons here */}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  gap: 1,
+                  marginTop: "20px",
+                  // flexDirection: languageText === "ar" ? "row-reverse" : "row",
+                }}
+              >
+                <FormControlLabel
+                  sx={{ flexDirection: languageText === "ar" ? "row-reverse" : "row", margin: 0 }}
+                  control={<Radio checked={comfortService === "no"} onChange={(e) => handleComfortServiceChange(e.target.value)} value="no" name="comfort-service" />}
+                  label={
+                    <Typography
+                      dir={languageText === "ar" ? "rtl" : "ltr"}
+                      style={{
+                        fontSize: "16px",
+                        fontWeight: "600",
+                        color: "#164544",
+                      }}
+                    >
+                      {t("Prices.No")}
+                    </Typography>
+                  }
+                />
 
-              <FormControlLabel
-                sx={{ flexDirection: languageText === "ar" ? "row-reverse" : "row", margin: 0 }}
-                control={<Radio checked={comfortService === "yes"} onChange={(e) => handleComfortServiceChange(e.target.value)} value="yes" name="comfort-service" />}
-                label={
-                  <Typography
-                    dir={languageText === "ar" ? "rtl" : "ltr"}
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: "600",
-                      color: "#164544",
-                    }}
-                  >
-                    {t("Prices.Yes")} <span style={{ color: "#d33030", marginRight: "3px" }}>{t("Prices.OneHundresRiyalsDiscountOnTheScreeningPackage")}</span>
-                  </Typography>
-                }
-              />
-            </Box>
-          </div>
+                <FormControlLabel
+                  sx={{ flexDirection: languageText === "ar" ? "row-reverse" : "row", margin: 0 }}
+                  control={<Radio checked={comfortService === "yes"} onChange={(e) => handleComfortServiceChange(e.target.value)} value="yes" name="comfort-service" />}
+                  label={
+                    <Typography
+                      dir={languageText === "ar" ? "rtl" : "ltr"}
+                      style={{
+                        fontSize: "16px",
+                        fontWeight: "600",
+                        color: "#164544",
+                      }}
+                    >
+                      {t("Prices.Yes")} <span style={{ color: "#d33030", marginRight: "3px" }}>{t("Prices.OneHundresRiyalsDiscountOnTheScreeningPackage")}</span>
+                    </Typography>
+                  }
+                />
+              </Box>
+            </div>
+          )}
 
           {/* زر البحث */}
           <Box ref={searchBtn} sx={{ marginTop: "32px", textAlign: "center" }}>

@@ -279,7 +279,18 @@
     "timeValidationMaxBufferZone": "Please select a time that is at most one hour before the end of working hours.",
     "timeValidationPastTime": "Cannot select a time in the past",
     "timeValidation1Hour": "Please select a time at least 1 hour from now",
-    "late15Minutes": "15 minutes late will result in cancellation of the appointment."
+    "late15Minutes": "15 minutes late will result in cancellation of the appointment.",
+
+    "availableBookingTimes": "Available Booking Times",
+    "fridaySchedule": "Friday Schedule",
+    "branchSchedule1920": "Al-Qadisiya & Al-Shifa Branch",
+    "otherBranchesSchedule": "Other Branches",
+    "period1": "Period 1",
+    "period2": "Period 2",
+    "workingHours": "Working Hours",
+    "availableFrom": "Available",
+    "bufferNote": "Booking requires 1 hour after opening and 1 hour before closing",
+    "fridayNotice": "Friday: Same schedule applies to all branches"
   },
 
   "EditBooking": {

@@ -15,6 +15,8 @@ import { LoadingButton } from "@mui/lab";
 import { Backdrop, CircularProgress, Typography, Modal, Button } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import Chip from "@mui/material/Chip";
+//
+import dayjs from "dayjs";
 // Toastify
 import { toast } from "react-toastify";
 // Cookies
@@ -60,6 +62,7 @@ const modalStyle = {
 // }
 
 export default function Shippings() {
+  const isFriday = dayjs().day() === 5; // 5 = Friday
   //
   useEffect(() => {
     // Scroll to the top of the page
@@ -687,7 +690,7 @@ export default function Shippings() {
                   <h4>ذهاب صاحب السيارة إلى شركة الشحن</h4>
                   <p style={{ margin: 0 }}>سوف تطلب من صاحب السيارة التوجه مباشرة إلى فرع البسامي لتسليم السيارة</p>
                   <p style={{ fontWeight: "bold", margin: 0, marginTop: "16px" }}>تنويه:</p>
-                  <p style={{ margin: 0 }}>فرع البسامي يبعد حوالي 10 دقائق عن مركز الفحص</p>
+                  <p style={{ margin: 0 }}>فرع البسامي يبعد حوالي 7 دقائق عن مركز الفحص</p>
 
                   <a
                     style={{ color: "#1976d2", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "36px" }}
@@ -701,21 +704,25 @@ export default function Shippings() {
                 <button onClick={() => setDeliveryMethod(1)}>اختيار</button>
               </div>
 
-              <div className={style.services_card}>
-                <div className={style.service_img}>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                    <path d="M142.9 96c-21.5 0-42.2 8.5-57.4 23.8L54.6 150.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L40.2 74.5C67.5 47.3 104.4 32 142.9 32C223 32 288 97 288 177.1c0 38.5-15.3 75.4-42.5 102.6L109.3 416H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-12.9 0-24.6-7.8-29.6-19.8s-2.2-25.7 6.9-34.9L200.2 234.5c15.2-15.2 23.8-35.9 23.8-57.4c0-44.8-36.3-81.1-81.1-81.1z" />
-                  </svg>
+              {!isFriday && (
+                <div className={style.services_card}>
+                  <div className={style.service_img} style={{ margin: 0 }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                      <path d="M142.9 96c-21.5 0-42.2 8.5-57.4 23.8L54.6 150.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L40.2 74.5C67.5 47.3 104.4 32 142.9 32C223 32 288 97 288 177.1c0 38.5-15.3 75.4-42.5 102.6L109.3 416H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-12.9 0-24.6-7.8-29.6-19.8s-2.2-25.7 6.9-34.9L200.2 234.5c15.2-15.2 23.8-35.9 23.8-57.4c0-44.8-36.3-81.1-81.1-81.1z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4>سطحة من مركز الفحص إلى شركة الشحن</h4>
+                    <p style={{ margin: 0 }}>سوف تصل سطحة تستلم السيارة من المركز والذهاب بها الى فرع البسامي لشحنها</p>
+                    {/* <p style={{ fontWeight: "bold", margin: 0, marginTop: "16px" }}>تنويه:</p> */}
+                    {/* <p style={{ margin: 0 }}>مدة وصول السطحة إلى مركز الفحص تتراوح من 15 إلى 60 دقيقة.</p> */}
+                    {/* <p>يجب على صاحب السيارة تسليم السيارة للسطحة بنفسه.</p> */}
+                  </div>
+                  <button disabled style={{ backgroundColor: "#e8e8e9", color: "#174545" }} onClick={() => setDeliveryMethod(2)}>
+                    غير متوفر حاليا
+                  </button>
                 </div>
-                <div>
-                  <h4>سطحة من مركز الفحص إلى شركة الشحن</h4>
-                  <p style={{ margin: 0 }}>سوف تصل سطحة تستلم السيارة من المركز والذهاب بها الى فرع البسامي لشحنها</p>
-                  <p style={{ fontWeight: "bold", margin: 0, marginTop: "16px" }}>تنويه:</p>
-                  <p style={{ margin: 0 }}>مدة وصول السطحة إلى مركز الفحص تتراوح من 15 إلى 60 دقيقة.</p>
-                  <p>يجب على صاحب السيارة تسليم السيارة للسطحة بنفسه.</p>
-                </div>
-                <button onClick={() => setDeliveryMethod(2)}>اختيار</button>
-              </div>
+              )}
             </div>
           </section>
         </>

@@ -43,6 +43,9 @@ export const useMakeTransferPaymentApi = () => {
         marketerId: variables.marketerId,
         point: variables.point,
         tranferPaymentTypeId: variables.tranferPaymentTypeId,
+
+        marketerName: variables.marketerName,
+        marketerCode: variables.marketerCode,
       });
 
       qc.invalidateQueries(["PaymentHistory", clientId]); // This will refetch

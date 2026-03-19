@@ -19,14 +19,7 @@ export const useVerifyApi = () => {
   const navigate = useNavigate();
 
   // Cookies
-  const [cookies, setCookie, removeCookie] = useCookies([
-    "tokenApp",
-    "username",
-    "userId",
-    "phoneNumber",
-    "auth",
-    "clientData",
-  ]);
+  const [cookies, setCookie, removeCookie] = useCookies(["tokenApp", "username", "userId", "phoneNumber", "auth", "clientData"]);
 
   return useMutation({
     mutationFn: async (data) => {

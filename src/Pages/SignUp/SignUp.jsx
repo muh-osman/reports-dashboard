@@ -15,6 +15,8 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Fab from "@mui/material/Fab"; // Add this import for the floating button
 import Zoom from "@mui/material/Zoom"; // Add this import for smooth animation
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 // Lang
 import i18n from "../../i18n";
 import { useTranslation } from "react-i18next";
@@ -155,6 +157,28 @@ export default function SignUp() {
           >
             {t("SignUp.login")}
           </Typography>
+
+          {/* <Alert
+            severity="warning"
+            sx={{
+              mt: 2,
+              mb: 1,
+              borderRadius: "9px",
+              textAlign: "right",
+              direction: "rtl",
+
+              "& .MuiAlert-icon": {
+                fontSize: "28px", // change size
+                // color: "red", // change color
+                // alignItems: "center", // vertical alignment
+                marginRight: 0, // remove default right margin
+                marginLeft: "12px", // add left margin (for RTL)
+              },
+            }}
+          >
+            <AlertTitle sx={{ fontWeight: "bold" }}>تنبيه</AlertTitle>
+            يوجد خلل تقني في تسجيل الدخول حالياً، نعمل على حل المشكلة في أقرب وقت. نعتذر عن الإزعاج.
+          </Alert> */}
 
           <Box
             sx={{

@@ -274,12 +274,23 @@
     "reservationDetails": "تفاصيل الحجز",
     "timeValidationForAlqadisiaAndAlshifa": "أوقات العمل من 8 صباحًا وحتى 11:30 مساءً",
     "timeValidationForJeddahAndDammam": "أوقات العمل من 10 صباحًا وحتى 10 مساءً",
-    "timeValidationForWorkHores": "يرجى اختيار الوقت ضمن ساعات العمل المحددة",
+    "timeValidationForWorkHores": "يرجى اختيار الوقت ضمن ساعات العمل المتاحة للحجز",
     "timeValidationMinBufferZone": "يرجى اختيار الوقت بعد ساعة من بدء أوقات العمل كحد أدنى",
     "timeValidationMaxBufferZone": "يرجى اختيار الوقت قبل ساعة من نهاية أوقات العمل كحد أقصى",
     "timeValidationPastTime": "لا يمكن اختيار وقت في الماضي",
     "timeValidation1Hour": "الرجاء اختيار وقت بعد ساعة واحدة على الأقل من الآن",
-    "late15Minutes": "التأخر 15 دقيقة يؤدي لإلغاء الموعد"
+    "late15Minutes": "التأخر 15 دقيقة يؤدي لإلغاء الموعد",
+
+    "availableBookingTimes": "أوقات الحجز المتاحة",
+    "fridaySchedule": "",
+    "branchSchedule1920": "",
+    "otherBranchesSchedule": "",
+    "period1": "الفترة الأولى",
+    "period2": "الفترة الثانية",
+    "workingHours": "ساعات العمل",
+    "availableFrom": "متاح للحجز",
+    "bufferNote": "يُشترط الحجز بعد ساعة من الافتتاح وقبل ساعة من الإغلاق",
+    "fridayNotice": "يوم الجمعة: نفس التوقيت لجميع الفروع"
   },
 
   "EditBooking": {

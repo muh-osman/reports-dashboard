@@ -43,7 +43,7 @@ export default function Transfer() {
     };
   }, []);
   // Cookies
-  const [cookies, setCookie] = useCookies(["tokenApp", "userId"]);
+  const [cookies, setCookie] = useCookies(["tokenApp", "userId", "username"]);
 
   // Payment Types Data
   const { data: paymentTypes } = useGetPaymentTypesApi();
@@ -121,6 +121,9 @@ export default function Transfer() {
         actionDate: null,
         // rejectReason: "string",
         // status: 0,
+
+        marketerName: marketerData?.clientName,
+        marketerCode: marketerData?.code,
       };
 
       mutate(data);
