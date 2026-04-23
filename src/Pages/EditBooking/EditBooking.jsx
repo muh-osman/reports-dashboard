@@ -51,6 +51,19 @@ export default function EditBooking() {
     };
   }, []);
 
+  // Add "الرياض" to the branch name (القادسية & الشفا) in select input
+  const getBranchDisplayName = (branch, lang) => {
+    if (lang === "ar") {
+      if (branch.id === 19) return "الرياض - القادسية";
+      if (branch.id === 20) return "الرياض - الشفا";
+      return branch.nameAr;
+    } else {
+      if (branch.id === 19) return "Riyadh - Al-Qadesiyah";
+      if (branch.id === 20) return "Riyadh - Al-Shefa";
+      return branch.nameEn;
+    }
+  };
+
   // Get the id from the URL
   const { id } = useParams();
   //
@@ -269,7 +282,8 @@ export default function EditBooking() {
                     .filter((branch) => branch.nameAr !== "افتراضي" || branch.nameEn !== "Virtual")
                     .map((branch) => (
                       <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} key={branch.id} value={branch.id}>
-                        {languageText === "en" ? branch?.nameEn : branch?.nameAr}
+                        {/* {languageText === "en" ? branch?.nameEn : branch?.nameAr} */}
+                        {getBranchDisplayName(branch, languageText)}
                       </MenuItem>
                     ))
                 ) : (

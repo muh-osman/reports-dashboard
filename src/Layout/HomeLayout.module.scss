@@ -57,6 +57,26 @@
   }
 }
 
+.login_box {
+  cursor: pointer;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute !important;
+  left: 32px;
+
+  @media (max-width: 550px) {
+    left: 16px;
+  }
+
+  &:hover {
+    background-color: #203840 !important;
+  }
+}
+
 //
 .svg_icon {
   fill: #d33030;

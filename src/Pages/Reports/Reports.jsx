@@ -176,18 +176,58 @@ export default function Reports() {
   // Download pdf Card
   const [loadingDownload, setLoadingDownload] = useState({});
 
-  const handleDownloadCard = async (id, includeImage, approveTerms) => {
-    // approveTerms === null ==> download immediately
-    // approveTerms === false ==> download after accept Terms
-    // approveTerms === true ==> download immediately
+  // const handleDownloadCard = async (id, includeImage, approveTerms) => {
+  //   // approveTerms === null ==> download immediately
+  //   // approveTerms === false ==> download after accept Terms
+  //   // approveTerms === true ==> download immediately
 
-    // if (approveTerms === false) {
+  //   // if (approveTerms === false) {
+  //   if (false) {
+  //     handleCondetionAndTermsModalOpen(id, includeImage); // Open terms modal
+  //   } else {
+  //     try {
+  //       setLoadingDownload((prev) => ({ ...prev, [id]: true })); // Set loading for the specific card
+  //       // Call the API to download the card
+  //       let response;
+  //       if (includeImage) {
+  //         response = await fetchImgCard(id);
+  //       } else {
+  //         response = await fetchDownloadCard(id);
+  //       }
+
+  //       // Create a blob from the response data
+  //       const blob = new Blob([response], { type: "application/pdf" });
+
+  //       // Create a link element
+  //       const link = document.createElement("a");
+  //       link.href = window.URL.createObjectURL(blob);
+  //       link.download = `card_${id}.pdf`; // Set the file name
+
+  //       // Append to the body
+  //       document.body.appendChild(link);
+
+  //       // Trigger the download
+  //       link.click();
+
+  //       // Clean up and remove the link
+  //       document.body.removeChild(link);
+  //     } catch (error) {
+  //       console.error("Error downloading the card:", error);
+  //       toast.error(error.message);
+  //     } finally {
+  //       setLoadingDownload((prev) => ({ ...prev, [id]: false })); // Reset loading for the specific card
+  //     }
+  //   }
+  // };
+
+  //
+  const handleDownloadCard = async (id, includeImage, approveTerms) => {
     if (false) {
       handleCondetionAndTermsModalOpen(id, includeImage); // Open terms modal
     } else {
       try {
         setLoadingDownload((prev) => ({ ...prev, [id]: true })); // Set loading for the specific card
-        // Call the API to download the card
+
         let response;
         if (includeImage) {
           response = await fetchImgCard(id);
@@ -197,20 +237,21 @@ export default function Reports() {
 
         // Create a blob from the response data
         const blob = new Blob([response], { type: "application/pdf" });
+        const blobUrl = window.URL.createObjectURL(blob);
 
-        // Create a link element
+        // 1. Download first
         const link = document.createElement("a");
-        link.href = window.URL.createObjectURL(blob);
-        link.download = `card_${id}.pdf`; // Set the file name
-
-        // Append to the body
+        link.href = blobUrl;
+        link.download = `card_${id}.pdf`;
         document.body.appendChild(link);
-
-        // Trigger the download
         link.click();
-
-        // Clean up and remove the link
         document.body.removeChild(link);
+
+        // 2. Then open in new tab
+        window.open(blobUrl, "_blank");
+
+        // 3. Cleanup
+        setTimeout(() => window.URL.revokeObjectURL(blobUrl), 5000);
       } catch (error) {
         console.error("Error downloading the card:", error);
         toast.error(error.message);

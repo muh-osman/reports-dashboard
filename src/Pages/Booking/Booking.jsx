@@ -124,6 +124,32 @@ export default function Booking() {
     const year = date.getFullYear();
     return `${year}/${month}/${day}`;
   };
+
+  // Add "الرياض" to the branch name (القادسية & الشفا) in select input
+  const getBranchDisplayName = (branch, lang) => {
+    if (lang === "ar") {
+      if (branch.id === 19) return "الرياض - القادسية";
+      if (branch.id === 20) return "الرياض - الشفا";
+      return branch.nameAr;
+    } else {
+      if (branch.id === 19) return "Riyadh - Al-Qadesiyah";
+      if (branch.id === 20) return "Riyadh - Al-Shefa";
+      return branch.nameEn;
+    }
+  };
+  // Add "الرياض" to the branch name (القادسية & الشفا) in cards
+  const getCardBranchDisplayName = (card, lang) => {
+    if (lang === "ar") {
+      if (card.branchId === 19) return "الرياض - القادسية";
+      if (card.branchId === 20) return "الرياض - الشفا";
+      return card.branchNameAr;
+    } else {
+      if (card.branchId === 19) return "Riyadh - Al-Qadesiyah";
+      if (card.branchId === 20) return "Riyadh - Al-Shefa";
+      return card.branchNameEn;
+    }
+  };
+
   //
   const [isHovered, setIsHovered] = React.useState(false);
   //
@@ -294,7 +320,8 @@ export default function Booking() {
     const selectedBranchObj = allBranches?.find((b) => b.id === parseInt(selectedBranch));
 
     const modalData = {
-      branch: languageText === "en" ? selectedBranchObj?.nameEn : selectedBranchObj?.nameAr,
+      // branch: languageText === "en" ? selectedBranchObj?.nameEn : selectedBranchObj?.nameAr,
+      branch: selectedBranchObj ? getBranchDisplayName(selectedBranchObj, languageText) : "",
       date: dateAfterFormat,
       time: timeAfterFormat,
     };
@@ -462,7 +489,8 @@ export default function Booking() {
                 .filter((branch) => branch.nameAr !== "افتراضي" || branch.nameEn !== "Virtual") // Filter out branches with nameAr "افتراضي"
                 .map((branch) => (
                   <MenuItem dir={languageText === "ar" ? "rtl" : "ltr"} key={branch.id} value={branch.id}>
-                    {languageText === "en" ? branch?.nameEn : branch?.nameAr}
+                    {/* {languageText === "en" ? branch?.nameEn : branch?.nameAr} */}
+                    {getBranchDisplayName(branch, languageText)}
                   </MenuItem>
                 ))
             ) : (
@@ -714,7 +742,9 @@ export default function Booking() {
                       <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
                         {/* {card.branchNameAr} */}
 
-                        {languageText === "en" ? card?.branchNameEn : card?.branchNameAr}
+                        {/* {languageText === "en" ? card?.branchNameEn : card?.branchNameAr} */}
+
+                        {getCardBranchDisplayName(card, languageText)}
                       </Typography>
                     </Box>
 

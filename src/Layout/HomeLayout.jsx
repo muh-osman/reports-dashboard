@@ -167,6 +167,14 @@ function HomeLayout() {
         <>
           <div className={style.header}>
             <div className={style.top_circle_header}>
+              {!cookies.tokenApp && (
+                <Tooltip title="تسجيل الدخول" className={style.login_box} onClick={login}>
+                  <IconButton>
+                    <LoginIcon sx={{ color: "#fff", fontSize: "28px" }} />
+                  </IconButton>
+                </Tooltip>
+              )}
+
               <a href="https://cashif.cc/">
                 <img src={logo} alt="cashif logo" />
               </a>

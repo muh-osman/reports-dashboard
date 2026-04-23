@@ -1,3 +1,5 @@
+// Plans.jsx
+
 import style from "./Plans.module.scss";
 import { useLocation } from "react-router-dom";
 // MUI
