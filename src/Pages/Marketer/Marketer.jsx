@@ -1,3 +1,4 @@
+// Marketer.jsx
 import style from "./Marketer.module.scss";
 import { Navigate, Link, useNavigate } from "react-router-dom";
 // Cookies
@@ -554,6 +555,7 @@ export default function Marketer() {
                   border: "4px solid #fff",
                   borderRadius: "9px",
                   height: "100%",
+                  zIndex: 0,
                 },
               }}
             >
@@ -563,10 +565,10 @@ export default function Marketer() {
                 sx={{
                   color: "#174545",
                   minWidth: "69px",
+                  zIndex: 1,
                   "&.Mui-selected": {
                     backgroundColor: "transparent",
                     color: "#174545", // Optional: Change text color when selected
-                    zIndex: 1,
                   },
                 }}
               />
@@ -576,10 +578,10 @@ export default function Marketer() {
                 sx={{
                   color: "#174545",
                   minWidth: "69px",
+                  zIndex: 1,
                   "&.Mui-selected": {
                     backgroundColor: "transparent",
                     color: "#174545",
-                    zIndex: 1,
                   },
                 }}
               />
@@ -589,10 +591,10 @@ export default function Marketer() {
                 sx={{
                   color: "#174545",
                   minWidth: "69px",
+                  zIndex: 1,
                   "&.Mui-selected": {
                     backgroundColor: "transparent",
                     color: "#174545", // Optional: Change text color when selected
-                    zIndex: 1,
                   },
                 }}
               />
@@ -602,10 +604,10 @@ export default function Marketer() {
                 sx={{
                   color: "#174545",
                   minWidth: "69px",
+                  zIndex: 1,
                   "&.Mui-selected": {
                     backgroundColor: "transparent",
                     color: "#174545", // Optional: Change text color when selected
-                    zIndex: 1,
                   },
                 }}
               />

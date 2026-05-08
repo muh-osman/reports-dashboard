@@ -1180,7 +1180,7 @@ export default function PayPurchaseCheck() {
           </div>
 
           {/* تقرير موجز */}
-          <div>
+          {/* <div>
             <FormControlLabel
               control={
                 <Checkbox
@@ -1214,7 +1214,7 @@ export default function PayPurchaseCheck() {
             <p style={{ textDecoration: isBriefReportChecked ? "none" : "line-through", display: "flex", alignItems: "center", gap: "3px", fontWeight: 700 }}>
               {briefReportPrice} <CurrencyIcon fill="#747a79" style={{ width: "20px", height: "20px" }} />
             </p>
-          </div>
+          </div> */}
 
           {/* Discount amount */}
           {appliedDiscount && (

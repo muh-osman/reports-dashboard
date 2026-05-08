@@ -50,7 +50,11 @@
     "downloadSummaryReport": "تقرير موجز",
     "video": "فيديو",
     "shippingTheCar": "شحن السيارة",
-    "nsuranceAndTransferOfOwnership": "تأمين ونقل ملكية"
+    "nsuranceAndTransferOfOwnership": "تأمين ونقل ملكية",
+    "askMojazReport": "طلب تقرير موجز",
+    "cashifReport": "كاشف",
+    "mojazReport": "موجز",
+    "showTheReport": "عرض التقرير"
   },
 
   "Prices": {

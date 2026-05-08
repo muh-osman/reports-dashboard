@@ -50,7 +50,11 @@
     "downloadSummaryReport": "Brief",
     "video": "Video",
     "shippingTheCar": "Car shipping",
-    "nsuranceAndTransferOfOwnership": "Insurance & ownership"
+    "nsuranceAndTransferOfOwnership": "Insurance & ownership",
+    "askMojazReport": "Ask Mojaz Report",
+    "cashifReport": "Cashif",
+    "mojazReport": "Mojaz",
+    "showTheReport": "Open"
   },
   "Prices": {
     "selectTheServiese": "Select the service",

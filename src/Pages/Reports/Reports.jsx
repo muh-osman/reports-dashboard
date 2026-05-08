@@ -1,6 +1,9 @@
+// Reports.jsx
 import style from "./Reports.module.scss";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+// imgs
+import mojazLgo from "../../Assets/Images/mojaz-logo.webp";
 // MUI
 import Divider from "@mui/material/Divider";
 import Card from "@mui/material/Card";
@@ -15,6 +18,9 @@ import Modal from "@mui/material/Modal";
 // import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Button from "@mui/material/Button";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Chip from "@mui/material/Chip";
 // MUI Icons
 import PhotoLibraryIcon from "@mui/icons-material/PhotoLibrary";
 import DownloadIcon from "@mui/icons-material/Download";
@@ -29,6 +35,9 @@ import SecurityIcon from "@mui/icons-material/Security";
 import CarRepairIcon from "@mui/icons-material/CarRepair";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import HourglassTopIcon from "@mui/icons-material/HourglassTop";
+import NumbersIcon from "@mui/icons-material/Numbers";
 // Toastify
 import { toast } from "react-toastify";
 // Cookies
@@ -47,6 +56,9 @@ import { fetchDownloadSummaryReport } from "../../API/useDownloadSummaryReportsA
 
 import { useCheckCardsIfHaveVideosApi } from "../../API/useCheckCardsIfHaveVideosApi";
 // import { fetchVideo } from "../../API/useDownloadVideoApi";
+
+import useGetAllMojazReportsForUser from "../../API/useGetAllMojazReportsForUser";
+
 // NumberFlow
 import NumberFlow from "@number-flow/react";
 // MUI Table
@@ -61,6 +73,17 @@ import Paper from "@mui/material/Paper";
 // Lang
 import i18n from "../../i18n"; // Make sure to import i18n
 import { useTranslation } from "react-i18next";
+
+// Tools
+// SAR logo
+const CurrencyIcon = ({ fill = "#000000de", ...props }) => {
+  return (
+    <svg fill={fill} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" {...props}>
+      <path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+      <path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+    </svg>
+  );
+};
 
 // Utility function to format date to dd/mm/yyyy
 const formatDate = (dateString) => {
@@ -95,7 +118,9 @@ function createData(name, calories, fat, carbs, clr) {
   return { name, calories, fat, carbs, clr };
 }
 
+// Main component
 export default function Reports() {
+  //
   const { t } = useTranslation();
   const [languageText, setLanguageText] = useState(i18n.language);
   // Add language change listener
@@ -113,7 +138,7 @@ export default function Reports() {
   }, []);
   //
   // Cookies
-  const [cookies, setCookie] = useCookies(["tokenApp"]);
+  const [cookies, setCookie] = useCookies(["tokenApp", "userId"]);
 
   const [isHovered, setIsHovered] = useState(false);
 
@@ -609,554 +634,916 @@ export default function Reports() {
   };
 
   //
-  const [isPointsBoxExpanded, setIsPointsBoxExpanded] = useState(false);
+  const [isPointsBoxExpanded, setIsPointsBoxExpanded] = useState(window.innerWidth > 920);
 
   const handleExpandPointsBox = () => {
     setIsPointsBoxExpanded(!isPointsBoxExpanded);
   };
 
+  //
+  const handleClickOnAskMojazReportBtn = (cardId) => {
+    if (cookies.tokenApp) {
+      navigate(`${process.env.PUBLIC_URL}/ask-mojaz-report`);
+    } else {
+      navigate(`${process.env.PUBLIC_URL}/login`);
+    }
+  };
+
+  // Tabs system
+  // Get search params from current URL
+  const searchParams = new URLSearchParams(window.location.search);
+  // Get individual parameters
+  const MojazReportsPageTabsIndex = searchParams.get("tab");
+  //
+  const [tabValue, setTabValue] = useState(0);
+
+  useEffect(() => {
+    // set tab to mojaz reports tap if parm (tab=1)
+    if (MojazReportsPageTabsIndex && MojazReportsPageTabsIndex === "1") {
+      setTabValue(1);
+    }
+  }, [MojazReportsPageTabsIndex]);
+
+  const handleTabsChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
+
+  // Mojaz Reports API
+  const { data: mojazReport, fetchStatus: fetchMoajzReportsStatus } = useGetAllMojazReportsForUser();
+  // console.log(mojazReport?.data);
+
+  // Open Mojaz report in new tab
+  const navigateToMojazReport = (pdfUrl) => {
+    window.open(pdfUrl, "_blank", "noopener,noreferrer");
+  };
+
   return (
     <div dir={languageText === "ar" ? "rtl" : "ltr"} className={style.container}>
-      {/* Points */}
-      <div className={style.points_container}>
-        <div
-          className={style.money_card_container}
-          style={{
-            height: isPointsBoxExpanded ? (window.innerWidth <= 1000 ? "264.5px" : "296.5px") : window.innerWidth <= 1000 ? "182px" : "213px",
-            transition: "all 0.3s ease-in-out",
-            overflow: "hidden",
-          }}
-        >
-          <div className={style.money_card_header}>
-            <div>
-              <h3>{t("Reports.points")}</h3>
-              <p style={{ fontSize: "14px" }}>{t("Reports.pointWorthInRiyal")}</p>
-              {/* <h1>
+      <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "16px" }}>
+        {/* Points */}
+        {cookies.tokenApp && (
+          <div className={style.points_container}>
+            <div
+              className={style.money_card_container}
+              style={{
+                height: isPointsBoxExpanded ? (window.innerWidth <= 1000 ? "264.5px" : "296.5px") : window.innerWidth <= 1000 ? "182px" : "213px",
+                transition: "all 0.3s ease-in-out",
+                overflow: "hidden",
+              }}
+            >
+              <div className={style.money_card_header}>
+                <div>
+                  <h3>{t("Reports.points")}</h3>
+                  <p style={{ fontSize: "14px" }}>{t("Reports.pointWorthInRiyal")}</p>
+                  {/* <h1>
                 {points && points.points !== undefined ? points.points : 0}{" "}
               </h1> */}
-              <h1>
-                <NumberFlow value={points?.points || 0} duration={1500} delay={0} ease="outExpo" formattingFn={(value) => Math.floor(value).toLocaleString()} />
-              </h1>
-            </div>
-
-            <div>
-              <Box position="relative" display="inline-flex">
-                <CircularProgress
-                  variant="determinate"
-                  value={100}
-                  size={150}
-                  thickness={6}
-                  sx={{
-                    color: "#3887d5",
-                    position: "absolute",
-                  }}
-                />
-                <CircularProgress
-                  variant="determinate"
-                  value={calculateProgressValue(points)}
-                  size={150}
-                  thickness={6}
-                  sx={{
-                    color: getClientColor,
-                    borderRadius: "10px",
-                  }}
-                />
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                >
-                  <h3 style={{ textAlign: "center", color: getClientColor() }}>{t("Reports.rank")}</h3>
-                  <h3 style={{ textAlign: "center", color: getClientColor() }}>{languageText === "ar" ? points?.clientTypeAr || "-" : points?.clientTypeEn || "-"}</h3>
-                  {/* Adjust size and color as needed */}
+                  <h1>
+                    <NumberFlow value={points?.points || 0} duration={1500} delay={0} ease="outExpo" formattingFn={(value) => Math.floor(value).toLocaleString()} />
+                  </h1>
                 </div>
-              </Box>
+
+                <div>
+                  <Box position="relative" display="inline-flex">
+                    <CircularProgress
+                      variant="determinate"
+                      value={100}
+                      size={150}
+                      thickness={6}
+                      sx={{
+                        color: "#3887d5",
+                        position: "absolute",
+                      }}
+                    />
+                    <CircularProgress
+                      variant="determinate"
+                      value={calculateProgressValue(points)}
+                      size={150}
+                      thickness={6}
+                      sx={{
+                        color: getClientColor,
+                        borderRadius: "10px",
+                      }}
+                    />
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                      }}
+                    >
+                      <h3 style={{ textAlign: "center", color: getClientColor() }}>{t("Reports.rank")}</h3>
+                      <h3 style={{ textAlign: "center", color: getClientColor() }}>{languageText === "ar" ? points?.clientTypeAr || "-" : points?.clientTypeEn || "-"}</h3>
+                      {/* Adjust size and color as needed */}
+                    </div>
+                  </Box>
+                </div>
+              </div>
+
+              <div className={style.money_card_footer} style={{ opacity: isPointsBoxExpanded ? "1" : "0", transition: "0.3s" }}>
+                <Tooltip title={t("Reports.allPointsUsedFromYourAccount")} arrow enterTouchDelay={0} style={{ width: "100%" }}>
+                  <h3>
+                    {t("Reports.totalPointsUsed")} {points && points.pointsConsumed !== undefined ? points.pointsConsumed : 0}
+                  </h3>
+                </Tooltip>
+                <p style={{ fontSize: "13px", textAlign: "center", marginTop: "9px" }}>{t("Reports.YouCanRedeemYourPointsOnThePaymentPage")}</p>
+              </div>
+
+              <div
+                className={style.info_icon}
+                style={{
+                  ...(languageText === "en" ? { right: 0 } : { left: 0 }),
+                }}
+              >
+                <IconButton onClick={handleOpenClientTypesModal}>
+                  <InfoIcon sx={{ color: "#fff" }} />
+                </IconButton>
+              </div>
+
+              <div className={style.expand_more_icon}>
+                <IconButton onClick={handleExpandPointsBox} disabled={isPointsBoxExpanded ? true : false}>
+                  <ExpandMoreIcon
+                    sx={{
+                      color: "#fff",
+                      // transform: isPointsBoxExpanded ? "rotate(180deg)" : "rotate(0deg)",
+                      opacity: isPointsBoxExpanded ? "0" : "1",
+                      transition: "transform 0.3s ease-in-out",
+                    }}
+                  />
+                </IconButton>
+              </div>
             </div>
           </div>
+        )}
 
-          <div className={style.money_card_footer} style={{ opacity: isPointsBoxExpanded ? "1" : "0", transition: "0.3s" }}>
-            <Tooltip title={t("Reports.allPointsUsedFromYourAccount")} arrow enterTouchDelay={0} style={{ width: "100%" }}>
-              <h3>
-                {t("Reports.totalPointsUsed")} {points && points.pointsConsumed !== undefined ? points.pointsConsumed : 0}
-              </h3>
-            </Tooltip>
-            <p style={{ fontSize: "13px", textAlign: "center", marginTop: "9px" }}>{t("Reports.YouCanRedeemYourPointsOnThePaymentPage")}</p>
-          </div>
-
-          <div
-            className={style.info_icon}
-            style={{
-              ...(languageText === "en" ? { right: 0 } : { left: 0 }),
+        {/* Client types modal */}
+        <Modal open={isClientTypesModalOpen} onClose={handleClientTypesModalClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+          <Box
+            dir={languageText === "ar" ? "rtl" : "ltr"}
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: {
+                xs: 361, // width for small screens
+                md: 750, // width for medium and larger screens
+              },
+              bgcolor: "background.paper",
+              p: {
+                xs: 2,
+                md: 4,
+              },
+              textAlign: "center",
+              borderRadius: "16px",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+              backgroundColor: "#fff",
+              maxHeight: "80vh", // Set a maximum height for the modal
+              overflowY: "auto", // Enable vertical scrolling
+              overflowX: "hidden", // Prevent horizontal scrolling
             }}
           >
-            <IconButton onClick={handleOpenClientTypesModal}>
-              <InfoIcon sx={{ color: "#fff" }} />
-            </IconButton>
-          </div>
+            <div className={style.table_box}>
+              <div dir={languageText === "ar" ? "rtl" : "ltr"}>
+                <h1>{t("Reports.customerCategories")}</h1>
 
-          <div className={style.expand_more_icon}>
-            <IconButton onClick={handleExpandPointsBox} disabled={isPointsBoxExpanded ? true : false}>
-              <ExpandMoreIcon
-                sx={{
-                  color: "#fff",
-                  // transform: isPointsBoxExpanded ? "rotate(180deg)" : "rotate(0deg)",
-                  opacity: isPointsBoxExpanded ? "0" : "1",
-                  transition: "transform 0.3s ease-in-out",
-                }}
-              />
-            </IconButton>
-          </div>
-        </div>
-      </div>
+                <TableContainer dir={languageText === "ar" ? "rtl" : "ltr"} component={Paper}>
+                  <Table dir={languageText === "ar" ? "rtl" : "ltr"} aria-label="customized table">
+                    <TableHead>
+                      <TableRow>
+                        <StyledTableCell align="center">{t("Reports.rank")}</StyledTableCell>
+                        <StyledTableCell align="center">{t("Reports.minimumPoints")}</StyledTableCell>
+                        <StyledTableCell align="center">{t("Reports.maximumPoints")}</StyledTableCell>
+                        <StyledTableCell align="center">{t("Reports.pointsPercentage")}</StyledTableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {rows.map((row) => (
+                        <StyledTableRow key={row.name}>
+                          <StyledTableCell align="center" component="th" scope="row">
+                            {row.name} <WorkspacePremiumIcon sx={{ verticalAlign: "middle", color: row.clr }} />
+                          </StyledTableCell>
+                          <StyledTableCell align="center">{row.calories}</StyledTableCell>
+                          <StyledTableCell align="center">{row.fat}</StyledTableCell>
+                          <StyledTableCell align="center">{row.carbs}</StyledTableCell>
+                        </StyledTableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </div>
+            </div>
+          </Box>
+        </Modal>
 
-      {/* Client types modal */}
-      <Modal open={isClientTypesModalOpen} onClose={handleClientTypesModalClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
-        <Box
-          dir={languageText === "ar" ? "rtl" : "ltr"}
+        {/* Start Mojaz card ad */}
+        <Card
           sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: {
-              xs: 361, // width for small screens
-              md: 750, // width for medium and larger screens
-            },
-            bgcolor: "background.paper",
-            p: {
-              xs: 2,
-              md: 4,
-            },
-            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            // marginTop: "20px",
             borderRadius: "16px",
-            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
-            backgroundColor: "#fff",
-            maxHeight: "80vh", // Set a maximum height for the modal
-            overflowY: "auto", // Enable vertical scrolling
-            overflowX: "hidden", // Prevent horizontal scrolling
+            padding: "16px",
+            boxShadow: "none",
+            width: "fit-content",
+            width: {
+              xs: "100%", // 100% on extra-small screens (0px - 600px)
+              sm: "429px", // Auto/default width on small screens and up (600px+)
+            },
           }}
         >
-          <div className={style.table_box}>
-            <div dir={languageText === "ar" ? "rtl" : "ltr"}>
-              <h1>{t("Reports.customerCategories")}</h1>
+          <CardContent sx={{ padding: 0 }}>
+            <Box display="flex" alignItems="center" justifyContent="space-between" gap={2}>
+              {/* Text */}
+              <Box>
+                <Typography variant="h6" fontWeight="bold">
+                  طلب تقرير موجز
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  تاريخ السيارة الكامل في تقرير واحد
+                </Typography>
+              </Box>
 
-              <TableContainer dir={languageText === "ar" ? "rtl" : "ltr"} component={Paper}>
-                <Table dir={languageText === "ar" ? "rtl" : "ltr"} aria-label="customized table">
-                  <TableHead>
-                    <TableRow>
-                      <StyledTableCell align="center">{t("Reports.rank")}</StyledTableCell>
-                      <StyledTableCell align="center">{t("Reports.minimumPoints")}</StyledTableCell>
-                      <StyledTableCell align="center">{t("Reports.maximumPoints")}</StyledTableCell>
-                      <StyledTableCell align="center">{t("Reports.pointsPercentage")}</StyledTableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows.map((row) => (
-                      <StyledTableRow key={row.name}>
-                        <StyledTableCell align="center" component="th" scope="row">
-                          {row.name} <WorkspacePremiumIcon sx={{ verticalAlign: "middle", color: row.clr }} />
-                        </StyledTableCell>
-                        <StyledTableCell align="center">{row.calories}</StyledTableCell>
-                        <StyledTableCell align="center">{row.fat}</StyledTableCell>
-                        <StyledTableCell align="center">{row.carbs}</StyledTableCell>
-                      </StyledTableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
-          </div>
-        </Box>
-      </Modal>
+              {/* Icon */}
+              <Box
+                sx={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: "50%",
+                  // backgroundColor: "#f2f2f2",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {/* <DescriptionIcon sx={{ color: "#0f3d2e", fontSize: 30 }} /> */}
+                <img style={{ width: "100%", borderRadius: "9px" }} src={mojazLgo} alt="mojaz logo" />
+              </Box>
+            </Box>
+
+            {/* List + Price */}
+            <Box mt={3} display="flex" gap={1} alignItems="stretch" justifyContent="space-between" flexDirection={languageText === "ar" ? "row-reverse" : "row"}>
+              {/* Price Box */}
+              <Box
+                sx={{
+                  // minWidth: "110px",
+                  // backgroundColor: "#f3eaea",
+                  borderRadius: "12px",
+                  padding: "12px",
+                  paddingLeft: 0,
+                  textAlign: "center",
+                  position: "relative",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: "14px",
+                    color: "#555",
+                    marginBottom: "6px",
+                    textAlign: "right",
+                  }}
+                >
+                  سعر التقرير
+                </Typography>
+
+                <Typography
+                  sx={{
+                    fontSize: "28px",
+                    fontWeight: "bold",
+                    color: "#1a1a2e",
+                    textAlign: "right",
+                  }}
+                >
+                  119 <CurrencyIcon fill="#1a1a2e" style={{ width: "21px", height: "23px" }} />
+                </Typography>
+
+                {/* Red line */}
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: 10,
+                    bottom: 10,
+                    width: "3px",
+                    backgroundColor: "#be1e2d",
+                    left: languageText === "ar" ? "auto" : 0,
+                    right: languageText === "ar" ? 0 : "auto",
+                  }}
+                />
+              </Box>
+
+              {/* List */}
+              <Box flex={1}>
+                <Box display="flex" alignItems="center" gap="6px" mb={1}>
+                  <CheckCircleIcon sx={{ color: "green", fontSize: "20px" }} />
+                  <Typography sx={{ fontSize: "14px" }}>عدد الملاك السابقين</Typography>
+                </Box>
+
+                <Box display="flex" alignItems="center" gap="6px" mb={1}>
+                  <CheckCircleIcon sx={{ color: "green", fontSize: "20px" }} />
+                  <Typography sx={{ fontSize: "14px" }}>سجل الحوادث المسجلة</Typography>
+                </Box>
+
+                <Box display="flex" alignItems="center" gap="6px">
+                  <CheckCircleIcon sx={{ color: "green", fontSize: "20px" }} />
+                  <Typography sx={{ fontSize: "14px" }}>تفاصيل الفحص الدوري</Typography>
+                </Box>
+              </Box>
+            </Box>
+          </CardContent>
+
+          <CardActions style={{ flexDirection: "column", padding: 0 }}>
+            <Button
+              fullWidth
+              variant="contained"
+              sx={{
+                marginTop: "24px",
+                backgroundColor: "#be1e2d",
+                borderRadius: "12px",
+                padding: "12px",
+                fontWeight: "bold",
+                "&:hover": {
+                  backgroundColor: "#a50f15",
+                },
+              }}
+              onClick={handleClickOnAskMojazReportBtn}
+            >
+              طلب موجز
+            </Button>
+
+            {/* {cookies.tokenApp && (
+              <div style={{ marginTop: "12px" }}>
+                <Link className={style.show_all_mojaz_report_btn} to={`${process.env.PUBLIC_URL}/mojaz-reports`}>
+                  عرض جميع تقارير موجز
+                </Link>
+              </div>
+            )} */}
+          </CardActions>
+        </Card>
+      </div>
 
       {/* Cards */}
       <h5 className={style.last_reports_title}>{t("Reports.myReports")}</h5>
       <Divider sx={{ marginBottom: "18px" }} />
 
-      {!cookies.tokenApp ? (
-        <Typography variant="h6" component="div" style={{ textAlign: "center", margin: "20px", color: "#757575" }}>
-          {t("Reports.please")}{" "}
-          <Link
-            to={`${process.env.PUBLIC_URL}/login/?from=reports`}
-            style={{
-              color: "#1976d2",
-              textDecoration: isHovered ? "underline" : "none",
+      {/* Tabs */}
+      <Box
+        sx={{
+          width: "100%",
+          bgcolor: "#fff",
+          color: "#174545",
+          borderRadius: "9px",
+        }}
+      >
+        <Tabs
+          value={tabValue}
+          onChange={handleTabsChange}
+          centered
+          variant="fullWidth"
+          sx={{
+            marginBottom: "16px",
+            "& .MuiTabs-indicator": {
+              backgroundColor: "#f0f1f3",
+              border: "4px solid #fff",
+              borderRadius: "9px",
+              height: "100%",
+              zIndex: 0,
+            },
+          }}
+        >
+          <Tab
+            disableRipple
+            label={t("Reports.cashifReport")}
+            sx={{
+              color: "#174545",
+              minWidth: "69px",
+              zIndex: 1,
+              "&.Mui-selected": {
+                backgroundColor: "transparent",
+                color: "#174545", // Optional: Change text color when selected
+              },
             }}
-            onMouseOver={() => setIsHovered(true)}
-            onMouseOut={() => setIsHovered(false)}
-          >
-            {t("Reports.logIn")}
-          </Link>{" "}
-          {t("Reports.toViewReports")}
-        </Typography>
-      ) : (
-        <div className={style.reports_cards_container}>
-          {/* Condetion And Terms Modal */}
-          <Modal open={openCondetionAndTermsModal} onClose={handleCondetionAndTermsModalClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
-            <Box
-              dir={languageText === "ar" ? "rtl" : "ltr"}
-              sx={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                width: {
-                  xs: 361, // width for small screens
-                  md: 750, // width for medium and larger screens
-                },
-                bgcolor: "background.paper",
-                p: {
-                  xs: 2,
-                  md: 4,
-                },
-                textAlign: "center",
-                borderRadius: "16px",
-                boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
-                backgroundColor: "#fff",
-                maxHeight: "80vh", // Set a maximum height for the modal
-                overflowY: "auto", // Enable vertical scrolling
-                overflowX: "hidden", // Prevent horizontal scrolling
-              }}
-            >
-              <div className={style.terms_box} style={{ textAlign: languageText === "ar" ? "right" : "left" }}>
-                <div>
-                  <h1>{languageText === "ar" ? "وثيقة ضمان المركبة" : "Vehicle Warranty Document"}</h1>
+          />
+          <Tab
+            disableRipple
+            label={t("Reports.mojazReport")}
+            sx={{
+              color: "#174545",
+              minWidth: "69px",
+              zIndex: 1,
+              "&.Mui-selected": {
+                backgroundColor: "transparent",
+                color: "#174545",
+              },
+            }}
+          />
+        </Tabs>
+      </Box>
 
-                  <pre className={style.wrapping_pre}>
-                    {(languageText === "ar" ? terms?.termsAndCondtionsAr || "" : terms?.termsAndCondtionsEn || "").split("\n").reduce((acc, paragraph, index) => {
-                      if (paragraph.trim() === "") return acc;
-
-                      if (paragraph.startsWith(languageText === "ar" ? "البند" : "Clause")) {
-                        return [...acc, <h6 key={`h6-${index}`}>{paragraph}</h6>];
-                      }
-
-                      if (/^\d+\.\t/.test(paragraph)) {
-                        const content = paragraph.replace(/^\d+\.\t/, "");
-                        const lastElement = acc[acc.length - 1];
-
-                        if (lastElement && lastElement.type === "ul") {
-                          return [
-                            ...acc.slice(0, -1),
-                            <ul
-                              key={lastElement.key}
-                              style={{
-                                padding: languageText === "ar" ? "0 24px 0 0" : "0 0 0 24px",
-                              }}
-                            >
-                              {lastElement.props.children}
-                              <li key={`li-${index}`}>{content}</li>
-                            </ul>,
-                          ];
-                        } else {
-                          return [
-                            ...acc,
-                            <ul
-                              key={`ul-${index}`}
-                              style={{
-                                padding: languageText === "ar" ? "0 24px 0 0" : "0 0 0 24px",
-                              }}
-                            >
-                              <li key={`li-${index}`}>{content}</li>
-                            </ul>,
-                          ];
-                        }
-                      }
-
-                      return [...acc, <div key={`div-${index}`}>{paragraph}</div>];
-                    }, [])}
-                  </pre>
-
-                  <h6>{languageText === "ar" ? "حالات الغاء وثيقة ضمان المركبة" : ""}</h6>
-
-                  <pre className={style.wrapping_pre}>
-                    {(languageText === "ar" ? terms?.cancelWarrantyDocumentAr || "" : terms?.cancelWarrantyDocumentEn || "").split("\n").reduce((acc, paragraph, index) => {
-                      if (paragraph.trim() === "") return acc;
-
-                      if (paragraph.startsWith(languageText === "ar" ? "البند" : "Clause")) {
-                        return [...acc, <h6 key={`h6-${index}`}>{paragraph}</h6>];
-                      }
-
-                      if (/^\d+\.\t/.test(paragraph)) {
-                        const content = paragraph.replace(/^\d+\.\t/, "");
-                        const lastElement = acc[acc.length - 1];
-
-                        if (lastElement && lastElement.type === "ul") {
-                          return [
-                            ...acc.slice(0, -1),
-                            <ul
-                              key={lastElement.key}
-                              style={{
-                                padding: languageText === "ar" ? "0 24px 0 0" : "0 0 0 24px",
-                              }}
-                            >
-                              {lastElement.props.children}
-                              <li key={`li-${index}`}>{content}</li>
-                            </ul>,
-                          ];
-                        } else {
-                          return [
-                            ...acc,
-                            <ul
-                              key={`ul-${index}`}
-                              style={{
-                                padding: languageText === "ar" ? "0 24px 0 0" : "0 0 0 24px",
-                              }}
-                            >
-                              <li key={`li-${index}`}>{content}</li>
-                            </ul>,
-                          ];
-                        }
-                      }
-
-                      return [...acc, <div key={`div-${index}`}>{paragraph}</div>];
-                    }, [])}
-                  </pre>
-                </div>
-
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  <FormControlLabel
-                    control={<Radio required checked={checked === true} onChange={() => handleChange(true)} />}
-                    label={
-                      languageText === "ar"
-                        ? "أوافق على الشروط والأحكام, وأقر بأنني قرأتها وفهمتها بالكامل"
-                        : "I agree to the terms and conditions, and I acknowledge that I have read and fully understood them"
-                    }
-                  />
-                  <FormControlLabel
-                    control={<Radio required checked={checked === false} onChange={() => handleChange(false)} />}
-                    label={languageText === "ar" ? "لا أوافق على الشروط والأحكام" : "I disagree to the terms and conditions"}
-                  />
-                </div>
-
-                <Button fullWidth sx={{ marginTop: "30px" }} variant="contained" size="large" disabled={checked === null} onClick={downloadFromTermsModal}>
-                  {languageText === "ar" ? "تحميل التقرير" : "Download the report"}
-                </Button>
-              </div>
-            </Box>
-          </Modal>
-
-          {cardsData && cardsData.length > 0 ? (
-            cardsData
-              .filter((card) => card.cardStatus === 5) //  filter to exclude "Appoinment" cards with status 7
-              .slice()
-              .reverse()
-              .map((card) => (
-                <Card
-                  key={card.cardNumber}
+      {tabValue === 0 ? (
+        <>
+          {/* Cashif reports */}
+          {!cookies.tokenApp ? (
+            <Typography variant="h6" component="div" style={{ textAlign: "center", margin: "20px", color: "#757575" }}>
+              {t("Reports.please")}{" "}
+              <Link
+                to={`${process.env.PUBLIC_URL}/login/?from=reports`}
+                style={{
+                  color: "#1976d2",
+                  textDecoration: isHovered ? "underline" : "none",
+                }}
+                onMouseOver={() => setIsHovered(true)}
+                onMouseOut={() => setIsHovered(false)}
+              >
+                {t("Reports.logIn")}
+              </Link>{" "}
+              {t("Reports.toViewReports")}
+            </Typography>
+          ) : (
+            <div className={style.reports_cards_container}>
+              {/* Condetion And Terms Modal */}
+              <Modal open={openCondetionAndTermsModal} onClose={handleCondetionAndTermsModalClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+                <Box
+                  dir={languageText === "ar" ? "rtl" : "ltr"}
                   sx={{
-                    width: { xs: "100%", sm: 329 },
-                    position: "relative",
-                    borderRadius: "9px",
-                    boxShadow: "none",
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: {
+                      xs: 361, // width for small screens
+                      md: 750, // width for medium and larger screens
+                    },
+                    bgcolor: "background.paper",
+                    p: {
+                      xs: 2,
+                      md: 4,
+                    },
+                    textAlign: "center",
+                    borderRadius: "16px",
+                    boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+                    backgroundColor: "#fff",
+                    maxHeight: "80vh", // Set a maximum height for the modal
+                    overflowY: "auto", // Enable vertical scrolling
+                    overflowX: "hidden", // Prevent horizontal scrolling
                   }}
                 >
-                  {card.includeImage && (
-                    <Tooltip title={t("Reports.photoReport")}>
-                      <PhotoLibraryIcon
-                        style={{
-                          position: "absolute",
-                          top: 16,
-                          ...(languageText === "en" ? { right: 16 } : { left: 16 }),
-                        }}
+                  <div className={style.terms_box} style={{ textAlign: languageText === "ar" ? "right" : "left" }}>
+                    <div>
+                      <h1>{languageText === "ar" ? "وثيقة ضمان المركبة" : "Vehicle Warranty Document"}</h1>
+
+                      <pre className={style.wrapping_pre}>
+                        {(languageText === "ar" ? terms?.termsAndCondtionsAr || "" : terms?.termsAndCondtionsEn || "").split("\n").reduce((acc, paragraph, index) => {
+                          if (paragraph.trim() === "") return acc;
+
+                          if (paragraph.startsWith(languageText === "ar" ? "البند" : "Clause")) {
+                            return [...acc, <h6 key={`h6-${index}`}>{paragraph}</h6>];
+                          }
+
+                          if (/^\d+\.\t/.test(paragraph)) {
+                            const content = paragraph.replace(/^\d+\.\t/, "");
+                            const lastElement = acc[acc.length - 1];
+
+                            if (lastElement && lastElement.type === "ul") {
+                              return [
+                                ...acc.slice(0, -1),
+                                <ul
+                                  key={lastElement.key}
+                                  style={{
+                                    padding: languageText === "ar" ? "0 24px 0 0" : "0 0 0 24px",
+                                  }}
+                                >
+                                  {lastElement.props.children}
+                                  <li key={`li-${index}`}>{content}</li>
+                                </ul>,
+                              ];
+                            } else {
+                              return [
+                                ...acc,
+                                <ul
+                                  key={`ul-${index}`}
+                                  style={{
+                                    padding: languageText === "ar" ? "0 24px 0 0" : "0 0 0 24px",
+                                  }}
+                                >
+                                  <li key={`li-${index}`}>{content}</li>
+                                </ul>,
+                              ];
+                            }
+                          }
+
+                          return [...acc, <div key={`div-${index}`}>{paragraph}</div>];
+                        }, [])}
+                      </pre>
+
+                      <h6>{languageText === "ar" ? "حالات الغاء وثيقة ضمان المركبة" : ""}</h6>
+
+                      <pre className={style.wrapping_pre}>
+                        {(languageText === "ar" ? terms?.cancelWarrantyDocumentAr || "" : terms?.cancelWarrantyDocumentEn || "").split("\n").reduce((acc, paragraph, index) => {
+                          if (paragraph.trim() === "") return acc;
+
+                          if (paragraph.startsWith(languageText === "ar" ? "البند" : "Clause")) {
+                            return [...acc, <h6 key={`h6-${index}`}>{paragraph}</h6>];
+                          }
+
+                          if (/^\d+\.\t/.test(paragraph)) {
+                            const content = paragraph.replace(/^\d+\.\t/, "");
+                            const lastElement = acc[acc.length - 1];
+
+                            if (lastElement && lastElement.type === "ul") {
+                              return [
+                                ...acc.slice(0, -1),
+                                <ul
+                                  key={lastElement.key}
+                                  style={{
+                                    padding: languageText === "ar" ? "0 24px 0 0" : "0 0 0 24px",
+                                  }}
+                                >
+                                  {lastElement.props.children}
+                                  <li key={`li-${index}`}>{content}</li>
+                                </ul>,
+                              ];
+                            } else {
+                              return [
+                                ...acc,
+                                <ul
+                                  key={`ul-${index}`}
+                                  style={{
+                                    padding: languageText === "ar" ? "0 24px 0 0" : "0 0 0 24px",
+                                  }}
+                                >
+                                  <li key={`li-${index}`}>{content}</li>
+                                </ul>,
+                              ];
+                            }
+                          }
+
+                          return [...acc, <div key={`div-${index}`}>{paragraph}</div>];
+                        }, [])}
+                      </pre>
+                    </div>
+
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                      <FormControlLabel
+                        control={<Radio required checked={checked === true} onChange={() => handleChange(true)} />}
+                        label={
+                          languageText === "ar"
+                            ? "أوافق على الشروط والأحكام, وأقر بأنني قرأتها وفهمتها بالكامل"
+                            : "I agree to the terms and conditions, and I acknowledge that I have read and fully understood them"
+                        }
                       />
-                    </Tooltip>
-                  )}
-                  <CardContent>
-                    <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
-                      <MinorCrashIcon style={{ color: "#000000de" }} />
-                      <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
-                        {languageText === "en" ? card?.carManufacturerNameEn || "-" : card?.carManufacturerNameAr || "-"}
-                      </Typography>
-                    </Box>
+                      <FormControlLabel
+                        control={<Radio required checked={checked === false} onChange={() => handleChange(false)} />}
+                        label={languageText === "ar" ? "لا أوافق على الشروط والأحكام" : "I disagree to the terms and conditions"}
+                      />
+                    </div>
 
-                    <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
-                      <StyleIcon style={{ color: "#000000de" }} />
-                      <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
-                        {languageText === "en" ? card?.carModelNameEn || "-" : card?.carModelNameAr || "-"}
-                      </Typography>
-                    </Box>
+                    <Button fullWidth sx={{ marginTop: "30px" }} variant="contained" size="large" disabled={checked === null} onClick={downloadFromTermsModal}>
+                      {languageText === "ar" ? "تحميل التقرير" : "Download the report"}
+                    </Button>
+                  </div>
+                </Box>
+              </Modal>
 
-                    <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
-                      <ContentPasteSearchIcon style={{ color: "#000000de" }} />
-                      <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
-                        {/* {card.servicesListNameAr.length > 0
+              {cardsData && cardsData.length > 0 ? (
+                cardsData
+                  .filter((card) => card.cardStatus === 5) //  filter to exclude "Appoinment" cards with status 7
+                  .slice()
+                  .reverse()
+                  .map((card) => (
+                    <Card
+                      key={card.cardNumber}
+                      sx={{
+                        width: { xs: "100%", sm: 329 },
+                        position: "relative",
+                        borderRadius: "9px",
+                        boxShadow: "none",
+                      }}
+                    >
+                      {card.includeImage && (
+                        <Tooltip title={t("Reports.photoReport")}>
+                          <PhotoLibraryIcon
+                            style={{
+                              position: "absolute",
+                              top: 16,
+                              ...(languageText === "en" ? { right: 16 } : { left: 16 }),
+                            }}
+                          />
+                        </Tooltip>
+                      )}
+                      <CardContent>
+                        <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
+                          <MinorCrashIcon style={{ color: "#000000de" }} />
+                          <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
+                            {languageText === "en" ? card?.carManufacturerNameEn || "-" : card?.carManufacturerNameAr || "-"}
+                          </Typography>
+                        </Box>
+
+                        <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
+                          <StyleIcon style={{ color: "#000000de" }} />
+                          <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
+                            {languageText === "en" ? card?.carModelNameEn || "-" : card?.carModelNameAr || "-"}
+                          </Typography>
+                        </Box>
+
+                        <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
+                          <ContentPasteSearchIcon style={{ color: "#000000de" }} />
+                          <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
+                            {/* {card.servicesListNameAr.length > 0
                           ? card.servicesListNameAr.join(", ")
                           : "غير محدد"} */}
 
-                        {languageText === "en" ? card?.servicesListNameEn.join(", ") || "-" : card?.servicesListNameAr.join(", ") || "-"}
-                      </Typography>
-                    </Box>
+                            {languageText === "en" ? card?.servicesListNameEn.join(", ") || "-" : card?.servicesListNameAr.join(", ") || "-"}
+                          </Typography>
+                        </Box>
 
-                    <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
-                      <CreditCardIcon style={{ color: "#000000de" }} />
-                      <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
-                        {card.cardNumber}
-                      </Typography>
-                    </Box>
+                        <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
+                          <CreditCardIcon style={{ color: "#000000de" }} />
+                          <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
+                            {card.cardNumber}
+                          </Typography>
+                        </Box>
 
-                    <Box display="flex" alignItems="center" gap={1}>
-                      <CalendarMonthIcon style={{ color: "#000000de" }} />
-                      <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
-                        {formatDate(card.createdDate)}
-                      </Typography>
-                    </Box>
-                  </CardContent>
+                        <Box display="flex" alignItems="center" gap={1}>
+                          <CalendarMonthIcon style={{ color: "#000000de" }} />
+                          <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
+                            {formatDate(card.createdDate)}
+                          </Typography>
+                        </Box>
+                      </CardContent>
 
-                  <Divider />
+                      <Divider />
 
-                  <CardActions
-                    dir={languageText === "en" ? "ltr" : "rtl"}
+                      <CardActions
+                        dir={languageText === "en" ? "ltr" : "rtl"}
+                        sx={{
+                          backgroundColor: "#fdfefe",
+                          justifyContent: "center",
+                          gap: "16px",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "16px",
+                          }}
+                        >
+                          {/* تحميل تقرير الفحص */}
+                          <Button
+                            onClick={() => handleDownloadCard(card.id, card.includeImage, card.approveTerms)}
+                            size="small"
+                            variant="contained"
+                            disabled={loadingDownload[card.id]} // Disable button if loading
+                            endIcon={
+                              loadingDownload[card.id] ? (
+                                <CircularProgress
+                                  size={18}
+                                  sx={{
+                                    margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
+                                  }}
+                                />
+                              ) : (
+                                <DownloadIcon
+                                  sx={{
+                                    margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
+                                  }}
+                                />
+                              )
+                            }
+                          >
+                            {t("Reports.downloadReport")}
+                          </Button>
+
+                          {/* تقرير موجز */}
+                          {AllSummaryReportsStatus?.data?.[card.cardNumber.toString()] === true && (
+                            <Button
+                              sx={{ margin: "0 !important" }}
+                              onClick={() => handleDownloadSummaryCard(card.cardNumber)}
+                              size="small"
+                              variant="outlined"
+                              disabled={loadingSummaryCardDownload[card.cardNumber]} // Disable button if loading
+                              endIcon={
+                                loadingSummaryCardDownload[card.cardNumber] ? (
+                                  <CircularProgress
+                                    size={18}
+                                    sx={{
+                                      margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
+                                    }}
+                                  />
+                                ) : (
+                                  <DownloadIcon
+                                    sx={{
+                                      margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
+                                    }}
+                                  />
+                                )
+                              }
+                            >
+                              {t("Reports.downloadSummaryReport")}
+                            </Button>
+                          )}
+
+                          {/*  فيديو */}
+                          {AllVideoReportsStatus?.data?.[card.cardNumber.toString()] === true && (
+                            <Button
+                              sx={{
+                                margin: "0 !important",
+                                backgroundColor: "#0000000a",
+                              }}
+                              variant="outlined"
+                              onClick={() => handleDownloadVideo(card.cardNumber)}
+                              size="small"
+                              disabled={loadingvideoDownload[card.cardNumber]} // Disable button if loading
+                              endIcon={
+                                loadingvideoDownload[card.cardNumber] ? (
+                                  <CircularProgress
+                                    size={18}
+                                    sx={{
+                                      margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
+                                    }}
+                                  />
+                                ) : (
+                                  <VideocamIcon
+                                    sx={{
+                                      margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
+                                    }}
+                                  />
+                                )
+                              }
+                            >
+                              {t("Reports.video")}
+                            </Button>
+                          )}
+                        </div>
+
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "16px",
+                          }}
+                        >
+                          {/* تأمين ونقل ملكية */}
+                          <Button
+                            sx={{ margin: "0 !important" }}
+                            onClick={() => handleClickOninsuranceBtn(card.cardNumber)}
+                            size="small"
+                            variant="outlined"
+                            endIcon={
+                              <SecurityIcon
+                                sx={{
+                                  margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
+                                }}
+                              />
+                            }
+                          >
+                            {t("Reports.nsuranceAndTransferOfOwnership")}
+                          </Button>
+
+                          {/* شحن السيارة */}
+                          <Button
+                            sx={{ margin: "0 !important" }}
+                            onClick={() => handleClickOnShippingCarBtn(card.id)}
+                            size="small"
+                            variant="outlined"
+                            endIcon={
+                              <CarRepairIcon
+                                sx={{
+                                  margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
+                                }}
+                              />
+                            }
+                          >
+                            {t("Reports.shippingTheCar")}
+                          </Button>
+                        </div>
+                      </CardActions>
+                    </Card>
+                  ))
+              ) : (
+                <Typography variant="h6" component="div" style={{ textAlign: "center", margin: "20px", color: "#757575" }}>
+                  {fetchCardStatus === "fetching" ? t("Reports.loading") : t("Reports.noReports")}
+                </Typography>
+              )}
+            </div>
+          )}
+        </>
+      ) : (
+        <>
+          {!cookies.tokenApp ? (
+            <>
+              {/* Mojaz reports */}
+              <Typography variant="h6" component="div" style={{ textAlign: "center", margin: "20px", color: "#757575" }}>
+                {t("Reports.please")}{" "}
+                <Link
+                  to={`${process.env.PUBLIC_URL}/login/?from=reports`}
+                  style={{
+                    color: "#1976d2",
+                    textDecoration: isHovered ? "underline" : "none",
+                  }}
+                  onMouseOver={() => setIsHovered(true)}
+                  onMouseOut={() => setIsHovered(false)}
+                >
+                  {t("Reports.logIn")}
+                </Link>{" "}
+                {t("Reports.toViewReports")}
+              </Typography>
+            </>
+          ) : (
+            <div className={style.reports_cards_container}>
+              {mojazReport?.data && mojazReport?.data.length > 0 ? (
+                mojazReport?.data.map((card) => (
+                  <Card
+                    key={card.id}
                     sx={{
-                      backgroundColor: "#fdfefe",
-                      justifyContent: "center",
-                      gap: "16px",
-                      flexWrap: "wrap",
+                      width: { xs: "100%", sm: 329 },
+                      position: "relative",
+                      borderRadius: "9px",
+                      boxShadow: "none",
                     }}
                   >
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "16px",
-                      }}
-                    >
-                      <Button
-                        onClick={() => handleDownloadCard(card.id, card.includeImage, card.approveTerms)}
-                        size="small"
-                        variant="contained"
-                        disabled={loadingDownload[card.id]} // Disable button if loading
-                        endIcon={
-                          loadingDownload[card.id] ? (
-                            <CircularProgress
-                              size={18}
-                              sx={{
-                                margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
-                              }}
-                            />
-                          ) : (
-                            <DownloadIcon
-                              sx={{
-                                margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
-                              }}
-                            />
-                          )
-                        }
-                      >
-                        {t("Reports.downloadReport")}
-                      </Button>
-
-                      {/* Summary Reports Button */}
-                      {AllSummaryReportsStatus?.data?.[card.cardNumber.toString()] === true && (
-                        <Button
-                          sx={{ margin: "0 !important" }}
-                          onClick={() => handleDownloadSummaryCard(card.cardNumber)}
-                          size="small"
-                          variant="outlined"
-                          disabled={loadingSummaryCardDownload[card.cardNumber]} // Disable button if loading
-                          endIcon={
-                            loadingSummaryCardDownload[card.cardNumber] ? (
-                              <CircularProgress
-                                size={18}
-                                sx={{
-                                  margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
-                                }}
-                              />
-                            ) : (
-                              <DownloadIcon
-                                sx={{
-                                  margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
-                                }}
-                              />
-                            )
-                          }
-                        >
-                          {t("Reports.downloadSummaryReport")}
-                        </Button>
-                      )}
-
-                      {/*  Video Button */}
-                      {AllVideoReportsStatus?.data?.[card.cardNumber.toString()] === true && (
-                        <Button
-                          sx={{
-                            margin: "0 !important",
-                            backgroundColor: "#0000000a",
-                          }}
-                          variant="outlined"
-                          onClick={() => handleDownloadVideo(card.cardNumber)}
-                          size="small"
-                          disabled={loadingvideoDownload[card.cardNumber]} // Disable button if loading
-                          endIcon={
-                            loadingvideoDownload[card.cardNumber] ? (
-                              <CircularProgress
-                                size={18}
-                                sx={{
-                                  margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
-                                }}
-                              />
-                            ) : (
-                              <VideocamIcon
-                                sx={{
-                                  margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
-                                }}
-                              />
-                            )
-                          }
-                        >
-                          {t("Reports.video")}
-                        </Button>
-                      )}
+                    <div style={{ width: "32px", height: "32px", position: "absolute", top: 16, left: 16, borderRadius: "6px", overflow: "hidden" }}>
+                      <img style={{ width: "100%" }} src={mojazLgo} alt="mojaz logo" />
                     </div>
 
-                    <div
-                      style={{
-                        display: "flex",
+                    <CardContent>
+                      <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
+                        <HourglassTopIcon style={{ color: "#000000de" }} />
+                        <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
+                          {/* {languageText === "en" ? card?.carManufacturerNameEn || "-" : card?.carManufacturerNameAr || "-"} */}
+                          <Chip
+                            label={card.status === "paid" || card.status === "processing" ? "جاري المعالجة" : card.status === "ready" ? "جاهز للتحميل" : "فشل"}
+                            color={card.status === "ready" ? "default" : "warning"}
+                          />
+                        </Typography>
+                      </Box>
+
+                      <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
+                        <ContentPasteSearchIcon style={{ color: "#000000de" }} />
+                        <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
+                          {card.lookup_type === "sequence" ? "الرقم التسلسلي" : "رقم الهيكل"}
+                        </Typography>
+                      </Box>
+
+                      <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
+                        <NumbersIcon style={{ color: "#000000de" }} />
+                        <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
+                          {card.lookup_value}
+                        </Typography>
+                      </Box>
+
+                      <Box display="flex" alignItems="center" gap={1}>
+                        <CalendarMonthIcon style={{ color: "#000000de" }} />
+                        <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
+                          {formatDate(card.created_at)}
+                        </Typography>
+                      </Box>
+                    </CardContent>
+
+                    <Divider />
+
+                    <CardActions
+                      dir={languageText === "en" ? "ltr" : "rtl"}
+                      sx={{
+                        backgroundColor: "#fdfefe",
+                        justifyContent: "center",
                         gap: "16px",
+                        flexWrap: "wrap",
                       }}
                     >
-                      <Button
-                        sx={{ margin: "0 !important" }}
-                        onClick={() => handleClickOninsuranceBtn(card.cardNumber)}
-                        size="small"
-                        variant="outlined"
-                        endIcon={
-                          <SecurityIcon
-                            sx={{
-                              margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
-                            }}
-                          />
-                        }
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "16px",
+                          width: "100%",
+                        }}
                       >
-                        {t("Reports.nsuranceAndTransferOfOwnership")}
-                      </Button>
-
-                      <Button
-                        sx={{ margin: "0 !important" }}
-                        onClick={() => handleClickOnShippingCarBtn(card.id)}
-                        size="small"
-                        variant="outlined"
-                        disabled={loadingSummaryCardDownload[card.id]} // Disable button if loading
-                        endIcon={
-                          <CarRepairIcon
-                            sx={{
-                              margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
-                            }}
-                          />
-                        }
-                      >
-                        {t("Reports.shippingTheCar")}
-                      </Button>
-                    </div>
-                  </CardActions>
-                </Card>
-              ))
-          ) : (
-            <Typography variant="h6" component="div" style={{ textAlign: "center", margin: "20px", color: "#757575" }}>
-              {fetchCardStatus === "fetching" ? t("Reports.loading") : t("Reports.noReports")}
-            </Typography>
+                        {/* عرض تقرير موجز */}
+                        <Button
+                          sx={{ width: "100%" }}
+                          onClick={() => navigateToMojazReport(card?.pdf_url)}
+                          // size="small"
+                          variant="contained"
+                          disabled={card.status !== "ready"}
+                        >
+                          {t("Reports.showTheReport")}
+                        </Button>
+                      </div>
+                    </CardActions>
+                  </Card>
+                ))
+              ) : (
+                <Typography variant="h6" component="div" style={{ textAlign: "center", margin: "20px", color: "#757575" }}>
+                  {fetchMoajzReportsStatus === "fetching" ? t("Reports.loading") : t("Reports.noReports")}
+                </Typography>
+              )}
+            </div>
           )}
-        </div>
+        </>
       )}
     </div>
   );

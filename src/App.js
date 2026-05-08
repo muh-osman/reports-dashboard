@@ -35,6 +35,10 @@ import PayPassengerCheck from "./Pages/PayPassengerCheck/PayPassengerCheck";
 import PricesList from "./Pages/PricesList/PricesList";
 import ViewVideosPage from "./Pages/ViewVideosPage/ViewVideosPage";
 import SocialMedia from "./Pages/SocialMedia/SocialMedia";
+import OfferPlans from "./Pages/OfferPlans/OfferPlans";
+import AskMojazReport from "./Pages/AskMojazReport/AskMojazReport";
+import PayMojaz from "./Pages/PayMojaz/PayMojaz";
+import ThanksPayMojaz from "./Pages/ThanksPayMojaz/ThanksPayMojaz";
 // import Lottery from "./Pages/Lottery/Lottery";
 // import LotteryAlreadyRegistered from "./Pages/LotteryAlreadyRegistered/LotteryAlreadyRegistered";
 
@@ -78,6 +82,12 @@ export default function App() {
           <Route path={`${process.env.PUBLIC_URL}/shipping/:cardId`} element={<Shipping />} />
           <Route path={`${process.env.PUBLIC_URL}/pay/shipping`} element={<PayShipping />} />
           {/* <Route path={`${process.env.PUBLIC_URL}/pay/shipping/thanks`} element={<ThanksShipping />} /> */}
+
+          {/* <Route path={`${process.env.PUBLIC_URL}/offer-plans`} element={<OfferPlans />} /> */}
+
+          <Route path={`${process.env.PUBLIC_URL}/ask-mojaz-report/`} element={<AskMojazReport />} />
+          <Route path={`${process.env.PUBLIC_URL}/pay-mojaz`} element={<PayMojaz />} />
+          <Route path={`${process.env.PUBLIC_URL}/pay-mojaz/thanks`} element={<ThanksPayMojaz />} />
 
           <Route path={`${process.env.PUBLIC_URL}/pay/purchase-check`} element={<PayPurchaseCheck />} />
           <Route path={`${process.env.PUBLIC_URL}/pay/purchase-check/thanks`} element={<ThanksPurchaseCheck />} />

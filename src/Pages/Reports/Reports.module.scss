@@ -13,7 +13,8 @@
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-  padding-top: 31px;
+  // padding-top: 31px;
+  // width: 100%;
 }
 
 .point_card {
@@ -86,9 +87,15 @@
   }
 }
 
+@media (max-width: 599px) {
+  .points_container {
+    width: 100%;
+  }
+}
+
 // Reprots cards
 .last_reports_title {
-  margin-top: 55px;
+  margin-top: 16px;
   margin-bottom: 12px;
   padding: 3px 9px;
   // background-color: #f5f5f5;
@@ -259,4 +266,15 @@
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
+}
+
+// Mojaz report
+.show_all_mojaz_report_btn {
+  color: #1976d2;
+  text-decoration: none;
+  font-size: 14px;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
