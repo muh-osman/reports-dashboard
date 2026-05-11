@@ -1,5 +1,5 @@
 import style from "./PayMojaz.module.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 // Lang
 import i18n from "../../i18n";
@@ -14,6 +14,8 @@ import Typography from "@mui/material/Typography";
 import { Box, Stepper, Step, StepLabel } from "@mui/material";
 // Cookies
 import { useCookies } from "react-cookie";
+// API
+import { useGetAllCardsApi } from "../../API/useGetAllCardsApi";
 
 const Accordion = styled((props) => <MuiAccordion disableGutters elevation={0} square {...props} />)(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
@@ -53,6 +55,18 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 const steps = ["بيانات المركبة", "الدفع", "تحميل التقرير"];
 
 export default function PayMojaz() {
+  const { data: cardsData, fetchStatus: fetchCardStatus } = useGetAllCardsApi();
+
+  const branchNameAr = useRef(null);
+
+  useEffect(() => {
+    if (cardsData && cardsData?.length > 0 && fetchCardStatus === "idle") {
+      let lastCard = cardsData?.length > 0 ? cardsData[cardsData.length - 1] : null;
+
+      branchNameAr.current = lastCard?.branchNameAr ?? null;
+    }
+  }, [cardsData]);
+
   //
   const [activeStep, setActiveStep] = useState(1);
   //
@@ -101,11 +115,11 @@ export default function PayMojaz() {
   const phone = cookies.phoneNumber;
   const userId = cookies.userId?.toString();
 
-//   console.log(lookupType);
-//   console.log(lookupValue);
-//   console.log(name);
-//   console.log(phone);
-//   console.log(userId);
+  //   console.log(lookupType);
+  //   console.log(lookupValue);
+  //   console.log(name);
+  //   console.log(phone);
+  //   console.log(userId);
 
   //
   const [expanded, setExpanded] = useState("panel3");
@@ -142,22 +156,41 @@ export default function PayMojaz() {
           phone: phone,
           userId: userId,
           price: 119,
+          email: branchNameAr?.current || null,
         },
 
         on_failure: async function (error) {
           console.log(error);
         },
+
+        on_initiating: async function () {
+          console.log({
+            lookupType: lookupType,
+            lookupValue: lookupValue,
+            name: name,
+            phone: phone,
+            userId: userId,
+            price: 119,
+            email: branchNameAr?.current || null,
+          });
+
+          // Update the data
+          return {
+            amount: 119 * 100,
+            metadata: {
+              lookupType: lookupType,
+              lookupValue: lookupValue,
+              name: name,
+              phone: phone,
+              userId: userId,
+              price: 119,
+              email: branchNameAr?.current || null,
+            },
+          };
+        },
       });
     }
-
-    return () => {
-      // Clean up Moyasar form when component unmounts
-      const formElement = document.querySelector(".mysr-form");
-      if (formElement) {
-        formElement.innerHTML = "";
-      }
-    };
-  }, [languageText, lookupType, lookupValue, name, phone, userId]);
+  }, [languageText, lookupType, lookupValue, name, phone, userId, cardsData]);
 
   return (
     <div className={style.container} dir={languageText === "ar" ? "rtl" : "ltr"}>

@@ -25,6 +25,8 @@ import CardContent from "@mui/material/CardContent";
 import IconButton from "@mui/material/IconButton";
 import { LoadingButton } from "@mui/lab";
 import Modal from "@mui/material/Modal";
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 // MUI Icons
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -32,6 +34,7 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import DoNotDisturbOnIcon from "@mui/icons-material/DoNotDisturbOn";
+import WarningIcon from "@mui/icons-material/Warning";
 // Lang
 import i18n from "../../i18n";
 import { useTranslation } from "react-i18next";
@@ -469,7 +472,16 @@ export default function Booking() {
       >
         {t("Booking.bookAppointment")}
       </Typography>
+
       <Box sx={{ minWidth: 120, maxWidth: "400px", margin: "auto" }}>
+        {/* Banner */}
+        {/* <div className={style.banner} dir="rtl">
+          <Alert sx={{ margin: "0px" }} severity="warning" icon={<WarningIcon sx={languageText === "ar" ? { marginLeft: "12px", marginRight: "-12px" } : {}} />}>
+            <AlertTitle>تنبيه:</AlertTitle>
+            خدمة حجز الموعد متوقفة مؤقتاً، نعتذر عن الإزعاج
+          </Alert>
+        </div> */}
+
         {/*  مكان الفحص */}
         <FormControl fullWidth dir={languageText === "ar" ? "rtl" : "ltr"}>
           {/* الفرع  */}

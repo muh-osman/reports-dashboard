@@ -59,7 +59,7 @@ export default function AskMojazReport() {
 
       const data = await response.json();
 
-    //   console.log(data);
+      //   console.log(data);
 
       if (data?.data === null) {
         toast.warn("يرجى ادخال بيانات صحيحة");

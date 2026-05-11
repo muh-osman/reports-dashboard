@@ -116,6 +116,7 @@ export default function PayPassengerCheck() {
   const priceId = searchParams.get("price_id");
   const affiliate = searchParams.get("affiliate");
   const carType = searchParams.get("passenger");
+  const offUrl = searchParams.get("off");
   ///////////////////////////////////////// End Get params from URL /////////////////////////////////////////
 
   // Fixed data value
@@ -286,6 +287,8 @@ export default function PayPassengerCheck() {
   useEffect(() => {
     // Only calculate if we have all the required data
     if (carType) {
+      setOff(+offUrl);
+
       const priceObj = carType === "sedan" ? 100 : carType === "suv" ? 150 : 200;
 
       if (priceObj) {
