@@ -1,9 +1,9 @@
-import style from "./PayMakdomCheck.module.scss";
+import style from "./PayPassengerCheck.module.scss";
 import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 // Lang
 import i18n from "../../i18n";
-import { useTranslation, Trans } from "react-i18next";
+import { useTranslation } from "react-i18next";
 // MUI
 import { styled } from "@mui/material/styles";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
@@ -11,17 +11,15 @@ import MuiAccordion from "@mui/material/Accordion";
 import MuiAccordionSummary, { accordionSummaryClasses } from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
-import { Backdrop, CircularProgress, Checkbox, FormControlLabel, FormHelperText, MenuItem, Select, Modal, Fade, Button } from "@mui/material";
+import { CircularProgress, Checkbox, FormControlLabel, FormHelperText, MenuItem, Select } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import Box from "@mui/material/Box";
 // Image
 import tamaraLogo from "../../Assets/Images/tamara-logo.svg";
 import tabbyLogo from "../../Assets/Images/tabby.png";
 // API
-import useGetPricesApi from "../../API/useGetPricesApi";
 import useGetPoinsApi from "../../API/useGetPoinsApi";
 import useCheckDiscountCodeApi from "../../API/useCheckDiscountCodeApi";
 // Cookies
@@ -47,6 +45,7 @@ const AccordionSummary = styled((props) => <MuiAccordionSummary expandIcon={<Arr
   // backgroundColor: "rgba(0, 0, 0, .03)",
   flexDirection: "row-reverse",
   padding: "0px !important",
+
   [`& .${accordionSummaryClasses.expandIconWrapper}.${accordionSummaryClasses.expanded}`]: {
     transform: "rotate(-90deg)",
   },
@@ -72,7 +71,7 @@ const CurrencyIcon = ({ fill = "#000000de", ...props }) => {
   );
 };
 
-export default function PayMakdomCheck() {
+export default function PayPassengerCheck() {
   ///////////////////////////////////////// Start Utils /////////////////////////////////////////
   useEffect(() => {
     // Scroll to the top of the page
@@ -112,17 +111,17 @@ export default function PayMakdomCheck() {
 
   ///////////////////////////////////////// Start Get params from URL /////////////////////////////////////////
   const searchParams = new URLSearchParams(window.location.search);
-  const modelId = searchParams.get("car_model_id");
   const year = searchParams.get("full_year");
   const yearId = searchParams.get("year_id");
-  const comfortService = searchParams.get("comfort_service");
   const priceId = searchParams.get("price_id");
   const affiliate = searchParams.get("affiliate");
+  const carType = searchParams.get("passenger");
+  const offUrl = searchParams.get("off");
   ///////////////////////////////////////// End Get params from URL /////////////////////////////////////////
 
   // Fixed data value
-  const [plan, setPlan] = useState("");
-  const [model, setModel] = useState("");
+  const [plan, setPlan] = useState("المسافر");
+  const [model, setModel] = useState(carType === "sedan" ? "سيدان" : carType === "suv" ? "دفع رباعي" : "فارهة");
   const [off, setOff] = useState(0);
   // Changed data value
   const [checkedAdditionalServices, setCheckedAdditionalServices] = useState([]);
@@ -133,25 +132,7 @@ export default function PayMakdomCheck() {
 
   ///////////////////////////////////////// Start fetch APIs /////////////////////////////////////////
   const { data: points } = useGetPoinsApi();
-  const { data: prices, fetchStatus: pricesFetchStatus, isSuccess: isFetchPricesSuccess } = useGetPricesApi(modelId, year, comfortService, true, true);
   ///////////////////////////////////////// End fetch APIs /////////////////////////////////////////
-
-  ///////////////////////////////////////// Start overlay /////////////////////////////////////////
-  const [showOverlay, setShowOverlay] = useState(true);
-  const [overlayMessage, setOverlayMessage] = useState("");
-  useEffect(() => {
-    if (pricesFetchStatus === "fetching") {
-      setShowOverlay(true);
-      setOverlayMessage("");
-    } else if (isFetchPricesSuccess) {
-      setShowOverlay(false);
-      setOverlayMessage("");
-    } else {
-      setShowOverlay(true);
-      setOverlayMessage("خطأ في الشبكة");
-    }
-  }, [pricesFetchStatus, isFetchPricesSuccess]);
-  ///////////////////////////////////////// End overlay /////////////////////////////////////////
 
   const [total, setTotal] = useState(0);
   const totalRef = useRef(total);
@@ -188,13 +169,10 @@ export default function PayMakdomCheck() {
       toast.warn("كود الخصم مطلوب!");
       return;
     }
-    if (comfortService === "yes") {
-      // لا يسمح بادخال كود خصم في خدمة مرتاح
-      toast.warn("الخصم مفعّل مسبقًا، لا يمكن إضافة خصم آخر!");
-      return;
-    }
+
     setIsApplyingDiscount(true);
   };
+
   const [basePrice, setBasePrice] = useState(0);
 
   useEffect(() => {
@@ -282,12 +260,12 @@ export default function PayMakdomCheck() {
       }
 
       if (pointsValue === total) {
-        toast.warn(`لا يمكن استبدال نقاطك بكامل قيمة الطلب. الحد الأدنى للطلب 100 ريال`);
+        toast.warn(`لا يمكن استبدال نقاطك بكامل قيمة الطلب. الحد الأدنى للطلب 10 ريال`);
         return;
       }
 
-      if (pointsValue > total - 100) {
-        toast.warn(`لا يمكن استبدال نقاطك لكامل قيمة الفاتورة، الحد الأدنى للطلب 100 ريال`);
+      if (pointsValue > total - 10) {
+        toast.warn(`لا يمكن استبدال نقاطك لكامل قيمة الفاتورة، الحد الأدنى للطلب 10 ريال`);
         return;
       }
 
@@ -304,26 +282,17 @@ export default function PayMakdomCheck() {
   ///////////////////////////////////////// End redeem points /////////////////////////////////////////
 
   ///////////////////////////////////////// Start logic that updata the total /////////////////////////////////////////
-  const [capturePhotosAndVideosForCarPrice, setCapturePhotosAndVideosForCarPrice] = useState(50);
-  const [isCapturePhotosAndVideosForCarChecked, setIsCapturePhotosAndVideosForCarChecked] = useState(false);
-
-  const [explainReportByVideoPrice, setExplainReportByVideoPrice] = useState(50);
-  const [isExplainReportByVideoChecked, setIsExplainReportByVideoChecked] = useState(false);
-
-  const [briefReportPrice, setBriefReportPrice] = useState(100);
-  const [isBriefReportChecked, setIsBriefReportChecked] = useState(false);
-
+  const [airBagCheckPrice, setAirBagCheckPrice] = useState(carType === "sedan" ? 50 : carType === "suv" ? 75 : 100);
+  const [isAirBagCheckChecked, setIsAirBagCheckChecked] = useState(false);
   useEffect(() => {
     // Only calculate if we have all the required data
-    if (isFetchPricesSuccess && prices && prices.length > 0 && priceId) {
-      setPlan(prices?.[0]?.prices?.[priceId]?.service_name);
-      setModel(prices?.[0]?.model_name);
-      setOff(prices?.[0]?.prices?.[priceId]?.discount_percent);
+    if (carType) {
+      setOff(+offUrl);
 
-      const priceObj = prices[0]?.prices?.[priceId];
+      const priceObj = carType === "sedan" ? 50 : carType === "suv" ? 75 : 100;
 
       if (priceObj) {
-        const calculatedBasePrice = Number(priceObj.price) || 0;
+        const calculatedBasePrice = Number(priceObj) || 0;
         setBasePrice(calculatedBasePrice);
 
         // Calculate total with discount applied only to base price
@@ -335,64 +304,24 @@ export default function PayMakdomCheck() {
           calculatedTotal = calculatedBasePrice / (1 - +off / 100) - appliedDiscount.amount;
         }
 
-        // Update checkedAdditionalServices based on isBriefReportChecked
+        // Update checkedAdditionalServices based on isAirBagCheckChecked
         setCheckedAdditionalServices((prev) => {
-          const hasBriefReport = prev.includes("تقرير موجز");
+          const hasAirBagCheck = prev.includes("فحص الإيرباق");
 
-          if (isBriefReportChecked && !hasBriefReport) {
-            // Add "تقرير موجز" if checked and not already in array
-            return [...prev, "تقرير موجز"];
-          } else if (!isBriefReportChecked && hasBriefReport) {
-            // Remove "تقرير موجز" if unchecked and present in array
-            return prev.filter((item) => item !== "تقرير موجز");
+          if (isAirBagCheckChecked && !hasAirBagCheck) {
+            // Add "فحص الإيرباق" if checked and not already in array
+            return [...prev, "فحص الإيرباق"];
+          } else if (!isAirBagCheckChecked && hasAirBagCheck) {
+            // Remove "فحص الإيرباق" if unchecked and present in array
+            return prev.filter((item) => item !== "فحص الإيرباق");
           }
           // Return unchanged if no change needed
           return prev;
         });
 
-        // Update checkedAdditionalServices based on isExplainReportByVideoChecked
-        setCheckedAdditionalServices((prev) => {
-          const hasExplainReportByVideo = prev.includes("شرح التقرير عبر فيديو");
-
-          if (isExplainReportByVideoChecked && !hasExplainReportByVideo) {
-            // Add "شرح التقرير عبر فيديو" if checked and not already in array
-            return [...prev, "شرح التقرير عبر فيديو"];
-          } else if (!isExplainReportByVideoChecked && hasExplainReportByVideo) {
-            // Remove "شرح التقرير عبر فيديو" if unchecked and present in array
-            return prev.filter((item) => item !== "شرح التقرير عبر فيديو");
-          }
-          // Return unchanged if no change needed
-          return prev;
-        });
-
-        // Update checkedAdditionalServices based on isCapturePhotosAndVideosForCarChecked
-        setCheckedAdditionalServices((prev) => {
-          const hasCapturePhotosAndVideosForCar = prev.includes("تصوير السيارة (فيديو + صور)");
-
-          if (isCapturePhotosAndVideosForCarChecked && !hasCapturePhotosAndVideosForCar) {
-            // Add "تصوير السيارة (فيديو + صور)" if checked and not already in array
-            return [...prev, "تصوير السيارة (فيديو + صور)"];
-          } else if (!isCapturePhotosAndVideosForCarChecked && hasCapturePhotosAndVideosForCar) {
-            // Remove "تصوير السيارة (فيديو + صور)" if unchecked and present in array
-            return prev.filter((item) => item !== "تصوير السيارة (فيديو + صور)");
-          }
-          // Return unchanged if no change needed
-          return prev;
-        });
-
-        // Add "brief report" price if checked
-        if (isBriefReportChecked) {
-          calculatedTotal += briefReportPrice;
-        }
-
-        // Add "explain Report By Video" price if checked
-        if (isExplainReportByVideoChecked) {
-          calculatedTotal += explainReportByVideoPrice;
-        }
-
-        // Add "Capture Photos And Videos For Car" price if checked
-        if (isCapturePhotosAndVideosForCarChecked) {
-          calculatedTotal += capturePhotosAndVideosForCarPrice;
+        // Add AirBag Check price if checked
+        if (isAirBagCheckChecked) {
+          calculatedTotal += airBagCheckPrice;
         }
 
         // Apply points discount
@@ -401,8 +330,8 @@ export default function PayMakdomCheck() {
         }
 
         console.log("Setting total to:", Math.trunc(calculatedTotal));
-        if (calculatedTotal < 100) {
-          alert("الحد الأدنى للطلب 100 ريال");
+        if (calculatedTotal < 10) {
+          alert("الحد الأدنى للطلب 10 ريال");
           window.location.reload();
           return;
         }
@@ -418,19 +347,7 @@ export default function PayMakdomCheck() {
       setBasePrice(0);
       setTotal(0);
     }
-  }, [
-    isFetchPricesSuccess,
-    prices,
-    priceId,
-    appliedDiscount,
-    appliedPoints,
-    briefReportPrice,
-    isBriefReportChecked,
-    explainReportByVideoPrice,
-    isExplainReportByVideoChecked,
-    capturePhotosAndVideosForCarPrice,
-    isCapturePhotosAndVideosForCarChecked,
-  ]);
+  }, [isAirBagCheckChecked, appliedDiscount, appliedPoints, airBagCheckPrice, carType]);
 
   // Update the display to show discount amount based only on base price
   const discountAmount = appliedDiscount ? Math.trunc(basePrice * (appliedDiscount.value / 100)) : 0;
@@ -644,68 +561,6 @@ export default function PayMakdomCheck() {
   };
   ///////////////////////////////////////// End Branch input /////////////////////////////////////////
 
-  ///////////////////////////////////////// Start address input /////////////////////////////////////////
-  const [address, setAddress] = useState("");
-  const [addressError, setAddressError] = useState(false);
-  const addressRef = useRef(address);
-  useEffect(() => {
-    addressRef.current = address;
-  }, [address]);
-  // Handle address change
-  const handleAddressChange = (e) => {
-    const value = e.target.value;
-    setAddress(value);
-  };
-  // validate address
-  const handleAddressBlur = () => {
-    if (!address.trim()) {
-      toast.warn("الرجاء إدخال العنوان");
-      setAddressError(true);
-      return;
-    }
-
-    // Check if
-    if (address.trim().length < 4) {
-      toast.warn("يرجى ادخال العنوان بالتفصيل");
-      setAddressError(true);
-      return;
-    }
-
-    setAddressError(false);
-  };
-  ///////////////////////////////////////// End address input /////////////////////////////////////////
-
-  ///////////////////////////////////////// Start Mertah Modal states /////////////////////////////////////////
-  // checkbox
-  const [acceptTerms, setAcceptTerms] = useState(false);
-  // Modal
-  const [openModal, setOpenModal] = useState(false);
-  const [isAcceptMertahTerms, setIsAcceptMertahTerms] = useState(false);
-  const acceptMertahTermsRef = useRef(isAcceptMertahTerms);
-  useEffect(() => {
-    acceptMertahTermsRef.current = isAcceptMertahTerms;
-  }, [isAcceptMertahTerms]);
-
-  const handleTermsChange = (e) => {
-    setAcceptTerms(e.target.checked);
-    setOpenModal(true);
-  };
-
-  // Handle modal confirmation
-  const handleModalConfirm = () => {
-    setAcceptTerms(true);
-    setIsAcceptMertahTerms(true);
-    setOpenModal(false);
-  };
-
-  // Handle modal close/cancel
-  const handleModalClose = () => {
-    setOpenModal(false);
-    setAcceptTerms(false);
-    setIsAcceptMertahTerms(false);
-  };
-  ///////////////////////////////////////// End Mertah Modal states /////////////////////////////////////////
-
   ///////////////////////////////////////// Start Tamara /////////////////////////////////////////
   const [isTamaraBtnLoading, setIsTamaraBtnLoading] = useState(false);
   const handleClickTamaraBtn = async () => {
@@ -723,15 +578,6 @@ export default function PayMakdomCheck() {
     }
     if (!selectedBranchRef.current) {
       toast.warn("حقل الفرع مطلوب!");
-      return;
-    }
-    if (comfortService === "yes" && !addressRef.current) {
-      toast.warn("حقل العنوان مطلوب!");
-      return;
-    }
-    // Check if user accept Mertah terms
-    if (comfortService === "yes" && !acceptMertahTermsRef.current) {
-      toast.warn("يرجى الموافقة على شروط خدمة مرتاح");
       return;
     }
 
@@ -785,11 +631,11 @@ export default function PayMakdomCheck() {
         phone_number: formatedPhoneNumberRef.current,
       },
       country_code: "SA",
-      description: year || null, // fullYear
+      description: year || "N/A", // fullYear
       merchant_url: {
-        cancel: `${window.location.origin}${process.env.PUBLIC_URL}/pay/makdom-check/thanks?cancel=true`,
-        failure: `${window.location.origin}${process.env.PUBLIC_URL}/pay/makdom-check/thanks?fail=true`,
-        success: `${window.location.origin}${process.env.PUBLIC_URL}/pay/makdom-check/thanks`,
+        cancel: `${window.location.origin}${process.env.PUBLIC_URL}/pay/purchase-check/thanks?cancel=true`,
+        failure: `${window.location.origin}${process.env.PUBLIC_URL}/pay/purchase-check/thanks?fail=true`,
+        success: `${window.location.origin}${process.env.PUBLIC_URL}/pay/purchase-check/thanks`,
       },
       payment_type: "PAY_BY_INSTALMENTS",
       instalments: 3,
@@ -803,9 +649,9 @@ export default function PayMakdomCheck() {
         first_name: userNameRef.current.trim().split(" ")[0],
         last_name: userNameRef.current.trim().split(" ").slice(1).join(" "),
         line1: formatedPhoneNumberRef.current, // this is the used in back-end as PhoneNumber
-        line2: comfortService === "yes" ? "مرتاح+مخدوم" : "مخدوم", // Service
+        line2: null, // Service
         phone_number: formatedPhoneNumberRef.current,
-        region: addressRef.current || null, // address
+        region: null, // address
       },
       locale: "ar_SA",
 
@@ -872,15 +718,6 @@ export default function PayMakdomCheck() {
       toast.warn("حقل الفرع مطلوب!");
       return;
     }
-    if (comfortService === "yes" && !addressRef.current) {
-      toast.warn("حقل العنوان مطلوب!");
-      return;
-    }
-    // Check if user accept Mertah terms
-    if (comfortService === "yes" && !acceptMertahTermsRef.current) {
-      toast.warn("يرجى الموافقة على شروط خدمة مرتاح");
-      return;
-    }
 
     setIsTabbyBtnLoading(true);
 
@@ -898,11 +735,9 @@ export default function PayMakdomCheck() {
         currency: "SAR",
         description: `id=${randomString}&fullname=${userNameRef.current}&phone=${formatedPhoneNumberRef.current}&branch=${selectedBranchRef.current}&plan=${plan}&price=${
           totalRef.current
-        }&model=${model}&yearId=${yearId}&additionalServices=${checkedAdditionalServicesRef.current.join(", ") || "لايوجد"}&service=${
-          comfortService === "yes" ? "مرتاح+مخدوم" : "مخدوم"
-        }${affiliate ? `&affiliate=${affiliate}` : ""}${appliedDiscountRef?.current?.code ? `&dc=${appliedDiscountRef?.current?.code}&msh=${marketerShareRef?.current}` : ""}${
-          year ? `&fy=${year}` : ""
-        }${appliedPointsRef.current ? `&rv=${appliedPointsRef.current}&cd=${cookies?.userId}` : ""}${addressRef.current ? `&ad=${addressRef.current}` : ""}`,
+        }&model=${model}&yearId=${yearId}&additionalServices=${checkedAdditionalServicesRef.current.join(", ") || "لايوجد"}${affiliate ? `&affiliate=${affiliate}` : ""}${
+          appliedDiscountRef?.current?.code ? `&dc=${appliedDiscountRef?.current?.code}&msh=${marketerShareRef?.current}` : ""
+        }${year ? `&fy=${year}` : ""}${appliedPointsRef.current ? `&rv=${appliedPointsRef.current}&cd=${cookies?.userId}` : ""}`,
         buyer: {
           phone: formatedPhoneNumberRef.current,
           email: "user@example.com",
@@ -1003,14 +838,12 @@ export default function PayMakdomCheck() {
       lang: "ar",
       merchant_code: "SA",
       merchant_urls: {
-        success: `${window.location.origin}${process.env.PUBLIC_URL}/pay/makdom-check/thanks/`,
-        cancel: `${window.location.origin}${process.env.PUBLIC_URL}/pay/makdom-check/thanks/?cancel=true`,
-        failure: `${window.location.origin}${process.env.PUBLIC_URL}/pay/makdom-check/thanks/?fail=true`,
+        success: `${window.location.origin}${process.env.PUBLIC_URL}/pay/purchase-check/thanks/`,
+        cancel: `${window.location.origin}${process.env.PUBLIC_URL}/pay/purchase-check/thanks/?cancel=true`,
+        failure: `${window.location.origin}${process.env.PUBLIC_URL}/pay/purchase-check/thanks/?fail=true`,
       },
       token: null,
     };
-
-    console.log(orderData);
 
     try {
       // this api will send the "user data(orderData)" to back-end then the back-end will send this data to Tabby API and return the "web_url" that will take it in Front-end to redirect the user to Tabby checkout page(Checkout Session), after the payment is done, Tabby will redirect the user back to the "success_url (thankyou page)" that we have set in the "orderData" object.
@@ -1047,7 +880,7 @@ export default function PayMakdomCheck() {
   ///////////////////////////////////////// Start Moyasar /////////////////////////////////////////
   const isMoyasarFormInit = useRef(false);
   useEffect(() => {
-    if (isFetchPricesSuccess && window.Moyasar && total > 0) {
+    if (carType && window.Moyasar && total > 0) {
       // If form is already initialized, just update the amount
       if (isMoyasarFormInit.current) {
         window.Moyasar.setAmount(total * 100);
@@ -1060,9 +893,9 @@ export default function PayMakdomCheck() {
         amount: total * 100,
         currency: "SAR",
         language: languageText === "ar" ? "ar" : "en",
-        description: `فحص ${plan} - موديل ${model} (${comfortService === "yes" ? "مرتاح + مخدوم" : "مخدوم"})`,
+        description: `موديل ${model} - فحص ${plan}`,
         publishable_api_key: window.location.hostname === "localhost" ? process.env.REACT_APP_PURCHASE_MOYASAR_TEST_KEY : process.env.REACT_APP_PURCHASE_MOYASAR_LIVE_KEY,
-        callback_url: `${window.location.origin}${process.env.PUBLIC_URL}/pay/makdom-check/thanks`,
+        callback_url: `${window.location.origin}${process.env.PUBLIC_URL}/pay/purchase-check/thanks`,
         supported_networks: ["visa", "mastercard", "mada"],
         methods: ["creditcard", "applepay", "samsungpay"],
 
@@ -1089,14 +922,14 @@ export default function PayMakdomCheck() {
           plan: plan,
           model: model,
           price: total,
-          service: comfortService === "yes" ? "مرتاح+مخدوم" : "مخدوم",
+          service: null,
           additionalServices: checkedAdditionalServices.join(", ") || "لايوجد",
           affiliate: affiliate || null,
           dc: appliedDiscount?.code || null,
           msh: marketerShare || null,
           cd: cookies?.userId || null,
           rv: appliedPoints || null,
-          ad: address || null,
+          ad: null,
         },
 
         on_failure: async function (error) {
@@ -1105,22 +938,21 @@ export default function PayMakdomCheck() {
 
         on_initiating: async function () {
           console.log({
-            name: userNameRef.current,
-            phone: formatedPhoneNumberRef.current,
-            branch: selectedBranchRef.current,
-            year: yearId,
-            fy: year || null,
-            plan: plan,
-            model: model,
-            price: totalRef.current,
-            service: comfortService === "yes" ? "مرتاح+مخدوم" : "مخدوم",
-            additionalServices: checkedAdditionalServicesRef.current.join(", ") || "لايوجد",
+            // name: userNameRef.current,
+            // phone: formatedPhoneNumberRef.current,
+            // branch: selectedBranchRef.current,
+            // year: yearId,
+            // fy: year || null,
+            // plan: plan,
+            // model: model,
+            // price: totalRef.current,
+            // additionalServices: checkedAdditionalServicesRef.current.join(", ") || "لايوجد",
             affiliate: affiliate || null,
             dc: appliedDiscountRef?.current?.code || null,
             msh: marketerShareRef?.current || null,
             cd: cookies?.userId || null,
             rv: appliedPointsRef.current || null,
-            ad: addressRef.current || null,
+            ad: null,
           });
 
           if (!firstNameRef.current || !middleNameRef.current || !lastNameRef.current || !userNameRef.current || userNameRef.current.trim().length < 6) {
@@ -1143,17 +975,6 @@ export default function PayMakdomCheck() {
             return false;
           }
 
-          if (comfortService === "yes" && !addressRef.current) {
-            toast.warn("حقل العنوان مطلوب!");
-            return false;
-          }
-
-          // Check if user accept Mertah terms
-          if (comfortService === "yes" && !acceptMertahTermsRef.current) {
-            toast.warn("يرجى الموافقة على شروط خدمة مرتاح");
-            return false;
-          }
-
           // Update the data
           return {
             amount: totalRef.current * 100,
@@ -1166,74 +987,24 @@ export default function PayMakdomCheck() {
               plan: plan,
               model: model,
               price: totalRef.current,
-              service: comfortService === "yes" ? "مرتاح+مخدوم" : "مخدوم",
+              service: null,
               additionalServices: checkedAdditionalServicesRef.current.join(", ") || "لايوجد",
               affiliate: affiliate || null,
               dc: appliedDiscountRef?.current?.code || null,
               msh: marketerShareRef?.current || null,
               cd: cookies?.userId || null,
               rv: appliedPointsRef.current || null,
-              ad: addressRef.current || null,
+              ad: null,
             },
           };
         },
       });
     }
-  }, [isFetchPricesSuccess, total, isBriefReportChecked, isExplainReportByVideoChecked, isCapturePhotosAndVideosForCarChecked, languageText]);
+  }, [carType, total, isAirBagCheckChecked, languageText]);
   ///////////////////////////////////////// End Moyasar /////////////////////////////////////////
 
   return (
     <div className={style.container} dir={languageText === "ar" ? "rtl" : "ltr"}>
-      {/* Overlay with MUI Spinner */}
-      <Backdrop
-        sx={{
-          color: "#fff",
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-          flexDirection: "column",
-          backgroundColor: "rgba(0, 0, 0, 1)",
-        }}
-        open={showOverlay}
-      >
-        {pricesFetchStatus === "fetching" && (
-          <>
-            <CircularProgress color="inherit" />
-            <Typography dir={languageText === "ar" ? "rtl" : "ltr"} variant="h6" sx={{ mt: 2 }}>
-              {t("PayPurchaseCheck.loading")}
-            </Typography>
-          </>
-        )}
-
-        {overlayMessage && (
-          <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-            {overlayMessage}
-          </Typography>
-        )}
-      </Backdrop>
-
-      {/* Steps Box */}
-      {comfortService === "no" && (
-        <div className={style.steps_box}>
-          <h1>{t("PayPurchaseCheck.stepsTitle")}</h1>
-          <ol
-            style={{
-              [languageText === "ar" ? "paddingRight" : "paddingLeft"]: "18px",
-            }}
-          >
-            <li>{t("PayPurchaseCheck.step1")}</li>
-            <li>{t("PayPurchaseCheck.step2")}</li>
-            <li>
-              <Trans
-                i18nKey="PayPurchaseCheck.step3"
-                components={{
-                  1: <a target="_blank" href="https://cashif.cc/dashboard/reports" />,
-                }}
-              />
-            </li>
-            <li>{t("PayPurchaseCheck.step4")}</li>
-          </ol>
-        </div>
-      )}
-
       {/* Box */}
       <div className={style.pay_box}>
         {/* Points banner */}
@@ -1254,7 +1025,7 @@ export default function PayMakdomCheck() {
           <div>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", border: "none", padding: 0 }}>
               <p>
-                {t("PayPurchaseCheck.inspection")} {plan} {comfortService === "yes" && " - خدمة مرتاح"}
+                {t("PayPurchaseCheck.inspection")} {t("PayPurchaseCheck.passenger")}
               </p>
               <p style={{ fontSize: "12px" }}>{model}</p>
             </div>
@@ -1263,13 +1034,13 @@ export default function PayMakdomCheck() {
             </p>
           </div>
 
-          {/* تصوير السيارة (فيديو + صور) */}
+          {/* فحص الإيرباق */}
           <div>
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={isCapturePhotosAndVideosForCarChecked}
-                  onChange={(e) => setIsCapturePhotosAndVideosForCarChecked(e.target.checked)}
+                  checked={isAirBagCheckChecked}
+                  onChange={(e) => setIsAirBagCheckChecked(e.target.checked)}
                   sx={{
                     color: "primary.main",
                     padding: 0,
@@ -1288,91 +1059,17 @@ export default function PayMakdomCheck() {
                   }}
                 />
               }
-              label={<Typography variant="body1">{t("PayPurchaseCheck.capturePhotosAndVideosForCar")}</Typography>}
+              label={<Typography variant="body1">{t("PayPurchaseCheck.airBagCheck")}</Typography>}
               sx={{
                 margin: 0,
                 width: "100%",
               }}
             />
 
-            <p style={{ textDecoration: isCapturePhotosAndVideosForCarChecked ? "none" : "line-through", display: "flex", alignItems: "center", gap: "3px", fontWeight: 700 }}>
-              {capturePhotosAndVideosForCarPrice} <CurrencyIcon fill="#747a79" style={{ width: "20px", height: "20px" }} />
+            <p style={{ textDecoration: isAirBagCheckChecked ? "none" : "line-through", display: "flex", alignItems: "center", gap: "3px", fontWeight: 700 }}>
+              {airBagCheckPrice} <CurrencyIcon fill="#747a79" style={{ width: "20px", height: "20px" }} />
             </p>
           </div>
-
-          {/* شرح التقرير عبر فيديو */}
-          {/* <div>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={isExplainReportByVideoChecked}
-                  onChange={(e) => setIsExplainReportByVideoChecked(e.target.checked)}
-                  sx={{
-                    color: "primary.main",
-                    padding: 0,
-                    "&.Mui-checked": {
-                      color: "primary.main",
-                    },
-                    // For RTL/LTR support
-                    ...(languageText === "ar" && {
-                      marginLeft: "8px",
-                      marginRight: "0",
-                    }),
-                    ...(languageText === "en" && {
-                      marginRight: "8px",
-                      marginLeft: "0",
-                    }),
-                  }}
-                />
-              }
-              label={<Typography variant="body1">{t("PayPurchaseCheck.explainReportByVideo")}</Typography>}
-              sx={{
-                margin: 0,
-                width: "100%",
-              }}
-            />
-
-            <p style={{ textDecoration: isExplainReportByVideoChecked ? "none" : "line-through", display: "flex", alignItems: "center", gap: "3px", fontWeight: 700 }}>
-              {explainReportByVideoPrice} <CurrencyIcon fill="#747a79" style={{ width: "20px", height: "20px" }} />
-            </p>
-          </div> */}
-
-          {/* تقرير موجز */}
-          {/* <div>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={isBriefReportChecked}
-                  onChange={(e) => setIsBriefReportChecked(e.target.checked)}
-                  sx={{
-                    color: "primary.main",
-                    padding: 0,
-                    "&.Mui-checked": {
-                      color: "primary.main",
-                    },
-                    // For RTL/LTR support
-                    ...(languageText === "ar" && {
-                      marginLeft: "8px",
-                      marginRight: "0",
-                    }),
-                    ...(languageText === "en" && {
-                      marginRight: "8px",
-                      marginLeft: "0",
-                    }),
-                  }}
-                />
-              }
-              label={<Typography variant="body1">{t("PayPurchaseCheck.briefReport")}</Typography>}
-              sx={{
-                margin: 0,
-                width: "100%",
-              }}
-            />
-
-            <p style={{ textDecoration: isBriefReportChecked ? "none" : "line-through", display: "flex", alignItems: "center", gap: "3px", fontWeight: 700 }}>
-              {briefReportPrice} <CurrencyIcon fill="#747a79" style={{ width: "20px", height: "20px" }} />
-            </p>
-          </div> */}
 
           {/* Discount amount */}
           {appliedDiscount && (
@@ -1462,98 +1159,94 @@ export default function PayMakdomCheck() {
       </div>
 
       {/* Redeem/Discount Box */}
-      {(comfortService === "no" || cookies.tokenApp) && (
-        <div className={style.discount_box}>
-          {/* Discount input */}
-          {comfortService === "no" && (
-            <div>
-              <FormControl dir="ltr" sx={{ width: "100%" }} variant="outlined">
-                <InputLabel htmlFor="discount-input-outlined">{t("PayPurchaseCheck.discountCode")}</InputLabel>
-                <OutlinedInput
-                  label={t("PayPurchaseCheck.discountCode")}
-                  fullWidth
-                  id="discount-input-outlined"
-                  type="text"
-                  value={discountCode}
-                  onChange={(e) => setDiscountCode(e.target.value)}
-                  disabled={isApplyingDiscount || !!appliedDiscount}
-                  endAdornment={
-                    <LoadingButton
-                      size="small"
-                      variant="contained"
-                      onClick={handleApplyDiscount}
-                      loading={isApplyingDiscount}
-                      disabled={!discountCode.trim() || isApplyingDiscount || !!appliedDiscount}
-                      sx={{
-                        minWidth: "80px",
-                        height: "32px",
-                        fontSize: "12px",
-                      }}
-                    >
-                      {t("PayPurchaseCheck.apply")}
-                    </LoadingButton>
-                  }
-                />
-                <FormHelperText dir="rtl" sx={{ margin: 0, textAlign: languageText === "ar" ? "right" : "left", marginTop: "3px", fontSize: "11px" }}>
-                  {t("PayPurchaseCheck.theHigherValueWillApply")}
-                </FormHelperText>
-              </FormControl>
-            </div>
-          )}
-
-          {/* Redeem points */}
-          {cookies.tokenApp && points?.points > 0 && (
-            <div style={{ marginTop: "16px" }}>
-              <FormControl dir="ltr" sx={{ width: "100%" }} variant="outlined">
-                <InputLabel htmlFor="redeme-input-outlined">{t("PayPurchaseCheck.redeemeThePoints")}</InputLabel>
-                <OutlinedInput
-                  label={t("PayPurchaseCheck.redeemeThePoints")}
-                  fullWidth
-                  id="redeme-input-outlined"
-                  type="number"
-                  value={redeemPoints}
-                  onChange={(e) => setRedeemPoints(e.target.value)}
-                  disabled={isApplyingPoints || !!appliedPoints}
+      <div className={style.discount_box}>
+        {/* Discount input */}
+        <div>
+          <FormControl dir="ltr" sx={{ width: "100%" }} variant="outlined">
+            <InputLabel htmlFor="discount-input-outlined">{t("PayPurchaseCheck.discountCode")}</InputLabel>
+            <OutlinedInput
+              label={t("PayPurchaseCheck.discountCode")}
+              fullWidth
+              id="discount-input-outlined"
+              type="text"
+              value={discountCode}
+              onChange={(e) => setDiscountCode(e.target.value)}
+              disabled={isApplyingDiscount || !!appliedDiscount}
+              endAdornment={
+                <LoadingButton
+                  size="small"
+                  variant="contained"
+                  onClick={handleApplyDiscount}
+                  loading={isApplyingDiscount}
+                  disabled={!discountCode.trim() || isApplyingDiscount || !!appliedDiscount}
                   sx={{
-                    "& input[type=number]": {
-                      MozAppearance: "textfield",
-                    },
-                    "& input[type=number]::-webkit-outer-spin-button": {
-                      WebkitAppearance: "none",
-                      margin: 0,
-                    },
-                    "& input[type=number]::-webkit-inner-spin-button": {
-                      WebkitAppearance: "none",
-                      margin: 0,
-                    },
+                    minWidth: "80px",
+                    height: "32px",
+                    fontSize: "12px",
                   }}
-                  endAdornment={
-                    <LoadingButton
-                      size="small"
-                      variant="contained"
-                      onClick={handleRedeemPoints}
-                      loading={isApplyingPoints}
-                      disabled={!redeemPoints.trim() || isApplyingPoints || !!appliedPoints}
-                      sx={{
-                        minWidth: "80px",
-                        height: "32px",
-                        fontSize: "12px",
-                      }}
-                    >
-                      {t("PayPurchaseCheck.apply")}
-                    </LoadingButton>
-                  }
-                />
-                <FormHelperText dir="rtl" sx={{ margin: 0, textAlign: languageText === "ar" ? "right" : "left", marginTop: "3px", fontSize: "11px" }}>
-                  {t("PayPurchaseCheck.everyPointEqualOneRyal")}
-                </FormHelperText>
-              </FormControl>
-            </div>
-          )}
+                >
+                  {t("PayPurchaseCheck.apply")}
+                </LoadingButton>
+              }
+            />
+            <FormHelperText dir="rtl" sx={{ margin: 0, textAlign: languageText === "ar" ? "right" : "left", marginTop: "3px", fontSize: "11px" }}>
+              {t("PayPurchaseCheck.theHigherValueWillApply")}
+            </FormHelperText>
+          </FormControl>
         </div>
-      )}
 
-      {/* Name/phone/branch */}
+        {/* Redeem points */}
+        {cookies.tokenApp && points?.points > 0 && (
+          <div style={{ marginTop: "16px" }}>
+            <FormControl dir="ltr" sx={{ width: "100%" }} variant="outlined">
+              <InputLabel htmlFor="redeme-input-outlined">{t("PayPurchaseCheck.redeemeThePoints")}</InputLabel>
+              <OutlinedInput
+                label={t("PayPurchaseCheck.redeemeThePoints")}
+                fullWidth
+                id="redeme-input-outlined"
+                type="number"
+                value={redeemPoints}
+                onChange={(e) => setRedeemPoints(e.target.value)}
+                disabled={isApplyingPoints || !!appliedPoints}
+                sx={{
+                  "& input[type=number]": {
+                    MozAppearance: "textfield",
+                  },
+                  "& input[type=number]::-webkit-outer-spin-button": {
+                    WebkitAppearance: "none",
+                    margin: 0,
+                  },
+                  "& input[type=number]::-webkit-inner-spin-button": {
+                    WebkitAppearance: "none",
+                    margin: 0,
+                  },
+                }}
+                endAdornment={
+                  <LoadingButton
+                    size="small"
+                    variant="contained"
+                    onClick={handleRedeemPoints}
+                    loading={isApplyingPoints}
+                    disabled={!redeemPoints.trim() || isApplyingPoints || !!appliedPoints}
+                    sx={{
+                      minWidth: "80px",
+                      height: "32px",
+                      fontSize: "12px",
+                    }}
+                  >
+                    {t("PayPurchaseCheck.apply")}
+                  </LoadingButton>
+                }
+              />
+              <FormHelperText dir="rtl" sx={{ margin: 0, textAlign: languageText === "ar" ? "right" : "left", marginTop: "3px", fontSize: "11px" }}>
+                {t("PayPurchaseCheck.everyPointEqualOneRyal")}
+              </FormHelperText>
+            </FormControl>
+          </div>
+        )}
+      </div>
+
+      {/* Name/Phone/Branch */}
       <div className={style.user_data_box}>
         {/* Name */}
         {/* <FormControl fullWidth sx={{ marginBottom: "16px" }}>
@@ -1728,85 +1421,12 @@ export default function PayMakdomCheck() {
             {t("PayPurchaseCheck.theExaminationWillBeConductedAtTheSpecifiedBranch")}
           </FormHelperText>
         </FormControl>
-
-        {/* Address */}
-
-        {comfortService === "yes" && (
-          <div>
-            <FormControl fullWidth sx={{ marginTop: "16px" }}>
-              <InputLabel className={languageText === "ar" ? "custom-label-rtl" : ""} htmlFor="user-address">
-                {t("PayPurchaseCheck.address")}
-              </InputLabel>
-              <OutlinedInput
-                id="user-address"
-                label={t("PayPurchaseCheck.address")}
-                value={address}
-                onChange={handleAddressChange}
-                onBlur={handleAddressBlur}
-                error={!!addressError}
-                placeholder={t("PayPurchaseCheck.addressPlaceholder")}
-                inputProps={{
-                  maxLength: 200,
-                }}
-              />
-
-              <FormHelperText
-                sx={{
-                  margin: 0,
-                  marginTop: "3px",
-                  textAlign: languageText === "ar" ? "right" : "left",
-                  color: "text.secondary",
-                }}
-              >
-                {t("PayPurchaseCheck.addressHelperText")}
-              </FormHelperText>
-            </FormControl>
-
-            {/* Terms Acceptance Checkbox */}
-            <FormControl fullWidth sx={{ marginTop: "16px" }}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    disabled={isAcceptMertahTerms}
-                    checked={acceptTerms}
-                    onChange={handleTermsChange}
-                    sx={{
-                      // color: "primary.main",
-                      padding: 0,
-                      "&.Mui-checked": {
-                        // color: "primary.main",
-                      },
-                      ...(languageText === "ar" && {
-                        marginLeft: "8px",
-                        marginRight: "0",
-                      }),
-                      ...(languageText === "en" && {
-                        marginRight: "8px",
-                        marginLeft: "0",
-                      }),
-                    }}
-                  />
-                }
-                label={
-                  <Typography variant="body1" sx={{ color: isAcceptMertahTerms ? "#747a79" : "" }}>
-                    {t("PayPurchaseCheck.termsCheckbox")}
-                  </Typography>
-                }
-                sx={{
-                  margin: 0,
-                  width: "100%",
-                  alignItems: "flex-start",
-                }}
-              />
-            </FormControl>
-          </div>
-        )}
       </div>
 
       {/* Payment methods (Tamara/Tabby/Moyasar) */}
       <div className={style.payment_methods_box}>
         {/* Tamara */}
-        <Accordion expanded={expanded === "panel1"} onChange={handleChange("panel1")}>
+        {/* <Accordion expanded={expanded === "panel1"} onChange={handleChange("panel1")}>
           <AccordionSummary
             aria-controls="panel1d-content"
             id="panel1d-header"
@@ -1842,10 +1462,10 @@ export default function PayMakdomCheck() {
               {t("PayPurchaseCheck.confirmOrder")}
             </LoadingButton>
           </AccordionDetails>
-        </Accordion>
+        </Accordion> */}
 
         {/* Tabby */}
-        <Accordion expanded={expanded === "panel2"} onChange={handleChange("panel2")}>
+        {/* <Accordion expanded={expanded === "panel2"} onChange={handleChange("panel2")}>
           <AccordionSummary
             aria-controls="panel2d-content"
             id="panel2d-header"
@@ -1882,7 +1502,7 @@ export default function PayMakdomCheck() {
               {t("PayPurchaseCheck.confirmOrder")}
             </LoadingButton>
           </AccordionDetails>
-        </Accordion>
+        </Accordion> */}
 
         {/* Moyasar */}
         <Accordion expanded={expanded === "panel3"} onChange={handleChange("panel3")}>
@@ -1906,116 +1526,6 @@ export default function PayMakdomCheck() {
           </AccordionDetails>
         </Accordion>
       </div>
-
-      {/* MUI Modal for Comfort Service Terms Confirmation */}
-      <Modal
-        dir={languageText === "ar" ? "rtl" : "ltr"}
-        open={openModal}
-        onClose={handleModalClose}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={openModal}>
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: { xs: "90%", sm: 500 },
-              maxWidth: "90vw",
-              maxHeight: "90vh",
-              overflow: "auto",
-              bgcolor: "background.paper",
-              borderRadius: 2,
-              boxShadow: 24,
-              p: 3,
-              outline: "none",
-            }}
-          >
-            <Typography
-              variant="h6"
-              component="h2"
-              gutterBottom
-              align="center"
-              sx={{
-                color: "#164544",
-                fontWeight: "bold",
-                mb: 3,
-              }}
-            >
-              {t("PayPurchaseCheck.agreementTitle")}
-            </Typography>
-
-            <Box
-              sx={{
-                p: 3,
-                mb: 3,
-                borderRadius: 1,
-                bgcolor: "#f0f1f3",
-              }}
-            >
-              <Typography
-                variant="body1"
-                paragraph
-                align="right"
-                sx={{
-                  lineHeight: 1.8,
-                  fontSize: "1rem",
-                  textAlign: "center",
-                }}
-              >
-                {t("PayPurchaseCheck.liabilityClause")}
-              </Typography>
-              <Typography
-                variant="body1"
-                align="right"
-                sx={{
-                  lineHeight: 1.8,
-                  fontSize: "1rem",
-                  textAlign: "center",
-                }}
-              >
-                {t("PayPurchaseCheck.nonRefundClause")}
-              </Typography>
-            </Box>
-
-            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-              <Button
-                onClick={handleModalConfirm}
-                variant="contained"
-                sx={{
-                  backgroundColor: "#164544",
-                  width: "100%",
-                  "&:hover": {
-                    backgroundColor: "#0d3333",
-                  },
-                }}
-              >
-                {t("PayPurchaseCheck.agreeButton")}
-              </Button>
-              <Button
-                onClick={handleModalClose}
-                variant="outlined"
-                sx={{
-                  color: "#164544",
-                  borderColor: "#164544",
-                  width: "100%",
-                  "&:hover": {
-                    borderColor: "#164544",
-                    backgroundColor: "rgba(22, 69, 68, 0.04)",
-                  },
-                }}
-              >
-                {t("PayPurchaseCheck.cancelButton")}
-              </Button>
-            </Box>
-          </Box>
-        </Fade>
-      </Modal>
     </div>
   );
 }

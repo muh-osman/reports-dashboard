@@ -282,12 +282,12 @@ export default function PayMakdomCheck() {
       }
 
       if (pointsValue === total) {
-        toast.warn(`لا يمكن استبدال نقاطك بكامل قيمة الطلب. الحد الأدنى للطلب 100 ريال`);
+        toast.warn(`لا يمكن استبدال نقاطك بكامل قيمة الطلب. الحد الأدنى للطلب 10 ريال`);
         return;
       }
 
-      if (pointsValue > total - 100) {
-        toast.warn(`لا يمكن استبدال نقاطك لكامل قيمة الفاتورة، الحد الأدنى للطلب 100 ريال`);
+      if (pointsValue > total - 10) {
+        toast.warn(`لا يمكن استبدال نقاطك لكامل قيمة الفاتورة، الحد الأدنى للطلب 10 ريال`);
         return;
       }
 
@@ -401,8 +401,8 @@ export default function PayMakdomCheck() {
         }
 
         console.log("Setting total to:", Math.trunc(calculatedTotal));
-        if (calculatedTotal < 100) {
-          alert("الحد الأدنى للطلب 100 ريال");
+        if (calculatedTotal < 10) {
+          alert("الحد الأدنى للطلب 10 ريال");
           window.location.reload();
           return;
         }
@@ -1806,7 +1806,7 @@ export default function PayMakdomCheck() {
       {/* Payment methods (Tamara/Tabby/Moyasar) */}
       <div className={style.payment_methods_box}>
         {/* Tamara */}
-        <Accordion expanded={expanded === "panel1"} onChange={handleChange("panel1")}>
+        {/* <Accordion expanded={expanded === "panel1"} onChange={handleChange("panel1")}>
           <AccordionSummary
             aria-controls="panel1d-content"
             id="panel1d-header"
@@ -1842,10 +1842,10 @@ export default function PayMakdomCheck() {
               {t("PayPurchaseCheck.confirmOrder")}
             </LoadingButton>
           </AccordionDetails>
-        </Accordion>
+        </Accordion> */}
 
         {/* Tabby */}
-        <Accordion expanded={expanded === "panel2"} onChange={handleChange("panel2")}>
+        {/* <Accordion expanded={expanded === "panel2"} onChange={handleChange("panel2")}>
           <AccordionSummary
             aria-controls="panel2d-content"
             id="panel2d-header"
@@ -1882,7 +1882,7 @@ export default function PayMakdomCheck() {
               {t("PayPurchaseCheck.confirmOrder")}
             </LoadingButton>
           </AccordionDetails>
-        </Accordion>
+        </Accordion> */}
 
         {/* Moyasar */}
         <Accordion expanded={expanded === "panel3"} onChange={handleChange("panel3")}>

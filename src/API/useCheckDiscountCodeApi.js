@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-// Axios
-import axios from "axios";
+// API
+import API from "./Api";
 
 export const fetchCheckIfDiscountCodeIsValid = async (discountCode) => {
-  const res = await axios.get(`https://cashif-001-site1.dtempurl.com/api/Marketers/CheckCode?code=${discountCode}`);
+  const res = await API.get(`api/Marketers/CheckCode?code=${discountCode}`);
   return res.data;
 };
 

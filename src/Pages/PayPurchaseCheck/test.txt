@@ -1,9 +1,9 @@
-import style from "./PayMakdomCheck.module.scss";
+import style from "./PayPurchaseCheck.module.scss";
 import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 // Lang
 import i18n from "../../i18n";
-import { useTranslation, Trans } from "react-i18next";
+import { useTranslation } from "react-i18next";
 // MUI
 import { styled } from "@mui/material/styles";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
@@ -72,7 +72,7 @@ const CurrencyIcon = ({ fill = "#000000de", ...props }) => {
   );
 };
 
-export default function PayMakdomCheck() {
+export default function PayPurchaseCheck() {
   ///////////////////////////////////////// Start Utils /////////////////////////////////////////
   useEffect(() => {
     // Scroll to the top of the page
@@ -133,7 +133,7 @@ export default function PayMakdomCheck() {
 
   ///////////////////////////////////////// Start fetch APIs /////////////////////////////////////////
   const { data: points } = useGetPoinsApi();
-  const { data: prices, fetchStatus: pricesFetchStatus, isSuccess: isFetchPricesSuccess } = useGetPricesApi(modelId, year, comfortService, true, true);
+  const { data: prices, fetchStatus: pricesFetchStatus, isSuccess: isFetchPricesSuccess } = useGetPricesApi(modelId, year, comfortService, true, false);
   ///////////////////////////////////////// End fetch APIs /////////////////////////////////////////
 
   ///////////////////////////////////////// Start overlay /////////////////////////////////////////
@@ -195,6 +195,7 @@ export default function PayMakdomCheck() {
     }
     setIsApplyingDiscount(true);
   };
+
   const [basePrice, setBasePrice] = useState(0);
 
   useEffect(() => {
@@ -282,12 +283,12 @@ export default function PayMakdomCheck() {
       }
 
       if (pointsValue === total) {
-        toast.warn(`لا يمكن استبدال نقاطك بكامل قيمة الطلب. الحد الأدنى للطلب 100 ريال`);
+        toast.warn(`لا يمكن استبدال نقاطك بكامل قيمة الطلب. الحد الأدنى للطلب 10 ريال`);
         return;
       }
 
-      if (pointsValue > total - 100) {
-        toast.warn(`لا يمكن استبدال نقاطك لكامل قيمة الفاتورة، الحد الأدنى للطلب 100 ريال`);
+      if (pointsValue > total - 10) {
+        toast.warn(`لا يمكن استبدال نقاطك لكامل قيمة الفاتورة، الحد الأدنى للطلب 10 ريال`);
         return;
       }
 
@@ -304,15 +305,8 @@ export default function PayMakdomCheck() {
   ///////////////////////////////////////// End redeem points /////////////////////////////////////////
 
   ///////////////////////////////////////// Start logic that updata the total /////////////////////////////////////////
-  const [capturePhotosAndVideosForCarPrice, setCapturePhotosAndVideosForCarPrice] = useState(50);
-  const [isCapturePhotosAndVideosForCarChecked, setIsCapturePhotosAndVideosForCarChecked] = useState(false);
-
-  const [explainReportByVideoPrice, setExplainReportByVideoPrice] = useState(50);
-  const [isExplainReportByVideoChecked, setIsExplainReportByVideoChecked] = useState(false);
-
   const [briefReportPrice, setBriefReportPrice] = useState(100);
   const [isBriefReportChecked, setIsBriefReportChecked] = useState(false);
-
   useEffect(() => {
     // Only calculate if we have all the required data
     if (isFetchPricesSuccess && prices && prices.length > 0 && priceId) {
@@ -350,49 +344,9 @@ export default function PayMakdomCheck() {
           return prev;
         });
 
-        // Update checkedAdditionalServices based on isExplainReportByVideoChecked
-        setCheckedAdditionalServices((prev) => {
-          const hasExplainReportByVideo = prev.includes("شرح التقرير عبر فيديو");
-
-          if (isExplainReportByVideoChecked && !hasExplainReportByVideo) {
-            // Add "شرح التقرير عبر فيديو" if checked and not already in array
-            return [...prev, "شرح التقرير عبر فيديو"];
-          } else if (!isExplainReportByVideoChecked && hasExplainReportByVideo) {
-            // Remove "شرح التقرير عبر فيديو" if unchecked and present in array
-            return prev.filter((item) => item !== "شرح التقرير عبر فيديو");
-          }
-          // Return unchanged if no change needed
-          return prev;
-        });
-
-        // Update checkedAdditionalServices based on isCapturePhotosAndVideosForCarChecked
-        setCheckedAdditionalServices((prev) => {
-          const hasCapturePhotosAndVideosForCar = prev.includes("تصوير السيارة (فيديو + صور)");
-
-          if (isCapturePhotosAndVideosForCarChecked && !hasCapturePhotosAndVideosForCar) {
-            // Add "تصوير السيارة (فيديو + صور)" if checked and not already in array
-            return [...prev, "تصوير السيارة (فيديو + صور)"];
-          } else if (!isCapturePhotosAndVideosForCarChecked && hasCapturePhotosAndVideosForCar) {
-            // Remove "تصوير السيارة (فيديو + صور)" if unchecked and present in array
-            return prev.filter((item) => item !== "تصوير السيارة (فيديو + صور)");
-          }
-          // Return unchanged if no change needed
-          return prev;
-        });
-
-        // Add "brief report" price if checked
+        // Add brief report price if checked
         if (isBriefReportChecked) {
           calculatedTotal += briefReportPrice;
-        }
-
-        // Add "explain Report By Video" price if checked
-        if (isExplainReportByVideoChecked) {
-          calculatedTotal += explainReportByVideoPrice;
-        }
-
-        // Add "Capture Photos And Videos For Car" price if checked
-        if (isCapturePhotosAndVideosForCarChecked) {
-          calculatedTotal += capturePhotosAndVideosForCarPrice;
         }
 
         // Apply points discount
@@ -401,8 +355,8 @@ export default function PayMakdomCheck() {
         }
 
         console.log("Setting total to:", Math.trunc(calculatedTotal));
-        if (calculatedTotal < 100) {
-          alert("الحد الأدنى للطلب 100 ريال");
+        if (calculatedTotal < 10) {
+          alert("الحد الأدنى للطلب 10 ريال");
           window.location.reload();
           return;
         }
@@ -418,19 +372,7 @@ export default function PayMakdomCheck() {
       setBasePrice(0);
       setTotal(0);
     }
-  }, [
-    isFetchPricesSuccess,
-    prices,
-    priceId,
-    appliedDiscount,
-    appliedPoints,
-    briefReportPrice,
-    isBriefReportChecked,
-    explainReportByVideoPrice,
-    isExplainReportByVideoChecked,
-    capturePhotosAndVideosForCarPrice,
-    isCapturePhotosAndVideosForCarChecked,
-  ]);
+  }, [isBriefReportChecked, isFetchPricesSuccess, prices, priceId, appliedDiscount, appliedPoints, briefReportPrice]);
 
   // Update the display to show discount amount based only on base price
   const discountAmount = appliedDiscount ? Math.trunc(basePrice * (appliedDiscount.value / 100)) : 0;
@@ -664,7 +606,7 @@ export default function PayMakdomCheck() {
       return;
     }
 
-    // Check if
+    // Check if starts with 5 (Saudi mobile numbers start with 5)
     if (address.trim().length < 4) {
       toast.warn("يرجى ادخال العنوان بالتفصيل");
       setAddressError(true);
@@ -787,9 +729,9 @@ export default function PayMakdomCheck() {
       country_code: "SA",
       description: year || null, // fullYear
       merchant_url: {
-        cancel: `${window.location.origin}${process.env.PUBLIC_URL}/pay/makdom-check/thanks?cancel=true`,
-        failure: `${window.location.origin}${process.env.PUBLIC_URL}/pay/makdom-check/thanks?fail=true`,
-        success: `${window.location.origin}${process.env.PUBLIC_URL}/pay/makdom-check/thanks`,
+        cancel: `${window.location.origin}${process.env.PUBLIC_URL}/pay/purchase-check/thanks?cancel=true`,
+        failure: `${window.location.origin}${process.env.PUBLIC_URL}/pay/purchase-check/thanks?fail=true`,
+        success: `${window.location.origin}${process.env.PUBLIC_URL}/pay/purchase-check/thanks`,
       },
       payment_type: "PAY_BY_INSTALMENTS",
       instalments: 3,
@@ -803,7 +745,7 @@ export default function PayMakdomCheck() {
         first_name: userNameRef.current.trim().split(" ")[0],
         last_name: userNameRef.current.trim().split(" ").slice(1).join(" "),
         line1: formatedPhoneNumberRef.current, // this is the used in back-end as PhoneNumber
-        line2: comfortService === "yes" ? "مرتاح+مخدوم" : "مخدوم", // Service
+        line2: comfortService === "yes" ? "مرتاح" : null, // Service
         phone_number: formatedPhoneNumberRef.current,
         region: addressRef.current || null, // address
       },
@@ -898,11 +840,11 @@ export default function PayMakdomCheck() {
         currency: "SAR",
         description: `id=${randomString}&fullname=${userNameRef.current}&phone=${formatedPhoneNumberRef.current}&branch=${selectedBranchRef.current}&plan=${plan}&price=${
           totalRef.current
-        }&model=${model}&yearId=${yearId}&additionalServices=${checkedAdditionalServicesRef.current.join(", ") || "لايوجد"}&service=${
-          comfortService === "yes" ? "مرتاح+مخدوم" : "مخدوم"
-        }${affiliate ? `&affiliate=${affiliate}` : ""}${appliedDiscountRef?.current?.code ? `&dc=${appliedDiscountRef?.current?.code}&msh=${marketerShareRef?.current}` : ""}${
-          year ? `&fy=${year}` : ""
-        }${appliedPointsRef.current ? `&rv=${appliedPointsRef.current}&cd=${cookies?.userId}` : ""}${addressRef.current ? `&ad=${addressRef.current}` : ""}`,
+        }&model=${model}&yearId=${yearId}&additionalServices=${checkedAdditionalServicesRef.current.join(", ") || "لايوجد"}${comfortService === "yes" ? `&service=مرتاح` : ""}${
+          affiliate ? `&affiliate=${affiliate}` : ""
+        }${appliedDiscountRef?.current?.code ? `&dc=${appliedDiscountRef?.current?.code}&msh=${marketerShareRef?.current}` : ""}${year ? `&fy=${year}` : ""}${
+          appliedPointsRef.current ? `&rv=${appliedPointsRef.current}&cd=${cookies?.userId}` : ""
+        }${addressRef.current ? `&ad=${addressRef.current}` : ""}`,
         buyer: {
           phone: formatedPhoneNumberRef.current,
           email: "user@example.com",
@@ -1003,14 +945,12 @@ export default function PayMakdomCheck() {
       lang: "ar",
       merchant_code: "SA",
       merchant_urls: {
-        success: `${window.location.origin}${process.env.PUBLIC_URL}/pay/makdom-check/thanks/`,
-        cancel: `${window.location.origin}${process.env.PUBLIC_URL}/pay/makdom-check/thanks/?cancel=true`,
-        failure: `${window.location.origin}${process.env.PUBLIC_URL}/pay/makdom-check/thanks/?fail=true`,
+        success: `${window.location.origin}${process.env.PUBLIC_URL}/pay/purchase-check/thanks/`,
+        cancel: `${window.location.origin}${process.env.PUBLIC_URL}/pay/purchase-check/thanks/?cancel=true`,
+        failure: `${window.location.origin}${process.env.PUBLIC_URL}/pay/purchase-check/thanks/?fail=true`,
       },
       token: null,
     };
-
-    console.log(orderData);
 
     try {
       // this api will send the "user data(orderData)" to back-end then the back-end will send this data to Tabby API and return the "web_url" that will take it in Front-end to redirect the user to Tabby checkout page(Checkout Session), after the payment is done, Tabby will redirect the user back to the "success_url (thankyou page)" that we have set in the "orderData" object.
@@ -1060,9 +1000,9 @@ export default function PayMakdomCheck() {
         amount: total * 100,
         currency: "SAR",
         language: languageText === "ar" ? "ar" : "en",
-        description: `فحص ${plan} - موديل ${model} (${comfortService === "yes" ? "مرتاح + مخدوم" : "مخدوم"})`,
+        description: `موديل ${model} - فحص ${plan}`,
         publishable_api_key: window.location.hostname === "localhost" ? process.env.REACT_APP_PURCHASE_MOYASAR_TEST_KEY : process.env.REACT_APP_PURCHASE_MOYASAR_LIVE_KEY,
-        callback_url: `${window.location.origin}${process.env.PUBLIC_URL}/pay/makdom-check/thanks`,
+        callback_url: `${window.location.origin}${process.env.PUBLIC_URL}/pay/purchase-check/thanks`,
         supported_networks: ["visa", "mastercard", "mada"],
         methods: ["creditcard", "applepay", "samsungpay"],
 
@@ -1089,7 +1029,7 @@ export default function PayMakdomCheck() {
           plan: plan,
           model: model,
           price: total,
-          service: comfortService === "yes" ? "مرتاح+مخدوم" : "مخدوم",
+          service: comfortService === "yes" ? "مرتاح" : null,
           additionalServices: checkedAdditionalServices.join(", ") || "لايوجد",
           affiliate: affiliate || null,
           dc: appliedDiscount?.code || null,
@@ -1105,16 +1045,16 @@ export default function PayMakdomCheck() {
 
         on_initiating: async function () {
           console.log({
-            name: userNameRef.current,
-            phone: formatedPhoneNumberRef.current,
-            branch: selectedBranchRef.current,
-            year: yearId,
-            fy: year || null,
-            plan: plan,
-            model: model,
-            price: totalRef.current,
-            service: comfortService === "yes" ? "مرتاح+مخدوم" : "مخدوم",
-            additionalServices: checkedAdditionalServicesRef.current.join(", ") || "لايوجد",
+            // name: userNameRef.current,
+            // phone: formatedPhoneNumberRef.current,
+            // branch: selectedBranchRef.current,
+            // year: yearId,
+            // fy: year || null,
+            // plan: plan,
+            // model: model,
+            // price: totalRef.current,
+            service: comfortService === "yes" ? "مرتاح" : null,
+            // additionalServices: checkedAdditionalServicesRef.current.join(", ") || "لايوجد",
             affiliate: affiliate || null,
             dc: appliedDiscountRef?.current?.code || null,
             msh: marketerShareRef?.current || null,
@@ -1166,7 +1106,7 @@ export default function PayMakdomCheck() {
               plan: plan,
               model: model,
               price: totalRef.current,
-              service: comfortService === "yes" ? "مرتاح+مخدوم" : "مخدوم",
+              service: comfortService === "yes" ? "مرتاح" : null,
               additionalServices: checkedAdditionalServicesRef.current.join(", ") || "لايوجد",
               affiliate: affiliate || null,
               dc: appliedDiscountRef?.current?.code || null,
@@ -1179,7 +1119,7 @@ export default function PayMakdomCheck() {
         },
       });
     }
-  }, [isFetchPricesSuccess, total, isBriefReportChecked, isExplainReportByVideoChecked, isCapturePhotosAndVideosForCarChecked, languageText]);
+  }, [isFetchPricesSuccess, total, isBriefReportChecked, languageText]);
   ///////////////////////////////////////// End Moyasar /////////////////////////////////////////
 
   return (
@@ -1210,30 +1150,6 @@ export default function PayMakdomCheck() {
         )}
       </Backdrop>
 
-      {/* Steps Box */}
-      {comfortService === "no" && (
-        <div className={style.steps_box}>
-          <h1>{t("PayPurchaseCheck.stepsTitle")}</h1>
-          <ol
-            style={{
-              [languageText === "ar" ? "paddingRight" : "paddingLeft"]: "18px",
-            }}
-          >
-            <li>{t("PayPurchaseCheck.step1")}</li>
-            <li>{t("PayPurchaseCheck.step2")}</li>
-            <li>
-              <Trans
-                i18nKey="PayPurchaseCheck.step3"
-                components={{
-                  1: <a target="_blank" href="https://cashif.cc/dashboard/reports" />,
-                }}
-              />
-            </li>
-            <li>{t("PayPurchaseCheck.step4")}</li>
-          </ol>
-        </div>
-      )}
-
       {/* Box */}
       <div className={style.pay_box}>
         {/* Points banner */}
@@ -1262,80 +1178,6 @@ export default function PayMakdomCheck() {
               {Math.trunc(basePrice || 0)} <CurrencyIcon fill="#747a79" style={{ width: "20px", height: "20px" }} />
             </p>
           </div>
-
-          {/* تصوير السيارة (فيديو + صور) */}
-          <div>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={isCapturePhotosAndVideosForCarChecked}
-                  onChange={(e) => setIsCapturePhotosAndVideosForCarChecked(e.target.checked)}
-                  sx={{
-                    color: "primary.main",
-                    padding: 0,
-                    "&.Mui-checked": {
-                      color: "primary.main",
-                    },
-                    // For RTL/LTR support
-                    ...(languageText === "ar" && {
-                      marginLeft: "8px",
-                      marginRight: "0",
-                    }),
-                    ...(languageText === "en" && {
-                      marginRight: "8px",
-                      marginLeft: "0",
-                    }),
-                  }}
-                />
-              }
-              label={<Typography variant="body1">{t("PayPurchaseCheck.capturePhotosAndVideosForCar")}</Typography>}
-              sx={{
-                margin: 0,
-                width: "100%",
-              }}
-            />
-
-            <p style={{ textDecoration: isCapturePhotosAndVideosForCarChecked ? "none" : "line-through", display: "flex", alignItems: "center", gap: "3px", fontWeight: 700 }}>
-              {capturePhotosAndVideosForCarPrice} <CurrencyIcon fill="#747a79" style={{ width: "20px", height: "20px" }} />
-            </p>
-          </div>
-
-          {/* شرح التقرير عبر فيديو */}
-          {/* <div>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={isExplainReportByVideoChecked}
-                  onChange={(e) => setIsExplainReportByVideoChecked(e.target.checked)}
-                  sx={{
-                    color: "primary.main",
-                    padding: 0,
-                    "&.Mui-checked": {
-                      color: "primary.main",
-                    },
-                    // For RTL/LTR support
-                    ...(languageText === "ar" && {
-                      marginLeft: "8px",
-                      marginRight: "0",
-                    }),
-                    ...(languageText === "en" && {
-                      marginRight: "8px",
-                      marginLeft: "0",
-                    }),
-                  }}
-                />
-              }
-              label={<Typography variant="body1">{t("PayPurchaseCheck.explainReportByVideo")}</Typography>}
-              sx={{
-                margin: 0,
-                width: "100%",
-              }}
-            />
-
-            <p style={{ textDecoration: isExplainReportByVideoChecked ? "none" : "line-through", display: "flex", alignItems: "center", gap: "3px", fontWeight: 700 }}>
-              {explainReportByVideoPrice} <CurrencyIcon fill="#747a79" style={{ width: "20px", height: "20px" }} />
-            </p>
-          </div> */}
 
           {/* تقرير موجز */}
           {/* <div>
@@ -1399,18 +1241,12 @@ export default function PayMakdomCheck() {
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", border: "none" }}>
-                  {/* <CheckIcon fontSize="small" color="success" /> */}
                   <Typography variant="body2" color="success.main" sx={{ color: "#4caf50 !important" }}>
                     %{appliedDiscount.value} {t("PayPurchaseCheck.discountApplied")}
                   </Typography>
                 </div>
 
-                <Typography
-                  variant="body2"
-                  fontWeight="bold"
-                  // color="success.main"
-                  style={{ display: "flex", alignItems: "center", gap: "3px", fontWeight: 700, fontSize: "16px", color: "#4caf50" }}
-                >
+                <Typography variant="body2" fontWeight="bold" style={{ display: "flex", alignItems: "center", gap: "3px", fontWeight: 700, fontSize: "16px", color: "#4caf50" }}>
                   -{discountAmount}
                   <CurrencyIcon fill="#4caf50" style={{ width: "16px", height: "16px", marginLeft: "4px" }} />
                 </Typography>
@@ -1553,7 +1389,7 @@ export default function PayMakdomCheck() {
         </div>
       )}
 
-      {/* Name/phone/branch */}
+      {/* Name/Phone/Branch/Address */}
       <div className={style.user_data_box}>
         {/* Name */}
         {/* <FormControl fullWidth sx={{ marginBottom: "16px" }}>
@@ -1729,8 +1565,7 @@ export default function PayMakdomCheck() {
           </FormHelperText>
         </FormControl>
 
-        {/* Address */}
-
+        {/* Address & accept terms */}
         {comfortService === "yes" && (
           <div>
             <FormControl fullWidth sx={{ marginTop: "16px" }}>
@@ -1806,7 +1641,7 @@ export default function PayMakdomCheck() {
       {/* Payment methods (Tamara/Tabby/Moyasar) */}
       <div className={style.payment_methods_box}>
         {/* Tamara */}
-        <Accordion expanded={expanded === "panel1"} onChange={handleChange("panel1")}>
+        {/* <Accordion expanded={expanded === "panel1"} onChange={handleChange("panel1")}>
           <AccordionSummary
             aria-controls="panel1d-content"
             id="panel1d-header"
@@ -1842,10 +1677,10 @@ export default function PayMakdomCheck() {
               {t("PayPurchaseCheck.confirmOrder")}
             </LoadingButton>
           </AccordionDetails>
-        </Accordion>
+        </Accordion> */}
 
         {/* Tabby */}
-        <Accordion expanded={expanded === "panel2"} onChange={handleChange("panel2")}>
+        {/* <Accordion expanded={expanded === "panel2"} onChange={handleChange("panel2")}>
           <AccordionSummary
             aria-controls="panel2d-content"
             id="panel2d-header"
@@ -1882,7 +1717,7 @@ export default function PayMakdomCheck() {
               {t("PayPurchaseCheck.confirmOrder")}
             </LoadingButton>
           </AccordionDetails>
-        </Accordion>
+        </Accordion> */}
 
         {/* Moyasar */}
         <Accordion expanded={expanded === "panel3"} onChange={handleChange("panel3")}>
