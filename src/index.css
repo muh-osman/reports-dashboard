@@ -330,6 +330,16 @@ nav.mob-phone-nav {
   }
 }
 
+.plans-in-gallery-box {
+  gap: 0 !important;
+}
+
+@media (max-width: 855px) {
+  .plane-box {
+    gap: 16px;
+  }
+}
+
 .plane {
   padding: 0;
   width: 306px;
@@ -372,6 +382,11 @@ nav.mob-phone-nav {
 .card-body {
   padding: 16px;
   padding-top: 0;
+}
+
+.card-body-in-gallery-box {
+  padding-left: 8px;
+  padding-right: 8px;
 }
 .card-body button {
   margin-top: auto;

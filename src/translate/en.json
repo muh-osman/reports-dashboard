@@ -11,7 +11,9 @@
     "prices": "Prices",
     "home": "Home",
     "reports": "Reports",
-    "falak": "Falak"
+    "falak": "Falak",
+    "myOrders": "My orders",
+    "offer": "Our partners' offers"
   },
 
   "ContactUs": {
@@ -96,6 +98,7 @@
     "loading": "Loading..",
     "search": "Search",
     "selectYearOfManufacture": "Select the year of manufacture",
+    "yearOfManufacture": "Year of manufacture",
     "older": "Older",
     "chooseTheRightPackage": "Choose the right package",
     "engines": "Engines",
@@ -656,6 +659,7 @@
     "capturePhotosAndVideosForCar": "Capture Photos and Videos of the Car",
     "explainReportByVideo": "Explain Report via Video",
     "briefReport": "Brief Report",
+    "mertahService": "Mertah Service",
     "airBagCheck": "Airbag Safety and Function Check",
     "discountPlaceholder": "Enter discount code",
     "apply": "Apply",
@@ -692,13 +696,17 @@
     "login": "Login",
     "yourAccount": "to your Cashif account",
     "stepsTitle": "Service Request Steps",
-    "step1": "After completing the payment, you will receive a service-specific barcode.",
-    "step2": "Share a picture of the barcode with the car owner and ask them to go to the nearest branch.",
+    "step1": "After completing the payment, you will receive the booking number (your mobile number).",
+    "step2": "Share the booking number with the car owner and ask them to go to the nearest branch.",
     "step3": "The car will be inspected, after which you can download the report from <1>our website</1>.",
     "step4": "In cooperation with our partners, we facilitate the procedures for transferring ownership, insurance, and shipping the car to your city for you.",
+
     "address": "Address *",
-    "addressPlaceholder": "District, Street, Building Number, Nearest Landmark",
     "addressHelperText": "* Enter the vehicle pickup/delivery address",
+
+    "addressCity": "City *",
+    "addressHelperTextCity": "* Your current city is required to complete the payment process.",
+
     "termsCheckbox": "I agree to the terms of service of Mertah *",
     "agreementTitle": "Agreement to the terms of service of 'Mertah'",
     "liabilityClause": "By requesting the 'Mertah' service, you agree that the full responsibility for receiving, transporting, and returning the vehicle lies with Al-Bassami Transport Company, and that Khashef Center is not responsible for any damages or liabilities arising from the transportation process.",

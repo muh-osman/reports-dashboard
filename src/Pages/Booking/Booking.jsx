@@ -475,12 +475,12 @@ export default function Booking() {
 
       <Box sx={{ minWidth: 120, maxWidth: "400px", margin: "auto" }}>
         {/* Banner */}
-        {/* <div className={style.banner} dir="rtl">
+        <div className={style.banner} dir="rtl">
           <Alert sx={{ margin: "0px" }} severity="warning" icon={<WarningIcon sx={languageText === "ar" ? { marginLeft: "12px", marginRight: "-12px" } : {}} />}>
             <AlertTitle>تنبيه:</AlertTitle>
             خدمة حجز الموعد متوقفة مؤقتاً، نعتذر عن الإزعاج
           </Alert>
-        </div> */}
+        </div>
 
         {/*  مكان الفحص */}
         <FormControl fullWidth dir={languageText === "ar" ? "rtl" : "ltr"}>
@@ -494,7 +494,8 @@ export default function Booking() {
             label={t("Booking.branch")}
             value={selectedBranch}
             onChange={handleBranchChange}
-            disabled={isPostApoinmentFormMutatePending || shouldAutoSubmit}
+            // disabled={isPostApoinmentFormMutatePending || shouldAutoSubmit}
+            disabled={true}
           >
             {allBranches && allBranches.length > 0 ? (
               allBranches
@@ -527,7 +528,8 @@ export default function Booking() {
                     onChange={(newValue) => setDate(newValue)}
                     minDate={dayjs()}
                     required
-                    disabled={isPostApoinmentFormMutatePending || shouldAutoSubmit}
+                    // disabled={isPostApoinmentFormMutatePending || shouldAutoSubmit}
+                    disabled={true}
                   />
                 </DemoContainer>
               </LocalizationProvider>
@@ -563,7 +565,8 @@ export default function Booking() {
                       setTimeError(false); // Reset error when user changes the time
                     }}
                     required
-                    disabled={isPostApoinmentFormMutatePending || shouldAutoSubmit}
+                    // disabled={isPostApoinmentFormMutatePending || shouldAutoSubmit}
+                    disabled={true}
                     onAccept={(newValue) => {
                       // Only validate when user clicks OK
                       if (validateTime(newValue)) {

@@ -1,7 +1,6 @@
 import style from "./AskMojazReport.module.scss";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Box,
   Stepper,
@@ -18,17 +17,39 @@ import {
   InputAdornment,
   CircularProgress,
 } from "@mui/material";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
 import InfoIcon from "@mui/icons-material/Info";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import mojazInfoModal from "../../Assets/Images/mojaz-info-modal.png";
 import Fade from "@mui/material/Fade";
 // Cookies
 import { useCookies } from "react-cookie";
 // Toastify
 import { toast } from "react-toastify";
+// imgs
+import mojazLgo from "../../Assets/Images/mojaz-logo.webp";
+
+// SAR logo
+const CurrencyIcon = ({ fill = "#000000de", ...props }) => {
+  return (
+    <svg fill={fill} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" {...props}>
+      <path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+      <path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+    </svg>
+  );
+};
 
 const steps = ["بيانات المركبة", "الدفع", "تحميل التقرير"];
 
 export default function AskMojazReport() {
+  //
+  useEffect(() => {
+    // Scroll to the top of the page
+    window.scrollTo(0, 0);
+    // GetCardsPendingApproveCards();
+  }, []);
   //
   const navigate = useNavigate();
   //
@@ -102,6 +123,8 @@ export default function AskMojazReport() {
   //
   const [activeStep, setActiveStep] = useState(0);
 
+  let { reportId } = useParams();
+
   const [form, setForm] = useState({
     lookup_type: null,
     lookup_value: "",
@@ -110,6 +133,7 @@ export default function AskMojazReport() {
     // email: "",
     phone: cookies.phoneNumber,
     user_id: cookies.userId,
+    main_report_number: reportId,
   });
 
   const handleChange = (e) => {
@@ -152,7 +176,7 @@ export default function AskMojazReport() {
 
   return (
     <div className={style.container} dir="rtl">
-      <Typography
+      {/* <Typography
         variant="h6"
         component="div"
         style={{
@@ -166,7 +190,149 @@ export default function AskMojazReport() {
         }}
       >
         طلب تقرير "موجز"
-      </Typography>
+      </Typography> */}
+
+      {/* Start Mojaz card ad */}
+      <Box className={style.card} style={{ marginBottom: "16px", padding: 0 }}>
+        <Card
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            // marginTop: "20px",
+            borderRadius: "16px",
+            padding: "16px",
+            boxShadow: "none",
+            width: "fit-content",
+            width: {
+              xs: "100%", // 100% on extra-small screens (0px - 600px)
+              // sm: "429px", // Auto/default width on small screens and up (600px+)
+            },
+          }}
+        >
+          <CardContent sx={{ padding: "0 !important" }}>
+            <Box display="flex" alignItems="center" justifyContent="space-between" gap={2}>
+              {/* Text */}
+              <Box>
+                <Typography variant="h6" fontWeight="bold">
+                  طلب تقرير موجز
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  تاريخ السيارة الكامل في تقرير واحد
+                </Typography>
+              </Box>
+
+              {/* Icon */}
+              <Box
+                sx={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: "50%",
+                  // backgroundColor: "#f2f2f2",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {/* <DescriptionIcon sx={{ color: "#0f3d2e", fontSize: 30 }} /> */}
+                <img style={{ width: "100%", borderRadius: "9px" }} src={mojazLgo} alt="mojaz logo" />
+              </Box>
+            </Box>
+
+            {/* List + Price */}
+            <Box mt={3} display="flex" gap={1} alignItems="stretch" justifyContent="space-between" flexDirection="row-reverse">
+              {/* Price Box */}
+              <Box
+                sx={{
+                  // minWidth: "110px",
+                  // backgroundColor: "#f3eaea",
+                  borderRadius: "12px",
+                  padding: "12px",
+                  paddingLeft: 0,
+                  textAlign: "center",
+                  position: "relative",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: "14px",
+                    color: "#555",
+                    marginBottom: "6px",
+                    textAlign: "right",
+                  }}
+                >
+                  سعر التقرير
+                </Typography>
+
+                <Typography
+                  sx={{
+                    fontSize: "28px",
+                    fontWeight: "bold",
+                    color: "#1a1a2e",
+                    textAlign: "right",
+                  }}
+                >
+                  119 <CurrencyIcon fill="#1a1a2e" style={{ width: "21px", height: "23px" }} />
+                </Typography>
+
+                {/* Red line */}
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: 10,
+                    bottom: 10,
+                    width: "3px",
+                    backgroundColor: "#be1e2d",
+                    // left: languageText === "ar" ? "auto" : 0,
+                    // right: languageText === "ar" ? 0 : "auto",
+                    right: 0,
+                  }}
+                />
+              </Box>
+
+              {/* List */}
+              <Box flex={1}>
+                <Box display="flex" alignItems="center" gap="6px" mb={1}>
+                  <CheckCircleIcon sx={{ color: "green", fontSize: "20px" }} />
+                  <Typography sx={{ fontSize: "14px" }}>عدد الملاك السابقين</Typography>
+                </Box>
+
+                <Box display="flex" alignItems="center" gap="6px" mb={1}>
+                  <CheckCircleIcon sx={{ color: "green", fontSize: "20px" }} />
+                  <Typography sx={{ fontSize: "14px" }}>سجل الحوادث المسجلة</Typography>
+                </Box>
+
+                <Box display="flex" alignItems="center" gap="6px">
+                  <CheckCircleIcon sx={{ color: "green", fontSize: "20px" }} />
+                  <Typography sx={{ fontSize: "14px" }}>تفاصيل الفحص الدوري</Typography>
+                </Box>
+              </Box>
+            </Box>
+          </CardContent>
+
+          {/* <CardActions style={{ flexDirection: "column", padding: 0 }}>
+            <Button
+              fullWidth
+              variant="contained"
+              sx={{
+                marginTop: "24px",
+                backgroundColor: "#be1e2d",
+                borderRadius: "12px",
+                padding: "12px",
+                fontWeight: "bold",
+                "&:hover": {
+                  backgroundColor: "#a50f15",
+                },
+              }}
+            >
+              طلب موجز
+            </Button>
+          </CardActions> */}
+        </Card>
+      </Box>
 
       <Box className={style.card} style={{ marginBottom: "16px" }}>
         <Stepper

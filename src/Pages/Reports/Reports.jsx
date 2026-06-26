@@ -1,6 +1,6 @@
 // Reports.jsx
 import style from "./Reports.module.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 // imgs
 import mojazLgo from "../../Assets/Images/mojaz-logo.webp";
@@ -38,6 +38,7 @@ import CreditCardIcon from "@mui/icons-material/CreditCard";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import HourglassTopIcon from "@mui/icons-material/HourglassTop";
 import NumbersIcon from "@mui/icons-material/Numbers";
+import NoteAddIcon from "@mui/icons-material/NoteAdd";
 // Toastify
 import { toast } from "react-toastify";
 // Cookies
@@ -642,11 +643,7 @@ export default function Reports() {
 
   //
   const handleClickOnAskMojazReportBtn = (cardId) => {
-    if (cookies.tokenApp) {
-      navigate(`${process.env.PUBLIC_URL}/ask-mojaz-report`);
-    } else {
-      navigate(`${process.env.PUBLIC_URL}/login`);
-    }
+    navigate(`${process.env.PUBLIC_URL}/ask-mojaz-report/${cardId}`);
   };
 
   // Tabs system
@@ -669,8 +666,18 @@ export default function Reports() {
   };
 
   // Mojaz Reports API
-  const { data: mojazReport, fetchStatus: fetchMoajzReportsStatus } = useGetAllMojazReportsForUser();
+  const { data: mojazReport, fetchStatus: fetchMoajzReportsStatus, isSuccess } = useGetAllMojazReportsForUser();
   // console.log(mojazReport?.data);
+
+  const cardIdsWithMojazReport = useMemo(() => {
+    return new Set(
+      (mojazReport?.data || [])
+        .map((r) => r.main_report_number)
+        .filter((n) => n !== null && n !== undefined)
+        .map(Number) // ensure numbers, not strings
+    );
+  }, [mojazReport]);
+  // console.log(cardIdsWithMojazReport);
 
   // Open Mojaz report in new tab
   const navigateToMojazReport = (pdfUrl) => {
@@ -681,7 +688,7 @@ export default function Reports() {
     <div dir={languageText === "ar" ? "rtl" : "ltr"} className={style.container}>
       <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "16px" }}>
         {/* Points */}
-        {cookies.tokenApp && (
+        {true && (
           <div className={style.points_container}>
             <div
               className={style.money_card_container}
@@ -836,154 +843,6 @@ export default function Reports() {
             </div>
           </Box>
         </Modal>
-
-        {/* Start Mojaz card ad */}
-        <Card
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            // marginTop: "20px",
-            borderRadius: "16px",
-            padding: "16px",
-            boxShadow: "none",
-            width: "fit-content",
-            width: {
-              xs: "100%", // 100% on extra-small screens (0px - 600px)
-              sm: "429px", // Auto/default width on small screens and up (600px+)
-            },
-          }}
-        >
-          <CardContent sx={{ padding: 0 }}>
-            <Box display="flex" alignItems="center" justifyContent="space-between" gap={2}>
-              {/* Text */}
-              <Box>
-                <Typography variant="h6" fontWeight="bold">
-                  طلب تقرير موجز
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  تاريخ السيارة الكامل في تقرير واحد
-                </Typography>
-              </Box>
-
-              {/* Icon */}
-              <Box
-                sx={{
-                  width: 50,
-                  height: 50,
-                  borderRadius: "50%",
-                  // backgroundColor: "#f2f2f2",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {/* <DescriptionIcon sx={{ color: "#0f3d2e", fontSize: 30 }} /> */}
-                <img style={{ width: "100%", borderRadius: "9px" }} src={mojazLgo} alt="mojaz logo" />
-              </Box>
-            </Box>
-
-            {/* List + Price */}
-            <Box mt={3} display="flex" gap={1} alignItems="stretch" justifyContent="space-between" flexDirection={languageText === "ar" ? "row-reverse" : "row"}>
-              {/* Price Box */}
-              <Box
-                sx={{
-                  // minWidth: "110px",
-                  // backgroundColor: "#f3eaea",
-                  borderRadius: "12px",
-                  padding: "12px",
-                  paddingLeft: 0,
-                  textAlign: "center",
-                  position: "relative",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "flex-end",
-                }}
-              >
-                <Typography
-                  sx={{
-                    fontSize: "14px",
-                    color: "#555",
-                    marginBottom: "6px",
-                    textAlign: "right",
-                  }}
-                >
-                  سعر التقرير
-                </Typography>
-
-                <Typography
-                  sx={{
-                    fontSize: "28px",
-                    fontWeight: "bold",
-                    color: "#1a1a2e",
-                    textAlign: "right",
-                  }}
-                >
-                  119 <CurrencyIcon fill="#1a1a2e" style={{ width: "21px", height: "23px" }} />
-                </Typography>
-
-                {/* Red line */}
-                <Box
-                  sx={{
-                    position: "absolute",
-                    top: 10,
-                    bottom: 10,
-                    width: "3px",
-                    backgroundColor: "#be1e2d",
-                    left: languageText === "ar" ? "auto" : 0,
-                    right: languageText === "ar" ? 0 : "auto",
-                  }}
-                />
-              </Box>
-
-              {/* List */}
-              <Box flex={1}>
-                <Box display="flex" alignItems="center" gap="6px" mb={1}>
-                  <CheckCircleIcon sx={{ color: "green", fontSize: "20px" }} />
-                  <Typography sx={{ fontSize: "14px" }}>عدد الملاك السابقين</Typography>
-                </Box>
-
-                <Box display="flex" alignItems="center" gap="6px" mb={1}>
-                  <CheckCircleIcon sx={{ color: "green", fontSize: "20px" }} />
-                  <Typography sx={{ fontSize: "14px" }}>سجل الحوادث المسجلة</Typography>
-                </Box>
-
-                <Box display="flex" alignItems="center" gap="6px">
-                  <CheckCircleIcon sx={{ color: "green", fontSize: "20px" }} />
-                  <Typography sx={{ fontSize: "14px" }}>تفاصيل الفحص الدوري</Typography>
-                </Box>
-              </Box>
-            </Box>
-          </CardContent>
-
-          <CardActions style={{ flexDirection: "column", padding: 0 }}>
-            <Button
-              fullWidth
-              variant="contained"
-              sx={{
-                marginTop: "24px",
-                backgroundColor: "#be1e2d",
-                borderRadius: "12px",
-                padding: "12px",
-                fontWeight: "bold",
-                "&:hover": {
-                  backgroundColor: "#a50f15",
-                },
-              }}
-              onClick={handleClickOnAskMojazReportBtn}
-            >
-              طلب موجز
-            </Button>
-
-            {/* {cookies.tokenApp && (
-              <div style={{ marginTop: "12px" }}>
-                <Link className={style.show_all_mojaz_report_btn} to={`${process.env.PUBLIC_URL}/mojaz-reports`}>
-                  عرض جميع تقارير موجز
-                </Link>
-              </div>
-            )} */}
-          </CardActions>
-        </Card>
       </div>
 
       {/* Cards */}
@@ -1215,6 +1074,7 @@ export default function Reports() {
                   .slice()
                   .reverse()
                   .map((card) => (
+                    // SSS Card
                     <Card
                       key={card.cardNumber}
                       sx={{
@@ -1319,7 +1179,7 @@ export default function Reports() {
                             {t("Reports.downloadReport")}
                           </Button>
 
-                          {/* تقرير موجز */}
+                          {/* تقرير موجز (القديم) */}
                           {AllSummaryReportsStatus?.data?.[card.cardNumber.toString()] === true && (
                             <Button
                               sx={{ margin: "0 !important" }}
@@ -1353,7 +1213,6 @@ export default function Reports() {
                             <Button
                               sx={{
                                 margin: "0 !important",
-                                backgroundColor: "#0000000a",
                               }}
                               variant="outlined"
                               onClick={() => handleDownloadVideo(card.cardNumber)}
@@ -1393,13 +1252,13 @@ export default function Reports() {
                             onClick={() => handleClickOninsuranceBtn(card.cardNumber)}
                             size="small"
                             variant="outlined"
-                            endIcon={
-                              <SecurityIcon
-                                sx={{
-                                  margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
-                                }}
-                              />
-                            }
+                            // endIcon={
+                            //   <SecurityIcon
+                            //     sx={{
+                            //       margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
+                            //     }}
+                            //   />
+                            // }
                           >
                             {t("Reports.nsuranceAndTransferOfOwnership")}
                           </Button>
@@ -1410,16 +1269,44 @@ export default function Reports() {
                             onClick={() => handleClickOnShippingCarBtn(card.id)}
                             size="small"
                             variant="outlined"
-                            endIcon={
-                              <CarRepairIcon
-                                sx={{
-                                  margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
-                                }}
-                              />
-                            }
+                            // endIcon={
+                            //   <CarRepairIcon
+                            //     sx={{
+                            //       margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
+                            //     }}
+                            //   />
+                            // }
                           >
                             {t("Reports.shippingTheCar")}
                           </Button>
+
+                          {/* طلب تقرير موجز */}
+                          {!cardIdsWithMojazReport.has(card.id) && (
+                            <Button
+                              sx={{
+                                margin: "0 !important",
+                                backgroundColor: "#be1e2d",
+                                border: "none",
+                                color: "#fff",
+                                "&:hover": {
+                                  border: "none",
+                                  backgroundColor: "#9b1926",
+                                },
+                              }}
+                              onClick={() => handleClickOnAskMojazReportBtn(card.id)}
+                              size="small"
+                              variant="outlined"
+                              // endIcon={
+                              //   <NoteAddIcon
+                              //     sx={{
+                              //       margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
+                              //     }}
+                              //   />
+                              // }
+                            >
+                              {t("Reports.askMojazReport")}
+                            </Button>
+                          )}
                         </div>
                       </CardActions>
                     </Card>

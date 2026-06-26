@@ -10,6 +10,7 @@ import axios from "axios";
 
 export const fetchMojazReports = async (userId) => {
   const res = await axios.get(`https://cashif.cc/payment-system/back-end/public/api/mojaz/orders/${userId}`);
+  // const res = await axios.get(`http://localhost:8000/api/mojaz/orders/${userId}`);
   return res.data;
 };
 

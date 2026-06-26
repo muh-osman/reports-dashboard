@@ -10,18 +10,13 @@ export const AllCarModels = async () => {
 };
 
 export default function useGetAllCarModelsApi() {
-  const [cookies, setCookie] = useCookies([
-    "tokenApp",
-    "username",
-    "userId",
-    "phoneNumber",
-  ]);
+  const [cookies, setCookie] = useCookies(["tokenApp", "username", "userId", "phoneNumber"]);
 
   const token = cookies.tokenApp;
 
   return useQuery({
     queryKey: ["AllCarModels", token],
     queryFn: AllCarModels,
-    enabled: !!token, // Only run the query if the token exists
+    // enabled: !!token, // Only run the query if the token exists
   });
 }

@@ -1,5 +1,5 @@
 import style from "./PayPassengerCheck.module.scss";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useLayoutEffect } from "react";
 import { Link } from "react-router-dom";
 // Lang
 import i18n from "../../i18n";
@@ -11,7 +11,7 @@ import MuiAccordion from "@mui/material/Accordion";
 import MuiAccordionSummary, { accordionSummaryClasses } from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
-import { CircularProgress, Checkbox, FormControlLabel, FormHelperText, MenuItem, Select } from "@mui/material";
+import { Backdrop, CircularProgress, Checkbox, FormControlLabel, FormHelperText, MenuItem, Select } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
@@ -22,6 +22,7 @@ import tabbyLogo from "../../Assets/Images/tabby.png";
 // API
 import useGetPoinsApi from "../../API/useGetPoinsApi";
 import useCheckDiscountCodeApi from "../../API/useCheckDiscountCodeApi";
+import useGetPassengerServicesPricesApi from "../../API/useGetPassengerServicesPricesApi";
 // Cookies
 import { useCookies } from "react-cookie";
 //
@@ -72,13 +73,32 @@ const CurrencyIcon = ({ fill = "#000000de", ...props }) => {
 };
 
 export default function PayPassengerCheck() {
+  // Get Passenger planes Prices
+  const { data: passengerPlanePrices, fetchStatus: pricesFetchStatus, isSuccess: isFetchPricesSuccess } = useGetPassengerServicesPricesApi();
+  ///////////////////////////////////////// Start overlay /////////////////////////////////////////
+  const [showOverlay, setShowOverlay] = useState(true);
+  const [overlayMessage, setOverlayMessage] = useState("");
+  useLayoutEffect(() => {
+    if (pricesFetchStatus === "fetching") {
+      setShowOverlay(true);
+      setOverlayMessage("");
+    } else if (isFetchPricesSuccess) {
+      setShowOverlay(false);
+      setOverlayMessage("");
+    } else {
+      setShowOverlay(true);
+      setOverlayMessage("خطأ في الشبكة");
+    }
+  }, [pricesFetchStatus, isFetchPricesSuccess]);
+  ///////////////////////////////////////// End overlay /////////////////////////////////////////
+
   ///////////////////////////////////////// Start Utils /////////////////////////////////////////
   useEffect(() => {
     // Scroll to the top of the page
     window.scrollTo(0, 0);
   }, []);
   // Cookies
-  const [cookies, setCookie] = useCookies(["tokenApp", "userId"]);
+  const [cookies, setCookie] = useCookies(["tokenApp", "userId", "phoneNumber", "username"]);
 
   // Lang
   const { t } = useTranslation();
@@ -111,9 +131,11 @@ export default function PayPassengerCheck() {
 
   ///////////////////////////////////////// Start Get params from URL /////////////////////////////////////////
   const searchParams = new URLSearchParams(window.location.search);
+  // const modelId = searchParams.get("car_model_id");
   const year = searchParams.get("full_year");
   const yearId = searchParams.get("year_id");
   const priceId = searchParams.get("price_id");
+  const comfortService = searchParams.get("comfort_service");
   const affiliate = searchParams.get("affiliate");
   const carType = searchParams.get("passenger");
   const offUrl = searchParams.get("off");
@@ -155,7 +177,7 @@ export default function PayPassengerCheck() {
   const marketerShareRef = useRef(marketerShare);
   useEffect(() => {
     setMarketerShare(Math.trunc(total * (discountCodeData?.marketerCommissionPercentage / 100)));
-  }, [total]);
+  }, [total, appliedDiscount]);
   useEffect(() => {
     marketerShareRef.current = marketerShare;
   }, [marketerShare]);
@@ -164,29 +186,54 @@ export default function PayPassengerCheck() {
   const { data: discountCodeData, fetchStatus: CheckDiscountCodeFetchStatus, isSuccess: isCheckDiscountCodeSuccess } = useCheckDiscountCodeApi(discountCode, isApplyingDiscount);
 
   // Function to handle discount application
+
+  // Reset when user clicks apply — not inside the effect
+  const discountToastShown = useRef(false);
   const handleApplyDiscount = () => {
     if (discountCode === "") {
       toast.warn("كود الخصم مطلوب!");
       return;
     }
-
+    discountToastShown.current = false; // ← reset here
     setIsApplyingDiscount(true);
   };
 
   const [basePrice, setBasePrice] = useState(0);
 
   useEffect(() => {
+    console.log(appliedDiscount);
     if (isCheckDiscountCodeSuccess && CheckDiscountCodeFetchStatus === "idle") {
       try {
         if (discountCodeData?.result === true) {
           if (discountCodeData?.codeDiscountPercentage === off) {
-            setAppliedDiscount(null);
-            toast.warn("كود الخصم المدخل مساوي للخصم الأساسي على الباقة");
+            // Calculate discount amount only on base price
+            const discountAmount = basePrice * (discountCodeData?.codeDiscountPercentage / 100);
+            setAppliedDiscount({
+              code: discountCode,
+              amount: discountAmount,
+              value: discountCodeData?.codeDiscountPercentage,
+            });
+
+            if (!discountToastShown.current) {
+              discountToastShown.current = true;
+              toast.warn(`نسبة الخصم المدخلة مطابقة للخصم الأصلي للباقة (${discountCodeData?.codeDiscountPercentage}%)، تم استبدال خصم الباقة بخصم الكود.`);
+            }
+
             return;
           }
           if (discountCodeData?.codeDiscountPercentage < off) {
-            setAppliedDiscount(null);
-            toast.warn("كود الخصم المدخل أقل من الخصم الأساسي على الباقة, سيتم تطبيق القيمة الأعلى");
+            // Do NOT
+            // setAppliedDiscount({
+            //   code: discountCode,
+            //   amount: 0,
+            //   value: 0,
+            // });
+
+            if (!discountToastShown.current) {
+              discountToastShown.current = true;
+              toast.warn(`كود الخصم المدخل (${discountCodeData?.codeDiscountPercentage}%) أقل من الخصم الأساسي على الباقة (${off}%), سيتم تطبيق القيمة الأعلى`);
+            }
+
             return;
           }
           if (discountCodeData?.codeDiscountPercentage > off) {
@@ -260,12 +307,12 @@ export default function PayPassengerCheck() {
       }
 
       if (pointsValue === total) {
-        toast.warn(`لا يمكن استبدال نقاطك بكامل قيمة الطلب. الحد الأدنى للطلب 100 ريال`);
+        toast.warn(`لا يمكن استبدال نقاطك بكامل قيمة الطلب. الحد الأدنى للطلب 10 ريال`);
         return;
       }
 
-      if (pointsValue > total - 100) {
-        toast.warn(`لا يمكن استبدال نقاطك لكامل قيمة الفاتورة، الحد الأدنى للطلب 100 ريال`);
+      if (pointsValue > total - 10) {
+        toast.warn(`لا يمكن استبدال نقاطك لكامل قيمة الفاتورة، الحد الأدنى للطلب 10 ريال`);
         return;
       }
 
@@ -286,22 +333,24 @@ export default function PayPassengerCheck() {
   const [isAirBagCheckChecked, setIsAirBagCheckChecked] = useState(false);
   useEffect(() => {
     // Only calculate if we have all the required data
-    if (carType) {
-      setOff(+offUrl);
+    if (isFetchPricesSuccess && passengerPlanePrices?.data?.length > 0 && carType) {
+      const priceObj = carType === "sedan" ? passengerPlanePrices?.data[2] : carType === "suv" ? passengerPlanePrices?.data[1] : passengerPlanePrices?.data[0];
+      // const priceObj = carType === "sedan" ? 100 : carType === "suv" ? 150 : 200;
 
-      const priceObj = carType === "sedan" ? 100 : carType === "suv" ? 150 : 200;
+      // console.log(priceObj);
 
       if (priceObj) {
-        const calculatedBasePrice = Number(priceObj) || 0;
+        const calculatedBasePrice = Number(priceObj.price) || 0;
         setBasePrice(calculatedBasePrice);
+        setOff(+priceObj.discount_percent);
 
         // Calculate total with discount applied only to base price
         let calculatedTotal = calculatedBasePrice;
 
         // Apply discount to base price if exists
-        if (appliedDiscount) {
+        if (!!appliedDiscount?.amount) {
           setBasePrice(calculatedBasePrice / (1 - +off / 100));
-          calculatedTotal = calculatedBasePrice / (1 - +off / 100) - appliedDiscount.amount;
+          calculatedTotal = calculatedBasePrice / (1 - +off / 100) - appliedDiscount?.amount;
         }
 
         // Update checkedAdditionalServices based on isAirBagCheckChecked
@@ -330,8 +379,8 @@ export default function PayPassengerCheck() {
         }
 
         console.log("Setting total to:", Math.trunc(calculatedTotal));
-        if (calculatedTotal < 100) {
-          alert("الحد الأدنى للطلب 100 ريال");
+        if (calculatedTotal < 10) {
+          alert("الحد الأدنى للطلب 10 ريال");
           window.location.reload();
           return;
         }
@@ -347,10 +396,10 @@ export default function PayPassengerCheck() {
       setBasePrice(0);
       setTotal(0);
     }
-  }, [isAirBagCheckChecked, appliedDiscount, appliedPoints, airBagCheckPrice, carType]);
+  }, [isAirBagCheckChecked, appliedDiscount, appliedPoints, airBagCheckPrice, carType, passengerPlanePrices, isFetchPricesSuccess]);
 
   // Update the display to show discount amount based only on base price
-  const discountAmount = appliedDiscount ? Math.trunc(basePrice * (appliedDiscount.value / 100)) : 0;
+  const discountAmount = appliedDiscount ? Math.trunc(basePrice * (appliedDiscount?.value / 100)) : 0;
   ///////////////////////////////////////// End logic that updata the total /////////////////////////////////////////
 
   ///////////////////////////////////////// Start Username input /////////////////////////////////////////
@@ -412,6 +461,14 @@ export default function PayPassengerCheck() {
   useEffect(() => {
     lastNameRef.current = lastName;
   }, [lastName]);
+
+  // if user Auth, the username will get from cookie and name input will hide
+  useEffect(() => {
+    // console.log(cookies?.username);
+    if (cookies?.username) {
+      setUserName(cookies?.username);
+    }
+  }, [cookies.username]);
 
   // Error states for each field
   const [firstNameError, setFirstNameError] = useState(false);
@@ -505,6 +562,15 @@ export default function PayPassengerCheck() {
     // console.log(formatedPhoneNumber);
   };
 
+  // if user Auth, the phone number will get from cookie and phone number input will hide
+  useEffect(() => {
+    // console.log(cookies.phoneNumber);
+    if (cookies?.phoneNumber) {
+      setPhoneNumber(cookies?.phoneNumber);
+      setFormatedPhoneNumber(cookies?.phoneNumber?.replace(/^0+/, "")); // Removes all leading zeros
+    }
+  }, [cookies.phoneNumber]);
+
   // validate phone number
   const handlePhoneNumberBlur = () => {
     // Remove all non-digit characters
@@ -561,10 +627,45 @@ export default function PayPassengerCheck() {
   };
   ///////////////////////////////////////// End Branch input /////////////////////////////////////////
 
+  ///////////////////////////////////////// Start address input /////////////////////////////////////////
+  const [address, setAddress] = useState("");
+  const [addressError, setAddressError] = useState(false);
+  const addressRef = useRef(address);
+  useEffect(() => {
+    addressRef.current = address;
+  }, [address]);
+  // Handle address change
+  const handleAddressChange = (e) => {
+    const value = e.target.value;
+    setAddress(value);
+  };
+  // validate address
+  const handleAddressBlur = () => {
+    if (!address.trim()) {
+      if (comfortService === "yes") {
+        toast.warn("يرجى ادخال بيانات العنوان");
+      } else {
+        toast.warn("يرجى ادخال بيانات المدينة");
+      }
+      setAddressError(true);
+      return;
+    }
+
+    // Check if starts with 5 (Saudi mobile numbers start with 5)
+    if (address.trim().length < 3) {
+      toast.warn("يرجى ادخال بيانات صحيحة");
+      setAddressError(true);
+      return;
+    }
+
+    setAddressError(false);
+  };
+  ///////////////////////////////////////// End address input /////////////////////////////////////////
+
   ///////////////////////////////////////// Start Tamara /////////////////////////////////////////
   const [isTamaraBtnLoading, setIsTamaraBtnLoading] = useState(false);
   const handleClickTamaraBtn = async () => {
-    if (!firstNameRef.current || !middleNameRef.current || !lastNameRef.current || !userNameRef.current || userNameRef.current.trim().length < 6) {
+    if (!cookies.username && (!firstNameRef.current || !middleNameRef.current || !lastNameRef.current || !userNameRef.current || userNameRef.current.trim().length < 6)) {
       toast.warn("الاسم الكامل مطلوب!");
       return;
     }
@@ -578,6 +679,19 @@ export default function PayPassengerCheck() {
     }
     if (!selectedBranchRef.current) {
       toast.warn("حقل الفرع مطلوب!");
+      return;
+    }
+    if (comfortService === "yes" && !addressRef.current) {
+      toast.warn("حقل العنوان مطلوب!");
+      return;
+    }
+    // Check if user accept Mertah terms
+    // if (comfortService === "yes" && !acceptMertahTermsRef.current) {
+    //   toast.warn("يرجى الموافقة على شروط خدمة مرتاح");
+    //   return;
+    // }
+    if (!addressRef.current) {
+      toast.warn("حقل المدينة مطلوب!");
       return;
     }
 
@@ -651,7 +765,7 @@ export default function PayPassengerCheck() {
         line1: formatedPhoneNumberRef.current, // this is the used in back-end as PhoneNumber
         line2: null, // Service
         phone_number: formatedPhoneNumberRef.current,
-        region: null, // address
+        region: addressRef.current || null, // address
       },
       locale: "ar_SA",
 
@@ -702,7 +816,7 @@ export default function PayPassengerCheck() {
   ///////////////////////////////////////// Start Tabby /////////////////////////////////////////
   const [isTabbyLoading, setIsTabbyBtnLoading] = useState(false);
   const handleClickTabbyBtn = async () => {
-    if (!firstNameRef.current || !middleNameRef.current || !lastNameRef.current || !userNameRef.current || userNameRef.current.trim().length < 6) {
+    if (!cookies.username && (!firstNameRef.current || !middleNameRef.current || !lastNameRef.current || !userNameRef.current || userNameRef.current.trim().length < 6)) {
       toast.warn("الاسم الكامل مطلوب!");
       return;
     }
@@ -716,6 +830,19 @@ export default function PayPassengerCheck() {
     }
     if (!selectedBranchRef.current) {
       toast.warn("حقل الفرع مطلوب!");
+      return;
+    }
+    if (comfortService === "yes" && !addressRef.current) {
+      toast.warn("حقل العنوان مطلوب!");
+      return;
+    }
+    // Check if user accept Mertah terms
+    // if (comfortService === "yes" && !acceptMertahTermsRef.current) {
+    //   toast.warn("يرجى الموافقة على شروط خدمة مرتاح");
+    //   return;
+    // }
+    if (!addressRef.current) {
+      toast.warn("حقل المدينة مطلوب!");
       return;
     }
 
@@ -737,7 +864,9 @@ export default function PayPassengerCheck() {
           totalRef.current
         }&model=${model}&yearId=${yearId}&additionalServices=${checkedAdditionalServicesRef.current.join(", ") || "لايوجد"}${affiliate ? `&affiliate=${affiliate}` : ""}${
           appliedDiscountRef?.current?.code ? `&dc=${appliedDiscountRef?.current?.code}&msh=${marketerShareRef?.current}` : ""
-        }${year ? `&fy=${year}` : ""}${appliedPointsRef.current ? `&rv=${appliedPointsRef.current}&cd=${cookies?.userId}` : ""}`,
+        }${year ? `&fy=${year}` : ""}${appliedPointsRef.current ? `&rv=${appliedPointsRef.current}&cd=${cookies?.userId}` : ""}${
+          addressRef.current ? `&ad=${addressRef.current}` : ""
+        }`,
         buyer: {
           phone: formatedPhoneNumberRef.current,
           email: "user@example.com",
@@ -880,7 +1009,7 @@ export default function PayPassengerCheck() {
   ///////////////////////////////////////// Start Moyasar /////////////////////////////////////////
   const isMoyasarFormInit = useRef(false);
   useEffect(() => {
-    if (carType && window.Moyasar && total > 0) {
+    if (isFetchPricesSuccess && carType && window.Moyasar && total > 0) {
       // If form is already initialized, just update the amount
       if (isMoyasarFormInit.current) {
         window.Moyasar.setAmount(total * 100);
@@ -929,7 +1058,7 @@ export default function PayPassengerCheck() {
           msh: marketerShare || null,
           cd: cookies?.userId || null,
           rv: appliedPoints || null,
-          ad: null,
+          ad: address || null,
         },
 
         on_failure: async function (error) {
@@ -938,24 +1067,24 @@ export default function PayPassengerCheck() {
 
         on_initiating: async function () {
           console.log({
-            // name: userNameRef.current,
-            // phone: formatedPhoneNumberRef.current,
-            // branch: selectedBranchRef.current,
-            // year: yearId,
-            // fy: year || null,
-            // plan: plan,
-            // model: model,
-            // price: totalRef.current,
-            // additionalServices: checkedAdditionalServicesRef.current.join(", ") || "لايوجد",
+            name: userNameRef.current,
+            phone: formatedPhoneNumberRef.current,
+            branch: selectedBranchRef.current,
+            year: yearId,
+            fy: year || null,
+            plan: plan,
+            model: model,
+            price: totalRef.current,
+            additionalServices: checkedAdditionalServicesRef.current.join(", ") || "لايوجد",
             affiliate: affiliate || null,
             dc: appliedDiscountRef?.current?.code || null,
             msh: marketerShareRef?.current || null,
             cd: cookies?.userId || null,
             rv: appliedPointsRef.current || null,
-            ad: null,
+            ad: addressRef.current || null,
           });
 
-          if (!firstNameRef.current || !middleNameRef.current || !lastNameRef.current || !userNameRef.current || userNameRef.current.trim().length < 6) {
+          if (!cookies.username && (!firstNameRef.current || !middleNameRef.current || !lastNameRef.current || !userNameRef.current || userNameRef.current.trim().length < 6)) {
             toast.warn("الاسم الكامل مطلوب!");
             return false;
           }
@@ -972,6 +1101,21 @@ export default function PayPassengerCheck() {
 
           if (!selectedBranchRef.current) {
             toast.warn("حقل الفرع مطلوب!");
+            return false;
+          }
+
+          if (comfortService === "yes" && !addressRef.current) {
+            toast.warn("حقل العنوان مطلوب!");
+            return false;
+          }
+
+          // Check if user accept Mertah terms
+          // if (comfortService === "yes" && !acceptMertahTermsRef.current) {
+          //   toast.warn("يرجى الموافقة على شروط خدمة مرتاح");
+          //   return false;
+          // }
+          if (!addressRef.current) {
+            toast.warn("حقل المدينة مطلوب!");
             return false;
           }
 
@@ -994,30 +1138,44 @@ export default function PayPassengerCheck() {
               msh: marketerShareRef?.current || null,
               cd: cookies?.userId || null,
               rv: appliedPointsRef.current || null,
-              ad: null,
+              ad: addressRef.current || null,
             },
           };
         },
       });
     }
-  }, [carType, total, isAirBagCheckChecked, languageText]);
+  }, [isFetchPricesSuccess, carType, total, isAirBagCheckChecked, languageText]);
   ///////////////////////////////////////// End Moyasar /////////////////////////////////////////
 
   return (
     <div className={style.container} dir={languageText === "ar" ? "rtl" : "ltr"}>
-      {/* Box */}
-      <div className={style.pay_box}>
-        {/* Points banner */}
-        {cookies.tokenApp ? (
-          <div className={style.login_box}>
-            {t("PayPurchaseCheck.yourCurrentPointsBalance")} {Math.trunc(points?.points - appliedPoints || 0)} {t("PayPurchaseCheck.point")}
-          </div>
-        ) : (
-          <div className={style.login_box}>
-            {t("PayPurchaseCheck.toUsePoints")} <Link to={`${process.env.PUBLIC_URL}/login/?from=prices`}>{t("PayPurchaseCheck.login")}</Link> {t("PayPurchaseCheck.yourAccount")}
-          </div>
+      {/* Overlay with MUI Spinner */}
+      <Backdrop
+        sx={{
+          color: "#fff",
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          flexDirection: "column",
+          backgroundColor: "rgba(0, 0, 0, 1)",
+        }}
+        open={showOverlay}
+      >
+        {pricesFetchStatus === "fetching" && (
+          <>
+            <CircularProgress color="inherit" />
+            <Typography dir={languageText === "ar" ? "rtl" : "ltr"} variant="h6" sx={{ mt: 2 }}>
+              {t("PayPurchaseCheck.loading")}
+            </Typography>
+          </>
         )}
 
+        {overlayMessage && (
+          <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+            {overlayMessage}
+          </Typography>
+        )}
+      </Backdrop>
+      {/* Box */}
+      <div className={style.pay_box}>
         <h3>{t("PayPurchaseCheck.details")}</h3>
 
         <div className={style.details_order_table}>
@@ -1072,7 +1230,7 @@ export default function PayPassengerCheck() {
           </div>
 
           {/* Discount amount */}
-          {appliedDiscount && (
+          {!!appliedDiscount?.amount && (
             <div
               style={{
                 padding: "16px 0 8px",
@@ -1098,7 +1256,7 @@ export default function PayPassengerCheck() {
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", border: "none" }}>
                   {/* <CheckIcon fontSize="small" color="success" /> */}
                   <Typography variant="body2" color="success.main" sx={{ color: "#4caf50 !important" }}>
-                    %{appliedDiscount.value} {t("PayPurchaseCheck.discountApplied")}
+                    %{appliedDiscount?.value} {t("PayPurchaseCheck.discountApplied")}
                   </Typography>
                 </div>
 
@@ -1244,6 +1402,17 @@ export default function PayPassengerCheck() {
             </FormControl>
           </div>
         )}
+
+        {/* Points banner */}
+        {cookies.tokenApp ? (
+          <div className={style.login_box}>
+            {t("PayPurchaseCheck.yourCurrentPointsBalance")} {Math.trunc(points?.points - appliedPoints || 0)} {t("PayPurchaseCheck.point")}
+          </div>
+        ) : (
+          <div className={style.login_box}>
+            {t("PayPurchaseCheck.toUsePoints")} <Link to={`${process.env.PUBLIC_URL}/login/?from=prices`}>{t("PayPurchaseCheck.login")}</Link> {t("PayPurchaseCheck.yourAccount")}
+          </div>
+        )}
       </div>
 
       {/* Name/Phone/Branch */}
@@ -1270,113 +1439,8 @@ export default function PayPassengerCheck() {
           </FormHelperText>
         </FormControl> */}
 
-        <h4 style={{ color: "#0009", marginBottom: "16px" }}>{t("PayPurchaseCheck.fullName")}</h4>
-        <div style={{ display: "flex", gap: "6px" }}>
-          <div>
-            {/* First Name */}
-            <FormControl fullWidth sx={{ marginBottom: "16px" }}>
-              <InputLabel className={languageText === "ar" ? "custom-label-rtl" : ""} htmlFor="first-name">
-                {t("PayPurchaseCheck.firstName")}
-              </InputLabel>
-              <OutlinedInput
-                id="first-name"
-                label={t("PayPurchaseCheck.firstName")}
-                value={firstName}
-                onChange={handleFirstNameChange}
-                onBlur={handleFirstNameBlur}
-                // placeholder={t("PayPurchaseCheck.enterFirstName")}
-                error={!!firstNameError}
-                sx={{
-                  "& .MuiOutlinedInput-input": {
-                    textAlign: languageText === "ar" ? "right" : "left",
-                  },
-                }}
-              />
-              <FormHelperText sx={{ margin: 0, marginTop: "3px", textAlign: languageText === "ar" ? "right" : "left", color: "text.secondary" }}>
-                {t("PayPurchaseCheck.lastNameRequired")}
-              </FormHelperText>
-            </FormControl>
-          </div>
-
-          <div>
-            {/* Middle Name (Optional) */}
-            <FormControl fullWidth sx={{ marginBottom: "16px" }}>
-              <InputLabel className={languageText === "ar" ? "custom-label-rtl" : ""} htmlFor="middle-name">
-                {t("PayPurchaseCheck.middleName")}
-              </InputLabel>
-              <OutlinedInput
-                id="middle-name"
-                label={t("PayPurchaseCheck.middleName")}
-                value={middleName}
-                onChange={handleMiddleNameChange}
-                onBlur={handleMiddleNameBlur}
-                // placeholder={t("PayPurchaseCheck.enterMiddleName")}
-                error={!!middleNameError}
-                sx={{
-                  "& .MuiOutlinedInput-input": {
-                    textAlign: languageText === "ar" ? "right" : "left",
-                  },
-                }}
-              />
-              <FormHelperText sx={{ margin: 0, marginTop: "3px", textAlign: languageText === "ar" ? "right" : "left", color: "text.secondary" }}>
-                {t("PayPurchaseCheck.lastNameRequired")}
-              </FormHelperText>
-            </FormControl>
-          </div>
-
-          <div>
-            {/* Last Name */}
-            <FormControl fullWidth sx={{ marginBottom: "16px" }}>
-              <InputLabel className={languageText === "ar" ? "custom-label-rtl" : ""} htmlFor="last-name">
-                {t("PayPurchaseCheck.lastName")}
-              </InputLabel>
-              <OutlinedInput
-                id="last-name"
-                label={t("PayPurchaseCheck.lastName")}
-                value={lastName}
-                onChange={handleLastNameChange}
-                onBlur={handleLastNameBlur}
-                // placeholder={t("PayPurchaseCheck.enterLastName")}
-                error={!!lastNameError}
-                sx={{
-                  "& .MuiOutlinedInput-input": {
-                    textAlign: languageText === "ar" ? "right" : "left",
-                  },
-                }}
-              />
-              <FormHelperText sx={{ margin: 0, marginTop: "3px", textAlign: languageText === "ar" ? "right" : "left", color: "text.secondary" }}>
-                {t("PayPurchaseCheck.lastNameRequired")}
-              </FormHelperText>
-            </FormControl>
-          </div>
-        </div>
-
-        {/* Phone */}
-        <FormControl fullWidth sx={{ marginBottom: "16px" }}>
-          <InputLabel className={languageText === "ar" ? "custom-label-rtl" : ""} htmlFor="user-phone">
-            {t("PayPurchaseCheck.phoneNumber")}
-          </InputLabel>
-          <OutlinedInput
-            onBlur={handlePhoneNumberBlur}
-            value={phoneNumber}
-            onChange={handlePhoneNumberChange}
-            dir="ltr"
-            type="tel"
-            id="user-phone"
-            label={t("PayPurchaseCheck.phoneNumber")}
-            placeholder="05XXXXXXXX"
-            inputProps={{
-              maxLength: 10, // Limit to 10 characters maximum
-            }}
-            error={!!phoneError}
-          />
-          <FormHelperText sx={{ margin: 0, marginTop: "3px", textAlign: languageText === "ar" ? "right" : "left", color: "text.secondary" }}>
-            {t("PayPurchaseCheck.TheNumberIsRequiredToCompleteThePayment")}
-          </FormHelperText>
-        </FormControl>
-
         {/* Branch */}
-        <FormControl fullWidth>
+        <FormControl fullWidth sx={{ marginBottom: "16px" }}>
           <InputLabel className={languageText === "ar" ? "custom-label-rtl" : ""} id="branch-select-label">
             {t("PayPurchaseCheck.selectTheBranch")}
           </InputLabel>
@@ -1421,88 +1485,233 @@ export default function PayPassengerCheck() {
             {t("PayPurchaseCheck.theExaminationWillBeConductedAtTheSpecifiedBranch")}
           </FormHelperText>
         </FormControl>
+
+        {/* <h4 style={{ color: "#0009", marginBottom: "16px" }}>{t("PayPurchaseCheck.fullName")}</h4> */}
+
+        {!cookies?.username && (
+          <div style={{ display: "flex", gap: "6px" }}>
+            <div>
+              {/* First Name */}
+              <FormControl fullWidth sx={{ marginBottom: "16px" }}>
+                <InputLabel className={languageText === "ar" ? "custom-label-rtl" : ""} htmlFor="first-name">
+                  {t("PayPurchaseCheck.firstName")}
+                </InputLabel>
+                <OutlinedInput
+                  id="first-name"
+                  label={t("PayPurchaseCheck.firstName")}
+                  value={firstName}
+                  onChange={handleFirstNameChange}
+                  onBlur={handleFirstNameBlur}
+                  // placeholder={t("PayPurchaseCheck.enterFirstName")}
+                  error={!!firstNameError}
+                  sx={{
+                    "& .MuiOutlinedInput-input": {
+                      textAlign: languageText === "ar" ? "right" : "left",
+                    },
+                  }}
+                />
+                <FormHelperText sx={{ margin: 0, marginTop: "3px", textAlign: languageText === "ar" ? "right" : "left", color: "text.secondary" }}>
+                  {t("PayPurchaseCheck.lastNameRequired")}
+                </FormHelperText>
+              </FormControl>
+            </div>
+
+            <div>
+              {/* Middle Name (Optional) */}
+              <FormControl fullWidth sx={{ marginBottom: "16px" }}>
+                <InputLabel className={languageText === "ar" ? "custom-label-rtl" : ""} htmlFor="middle-name">
+                  {t("PayPurchaseCheck.middleName")}
+                </InputLabel>
+                <OutlinedInput
+                  id="middle-name"
+                  label={t("PayPurchaseCheck.middleName")}
+                  value={middleName}
+                  onChange={handleMiddleNameChange}
+                  onBlur={handleMiddleNameBlur}
+                  // placeholder={t("PayPurchaseCheck.enterMiddleName")}
+                  error={!!middleNameError}
+                  sx={{
+                    "& .MuiOutlinedInput-input": {
+                      textAlign: languageText === "ar" ? "right" : "left",
+                    },
+                  }}
+                />
+                <FormHelperText sx={{ margin: 0, marginTop: "3px", textAlign: languageText === "ar" ? "right" : "left", color: "text.secondary" }}>
+                  {t("PayPurchaseCheck.lastNameRequired")}
+                </FormHelperText>
+              </FormControl>
+            </div>
+
+            <div>
+              {/* Last Name */}
+              <FormControl fullWidth sx={{ marginBottom: "16px" }}>
+                <InputLabel className={languageText === "ar" ? "custom-label-rtl" : ""} htmlFor="last-name">
+                  {t("PayPurchaseCheck.lastName")}
+                </InputLabel>
+                <OutlinedInput
+                  id="last-name"
+                  label={t("PayPurchaseCheck.lastName")}
+                  value={lastName}
+                  onChange={handleLastNameChange}
+                  onBlur={handleLastNameBlur}
+                  // placeholder={t("PayPurchaseCheck.enterLastName")}
+                  error={!!lastNameError}
+                  sx={{
+                    "& .MuiOutlinedInput-input": {
+                      textAlign: languageText === "ar" ? "right" : "left",
+                    },
+                  }}
+                />
+                <FormHelperText sx={{ margin: 0, marginTop: "3px", textAlign: languageText === "ar" ? "right" : "left", color: "text.secondary" }}>
+                  {t("PayPurchaseCheck.lastNameRequired")}
+                </FormHelperText>
+              </FormControl>
+            </div>
+          </div>
+        )}
+
+        {/* Phone */}
+        {!cookies?.phoneNumber && (
+          <FormControl fullWidth sx={{ marginBottom: "16px" }}>
+            <InputLabel className={languageText === "ar" ? "custom-label-rtl" : ""} htmlFor="user-phone">
+              {t("PayPurchaseCheck.phoneNumber")}
+            </InputLabel>
+            <OutlinedInput
+              onBlur={handlePhoneNumberBlur}
+              value={phoneNumber}
+              onChange={handlePhoneNumberChange}
+              dir="ltr"
+              type="tel"
+              id="user-phone"
+              label={t("PayPurchaseCheck.phoneNumber")}
+              placeholder="05XXXXXXXX"
+              inputProps={{
+                maxLength: 10, // Limit to 10 characters maximum
+              }}
+              error={!!phoneError}
+            />
+            <FormHelperText sx={{ margin: 0, marginTop: "3px", textAlign: languageText === "ar" ? "right" : "left", color: "text.secondary" }}>
+              {t("PayPurchaseCheck.TheNumberIsRequiredToCompleteThePayment")}
+            </FormHelperText>
+          </FormControl>
+        )}
+
+        {/* Address(City) */}
+        <FormControl fullWidth>
+          <InputLabel className={languageText === "ar" ? "custom-label-rtl" : ""} htmlFor="user-address">
+            {comfortService === "yes" ? t("PayPurchaseCheck.address") : t("PayPurchaseCheck.addressCity")}
+          </InputLabel>
+          <OutlinedInput
+            id="user-address"
+            label={comfortService === "yes" ? t("PayPurchaseCheck.address") : t("PayPurchaseCheck.addressCity")}
+            value={address}
+            onChange={handleAddressChange}
+            onBlur={handleAddressBlur}
+            error={!!addressError}
+            // placeholder={t("PayPurchaseCheck.addressPlaceholder")}
+            inputProps={{
+              maxLength: 200,
+            }}
+            required
+          />
+
+          <FormHelperText
+            sx={{
+              margin: 0,
+              marginTop: "3px",
+              textAlign: languageText === "ar" ? "right" : "left",
+              color: "text.secondary",
+            }}
+          >
+            {comfortService === "yes" ? t("PayPurchaseCheck.addressHelperText") : t("PayPurchaseCheck.addressHelperTextCity")}
+          </FormHelperText>
+        </FormControl>
       </div>
 
       {/* Payment methods (Tamara/Tabby/Moyasar) */}
       <div className={style.payment_methods_box}>
         {/* Tamara */}
-        <Accordion expanded={expanded === "panel1"} onChange={handleChange("panel1")}>
-          <AccordionSummary
-            aria-controls="panel1d-content"
-            id="panel1d-header"
-            sx={{
-              gap: "8px",
-            }}
-          >
-            <Typography component="h5">
-              <span style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-                <span style={{ display: "flex" }}>
-                  <img src={tamaraLogo} alt="tamara" />
-                </span>
-                <span style={{ fontWeight: "700" }}>{t("PayPurchaseCheck.splitItInTo4Installments")}</span>
-              </span>
-              <span style={{ display: "inline-block", color: "#747a79", fontSize: "12px" }}>{t("PayPurchaseCheck.noLateFeesCompliantWithIslamicLaw")}</span>
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails style={{ padding: "8px 0px 16px" }}>
-            <LoadingButton
-              style={{ boxShadow: "none", width: "100%", backgroundColor: "#6a00cb", fontWeight: "700", color: isTamaraBtnLoading ? "#6a00cb" : "#fff" }}
-              variant="contained"
-              size="large"
-              onClick={handleClickTamaraBtn}
-              loading={isTamaraBtnLoading}
-              disabled={isTamaraBtnLoading}
-              loadingIndicator={
-                <CircularProgress
-                  size={16}
-                  sx={{ color: "#fff" }} // Change spinner color here
-                />
-              }
+        {total >= 100 && (
+          <Accordion expanded={expanded === "panel1"} onChange={handleChange("panel1")}>
+            <AccordionSummary
+              aria-controls="panel1d-content"
+              id="panel1d-header"
+              sx={{
+                gap: "8px",
+              }}
             >
-              {t("PayPurchaseCheck.confirmOrder")}
-            </LoadingButton>
-          </AccordionDetails>
-        </Accordion>
+              <Typography component="h5">
+                <span style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+                  <span style={{ display: "flex" }}>
+                    <img src={tamaraLogo} alt="tamara" />
+                  </span>
+                  <span style={{ fontWeight: "700" }}>{t("PayPurchaseCheck.splitItInTo4Installments")}</span>
+                </span>
+                <span style={{ display: "inline-block", color: "#747a79", fontSize: "12px" }}>{t("PayPurchaseCheck.noLateFeesCompliantWithIslamicLaw")}</span>
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails style={{ padding: "8px 0px 16px" }}>
+              <LoadingButton
+                style={{ boxShadow: "none", width: "100%", backgroundColor: "#6a00cb", fontWeight: "700", color: isTamaraBtnLoading ? "#6a00cb" : "#fff" }}
+                variant="contained"
+                size="large"
+                onClick={handleClickTamaraBtn}
+                loading={isTamaraBtnLoading}
+                disabled={isTamaraBtnLoading}
+                loadingIndicator={
+                  <CircularProgress
+                    size={16}
+                    sx={{ color: "#fff" }} // Change spinner color here
+                  />
+                }
+              >
+                {t("PayPurchaseCheck.confirmOrder")}
+              </LoadingButton>
+            </AccordionDetails>
+          </Accordion>
+        )}
 
         {/* Tabby */}
-        <Accordion expanded={expanded === "panel2"} onChange={handleChange("panel2")}>
-          <AccordionSummary
-            aria-controls="panel2d-content"
-            id="panel2d-header"
-            sx={{
-              gap: "8px",
-            }}
-          >
-            <Typography component="h5">
-              <span style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-                <span style={{ display: "flex" }}>
-                  <img style={{ width: "74px" }} src={tabbyLogo} alt="Tabby" />
-                </span>
-                <span style={{ fontWeight: "700" }}>{t("PayPurchaseCheck.splitItInTo4Installments")}</span>
-              </span>
-              <span style={{ display: "inline-block", color: "#747a79", fontSize: "12px" }}>{t("PayPurchaseCheck.noInterestOrFees")}</span>
-            </Typography>
-          </AccordionSummary>
-
-          <AccordionDetails style={{ padding: "8px 0px 16px" }}>
-            <LoadingButton
-              style={{ boxShadow: "none", width: "100%", backgroundColor: "#3bffc6", fontWeight: "700", color: isTabbyLoading ? "#3bffc6" : "#000000de" }}
-              variant="contained"
-              size="large"
-              onClick={handleClickTabbyBtn}
-              loading={isTabbyLoading}
-              disabled={isTabbyLoading}
-              loadingIndicator={
-                <CircularProgress
-                  size={16}
-                  sx={{ color: "#000000de" }} // Change spinner color here
-                />
-              }
+        {total >= 100 && (
+          <Accordion expanded={expanded === "panel2"} onChange={handleChange("panel2")}>
+            <AccordionSummary
+              aria-controls="panel2d-content"
+              id="panel2d-header"
+              sx={{
+                gap: "8px",
+              }}
             >
-              {t("PayPurchaseCheck.confirmOrder")}
-            </LoadingButton>
-          </AccordionDetails>
-        </Accordion>
+              <Typography component="h5">
+                <span style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+                  <span style={{ display: "flex" }}>
+                    <img style={{ width: "74px" }} src={tabbyLogo} alt="Tabby" />
+                  </span>
+                  <span style={{ fontWeight: "700" }}>{t("PayPurchaseCheck.splitItInTo4Installments")}</span>
+                </span>
+                <span style={{ display: "inline-block", color: "#747a79", fontSize: "12px" }}>{t("PayPurchaseCheck.noInterestOrFees")}</span>
+              </Typography>
+            </AccordionSummary>
+
+            <AccordionDetails style={{ padding: "8px 0px 16px" }}>
+              <LoadingButton
+                style={{ boxShadow: "none", width: "100%", backgroundColor: "#3bffc6", fontWeight: "700", color: isTabbyLoading ? "#3bffc6" : "#000000de" }}
+                variant="contained"
+                size="large"
+                onClick={handleClickTabbyBtn}
+                loading={isTabbyLoading}
+                disabled={isTabbyLoading}
+                loadingIndicator={
+                  <CircularProgress
+                    size={16}
+                    sx={{ color: "#000000de" }} // Change spinner color here
+                  />
+                }
+              >
+                {t("PayPurchaseCheck.confirmOrder")}
+              </LoadingButton>
+            </AccordionDetails>
+          </Accordion>
+        )}
 
         {/* Moyasar */}
         <Accordion expanded={expanded === "panel3"} onChange={handleChange("panel3")}>

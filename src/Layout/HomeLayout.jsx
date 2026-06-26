@@ -4,14 +4,16 @@ import * as React from "react";
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 // MUI Icons
 import MenuIcon from "@mui/icons-material/Menu";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+// import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 // import IosShareIcon from "@mui/icons-material/IosShare";
 import TranslateIcon from "@mui/icons-material/Translate";
 import LoginIcon from "@mui/icons-material/Login";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
-import StoreIcon from "@mui/icons-material/Store";
+import StorefrontIcon from "@mui/icons-material/Storefront";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import CardGiftcardIcon from "@mui/icons-material/CardGiftcard";
 //
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
@@ -93,6 +95,18 @@ function HomeLayout() {
     handleClose();
     listRefs.current.forEach((item) => item.classList.remove("act"));
     navigate(`${process.env.PUBLIC_URL}/contact`);
+  };
+
+  const goToMyOrders = () => {
+    handleClose();
+    listRefs.current.forEach((item) => item.classList.remove("act"));
+    navigate(`${process.env.PUBLIC_URL}/my-orders`);
+  };
+
+  const goToOffer = () => {
+    handleClose();
+    listRefs.current.forEach((item) => item.classList.remove("act"));
+    navigate(`${process.env.PUBLIC_URL}/partners-offers`);
   };
 
   // Mobile Navbar add active class
@@ -188,7 +202,9 @@ function HomeLayout() {
                 aria-expanded={open ? "true" : undefined}
                 onClick={handleClick}
               >
-                <IconButton>{cookies.tokenApp ? <AccountCircleIcon sx={{ color: "#fff", fontSize: "44px" }} /> : <MenuIcon sx={{ color: "#fff", fontSize: "32px" }} />}</IconButton>
+                <IconButton>
+                  <MenuIcon sx={{ color: "#fff", fontSize: "32px" }} />
+                </IconButton>
               </Tooltip>
             </div>
 
@@ -226,7 +242,7 @@ function HomeLayout() {
 
                 <MenuItem onClick={contact}>
                   <ListItemIcon>
-                    <StoreIcon fontSize="small" />
+                    <StorefrontIcon fontSize="small" />
                   </ListItemIcon>
                   <ListItemText>{t("HomeLayout.ourBranches")}</ListItemText>
                 </MenuItem>
@@ -238,11 +254,25 @@ function HomeLayout() {
                   <ListItemText>{t("HomeLayout.blog")}</ListItemText>
                 </MenuItem>
 
+                <MenuItem onClick={goToMyOrders}>
+                  <ListItemIcon>
+                    <AddShoppingCartIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>{t("HomeLayout.myOrders")}</ListItemText>
+                </MenuItem>
+
                 <MenuItem onClick={() => (window.location.href = "https://api.whatsapp.com/send?phone=966920019948&text=*اختر من القائمة الرئيسية*")}>
                   <ListItemIcon>
                     <WhatsAppIcon fontSize="small" />
                   </ListItemIcon>
                   <ListItemText>{t("HomeLayout.callUs")}</ListItemText>
+                </MenuItem>
+
+                <MenuItem onClick={goToOffer}>
+                  <ListItemIcon>
+                    <CardGiftcardIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>{t("HomeLayout.offer")}</ListItemText>
                 </MenuItem>
 
                 <Divider />

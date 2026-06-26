@@ -2,7 +2,7 @@
   padding: 32px;
   padding-bottom: 124px;
 
-  margin-top: 40px;
+  margin-top: 3px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,7 +20,6 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  margin-bottom: 16px;
 
   svg {
     margin-bottom: 16px;
@@ -66,7 +65,7 @@
   padding: 8px 12px;
   border-radius: 9px;
   margin-top: 8px;
-  // margin-bottom: 40px !important;
+  margin-bottom: 40px !important;
 }
 
 // Location
@@ -76,7 +75,10 @@
   align-items: center;
   justify-content: space-evenly;
   width: 100%;
+  font-size: 12px;
   max-width: 600px;
+  flex-wrap: wrap;
+  gap: 12px;
 
   a {
     // text-decoration: none;
@@ -93,7 +95,7 @@
   border-radius: 16px;
   padding: 16px;
   padding-top: 48px;
-  margin-top: 32px;
+  //   margin-top: 32px;
 }
 
 .partner_container h2 {
@@ -195,32 +197,4 @@
 .btn_four:active {
   background-color: #1e1f50 !important;
   border: none !important;
-}
-
-//
-.steps_box {
-  padding: 22px;
-  background-color: #fff;
-  margin: auto;
-  max-width: 450px;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 16px;
-
-  h1 {
-    text-align: center;
-    margin-bottom: 12px;
-  }
-
-  ol {
-    li::marker {
-      color: #000000de;
-      font-weight: bold;
-    }
-
-    li {
-      color: #747a79;
-      margin-bottom: 9px;
-    }
-  }
 }

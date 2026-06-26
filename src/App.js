@@ -39,6 +39,10 @@ import OfferPlans from "./Pages/OfferPlans/OfferPlans";
 import AskMojazReport from "./Pages/AskMojazReport/AskMojazReport";
 import PayMojaz from "./Pages/PayMojaz/PayMojaz";
 import ThanksPayMojaz from "./Pages/ThanksPayMojaz/ThanksPayMojaz";
+import MyOrders from "./Pages/MyOrders/MyOrders";
+import PartnersOffers from "./Pages/PartnersOffers/PartnersOffers";
+import PlansInGallery from "./Pages/PlansInGallery/PlansInGallery";
+import StaticPlans from "./Pages/StaticPlans/StaticPlans";
 // import Lottery from "./Pages/Lottery/Lottery";
 // import LotteryAlreadyRegistered from "./Pages/LotteryAlreadyRegistered/LotteryAlreadyRegistered";
 
@@ -73,6 +77,7 @@ export default function App() {
           <Route path={`${process.env.PUBLIC_URL}/reports`} element={<Reports />} />
           <Route path={`${process.env.PUBLIC_URL}/prices`} element={<Prices />} />
           <Route path={`${process.env.PUBLIC_URL}/plans`} element={<Plans />} />
+          <Route path={`${process.env.PUBLIC_URL}/static-plans`} element={<StaticPlans />} />
           <Route path={`${process.env.PUBLIC_URL}/booking`} element={<Booking />} />
           <Route path={`${process.env.PUBLIC_URL}/edit-booking/:id`} element={<EditBooking />} />
           <Route path={`${process.env.PUBLIC_URL}/contact`} element={<ContactUs />} />
@@ -85,7 +90,7 @@ export default function App() {
 
           {/* <Route path={`${process.env.PUBLIC_URL}/offer-plans`} element={<OfferPlans />} /> */}
 
-          <Route path={`${process.env.PUBLIC_URL}/ask-mojaz-report/`} element={<AskMojazReport />} />
+          <Route path={`${process.env.PUBLIC_URL}/ask-mojaz-report/:reportId`} element={<AskMojazReport />} />
           <Route path={`${process.env.PUBLIC_URL}/pay-mojaz`} element={<PayMojaz />} />
           <Route path={`${process.env.PUBLIC_URL}/pay-mojaz/thanks`} element={<ThanksPayMojaz />} />
 
@@ -99,10 +104,14 @@ export default function App() {
 
           <Route path={`${process.env.PUBLIC_URL}/prices-list`} element={<PricesList />} />
           <Route path={`${process.env.PUBLIC_URL}/social-media`} element={<SocialMedia />} />
+          <Route path={`${process.env.PUBLIC_URL}/my-orders`} element={<MyOrders />} />
+          <Route path={`${process.env.PUBLIC_URL}/partners-offers`} element={<PartnersOffers />} />
           {/* <Route path={`${process.env.PUBLIC_URL}/1`} element={<Lottery />} /> */}
           {/* <Route path={`${process.env.PUBLIC_URL}/lottery-already-registered`} element={<LotteryAlreadyRegistered />} /> */}
         </Route>
         {/* End protected route */}
+
+        <Route path={`${process.env.PUBLIC_URL}/plans-gallery`} element={<PlansInGallery />} />
 
         <Route path={`${process.env.PUBLIC_URL}/*`} element={<NotFound />} />
       </Route>

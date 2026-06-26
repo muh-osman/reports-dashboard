@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 // API
 import API from "./Api";
 // Cookies
-import { useCookies } from "react-cookie";
+// import { useCookies } from "react-cookie";
 
 export const fetchManufacturers = async () => {
   const res = await API.get(`api/CarManufacturer`);
@@ -10,18 +10,18 @@ export const fetchManufacturers = async () => {
 };
 
 export default function useGetAllManufacturerApi() {
-  const [cookies, setCookie] = useCookies([
-    "tokenApp",
-    "username",
-    "userId",
-    "phoneNumber",
-  ]);
+  // const [cookies, setCookie] = useCookies([
+  //   "tokenApp",
+  //   "username",
+  //   "userId",
+  //   "phoneNumber",
+  // ]);
 
-  const token = cookies.tokenApp;
+  // const token = cookies.tokenApp;
 
   return useQuery({
-    queryKey: ["Manufacturers", token],
+    queryKey: ["Manufacturers"],
     queryFn: fetchManufacturers,
-    enabled: !!token, // Only run the query if the token exists
+    // enabled: !!token, // Only run the query if the token exists
   });
 }

@@ -1,5 +1,5 @@
-import style from "./Plans.module.scss";
-import { useLocation, useNavigate } from "react-router-dom";
+import style from "./PlansInGallery.module.scss";
+import { useLocation } from "react-router-dom";
 // MUI
 import * as React from "react";
 import TextField from "@mui/material/TextField";
@@ -21,6 +21,7 @@ import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 // MUI Icons
 import CheckIcon from "@mui/icons-material/Check";
+import BackspaceIcon from "@mui/icons-material/Backspace";
 //
 import dayjs from "dayjs";
 // Lang
@@ -37,6 +38,8 @@ import useGetPassengerServicesPricesApi from "../../API/useGetPassengerServicesP
 import A from "../../Assets/Images/1.jpg";
 import B from "../../Assets/Images/2.jpg";
 import C from "../../Assets/Images/3.jpg";
+//
+import logo from "../../Assets/Images/logo.webp";
 
 const TrueIcon = `<svg fill="#25d366" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" /></svg>`;
 const FalseIcon = `<svg class="wrong-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"></path></svg>`;
@@ -44,15 +47,15 @@ const ryalIcon = `<svg fill="#174545" xmlns="http://www.w3.org/2000/svg" viewBox
 const redRyalIcon = `<svg width="13" fill="#d32f2f" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>`;
 const greenRyalIcon = `<svg width="13" fill="#25d366" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>`;
 
-export default function Plans() {
+export default function PlansInGallery() {
   // مرتاح Modal
   const [openComfortModal, setOpenComfortModal] = React.useState(false);
   const [selectedPlanUrl, setSelectedPlanUrl] = React.useState("");
 
   const handleOpenComfortModal = (url) => {
     // Friday => skip modal
-    if (isFriday) {
-      // if (true) {
+    // if (isFriday) {
+    if (true) {
       window.location.href = `${url}&comfort_service=no`;
       return;
     }
@@ -84,12 +87,7 @@ export default function Plans() {
     // isSuccess: isFetchPricesSuccess,
   } = useGetPassengerServicesPricesApi();
 
-  // React.useEffect(() => {
-  //   console.log(passengerPlanePrices);
-  // }, [passengerPlanePrices]);
-
   //
-  const navigate = useNavigate();
   React.useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -132,6 +130,8 @@ export default function Plans() {
       <li
         style={{
           ...(languageText === "ar" ? { textAlign: "right" } : { textAlign: "left" }),
+          fontSize: "15px",
+          // backgroundColor: "red",
         }}
       >
         <span
@@ -142,7 +142,7 @@ export default function Plans() {
         ></span>{" "}
         {text}
         <Tooltip title={<p style={{ direction: "rtl" }}>{tooltip}</p>} arrow enterTouchDelay={0}>
-          <IconButton>
+          <IconButton sx={{ padding: "6px", paddingLeft: 0 }}>
             <InfoIcon sx={{ fontSize: "16px" }} />
           </IconButton>
         </Tooltip>
@@ -313,12 +313,10 @@ export default function Plans() {
 
   //
   const [selectedModelId, setSelectedModelId] = React.useState(null);
+  const [selectedModel, setSelectedModel] = React.useState(null);
   const handleModelChange = (event, newValue) => {
-    if (newValue) {
-      setSelectedModelId(newValue.id); // Set the selected model ID
-    } else {
-      setSelectedModelId(null); // Reset if no model is selected
-    }
+    setSelectedModel(newValue);
+    setSelectedModelId(newValue ? newValue.id : null);
   };
 
   // Year
@@ -363,17 +361,35 @@ export default function Plans() {
     const engine = prices.find((p) => p.serviceId === 10);
     const passenger = prices.find((p) => p.serviceId === 15);
 
-    setFullPrice(Math.floor(full?.price ?? 0));
-    setOldPriceFullPrice(Math.floor(full?.original_price ?? 0));
-    setSaveFullPrice(Math.floor(full?.you_save ?? 0));
+    // setFullPrice(Math.floor(full?.price ?? 0));
+    // setOldPriceFullPrice(Math.floor(full?.original_price ?? 0));
+    // setSaveFullPrice(Math.floor(full?.you_save ?? 0));
 
-    setBasicPrice(Math.floor(basic?.price ?? 0));
-    setOldPriceBasicPrice(Math.floor(basic?.original_price ?? 0));
-    setSaveBasicPrice(Math.floor(basic?.you_save ?? 0));
+    // setBasicPrice(Math.floor(basic?.price ?? 0));
+    // setOldPriceBasicPrice(Math.floor(basic?.original_price ?? 0));
+    // setSaveBasicPrice(Math.floor(basic?.you_save ?? 0));
 
-    setEngainPrice(Math.floor(engine?.price ?? 0));
-    setOldPriceEngainPrice(Math.floor(engine?.original_price ?? 0));
-    setSaveEngainPrice(Math.floor(engine?.you_save ?? 0));
+    // setEngainPrice(Math.floor(engine?.price ?? 0));
+    // setOldPriceEngainPrice(Math.floor(engine?.original_price ?? 0));
+    // setSaveEngainPrice(Math.floor(engine?.you_save ?? 0));
+
+    // Full: force 10% off original_price
+    // الشامل — force exactly 10% discount off original_price
+    const fullOrig = Math.floor(full?.original_price ?? 0);
+    const fullDisc = Math.floor(fullOrig * 0.9);
+    setFullPrice(fullDisc);
+    setOldPriceFullPrice(fullOrig);
+    setSaveFullPrice(fullOrig - fullDisc);
+
+    // الأساسي — no discount, show original_price as the actual price
+    setBasicPrice(Math.floor(basic?.original_price ?? 0));
+    setOldPriceBasicPrice(0);
+    setSaveBasicPrice(0);
+
+    // المحركات — no discount, show original_price as the actual price
+    setEngainPrice(Math.floor(engine?.original_price ?? 0));
+    setOldPriceEngainPrice(0);
+    setSaveEngainPrice(0);
 
     setPassengerPrice(Math.floor(passenger?.price ?? 0));
     setOldPricePassenger(Math.floor(passenger?.original_price ?? 0));
@@ -389,9 +405,10 @@ export default function Plans() {
     const engine = prices.find((p) => p.serviceId === 10) ?? {};
     const passenger = prices.find((p) => p.serviceId === 15) ?? {};
 
-    const badge = (record) => {
-      if (!record.discount_percent || record.discount_percent === 0) return "content: none;";
-      const label = languageText === "ar" ? `خصم ${record.discount_percent}${record.discount_unit}` : `${record.discount_percent}${record.discount_unit} Off`;
+    const badge = (record, overridePercent = null) => {
+      const percent = overridePercent;
+      if (!percent || percent === 0) return "content: none;";
+      const label = languageText === "ar" ? `خصم ${percent}%` : `${percent}% Off`;
       return `content: "${label}";`;
     };
 
@@ -399,16 +416,16 @@ export default function Plans() {
 
     const styleEl = document.createElement("style");
     styleEl.innerHTML = `
-    .full-Plane-catcher::after,
-    .engines-catcher::after,
-    .bascic-catcher::after,
-    .passenger-plans-catcher::after { ${leftRight} }
+        .full-Plane-catcher::after,
+        .engines-catcher::after,
+        .bascic-catcher::after,
+        .passenger-plans-catcher::after { ${leftRight} }
 
-    .full-Plane-catcher::after       { ${badge(full)}      }
-    .bascic-catcher::after           { ${badge(basic)}     }
-    .engines-catcher::after          { ${badge(engine)}    }
-    .passenger-plans-catcher::after  { ${badge(passenger)} }
-  `;
+        .full-Plane-catcher::after       { ${badge(full, 10)}  }
+        .bascic-catcher::after           { ${badge(basic, 0)}  }
+        .engines-catcher::after          { ${badge(engine, 0)} }
+        .passenger-plans-catcher::after  { ${badge(passenger)} }
+      `;
     document.head.appendChild(styleEl);
 
     // return () => styleEl.remove();
@@ -423,12 +440,16 @@ export default function Plans() {
     }
   };
 
+  // Auto-reset timer ref
+  const resetTimerRef = React.useRef(null);
+  const [showPlans, setShowPlans] = React.useState(false);
   //
   const searchBtn = React.useRef(null);
   React.useEffect(() => {
     if (isFetchPricesSuccess && prices && prices?.length > 0 && prices[0]?.carMarkId === selectedModelId) {
       // overlay.current.style.padding = "16px";
       overlay.current.style.gridTemplateRows = "1fr";
+      setShowPlans(true);
 
       // Wait for the layout to be updated before scrolling
       setTimeout(() => {
@@ -438,12 +459,30 @@ export default function Plans() {
           inline: "nearest",
         });
       }, 100);
+
+      // Clear any previous timer, then start a fresh 2-minute auto-reset timer
+      if (resetTimerRef.current) {
+        clearTimeout(resetTimerRef.current);
+      }
+      resetTimerRef.current = setTimeout(() => {
+        handleBack();
+      }, 2 * 60 * 1000); // 2 minutes
     } else {
       if (overlay.current) {
         overlay.current.style.gridTemplateRows = "0fr";
       }
+      setShowPlans(false);
     }
   }, [prices]);
+
+  // Clear reset timer on unmount
+  React.useEffect(() => {
+    return () => {
+      if (resetTimerRef.current) {
+        clearTimeout(resetTimerRef.current);
+      }
+    };
+  }, []);
 
   // Show Passenger Card
   const passengerOverlay = React.useRef(null);
@@ -473,31 +512,57 @@ export default function Plans() {
     const content = languageText === "ar" ? `خصم ${discountPercentForPassngerPlans}%` : `${discountPercentForPassngerPlans}% Off`;
 
     style.innerHTML = `
-      .passenger-plans-catcher::after
-      {
-        left: ${languageText === "ar" ? "-50px" : "unset"};
-        right: ${languageText === "ar" ? "unset" : "-50px"};
-        transform: ${languageText === "ar" ? "rotate(315deg)" : "rotate(45deg)"};
-        ${discountPercentForPassngerPlans == 0 ? "content: none;" : `content: "${content}";`}
-      }`;
+          .passenger-plans-catcher::after
+          {
+            left: ${languageText === "ar" ? "-50px" : "unset"};
+            right: ${languageText === "ar" ? "unset" : "-50px"};
+            transform: ${languageText === "ar" ? "rotate(315deg)" : "rotate(45deg)"};
+            ${discountPercentForPassngerPlans == 0 ? "content: none;" : `content: "${content}";`}
+          }`;
     document.head.appendChild(style);
   }, [languageText, passenger]);
 
+  //
+  const handleBack = () => {
+    setShowPlans(false);
+    if (resetTimerRef.current) {
+      clearTimeout(resetTimerRef.current);
+      resetTimerRef.current = null;
+    }
+    setSelectedModel(null);
+    setSelectedModelId(null);
+    setSelectedYear("");
+    if (overlay.current) {
+      overlay.current.style.gridTemplateRows = "0fr";
+    }
+  };
+
   return (
     <div className={style.container}>
+      <div className={style.header}>
+        <div className={style.top_circle_header}>
+          <img src={logo} alt="cashif logo" />
+          <Tooltip title="مسح" className={style.three_dots} onClick={handleBack}>
+            <IconButton
+              sx={{
+                "&:hover": {
+                  backgroundColor: "transparent !important",
+                },
+              }}
+            >
+              <BackspaceIcon sx={{ color: "#fff", fontSize: "32px" }} />
+            </IconButton>
+          </Tooltip>
+        </div>
+        <div className={style.introCurve}>
+          <svg style={{ width: "100%", height: "auto" }} viewBox="0 0 1920 74" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 0H1920V0.96521C1920 0.96521 1335.71 74 960 74C584.29 74 0 0.96521 0 0.96521V0Z" fill="#174545" />
+          </svg>
+        </div>
+      </div>
+
       {/* Shared Title */}
-      <Typography
-        variant="h6"
-        component="div"
-        style={{
-          textAlign: "center",
-          margin: "20px",
-          marginTop: "8px",
-          fontSize: "28px",
-          fontWeight: "800",
-          color: "#164544",
-        }}
-      >
+      <Typography variant="h6" component="div" className={style.title}>
         {t("Prices.enterTheVehicleType")}
       </Typography>
 
@@ -505,8 +570,9 @@ export default function Plans() {
       {!passengerCheck && (
         <div className={style.box}>
           <Autocomplete
+            value={selectedModel}
             dir={languageText === "ar" ? "rtl" : "ltr"}
-            sx={{ backgroundColor: "#fff" }}
+            sx={{ backgroundColor: "#fff", width: "100%" }}
             disablePortal
             onChange={(event, newValue) => {
               handleModelChange(event, newValue);
@@ -568,44 +634,7 @@ export default function Plans() {
             }
           />
 
-          {/* <Box sx={{ width: "85%", margin: "auto", marginTop: "28px" }}>
-            <Typography
-              variant="h6"
-              component="div"
-              style={{
-                textAlign: "center",
-                margin: "auto",
-                color: "#757575",
-              }}
-            >
-              {t("Prices.selectYearOfManufacture")}
-            </Typography>
-            <Slider
-              aria-label={t("Prices.selectYearOfManufacture")}
-              value={selectedYear} // Set the value of the slider to the selected year
-              onChange={handleYearChange} // Add the onChange handler
-              valueLabelDisplay="auto"
-              step={1}
-              marks={marks}
-              min={2009}
-              max={2027}
-              valueLabelFormat={(value) => (value === 2009 ? t("Prices.older") : value)}
-            />
-          </Box> */}
-
           <Box sx={{ width: "100%", margin: "auto", marginTop: "28px" }}>
-            {/* <Typography
-              variant="h6"
-              component="div"
-              style={{
-                textAlign: "center",
-                margin: "auto",
-                color: "#757575",
-                marginBottom: "16px",
-              }}
-            >
-              {t("Prices.selectYearOfManufacture")}
-            </Typography> */}
             <FormControl fullWidth>
               <InputLabel>{t("Prices.yearOfManufacture")}</InputLabel>
               <Select value={selectedYear} label={t("Prices.yearOfManufacture")} onChange={(e) => setSelectedYear(e.target.value)} sx={{ backgroundColor: "#fff" }}>
@@ -639,6 +668,43 @@ export default function Plans() {
         </div>
       )}
 
+      {/* نص "أسعار الفحص" يظهر قبل ظهور الباقات */}
+      {!showPlans && (
+        <>
+          <Typography
+            variant="h4"
+            component="div"
+            sx={{
+              textAlign: "center",
+              fontWeight: "bold",
+              color: "#757575",
+              marginTop: "50px",
+              marginBottom: "100px",
+              fontSize: "150px",
+            }}
+          >
+            أسعار
+            {/* {languageText === "ar" ? "أسعار الفحص" : "Inspection Prices"} */}
+          </Typography>
+
+          <Typography
+            variant="h4"
+            component="div"
+            sx={{
+              textAlign: "center",
+              fontWeight: "bold",
+              color: "#757575",
+              marginTop: 0,
+              marginBottom: 0,
+              fontSize: "150px",
+            }}
+          >
+            الفحص
+            {/* {languageText === "ar" ? "أسعار الفحص" : "Inspection Prices"} */}
+          </Typography>
+        </>
+      )}
+
       {/* Plans */}
       {!passengerCheck && (
         <Box dir={languageText === "ar" ? "rtl" : "ltr"}>
@@ -647,16 +713,16 @@ export default function Plans() {
               <div className="title-box">
                 <h2>{t("Prices.chooseTheRightPackage")}</h2>
               </div>
-              <div className="plane-box">
+              <div className="plane-box plans-in-gallery-box">
                 {/* المحركات */}
                 {engainPrice !== 0 && (
-                  <div className="col plane eng-pane dis rounded-3 shadow-sm engines-catcher">
+                  <div className="col plane eng-pane dis rounded-3 shadow-sm engines-catcher" style={{ width: "219px" }}>
                     <div className="card mb-4 card-price eng">
                       <div className="card-header py-3">
                         <h4 className="my-0 fw-normal">{t("Prices.engines")}</h4>
                       </div>
-                      <div className="card-body">
-                        <h1 dir="rtl" id="engain-price" className="card-title pricing-card-title">
+                      <div className="card-body card-body-in-gallery-box">
+                        <h1 dir="rtl" id="engain-price" className="card-title pricing-card-title" style={{ marginBottom: "16px" }}>
                           {engainPrice}
                           <span dangerouslySetInnerHTML={{ __html: ryalIcon }} />
                         </h1>
@@ -673,17 +739,6 @@ export default function Plans() {
                           </h3>
                         )}
 
-                        {checkit && (
-                          <div dir="ltr" style={{ display: "flex", flexWrap: "wrap", marginTop: "24px", marginBottom: "24px", gap: "12px" }}>
-                            <Chip
-                              style={{ margin: "auto", backgroundColor: "#f0f1f3" }}
-                              icon={<CheckIcon style={{ color: "#25d366" }} />}
-                              label={t("Prices.explainedReportInVideo")}
-                            />
-                            {/* <Chip style={{ margin: "auto", backgroundColor: "#f0f1f3" }} icon={<CheckIcon style={{ color: "#25d366" }} />} label={t("Prices.carPhotography")} /> */}
-                          </div>
-                        )}
-
                         <h5>{t("Prices.includesExamination")}:</h5>
                         <ul className="list-unstyled mt-3 mb-4">
                           {checklistItems.map((item, index) => (
@@ -695,41 +750,6 @@ export default function Plans() {
                             />
                           ))}
                         </ul>
-
-                        {/* <a
-                        aria-label="Ask now Button"
-                        id="plane-one"
-                        className="ask-now"
-                        rel="noopener noreferrer"
-                        href={`${process.env.PUBLIC_URL}${checkit ? "/pay/makdom-check" : "/pay/purchase-check"}/?plan=${languageText === "ar" ? "محركات" : "Engine"}&year_id=${
-                          selectedYear >= 2017 ? 2 : 1
-                        }&car_model_id=${selectedModelId}&price_id=10&full_year=${selectedYear}${dis ? "&dis=fifty" : ""}&off=${
-                          prices?.find((p) => p.serviceId === 10)?.discount_percent ?? "0"
-                        }&comfort_service=${comfortService || "-"}`}
-                      >
-                        {t("Prices.orderNow")}
-                      </a> */}
-
-                        <a
-                          aria-label="Ask now Button"
-                          id="plane-one"
-                          className="ask-now"
-                          rel="noopener noreferrer"
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-
-                            handleOpenComfortModal(
-                              `${process.env.PUBLIC_URL}${checkit ? "/pay/makdom-check" : "/pay/purchase-check"}/?plan=${languageText === "ar" ? "محركات" : "Engine"}&year_id=${
-                                selectedYear >= 2017 ? 2 : 1
-                              }&car_model_id=${selectedModelId}&price_id=10&full_year=${selectedYear}${dis ? "&dis=fifty" : ""}&off=${
-                                prices?.find((p) => p.serviceId === 10)?.discount_percent ?? "0"
-                              }`
-                            );
-                          }}
-                        >
-                          {t("Prices.orderNow")}
-                        </a>
                       </div>
                     </div>
                   </div>
@@ -737,13 +757,13 @@ export default function Plans() {
 
                 {/* الأساسي */}
                 {basicPrice !== 0 && (
-                  <div className="col plane main-plane dis rounded-3 shadow-sm bascic-catcher">
+                  <div className="col plane main-plane dis rounded-3 shadow-sm bascic-catcher" style={{ width: "219px" }}>
                     <div className="card mb-4 card-price">
                       <div className="card-header py-3">
                         <h4 className="my-0 fw-normal">{t("Prices.basic")}</h4>
                       </div>
-                      <div className="card-body">
-                        <h1 dir="rtl" id="main-price" className="card-title pricing-card-title">
+                      <div className="card-body card-body-in-gallery-box">
+                        <h1 dir="rtl" id="main-price" className="card-title pricing-card-title" style={{ marginBottom: "16px" }}>
                           {basicPrice}
                           <span dangerouslySetInnerHTML={{ __html: ryalIcon }} />
                         </h1>
@@ -760,17 +780,6 @@ export default function Plans() {
                           </h3>
                         )}
 
-                        {checkit && (
-                          <div dir="ltr" style={{ display: "flex", flexWrap: "wrap", marginTop: "24px", marginBottom: "24px", gap: "12px" }}>
-                            <Chip
-                              style={{ margin: "auto", backgroundColor: "#f0f1f3" }}
-                              icon={<CheckIcon style={{ color: "#25d366" }} />}
-                              label={t("Prices.explainedReportInVideo")}
-                            />
-                            {/* <Chip style={{ margin: "auto", backgroundColor: "#f0f1f3" }} icon={<CheckIcon style={{ color: "#25d366" }} />} label={t("Prices.carPhotography")} /> */}
-                          </div>
-                        )}
-
                         <h5>{t("Prices.includesExamination")}:</h5>
                         <ul className="list-unstyled mt-3 mb-4">
                           {checklistItems.map((item, index) => (
@@ -782,40 +791,6 @@ export default function Plans() {
                             />
                           ))}
                         </ul>
-                        {/* <a
-                        aria-label="Ask now Button"
-                        id="plane-two"
-                        className="ask-now"
-                        rel="noopener noreferrer"
-                        href={`${process.env.PUBLIC_URL}${checkit ? "/pay/makdom-check" : "/pay/purchase-check"}/?plan=${languageText === "ar" ? "أساسي" : "Basic"}&year_id=${
-                          selectedYear >= 2017 ? 2 : 1
-                        }&car_model_id=${selectedModelId}&price_id=9&full_year=${selectedYear}${dis ? "&dis=fifty" : ""}&off=${
-                          prices?.find((p) => p.serviceId === 9)?.discount_percent ?? "0"
-                        }&comfort_service=${comfortService || "-"}`}
-                      >
-                        {t("Prices.orderNow")}
-                      </a> */}
-
-                        <a
-                          aria-label="Ask now Button"
-                          id="plane-two"
-                          className="ask-now"
-                          rel="noopener noreferrer"
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-
-                            handleOpenComfortModal(
-                              `${process.env.PUBLIC_URL}${checkit ? "/pay/makdom-check" : "/pay/purchase-check"}/?plan=${languageText === "ar" ? "أساسي" : "Basic"}&year_id=${
-                                selectedYear >= 2017 ? 2 : 1
-                              }&car_model_id=${selectedModelId}&price_id=9&full_year=${selectedYear}${dis ? "&dis=fifty" : ""}&off=${
-                                prices?.find((p) => p.serviceId === 9)?.discount_percent ?? "0"
-                              }`
-                            );
-                          }}
-                        >
-                          {t("Prices.orderNow")}
-                        </a>
                       </div>
                     </div>
                   </div>
@@ -823,12 +798,12 @@ export default function Plans() {
 
                 {/* الشامل */}
                 {fullPrice !== 0 && (
-                  <div className="col plane crown-box full-pane dis rounded-3 shadow-sm full-Plane-catcher" style={{ border: "2px solid #174545" }}>
+                  <div className="col plane crown-box full-pane dis rounded-3 shadow-sm full-Plane-catcher" style={{ border: "2px solid #174545", width: "223px" }}>
                     <div className="card mb-0 card-price">
                       <div className="card-header py-3 crown">
                         <h4 className="my-0 fw-normal">{t("Prices.fullInspection")}</h4>
                       </div>
-                      <div className="card-body">
+                      <div className="card-body card-body-in-gallery-box">
                         <h1 dir="rtl" id="full-price" className="card-title pricing-card-title">
                           {fullPrice}
                           <span dangerouslySetInnerHTML={{ __html: ryalIcon }} />
@@ -846,17 +821,6 @@ export default function Plans() {
                           </h3>
                         )}
 
-                        {checkit && (
-                          <div dir="ltr" style={{ display: "flex", flexWrap: "wrap", marginTop: "24px", marginBottom: "24px", gap: "12px" }}>
-                            <Chip
-                              style={{ margin: "auto", backgroundColor: "#f0f1f3" }}
-                              icon={<CheckIcon style={{ color: "#25d366" }} />}
-                              label={t("Prices.explainedReportInVideo")}
-                            />
-                            {/* <Chip style={{ margin: "auto", backgroundColor: "#f0f1f3" }} icon={<CheckIcon style={{ color: "#25d366" }} />} label={t("Prices.carPhotography")} /> */}
-                          </div>
-                        )}
-
                         <h5>{t("Prices.includesExamination")}:</h5>
                         <ul className="list-unstyled mt-3 mb-4">
                           {checklistItems.map((item) => (
@@ -868,40 +832,6 @@ export default function Plans() {
                             />
                           ))}
                         </ul>
-                        {/* <a
-                        aria-label="Ask now Button"
-                        id="plane-three"
-                        className="ask-now"
-                        rel="noopener noreferrer"
-                        href={`${process.env.PUBLIC_URL}${checkit ? "/pay/makdom-check" : "/pay/purchase-check"}/?plan=${
-                          languageText === "ar" ? "شامل" : "Full-Inspection"
-                        }&year_id=${selectedYear >= 2017 ? 2 : 1}&car_model_id=${selectedModelId}&price_id=8&full_year=${selectedYear}${dis ? "&dis=fifty" : ""}&off=${
-                          prices?.find((p) => p.serviceId === 8)?.discount_percent ?? "0"
-                        }&comfort_service=${comfortService || "-"}`}
-                      >
-                        {t("Prices.orderNow")}
-                      </a> */}
-
-                        <a
-                          aria-label="Ask now Button"
-                          id="plane-three"
-                          className="ask-now"
-                          rel="noopener noreferrer"
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-
-                            handleOpenComfortModal(
-                              `${process.env.PUBLIC_URL}${checkit ? "/pay/makdom-check" : "/pay/purchase-check"}/?plan=${
-                                languageText === "ar" ? "شامل" : "Full-Inspection"
-                              }&year_id=${selectedYear >= 2017 ? 2 : 1}&car_model_id=${selectedModelId}&price_id=8&full_year=${selectedYear}${dis ? "&dis=fifty" : ""}&off=${
-                                prices?.find((p) => p.serviceId === 8)?.discount_percent ?? "0"
-                              }`
-                            );
-                          }}
-                        >
-                          {t("Prices.orderNow")}
-                        </a>
                       </div>
                     </div>
                   </div>
@@ -937,9 +867,9 @@ export default function Plans() {
               <div className="title-box">
                 <h2>{t("Prices.chooseThePackage")}</h2>
               </div>
-              <div className="plane-box">
+              <div className="plane-box plans-in-gallery-box" style={{ gap: "0px important" }}>
                 {/* سيدان - دفع رباعي - فارهة */}
-                <div className="col plane eng-pane dis rounded-3 shadow-sm passenger-plans-catcher">
+                <div className="col plane eng-pane dis rounded-3 shadow-sm passenger-plans-catcher" style={{ width: "229px" }}>
                   <div className="card mb-4 card-price eng">
                     <div className="card-header py-3">
                       <h4 className="my-0 fw-normal">
@@ -949,7 +879,7 @@ export default function Plans() {
                       </h4>
                     </div>
 
-                    <div className="card-body">
+                    <div className="card-body card-body-in-gallery-box">
                       <h1 dir="rtl" id="engain-price" className="card-title pricing-card-title">
                         {passenger && passenger === "sedan" && Math.floor(passengerPlanePrices?.data[2]?.price || 0)}
                         {passenger && passenger === "suv" && Math.floor(passengerPlanePrices?.data[1]?.price || 0)}
@@ -1011,20 +941,6 @@ export default function Plans() {
                           />
                         ))}
                       </ul>
-
-                      {passengerPlanePrices && (
-                        <a
-                          aria-label="Ask now Button"
-                          id="plane-one"
-                          className="ask-now"
-                          rel="noopener noreferrer"
-                          href={`${process.env.PUBLIC_URL}/pay/passenger-check/?plan=passenger&year_id=1&car_model_id=9&price_id=2${dis ? "&dis=fifty" : ""}${
-                            passenger ? `&passenger=${passenger}` : ""
-                          }&off=${passengerPlanePrices?.data[passenger === "luxury" ? 0 : passenger === "suv" ? 1 : 2]?.discount_percent || "0"}`}
-                        >
-                          {t("Prices.orderNow")}
-                        </a>
-                      )}
                     </div>
                   </div>
                 </div>
@@ -1033,77 +949,6 @@ export default function Plans() {
           </div>
         </Box>
       )}
-
-      {/* مرتاح Modal */}
-      <Modal open={openComfortModal} onClose={handleCloseComfortModal}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 350,
-            bgcolor: "background.paper",
-            borderRadius: 3,
-            boxShadow: 24,
-            p: 4,
-            textAlign: "center",
-            direction: languageText === "ar" ? "rtl" : "ltr",
-          }}
-        >
-          <Typography
-            variant="h6"
-            sx={{
-              fontWeight: "bold",
-              color: "#164544",
-              mb: 2,
-            }}
-          >
-            {t("Prices.WouldYouLikeToRequestComfortableService")}
-          </Typography>
-
-          <Typography
-            sx={{
-              color: "#666",
-              mb: 3,
-              fontSize: "14px",
-            }}
-          >
-            {t("Prices.WePickUpTheCarFromYourLocationViaFlatbedTruckInspectItAtTheInspectionCenterAndReturnItToTheSameLocation")}
-          </Typography>
-
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-              justifyContent: "center",
-            }}
-          >
-            <Button
-              sx={{
-                width: "100%",
-              }}
-              variant="outlined"
-              color="inherit"
-              onClick={() => handleContinueOrder("no")}
-            >
-              لا
-            </Button>
-
-            <Button
-              variant="contained"
-              sx={{
-                backgroundColor: "#164544",
-                width: "100%",
-              }}
-              onClick={() => handleContinueOrder("yes")}
-            >
-              نعم (+345 ريال)
-            </Button>
-          </Box>
-        </Box>
-      </Modal>
     </div>
   );
 }

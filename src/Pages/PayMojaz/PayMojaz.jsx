@@ -15,7 +15,7 @@ import { Box, Stepper, Step, StepLabel } from "@mui/material";
 // Cookies
 import { useCookies } from "react-cookie";
 // API
-import { useGetAllCardsApi } from "../../API/useGetAllCardsApi";
+import useGetOneCardDataApi from "../../API/useGetOneCardDataApi";
 
 const Accordion = styled((props) => <MuiAccordion disableGutters elevation={0} square {...props} />)(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
@@ -55,17 +55,41 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 const steps = ["بيانات المركبة", "الدفع", "تحميل التقرير"];
 
 export default function PayMojaz() {
-  const { data: cardsData, fetchStatus: fetchCardStatus } = useGetAllCardsApi();
+  // Cookies
+  const [cookies, setCookie] = useCookies(["tokenApp", "username", "userId", "phoneNumber"]);
+  const navigate = useNavigate();
+  //
+  // Get search params from current URL
+  const searchParams = new URLSearchParams(window.location.search);
+
+  // Get individual parameters
+  const lookupType = searchParams.get("lookup_type");
+  const lookupValue = searchParams.get("lookup_value");
+  //   const name = searchParams.get("name");
+  //   const phone = searchParams.get("phone");
+  //   const userId = searchParams.get("user_id");
+  const name = cookies.username;
+  const phone = cookies.phoneNumber;
+  const userId = cookies.userId?.toString();
+
+  const mainReportNumber = searchParams.get("main_report_number");
+
+  //   console.log(lookupType);
+  //   console.log(lookupValue);
+  //   console.log(name);
+  //   console.log(phone);
+  //   console.log(userId);
+  //   console.log(mainReportNumber);
+  //
+  const { data: cardData, fetchStatus: fetchCardStatus, isSuccess } = useGetOneCardDataApi(mainReportNumber);
 
   const branchNameAr = useRef(null);
 
   useEffect(() => {
-    if (cardsData && cardsData?.length > 0 && fetchCardStatus === "idle") {
-      let lastCard = cardsData?.length > 0 ? cardsData[cardsData.length - 1] : null;
-
-      branchNameAr.current = lastCard?.branchNameAr ?? null;
+    if (cardData && fetchCardStatus === "idle" && isSuccess) {
+      branchNameAr.current = cardData?.branchNameAr ?? null;
     }
-  }, [cardsData]);
+  }, [cardData]);
 
   //
   const [activeStep, setActiveStep] = useState(1);
@@ -74,10 +98,6 @@ export default function PayMojaz() {
     // Scroll to the top of the page
     window.scrollTo(0, 0);
   }, []);
-
-  // Cookies
-  const [cookies, setCookie] = useCookies(["tokenApp", "username", "userId", "phoneNumber"]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (!cookies.tokenApp) {
@@ -102,24 +122,6 @@ export default function PayMojaz() {
     };
   }, []);
   //
-  // Get search params from current URL
-  const searchParams = new URLSearchParams(window.location.search);
-
-  // Get individual parameters
-  const lookupType = searchParams.get("lookup_type");
-  const lookupValue = searchParams.get("lookup_value");
-  //   const name = searchParams.get("name");
-  //   const phone = searchParams.get("phone");
-  //   const userId = searchParams.get("user_id");
-  const name = cookies.username;
-  const phone = cookies.phoneNumber;
-  const userId = cookies.userId?.toString();
-
-  //   console.log(lookupType);
-  //   console.log(lookupValue);
-  //   console.log(name);
-  //   console.log(phone);
-  //   console.log(userId);
 
   //
   const [expanded, setExpanded] = useState("panel3");
@@ -156,7 +158,8 @@ export default function PayMojaz() {
           phone: phone,
           userId: userId,
           price: 119,
-          email: branchNameAr?.current || null,
+          email: branchNameAr?.current || null, // this will be the Branch instead if Email
+          main_report_number: mainReportNumber,
         },
 
         on_failure: async function (error) {
@@ -172,6 +175,7 @@ export default function PayMojaz() {
             userId: userId,
             price: 119,
             email: branchNameAr?.current || null,
+            main_report_number: mainReportNumber,
           });
 
           // Update the data
@@ -185,12 +189,13 @@ export default function PayMojaz() {
               userId: userId,
               price: 119,
               email: branchNameAr?.current || null,
+              main_report_number: mainReportNumber,
             },
           };
         },
       });
     }
-  }, [languageText, lookupType, lookupValue, name, phone, userId, cardsData]);
+  }, [languageText, lookupType, lookupValue, name, phone, userId, cardData]);
 
   return (
     <div className={style.container} dir={languageText === "ar" ? "rtl" : "ltr"}>

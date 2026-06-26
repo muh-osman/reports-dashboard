@@ -22,6 +22,8 @@ export default function ThanksPurchaseCheck() {
   }, []);
   // Get search params from current URL
   const searchParams = new URLSearchParams(window.location.search);
+  //
+  const noAutoDownload = searchParams.get("noAutoDownload") === "true";
   // Get individual parameters
   // Moyasar params
   const status = searchParams.get("status");
@@ -34,78 +36,82 @@ export default function ThanksPurchaseCheck() {
   const tabbyPaymentId = searchParams.get("payment_id");
   const tabbyCancel = searchParams.get("cancel");
   const tabbyFail = searchParams.get("fail");
-  const numOfParams = Array.from(new URLSearchParams(window.location.search).keys());
+  const numOfParams = Array.from(new URLSearchParams(window.location.search).keys()).filter((key) => key !== "noAutoDownload"); // exclude it from the count
 
   const [paySuccess, setPaySuccess] = useState(false);
-  const [isDownloaded, setIsDownloaded] = useState(false);
+  // const [isDownloaded, setIsDownloaded] = useState(false);
 
   useEffect(() => {
+    // http://localhost:3000/dashboard/pay/purchase-check/thanks?status=paid&message=APPROVED&id=767b943e-158a-47f5-9eab-91f22ea224db
     if (status === "paid" && message === "APPROVED") {
       setPaySuccess(true);
+      // http://localhost:3000/dashboard/pay/purchase-check/thanks?paymentStatus=approved&orderId=326205a1-9a77-4a2d-9a56-a2090ffc442b
     } else if (tamaraPaymentStatus === "approved" && tamaraOrderId) {
       setPaySuccess(true);
+      // http://localhost:3000/dashboard/pay/purchase-check/thanks?payment_id=019e73f7-bc60-88a2-9017-9579c01b5294
     } else if (tabbyPaymentId && tabbyCancel !== "true" && tabbyFail !== "true" && numOfParams.length === 1) {
       setPaySuccess(true);
     }
   }, [status, message, tamaraPaymentStatus, tamaraOrderId, tabbyPaymentId, tabbyCancel, tabbyFail, numOfParams]);
 
-  const handleDownloadQRCode = () => {
-    const svg = document.getElementById("qr-code-svg");
-    const svgData = new XMLSerializer().serializeToString(svg);
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    const img = new Image();
+  // const handleDownloadQRCode = () => {
+  //   const svg = document.getElementById("qr-code-svg");
+  //   const svgData = new XMLSerializer().serializeToString(svg);
+  //   const canvas = document.createElement("canvas");
+  //   const ctx = canvas.getContext("2d");
+  //   const img = new Image();
 
-    // Padding settings (in pixels)
-    const padding = 20; // Adjust this value as needed
+  //   // Padding settings (in pixels)
+  //   const padding = 20; // Adjust this value as needed
 
-    img.onload = () => {
-      // Set canvas size to include padding
-      canvas.width = img.width + padding * 2;
-      canvas.height = img.height + padding * 2;
+  //   img.onload = () => {
+  //     // Set canvas size to include padding
+  //     canvas.width = img.width + padding * 2;
+  //     canvas.height = img.height + padding * 2;
 
-      // Fill background with white
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+  //     // Fill background with white
+  //     ctx.fillStyle = "#ffffff";
+  //     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Draw the QR code with padding
-      ctx.drawImage(img, padding, padding, img.width, img.height);
+  //     // Draw the QR code with padding
+  //     ctx.drawImage(img, padding, padding, img.width, img.height);
 
-      const pngFile = canvas.toDataURL("image/png");
-      const downloadLink = document.createElement("a");
-      downloadLink.download = `qrcode-${
-        (id ? `moyasar-${id}` : "") || (tamaraOrderId ? `tamara-${tamaraOrderId}` : "") || (tabbyPaymentId ? `tabby-${tabbyPaymentId}` : "") || "ticket"
-      }.png`;
-      downloadLink.href = pngFile;
-      downloadLink.click();
-    };
+  //     const pngFile = canvas.toDataURL("image/png");
+  //     const downloadLink = document.createElement("a");
+  //     // This is the name of file
+  //     downloadLink.download = `qrcode-${
+  //       (id ? `moyasar-${id}` : "") || (tamaraOrderId ? `tamara-${tamaraOrderId}` : "") || (tabbyPaymentId ? `tabby-${tabbyPaymentId}` : "") || "ticket"
+  //     }.png`;
+  //     downloadLink.href = pngFile;
+  //     downloadLink.click();
+  //   };
 
-    img.src = "data:image/svg+xml;base64," + btoa(svgData);
-  };
+  //   img.src = "data:image/svg+xml;base64," + btoa(svgData);
+  // };
 
   // Effect to automatically download QR code when component mounts and pay is successful
-  useEffect(() => {
-    if (paySuccess && !isDownloaded) {
-      // Small delay to ensure QR code is rendered
-      const timer = setTimeout(() => {
-        handleDownloadQRCode();
-        setIsDownloaded(true);
-      }, 1500); // 1.5 second delay to ensure rendering
+  // useEffect(() => {
+  //   if (paySuccess && !isDownloaded && !noAutoDownload) {
+  //     // Small delay to ensure QR code is rendered
+  //     const timer = setTimeout(() => {
+  //       handleDownloadQRCode();
+  //       setIsDownloaded(true);
+  //     }, 1500); // 1.5 second delay to ensure rendering
 
-      return () => clearTimeout(timer);
-    }
-  }, [paySuccess, isDownloaded]);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [paySuccess, isDownloaded, noAutoDownload]);
 
   // Manual download handler
-  const handleManualDownload = () => {
-    handleDownloadQRCode();
-  };
+  // const handleManualDownload = () => {
+  //   handleDownloadQRCode();
+  // };
 
   return (
     <div className={style.container}>
       {paySuccess ? (
         <>
-          <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
+          {/* <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
             <div style={{ background: "white", padding: "16px" }}>
               <QRCode id="qr-code-svg" value={id || (tamaraOrderId ? `tamara${tamaraOrderId}` : "") || (tabbyPaymentId ? `tabby${tabbyPaymentId}` : "")} size={250} level="H" />
             </div>
@@ -121,13 +127,31 @@ export default function ThanksPurchaseCheck() {
             >
               تحميل الـ QR Code
             </Button>
-          </Box>
+          </Box> */}
 
           <div className={style.success_box}>
             <CheckCircleIcon sx={{ fontSize: 48, color: "#1fb952" }} />
 
             <h2>تم الدفع</h2>
-            <h4>قم بحفظ الباركود، لإبرازه لموظف الاستقبال في الفرع المحدد لإتمام إجراءات الفحص</h4>
+            <h3
+              style={{
+                color: "#1976d2",
+                fontWeight: "bold",
+                margin: "8px 0 16px",
+                // background: "linear-gradient(135deg, #e3f2fd, #bbdefb)",
+                background: "#e3f2fd",
+                padding: "14px 28px",
+                borderRadius: "9px",
+                border: "1px solid #1976d2",
+                // boxShadow: "0 4px 12px rgba(25, 118, 210, 0.15)",
+                letterSpacing: "0.5px",
+                fontSize: "1.1rem",
+              }}
+            >
+              رقم الحجز هو رقم جوالك
+            </h3>
+
+            {/* <h4>قم بحفظ الباركود، لإبرازه لموظف الاستقبال في الفرع المحدد لإتمام إجراءات الفحص</h4> */}
 
             <Button
               variant="outlined"

@@ -43,10 +43,18 @@ export default function Prices() {
   const navigate = useNavigate();
   const handleClickOnPurchaseInspectionButton = () => {
     navigate(`${process.env.PUBLIC_URL}/plans?purchaseInspection=true`);
+
+    // navigate(`${process.env.PUBLIC_URL}/static-plans?purchaseInspection=true`);
   };
   const handleClickOnCheckitInspectionButton = () => {
-    // navigate(`${process.env.PUBLIC_URL}/plans?checkit=true`);
-    window.location.href = "https://cashif.cc/check-it/";
+    const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+    if (isLocalhost) {
+      // Use navigate for local development
+      navigate(`${process.env.PUBLIC_URL}/plans?checkit=true`);
+    } else {
+      // Use window.location for production/hosted environment
+      window.location.href = "https://cashif.cc/check-it/";
+    }
   };
   const handleClickOnPassengerInspectionButton = () => {
     navigate(`${process.env.PUBLIC_URL}/plans?passengerCheck=true`);
