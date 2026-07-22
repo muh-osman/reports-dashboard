@@ -15,6 +15,15 @@
   justify-content: space-evenly;
   // padding-top: 31px;
   // width: 100%;
+
+  // position: relative;
+  overflow: hidden;
+
+  box-shadow: 0 4px 6px rgba(13, 79, 79, 0.04), 0 12px 30px rgba(13, 79, 79, 0.08);
+  border-radius: 24px;
+  border-right: 4px solid #174545;
+
+  background: linear-gradient(135deg, #cfe8e0 0%, #e8f0ee 50%, #f3ece2 100%);
 }
 
 .point_card {
@@ -107,7 +116,7 @@
 .reports_cards_container {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   gap: 24px;
 }
@@ -191,13 +200,33 @@
 .money_card_container {
   width: fit-content;
   border-radius: 9px;
-  background-color: #0b6bcb;
-  color: #fff;
+  // background-color: #174545;
+  background-color: #fff;
+  color: #174545;
   padding: 32px;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   position: relative;
+
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.22) 100%);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+
+  // border: 1px solid rgba(13, 79, 79, 0.08);
+  // box-shadow: 0 4px 6px rgba(13, 79, 79, 0.04), 0 12px 30px rgba(13, 79, 79, 0.08);
+  // border-radius: 24px;
+
+  // &::after {
+  //   content: "";
+  //   position: absolute;
+  //   top: 0;
+  //   right: -1px;
+  //   width: 6px;
+  //   height: 100%;
+  //   background: #0d4f4f;
+  //   border-radius: 0 24px 24px 0;
+  // }
 
   @media (max-width: 1000px) {
     width: 100%;
@@ -221,7 +250,7 @@
   }
 
   p {
-    color: #c7dff7;
+    color: #00000099;
   }
 
   .money_card_footer {
@@ -235,13 +264,14 @@
     h3 {
       font-size: 16px;
       padding: 4px 12px;
-      color: #0b6bcb;
-      background-color: #fff;
+      color: #174545;
+      background-color: #ffffff76;
       border-radius: 4px;
       font-weight: 600;
       text-align: center;
       width: 100%;
       white-space: nowrap;
+      border: 1px solid #17454517;
     }
   }
 

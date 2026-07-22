@@ -28,6 +28,8 @@ import useCheckDiscountCodeApi from "../../API/useCheckDiscountCodeApi";
 import { useCookies } from "react-cookie";
 //
 import { toast } from "react-toastify";
+//
+import dayjs from "dayjs";
 
 const Accordion = styled((props) => <MuiAccordion disableGutters elevation={0} square {...props} />)(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
@@ -73,6 +75,7 @@ const CurrencyIcon = ({ fill = "#000000de", ...props }) => {
 };
 
 export default function PayPurchaseCheck() {
+  const isFriday = dayjs().day() === 5; // 5 = Friday
   ///////////////////////////////////////// Start Utils /////////////////////////////////////////
   useEffect(() => {
     // Scroll to the top of the page
@@ -966,7 +969,7 @@ export default function PayPurchaseCheck() {
         }`,
         buyer: {
           phone: formatedPhoneNumberRef.current,
-          email: "user@example.com",
+          email: "jsmith@example.com",
           name: userNameRef.current,
           dob: "2000-08-24",
         },
@@ -1018,7 +1021,7 @@ export default function PayPurchaseCheck() {
             status: "new",
             buyer: {
               phone: formatedPhoneNumberRef.current,
-              email: "user@example.com",
+              email: "jsmith@example.com",
               name: userNameRef.current,
               dob: "2000-08-24",
             },
@@ -1290,41 +1293,43 @@ export default function PayPurchaseCheck() {
           </div>
 
           {/* خدمة مرتاح */}
-          <div>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={isMertahServiceChecked}
-                  onChange={(e) => setIsMertahServiceChecked(e.target.checked)}
-                  sx={{
-                    color: "primary.main",
-                    padding: 0,
-                    "&.Mui-checked": {
+          {!isFriday && (
+            <div>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={isMertahServiceChecked}
+                    onChange={(e) => setIsMertahServiceChecked(e.target.checked)}
+                    sx={{
                       color: "primary.main",
-                    },
-                    // For RTL/LTR support
-                    ...(languageText === "ar" && {
-                      marginLeft: "8px",
-                      marginRight: "0",
-                    }),
-                    ...(languageText === "en" && {
-                      marginRight: "8px",
-                      marginLeft: "0",
-                    }),
-                  }}
-                />
-              }
-              label={<Typography variant="body1">{t("PayPurchaseCheck.mertahService")}</Typography>}
-              sx={{
-                margin: 0,
-                width: "100%",
-              }}
-            />
+                      padding: 0,
+                      "&.Mui-checked": {
+                        color: "primary.main",
+                      },
+                      // For RTL/LTR support
+                      ...(languageText === "ar" && {
+                        marginLeft: "8px",
+                        marginRight: "0",
+                      }),
+                      ...(languageText === "en" && {
+                        marginRight: "8px",
+                        marginLeft: "0",
+                      }),
+                    }}
+                  />
+                }
+                label={<Typography variant="body1">{t("PayPurchaseCheck.mertahService")}</Typography>}
+                sx={{
+                  margin: 0,
+                  width: "100%",
+                }}
+              />
 
-            <p style={{ textDecoration: isMertahServiceChecked ? "none" : "line-through", display: "flex", alignItems: "center", gap: "3px", fontWeight: 700 }}>
-              {mertahServicePrice} <CurrencyIcon fill="#747a79" style={{ width: "20px", height: "20px" }} />
-            </p>
-          </div>
+              <p style={{ textDecoration: isMertahServiceChecked ? "none" : "line-through", display: "flex", alignItems: "center", gap: "3px", fontWeight: 700 }}>
+                {mertahServicePrice} <CurrencyIcon fill="#747a79" style={{ width: "20px", height: "20px" }} />
+              </p>
+            </div>
+          )}
 
           {/* تصوير السيارة (فيديو + صور) */}
           {isMertahServiceChecked && (

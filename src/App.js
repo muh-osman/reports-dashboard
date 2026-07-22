@@ -43,6 +43,7 @@ import MyOrders from "./Pages/MyOrders/MyOrders";
 import PartnersOffers from "./Pages/PartnersOffers/PartnersOffers";
 import PlansInGallery from "./Pages/PlansInGallery/PlansInGallery";
 import StaticPlans from "./Pages/StaticPlans/StaticPlans";
+import NewBranch from "./Pages/NewBranch/NewBranch";
 // import Lottery from "./Pages/Lottery/Lottery";
 // import LotteryAlreadyRegistered from "./Pages/LotteryAlreadyRegistered/LotteryAlreadyRegistered";
 
@@ -65,9 +66,13 @@ export default function App() {
           <Route index element={<Home />} />
 
           <Route element={<AcceptedNumbers />}>
+            {/* page 1 */}
             <Route path={`${process.env.PUBLIC_URL}/falak`} element={<Falak />} />
+            {/* page 2 */}
             <Route path={`${process.env.PUBLIC_URL}/falak/conditions`} element={<Conditions />} />
+            {/* page 3 */}
             <Route path={`${process.env.PUBLIC_URL}/falak/how-works`} element={<HowWorks />} />
+
             <Route path={`${process.env.PUBLIC_URL}/falak/marketer`} element={<Marketer />} />
 
             <Route path={`${process.env.PUBLIC_URL}/falak/transfer`} element={<Transfer />} />
@@ -111,7 +116,9 @@ export default function App() {
         </Route>
         {/* End protected route */}
 
+        {/* صفحات شاشات الخدمة الذاتية */}
         <Route path={`${process.env.PUBLIC_URL}/plans-gallery`} element={<PlansInGallery />} />
+        <Route path={`${process.env.PUBLIC_URL}/new-branch`} element={<NewBranch />} />
 
         <Route path={`${process.env.PUBLIC_URL}/*`} element={<NotFound />} />
       </Route>

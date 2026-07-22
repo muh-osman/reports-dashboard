@@ -1,4 +1,5 @@
 import style from "./PartnersOffers.module.scss";
+import { useEffect } from "react";
 //MUI
 import { Button } from "@mui/material";
 // Images
@@ -8,6 +9,12 @@ import imageC from "../../Assets/Images/C.png";
 import imageD from "../../Assets/Images/D.png";
 
 export default function PartnersOffers() {
+  useEffect(() => {
+    // Scroll to the top of the page
+    window.scrollTo(0, 0);
+    // GetCardsPendingApproveCards();
+  }, []);
+
   return (
     <div className={style.container}>
       {/* Partner Coupon */}

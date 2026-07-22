@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 // imgs
 import mojazLgo from "../../Assets/Images/mojaz-logo.webp";
+import cardImage from "../../Assets/Images/card-image.jpg";
 // MUI
 import Divider from "@mui/material/Divider";
 import Card from "@mui/material/Card";
@@ -39,6 +40,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import HourglassTopIcon from "@mui/icons-material/HourglassTop";
 import NumbersIcon from "@mui/icons-material/Numbers";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 // Toastify
 import { toast } from "react-toastify";
 // Cookies
@@ -117,6 +119,55 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 function createData(name, calories, fat, carbs, clr) {
   return { name, calories, fat, carbs, clr };
+}
+
+function ServiceIconBtn({ icon, label, onClick, disabled, color = "teal" }) {
+  const isTeal = color === "teal";
+  return (
+    <Box
+      component="button"
+      onClick={onClick}
+      disabled={disabled}
+      sx={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 1,
+        p: "14px 8px",
+        background: "transparent",
+        border: "0.5px solid",
+        borderColor: isTeal ? "divider" : "#f8d0d0",
+        borderRight: isTeal ? "3px solid #174545" : "3px solid #be1e2d", // ← add this
+        borderRadius: "12px",
+        cursor: "pointer",
+        fontSize: "13px",
+        fontWeight: 500,
+        color: isTeal ? "text.primary" : "#be1e2d",
+        transition: "background 0.15s",
+        "&:hover": { bgcolor: "action.hover" },
+        "&:disabled": { opacity: 0.5, cursor: "not-allowed" },
+      }}
+    >
+      <Box
+        sx={{
+          width: 40,
+          height: 40,
+          borderRadius: "10px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          bgcolor: isTeal ? "#e1f5ee" : "#fce8e8",
+          color: isTeal ? "#174545" : "#be1e2d",
+          border: isTeal ? "none" : "1.5px solid #f8d0d0",
+        }}
+      >
+        {icon}
+      </Box>
+      <span>{label}</span>
+    </Box>
+  );
 }
 
 // Main component
@@ -547,17 +598,17 @@ export default function Reports() {
   const getClientColor = () => {
     switch (points?.clientTypeAr) {
       case "برونزي":
-        return "#E69546"; // برونزي
+        return "#CD7F32"; // برونزي
       case "فضي":
-        return "#D4D4D4"; // فضي
+        return "#B8B8B8"; // فضي - أغمق قليلاً
       case "ذهبي":
-        return "#FFDF00"; // ذهبي
+        return "#E6C200"; // ذهبي - أغمق قليلاً
       case "بلاتيني":
-        return "#E5E4E2"; // بلاتيني
+        return "#BDBDBD"; // بلاتيني - أغمق قليلاً
       case "نخبة":
-        return "#000000"; // بنفسجي (للمستوى نخبة)
+        return "#000000"; // نخبة
       default:
-        return "#fff"; // لون افتراضي إذا لم يتطابق أي نوع
+        return "#174545"; // لون افتراضي
     }
   };
 
@@ -630,6 +681,10 @@ export default function Reports() {
   };
   //
   const navigate = useNavigate();
+
+  const handleClickOnCompaniesOffersBtn = () => {
+    navigate(`${process.env.PUBLIC_URL}/partners-offers/`);
+  };
   const handleClickOnShippingCarBtn = (cardId) => {
     navigate(`${process.env.PUBLIC_URL}/shipping/${cardId}`);
   };
@@ -707,6 +762,7 @@ export default function Reports() {
               </h1> */}
                   <h1>
                     <NumberFlow value={points?.points || 0} duration={1500} delay={0} ease="outExpo" formattingFn={(value) => Math.floor(value).toLocaleString()} />
+                    <span style={{ fontSize: "14px", color: "#00000099", marginRight: "6px" }}>نقطة</span>
                   </h1>
                 </div>
 
@@ -718,7 +774,7 @@ export default function Reports() {
                       size={150}
                       thickness={6}
                       sx={{
-                        color: "#3887d5",
+                        color: "#E8EFED",
                         position: "absolute",
                       }}
                     />
@@ -730,6 +786,9 @@ export default function Reports() {
                       sx={{
                         color: getClientColor,
                         borderRadius: "10px",
+                        "& .MuiCircularProgress-circle": {
+                          strokeLinecap: "round",
+                        },
                       }}
                     />
                     <div
@@ -764,7 +823,7 @@ export default function Reports() {
                 }}
               >
                 <IconButton onClick={handleOpenClientTypesModal}>
-                  <InfoIcon sx={{ color: "#fff" }} />
+                  <InfoIcon sx={{ color: "#174545" }} />
                 </IconButton>
               </div>
 
@@ -772,7 +831,7 @@ export default function Reports() {
                 <IconButton onClick={handleExpandPointsBox} disabled={isPointsBoxExpanded ? true : false}>
                   <ExpandMoreIcon
                     sx={{
-                      color: "#fff",
+                      color: "#174545",
                       // transform: isPointsBoxExpanded ? "rotate(180deg)" : "rotate(0deg)",
                       opacity: isPointsBoxExpanded ? "0" : "1",
                       transition: "transform 0.3s ease-in-out",
@@ -803,7 +862,7 @@ export default function Reports() {
                 md: 4,
               },
               textAlign: "center",
-              borderRadius: "16px",
+              borderRadius: "24px",
               boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
               backgroundColor: "#fff",
               maxHeight: "80vh", // Set a maximum height for the modal
@@ -815,7 +874,7 @@ export default function Reports() {
               <div dir={languageText === "ar" ? "rtl" : "ltr"}>
                 <h1>{t("Reports.customerCategories")}</h1>
 
-                <TableContainer dir={languageText === "ar" ? "rtl" : "ltr"} component={Paper}>
+                <TableContainer sx={{ borderRadius: "24px" }} dir={languageText === "ar" ? "rtl" : "ltr"}>
                   <Table dir={languageText === "ar" ? "rtl" : "ltr"} aria-label="customized table">
                     <TableHead>
                       <TableRow>
@@ -855,7 +914,7 @@ export default function Reports() {
           width: "100%",
           bgcolor: "#fff",
           color: "#174545",
-          borderRadius: "9px",
+          borderRadius: "24px",
         }}
       >
         <Tabs
@@ -868,7 +927,7 @@ export default function Reports() {
             "& .MuiTabs-indicator": {
               backgroundColor: "#f0f1f3",
               border: "4px solid #fff",
-              borderRadius: "9px",
+              borderRadius: "24px",
               height: "100%",
               zIndex: 0,
             },
@@ -1078,12 +1137,128 @@ export default function Reports() {
                     <Card
                       key={card.cardNumber}
                       sx={{
-                        width: { xs: "100%", sm: 329 },
+                        width: { xs: "100%", sm: 670 },
                         position: "relative",
-                        borderRadius: "9px",
+                        borderRadius: "24px",
                         boxShadow: "none",
+                        border: "0.5px solid",
+                        borderColor: "divider",
+                        overflow: "hidden",
                       }}
                     >
+                      {/* Top section: car image + specs */}
+                      <Box
+                        dir={languageText === "en" ? "rtl" : "ltr"}
+                        sx={{
+                          display: "grid",
+                          gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+                          gap: { xs: "16px", sm: "0px" }, // 15px on extra-small, 0 on small and up
+                          p: { xs: 2, sm: 3 },
+                          alignItems: "center",
+                        }}
+                      >
+                        {/* Left: image + status + download */}
+                        <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, alignItems: "center", justifyContent: "center" }}>
+                          {/* Placeholder car image — swap with real img if available */}
+                          <Box
+                            component="img"
+                            src={card.carImageUrl || cardImage}
+                            alt=""
+                            sx={{ width: "100%", maxWidth: 220, objectFit: "contain", borderRadius: "8px" }}
+                            onError={(e) => {
+                              e.currentTarget.style.display = "none";
+                            }}
+                          />
+
+                          <Typography sx={{ fontSize: "22px", fontWeight: 700 }}>{languageText === "ar" ? "الفحص مكتمل" : "Inspection Complete"}</Typography>
+
+                          <Button
+                            onClick={() => handleDownloadCard(card.id, card.includeImage, card.approveTerms)}
+                            variant="contained"
+                            disabled={loadingDownload[card.id]}
+                            startIcon={loadingDownload[card.id] ? <CircularProgress size={18} sx={{ color: "#fff" }} /> : <DownloadIcon />}
+                            sx={{
+                              backgroundColor: "#174545",
+                              borderRadius: "24px",
+                              textTransform: "none",
+                              fontWeight: 500,
+                              fontSize: "14px",
+                              // "&:hover": { backgroundColor: "#155a43" },
+                            }}
+                          >
+                            {t("Reports.downloadReport")}
+                          </Button>
+                        </Box>
+
+                        {/* Right: specs table */}
+                        <Box
+                          sx={{
+                            border: "0.5px solid",
+                            borderColor: "divider",
+                            borderRadius: "12px",
+                            overflow: "hidden",
+                            direction: languageText === "en" ? "ltr" : "rtl",
+                          }}
+                        >
+                          {[
+                            {
+                              icon: <MinorCrashIcon sx={{ fontSize: 16 }} />,
+                              label: languageText === "ar" ? "الشركة" : "Make",
+                              value: languageText === "en" ? card?.carManufacturerNameEn || "-" : card?.carManufacturerNameAr || "-",
+                            },
+                            {
+                              icon: <StyleIcon sx={{ fontSize: 16 }} />,
+                              label: languageText === "ar" ? "الفئة" : "Model",
+                              value: languageText === "en" ? card?.carModelNameEn || "-" : card?.carModelNameAr || "-",
+                            },
+                            {
+                              icon: <ContentPasteSearchIcon sx={{ fontSize: 16 }} />,
+                              label: languageText === "ar" ? "نوع الفحص" : "Service",
+                              value: languageText === "en" ? card?.servicesListNameEn?.join(", ") || "-" : card?.servicesListNameAr?.join(", ") || "-",
+                            },
+                            { icon: <CreditCardIcon sx={{ fontSize: 16 }} />, label: languageText === "ar" ? "رقم الفحص" : "Report #", value: card.cardNumber },
+                            { icon: <CalendarMonthIcon sx={{ fontSize: 16 }} />, label: languageText === "ar" ? "تاريخ الفحص" : "Date", value: formatDate(card.createdDate) },
+                          ].map((row, i, arr) => (
+                            <Box
+                              key={i}
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                px: 1.75,
+                                py: 1.25,
+                                borderBottom: i < arr.length - 1 ? "0.5px solid" : "none",
+                                borderColor: "divider",
+                                gap: 1,
+                              }}
+                            >
+                              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                <Box
+                                  sx={{
+                                    width: 32,
+                                    height: 32,
+                                    borderRadius: "8px",
+                                    background: "action.hover",
+                                    bgcolor: "action.hover",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    color: "text.secondary",
+                                  }}
+                                >
+                                  {row.icon}
+                                </Box>
+                                <Typography sx={{ fontSize: "13px", fontWeight: 600 }}>{row.label}</Typography>
+                              </Box>
+                              {/* <Box sx={{ width: "1px", height: "14px", bgcolor: "divider", flexShrink: 0 }} /> */}
+                              <Typography sx={{ fontSize: "13px", color: "text.secondary" }}>{row.value}</Typography>
+                            </Box>
+                          ))}
+                        </Box>
+                      </Box>
+
+                      {/* <Divider /> */}
+
                       {card.includeImage && (
                         <Tooltip title={t("Reports.photoReport")}>
                           <PhotoLibraryIcon
@@ -1095,220 +1270,91 @@ export default function Reports() {
                           />
                         </Tooltip>
                       )}
-                      <CardContent>
-                        <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
-                          <MinorCrashIcon style={{ color: "#000000de" }} />
-                          <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
-                            {languageText === "en" ? card?.carManufacturerNameEn || "-" : card?.carManufacturerNameAr || "-"}
-                          </Typography>
-                        </Box>
 
-                        <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
-                          <StyleIcon style={{ color: "#000000de" }} />
-                          <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
-                            {languageText === "en" ? card?.carModelNameEn || "-" : card?.carModelNameAr || "-"}
-                          </Typography>
-                        </Box>
+                      {/* Bottom: post-inspection services */}
+                      <Box sx={{ p: { xs: 2, sm: 3 }, pt: 0 }} style={{ paddingTop: 0 }}>
+                        <Typography sx={{ fontSize: "15px", fontWeight: 700, textAlign: "center", mb: 1.75 }}>
+                          {languageText === "ar" ? "خدمات ما بعد الفحص" : "Post-Inspection Services"}
+                        </Typography>
 
-                        <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
-                          <ContentPasteSearchIcon style={{ color: "#000000de" }} />
-                          <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
-                            {/* {card.servicesListNameAr.length > 0
-                          ? card.servicesListNameAr.join(", ")
-                          : "غير محدد"} */}
-
-                            {languageText === "en" ? card?.servicesListNameEn.join(", ") || "-" : card?.servicesListNameAr.join(", ") || "-"}
-                          </Typography>
-                        </Box>
-
-                        <Box display="flex" alignItems="center" gap={1} marginBottom={"9px"}>
-                          <CreditCardIcon style={{ color: "#000000de" }} />
-                          <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
-                            {card.cardNumber}
-                          </Typography>
-                        </Box>
-
-                        <Box display="flex" alignItems="center" gap={1}>
-                          <CalendarMonthIcon style={{ color: "#000000de" }} />
-                          <Typography variant="h5" component="div" style={{ fontSize: "14px" }}>
-                            {formatDate(card.createdDate)}
-                          </Typography>
-                        </Box>
-                      </CardContent>
-
-                      <Divider />
-
-                      <CardActions
-                        dir={languageText === "en" ? "ltr" : "rtl"}
-                        sx={{
-                          backgroundColor: "#fdfefe",
-                          justifyContent: "center",
-                          gap: "16px",
-                          flexWrap: "wrap",
-                        }}
-                      >
-                        <div
-                          style={{
+                        <Box
+                          dir={languageText === "en" ? "ltr" : "rtl"}
+                          sx={{
                             display: "flex",
-                            gap: "16px",
+                            flexWrap: "wrap",
+                            justifyContent: "center", // ← centers all rows including the last partial row
+                            gap: 1.25,
                           }}
                         >
-                          {/* تحميل تقرير الفحص */}
-                          <Button
-                            onClick={() => handleDownloadCard(card.id, card.includeImage, card.approveTerms)}
-                            size="small"
-                            variant="contained"
-                            disabled={loadingDownload[card.id]} // Disable button if loading
-                            endIcon={
-                              loadingDownload[card.id] ? (
-                                <CircularProgress
-                                  size={18}
-                                  sx={{
-                                    margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
-                                  }}
-                                />
-                              ) : (
-                                <DownloadIcon
-                                  sx={{
-                                    margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
-                                  }}
-                                />
-                              )
-                            }
-                          >
-                            {t("Reports.downloadReport")}
-                          </Button>
-
-                          {/* تقرير موجز (القديم) */}
+                          {/* Summary report (old) */}
                           {AllSummaryReportsStatus?.data?.[card.cardNumber.toString()] === true && (
-                            <Button
-                              sx={{ margin: "0 !important" }}
-                              onClick={() => handleDownloadSummaryCard(card.cardNumber)}
-                              size="small"
-                              variant="outlined"
-                              disabled={loadingSummaryCardDownload[card.cardNumber]} // Disable button if loading
-                              endIcon={
-                                loadingSummaryCardDownload[card.cardNumber] ? (
-                                  <CircularProgress
-                                    size={18}
-                                    sx={{
-                                      margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
-                                    }}
-                                  />
-                                ) : (
-                                  <DownloadIcon
-                                    sx={{
-                                      margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
-                                    }}
-                                  />
-                                )
-                              }
-                            >
-                              {t("Reports.downloadSummaryReport")}
-                            </Button>
+                            <Box sx={{ width: { xs: "calc(50% - 10px)", sm: "calc(25% - 10px)" }, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              <ServiceIconBtn
+                                icon={loadingSummaryCardDownload[card.cardNumber] ? <CircularProgress size={20} /> : <DownloadIcon sx={{ fontSize: 20 }} />}
+                                label={t("Reports.downloadSummaryReport")}
+                                onClick={() => handleDownloadSummaryCard(card.cardNumber)}
+                                disabled={loadingSummaryCardDownload[card.cardNumber]}
+                                color="teal"
+                              />
+                            </Box>
                           )}
 
-                          {/*  فيديو */}
+                          {/* Video */}
                           {AllVideoReportsStatus?.data?.[card.cardNumber.toString()] === true && (
-                            <Button
-                              sx={{
-                                margin: "0 !important",
-                              }}
-                              variant="outlined"
-                              onClick={() => handleDownloadVideo(card.cardNumber)}
-                              size="small"
-                              disabled={loadingvideoDownload[card.cardNumber]} // Disable button if loading
-                              endIcon={
-                                loadingvideoDownload[card.cardNumber] ? (
-                                  <CircularProgress
-                                    size={18}
-                                    sx={{
-                                      margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
-                                    }}
-                                  />
-                                ) : (
-                                  <VideocamIcon
-                                    sx={{
-                                      margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
-                                    }}
-                                  />
-                                )
-                              }
-                            >
-                              {t("Reports.video")}
-                            </Button>
+                            <Box sx={{ width: { xs: "calc(50% - 10px)", sm: "calc(25% - 10px)" }, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              <ServiceIconBtn
+                                icon={<VideocamIcon sx={{ fontSize: 20 }} />}
+                                label={t("Reports.video")}
+                                onClick={() => handleDownloadVideo(card.cardNumber)}
+                                disabled={loadingvideoDownload[card.cardNumber]}
+                                color="teal"
+                              />
+                            </Box>
                           )}
-                        </div>
 
-                        <div
-                          style={{
-                            display: "flex",
-                            gap: "16px",
-                          }}
-                        >
-                          {/* تأمين ونقل ملكية */}
-                          <Button
-                            sx={{ margin: "0 !important" }}
-                            onClick={() => handleClickOninsuranceBtn(card.cardNumber)}
-                            size="small"
-                            variant="outlined"
-                            // endIcon={
-                            //   <SecurityIcon
-                            //     sx={{
-                            //       margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
-                            //     }}
-                            //   />
-                            // }
-                          >
-                            {t("Reports.nsuranceAndTransferOfOwnership")}
-                          </Button>
+                          {/* Insurance & ownership */}
+                          <Box sx={{ width: { xs: "calc(50% - 10px)", sm: "calc(25% - 10px)" }, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <ServiceIconBtn
+                              icon={<SecurityIcon sx={{ fontSize: 20 }} />}
+                              label={t("Reports.nsuranceAndTransferOfOwnership")}
+                              onClick={() => handleClickOninsuranceBtn(card.cardNumber)}
+                              color="teal"
+                            />
+                          </Box>
 
-                          {/* شحن السيارة */}
-                          <Button
-                            sx={{ margin: "0 !important" }}
-                            onClick={() => handleClickOnShippingCarBtn(card.id)}
-                            size="small"
-                            variant="outlined"
-                            // endIcon={
-                            //   <CarRepairIcon
-                            //     sx={{
-                            //       margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
-                            //     }}
-                            //   />
-                            // }
-                          >
-                            {t("Reports.shippingTheCar")}
-                          </Button>
+                          {/* Shipping */}
+                          <Box sx={{ width: { xs: "calc(50% - 10px)", sm: "calc(25% - 10px)" }, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <ServiceIconBtn
+                              icon={<CarRepairIcon sx={{ fontSize: 20 }} />}
+                              label={t("Reports.shippingTheCar")}
+                              onClick={() => handleClickOnShippingCarBtn(card.id)}
+                              color="teal"
+                            />
+                          </Box>
 
-                          {/* طلب تقرير موجز */}
+                          {/* Offer Companies */}
+                          <Box sx={{ width: { xs: "calc(50% - 10px)", sm: "calc(25% - 10px)" }, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <ServiceIconBtn
+                              icon={<LocalOfferIcon sx={{ fontSize: 20 }} />}
+                              label={t("Reports.companiesOffers")}
+                              onClick={handleClickOnCompaniesOffersBtn}
+                              color="teal"
+                            />
+                          </Box>
+
+                          {/* Ask Mojaz */}
                           {!cardIdsWithMojazReport.has(card.id) && (
-                            <Button
-                              sx={{
-                                margin: "0 !important",
-                                backgroundColor: "#be1e2d",
-                                border: "none",
-                                color: "#fff",
-                                "&:hover": {
-                                  border: "none",
-                                  backgroundColor: "#9b1926",
-                                },
-                              }}
-                              onClick={() => handleClickOnAskMojazReportBtn(card.id)}
-                              size="small"
-                              variant="outlined"
-                              // endIcon={
-                              //   <NoteAddIcon
-                              //     sx={{
-                              //       margin: languageText === "en" ? "0px 0px 0px 0px" : "0px 8px 0px -8px",
-                              //     }}
-                              //   />
-                              // }
-                            >
-                              {t("Reports.askMojazReport")}
-                            </Button>
+                            <Box sx={{ width: { xs: "calc(50% - 10px)", sm: "calc(25% - 10px)" }, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              <ServiceIconBtn
+                                icon={<NoteAddIcon sx={{ fontSize: 20 }} />}
+                                label={t("Reports.askMojazReport")}
+                                onClick={() => handleClickOnAskMojazReportBtn(card.id)}
+                                color="red"
+                              />
+                            </Box>
                           )}
-                        </div>
-                      </CardActions>
+                        </Box>
+                      </Box>
                     </Card>
                   ))
               ) : (

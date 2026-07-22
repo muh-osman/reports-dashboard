@@ -4,19 +4,12 @@ import { useCookies } from "react-cookie";
 import { toast } from "react-toastify";
 
 export const useGetAllCardsApi = () => {
-  const [cookies] = useCookies([
-    "tokenApp",
-    "username",
-    "userId",
-    "phoneNumber",
-  ]);
+  const [cookies] = useCookies(["tokenApp", "username", "userId", "phoneNumber"]);
 
   return useQuery({
     queryKey: ["cards", cookies.userId], // Unique key for the query
     queryFn: async () => {
-      const res = await API.post(
-        `api/Card/GetCardbyClientId?id=${cookies.userId}`
-      );
+      const res = await API.post(`api/Card/GetCardbyClientId?id=${cookies.userId}`);
       return res.data;
     },
 
@@ -26,8 +19,7 @@ export const useGetAllCardsApi = () => {
     },
     onError: (err) => {
       console.error(err);
-      const errorMessage =
-        err?.response?.data?.message || err?.message || "An error occurred";
+      const errorMessage = err?.response?.data?.message || err?.message || "An error occurred";
       toast.error(errorMessage);
     },
   });

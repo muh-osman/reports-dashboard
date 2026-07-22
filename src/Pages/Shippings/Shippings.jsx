@@ -354,11 +354,11 @@ export default function Shippings() {
     }
 
     // Check if today is Friday (5 = Friday, 0 = Sunday, 1 = Monday, etc.)
-    const today = new Date();
-    if (today.getDay() === 5) {
-      toast.warn(t("Shippings.cannotSubmitOnFriday"));
-      return;
-    }
+    // const today = new Date();
+    // if (today.getDay() === 5) {
+    //   toast.warn(t("Shippings.cannotSubmitOnFriday"));
+    //   return;
+    // }
 
     // Store form data and open terms modal instead of redirecting immediately
     // let data = {
@@ -495,7 +495,7 @@ export default function Shippings() {
               label={deliveryMethod === 1 ? "ذهاب صاحب السيارة إلى شركة الشحن" : "سطحة من مركز الفحص إلى شركة الشحن"}
               variant="outlined"
             />
-            <p style={{ textAlign: "center", marginTop: "6px", fontSize: "13px" }}>{t("Shippings.shippingTakesPlaceEveryDayOfTheWeekExceptFriday")}</p>
+            {/* <p style={{ textAlign: "center", marginTop: "6px", fontSize: "13px" }}>{t("Shippings.shippingTakesPlaceEveryDayOfTheWeekExceptFriday")}</p> */}
           </div>
 
           <Box sx={{ minWidth: 120, maxWidth: "400px", margin: "auto", marginTop: "6px" }}>
@@ -704,25 +704,23 @@ export default function Shippings() {
                 <button onClick={() => setDeliveryMethod(1)}>اختيار</button>
               </div>
 
-              {!isFriday && (
-                <div className={style.services_card}>
-                  <div className={style.service_img} style={{ margin: 0 }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                      <path d="M142.9 96c-21.5 0-42.2 8.5-57.4 23.8L54.6 150.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L40.2 74.5C67.5 47.3 104.4 32 142.9 32C223 32 288 97 288 177.1c0 38.5-15.3 75.4-42.5 102.6L109.3 416H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-12.9 0-24.6-7.8-29.6-19.8s-2.2-25.7 6.9-34.9L200.2 234.5c15.2-15.2 23.8-35.9 23.8-57.4c0-44.8-36.3-81.1-81.1-81.1z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4>سطحة من مركز الفحص إلى شركة الشحن</h4>
-                    <p style={{ margin: 0 }}>سوف تصل سطحة تستلم السيارة من المركز والذهاب بها الى فرع البسامي لشحنها</p>
-                    {/* <p style={{ fontWeight: "bold", margin: 0, marginTop: "16px" }}>تنويه:</p> */}
-                    {/* <p style={{ margin: 0 }}>مدة وصول السطحة إلى مركز الفحص تتراوح من 15 إلى 60 دقيقة.</p> */}
-                    {/* <p>يجب على صاحب السيارة تسليم السيارة للسطحة بنفسه.</p> */}
-                  </div>
-                  <button disabled style={{ backgroundColor: "#e8e8e9", color: "#174545" }} onClick={() => setDeliveryMethod(2)}>
-                    غير متوفر حاليا
-                  </button>
+              <div className={style.services_card}>
+                <div className={style.service_img} style={{ margin: 0 }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                    <path d="M142.9 96c-21.5 0-42.2 8.5-57.4 23.8L54.6 150.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L40.2 74.5C67.5 47.3 104.4 32 142.9 32C223 32 288 97 288 177.1c0 38.5-15.3 75.4-42.5 102.6L109.3 416H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-12.9 0-24.6-7.8-29.6-19.8s-2.2-25.7 6.9-34.9L200.2 234.5c15.2-15.2 23.8-35.9 23.8-57.4c0-44.8-36.3-81.1-81.1-81.1z" />
+                  </svg>
                 </div>
-              )}
+                <div>
+                  <h4>سطحة من مركز الفحص إلى شركة الشحن</h4>
+                  <p style={{ margin: 0 }}>سوف تصل سطحة تستلم السيارة من المركز والذهاب بها الى فرع البسامي لشحنها</p>
+                  {/* <p style={{ fontWeight: "bold", margin: 0, marginTop: "16px" }}>تنويه:</p> */}
+                  {/* <p style={{ margin: 0 }}>مدة وصول السطحة إلى مركز الفحص تتراوح من 15 إلى 60 دقيقة.</p> */}
+                  {/* <p>يجب على صاحب السيارة تسليم السيارة للسطحة بنفسه.</p> */}
+                </div>
+                <button disabled style={{ backgroundColor: "#e8e8e9", color: "#174545" }} onClick={() => setDeliveryMethod(2)}>
+                  غير متوفر حاليا
+                </button>
+              </div>
             </div>
           </section>
         </>

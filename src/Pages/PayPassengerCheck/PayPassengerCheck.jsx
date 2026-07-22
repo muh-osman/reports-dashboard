@@ -869,7 +869,7 @@ export default function PayPassengerCheck() {
         }`,
         buyer: {
           phone: formatedPhoneNumberRef.current,
-          email: "user@example.com",
+          email: "jsmith@example.com",
           name: userNameRef.current,
           dob: "2000-08-24",
         },
@@ -921,7 +921,7 @@ export default function PayPassengerCheck() {
             status: "new",
             buyer: {
               phone: formatedPhoneNumberRef.current,
-              email: "user@example.com",
+              email: "jsmith@example.com",
               name: userNameRef.current,
               dob: "2000-08-24",
             },
