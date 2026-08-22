@@ -52,14 +52,7 @@ export default function Soon() {
           </div>
 
           {!cookies.tokenApp ? (
-            <Button
-              fullWidth
-              sx={{ marginTop: "30px" }}
-              variant="contained"
-              component={Link}
-              size="large"
-              to={`${process.env.PUBLIC_URL}/login/?from=falak`}
-            >
+            <Button fullWidth sx={{ marginTop: "30px" }} variant="contained" component={Link} size="large" to={`${process.env.PUBLIC_URL}/login/?from=falak/marketer`}>
               {t("Soon.login")}
             </Button>
           ) : (

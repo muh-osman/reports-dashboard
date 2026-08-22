@@ -60,6 +60,11 @@ export default function PricesList() {
       nameAr: "القصيم",
       nameEn: "Qassim",
     },
+    {
+      id: 5,
+      nameAr: "خميس مشيط",
+      nameEn: "Khamis Mushait",
+    },
   ];
 
   const [selectedBranch, setSelectedBranch] = useState("");

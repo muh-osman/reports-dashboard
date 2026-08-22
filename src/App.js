@@ -44,6 +44,7 @@ import PartnersOffers from "./Pages/PartnersOffers/PartnersOffers";
 import PlansInGallery from "./Pages/PlansInGallery/PlansInGallery";
 import StaticPlans from "./Pages/StaticPlans/StaticPlans";
 import NewBranch from "./Pages/NewBranch/NewBranch";
+import IsUserAcceptTerms from "./Utils/IsUserAcceptTerms";
 // import Lottery from "./Pages/Lottery/Lottery";
 // import LotteryAlreadyRegistered from "./Pages/LotteryAlreadyRegistered/LotteryAlreadyRegistered";
 
@@ -66,17 +67,18 @@ export default function App() {
           <Route index element={<Home />} />
 
           <Route element={<AcceptedNumbers />}>
-            {/* page 1 */}
-            <Route path={`${process.env.PUBLIC_URL}/falak`} element={<Falak />} />
-            {/* page 2 */}
-            <Route path={`${process.env.PUBLIC_URL}/falak/conditions`} element={<Conditions />} />
-            {/* page 3 */}
-            <Route path={`${process.env.PUBLIC_URL}/falak/how-works`} element={<HowWorks />} />
+            <Route element={<IsUserAcceptTerms />}>
+              {/* page 1 */}
+              {/* <Route path={`${process.env.PUBLIC_URL}/falak`} element={<Falak />} /> */}
+              {/* page 2 */}
+              {/* <Route path={`${process.env.PUBLIC_URL}/falak/conditions`} element={<Conditions />} /> */}
+              {/* page 3 */}
+              {/* <Route path={`${process.env.PUBLIC_URL}/falak/how-works`} element={<HowWorks />} /> */}
 
-            <Route path={`${process.env.PUBLIC_URL}/falak/marketer`} element={<Marketer />} />
-
-            <Route path={`${process.env.PUBLIC_URL}/falak/transfer`} element={<Transfer />} />
-            <Route path={`${process.env.PUBLIC_URL}/falak/history`} element={<History />} />
+              <Route path={`${process.env.PUBLIC_URL}/falak/marketer`} element={<Marketer />} />
+              <Route path={`${process.env.PUBLIC_URL}/falak/transfer`} element={<Transfer />} />
+              <Route path={`${process.env.PUBLIC_URL}/falak/history`} element={<History />} />
+            </Route>
           </Route>
 
           <Route path={`${process.env.PUBLIC_URL}/reports`} element={<Reports />} />

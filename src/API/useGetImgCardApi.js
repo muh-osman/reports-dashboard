@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 // API
 import API from "./Api";
+import APIOLD from "./ApiOld";
 
 export const fetchImgCard = async (id) => {
   const res = await API.get(`api/CardImages/DownloadPdf/${id}`, {

@@ -9,9 +9,7 @@ import Soon from "../Pages/Soon/Soon";
 import { useAddMarketerPhoneNumberToCashifOnlineDbApi } from "../API/useAddMarketerPhoneNumberToCashifOnlineDbApi";
 
 async function fetchAcceptedNumbers(phoneNumber) {
-  const response = await fetch(
-    `https://cashif.online/back-end/public/api/check-if-phone-numbers-exist-in-db/${phoneNumber}`
-  );
+  const response = await fetch(`https://cashif.online/back-end/public/api/check-if-phone-numbers-exist-in-db/${phoneNumber}`);
   if (!response.ok) {
     throw new Error("Failed to fetch accepted numbers");
   }

@@ -126,17 +126,9 @@ export default function Marketer() {
   }, [isGetMarketerError]);
 
   // If pageOne cookie is Not set, navigate to falak page
-  if (!cookies[`pageOne-${cookies.userId}`] && cookies.tokenApp) {
-    return <Navigate to={`${process.env.PUBLIC_URL}/falak`} />;
-  }
-  // If pageTwo cookie is Not set, navigate to conditions page
-  if (!cookies[`pageTwo-${cookies.userId}`] && cookies.tokenApp) {
-    return <Navigate to={`${process.env.PUBLIC_URL}/falak/conditions`} />;
-  }
-  // If pageThree cookie is Not set, navigate to how-works page
-  if (!cookies[`pageThree-${cookies.userId}`] && cookies.tokenApp) {
-    return <Navigate to={`${process.env.PUBLIC_URL}/falak/how-works`} />;
-  }
+  // if (!cookies[`pageOne-${cookies.userId}`] && cookies.tokenApp) {
+  //   return <Navigate to={`${process.env.PUBLIC_URL}/falak`} />;
+  // }
 
   // Handel Transfer Button
   const transfer = () => {
@@ -183,11 +175,11 @@ export default function Marketer() {
               </p>
             </div>
 
-            <Button fullWidth sx={{ marginTop: "30px" }} variant="contained" component={Link} size="large" to={`${process.env.PUBLIC_URL}/login/?from=falak`}>
+            <Button fullWidth sx={{ marginTop: "30px" }} variant="contained" component={Link} size="large" to={`${process.env.PUBLIC_URL}/login/?from=falak/marketer`}>
               {t("Marketer.login")}
             </Button>
 
-            <Button fullWidth sx={{ marginTop: "16px" }} variant="outlined" component={Link} size="large" to={`${process.env.PUBLIC_URL}/signup/?from=falak`}>
+            <Button fullWidth sx={{ marginTop: "16px" }} variant="outlined" component={Link} size="large" to={`${process.env.PUBLIC_URL}/signup/?from=falak/marketer`}>
               {t("Marketer.signup")}
             </Button>
           </div>

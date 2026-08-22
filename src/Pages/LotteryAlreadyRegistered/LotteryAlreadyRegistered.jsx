@@ -292,6 +292,11 @@ export default function LotteryAlreadyRegistered() {
                       جدة <OpenInNewIcon sx={{ fontSize: 16 }} />
                     </a>
                   </li>
+                  <li>
+                    <a href="https://maps.app.goo.gl/6dMQqyhHiKgmrP6b7" target="_blank" rel="noreferrer">
+                      خميس مشيط <OpenInNewIcon sx={{ fontSize: 16 }} />
+                    </a>
+                  </li>
                 </ul>
               </Box>
             </Box>

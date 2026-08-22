@@ -437,6 +437,11 @@ export default function Shippings() {
       address: "بريدة - شارع قرطبة",
       link: "https://maps.app.goo.gl/ooynnSB14yZQjUvaA",
     },
+    {
+      nameAr: "خميس مشيط",
+      address: "خميس مشيط",
+      link: "https://maps.app.goo.gl/6dMQqyhHiKgmrP6b7",
+    },
   ];
   // Find the matching Albasami branch
   const matchedBranch = albasamiBranches.find((branch) => branch.nameAr === oneCardData?.branchNameAr);

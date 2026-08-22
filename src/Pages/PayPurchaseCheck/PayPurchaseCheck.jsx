@@ -686,6 +686,7 @@ export default function PayPurchaseCheck() {
     { id: "3", value: "القصيم", label: "القصيم" },
     { id: "4", value: "الدمام", label: "الدمام" },
     { id: "5", value: "جدة", label: "جدة" },
+    { id: "6", value: "خميس مشيط", label: "خميس مشيط" },
   ];
   // Handle branch change
   const handleBranchChange = (e) => {

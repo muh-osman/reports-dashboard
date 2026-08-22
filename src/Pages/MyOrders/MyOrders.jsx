@@ -225,8 +225,8 @@ export default function MyOrders() {
     setLoading(true);
     setError(null);
 
-    fetch(`https://cashif.cc/payment-system/back-end/public/api/my-orders/0506445921`)
-    // fetch(`https://cashif.cc/payment-system/back-end/public/api/my-orders/${cookies.phoneNumber}`)
+    // fetch(`https://cashif.cc/payment-system/back-end/public/api/my-orders/0506445921`)
+    fetch(`https://cashif.cc/payment-system/back-end/public/api/my-orders/${cookies.phoneNumber}`)
       .then((res) => {
         if (!res.ok) throw new Error("لم يتم العثور على طلبات.");
         return res.json();

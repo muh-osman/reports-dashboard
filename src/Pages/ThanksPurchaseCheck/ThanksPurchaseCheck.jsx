@@ -178,6 +178,7 @@ export default function ThanksPurchaseCheck() {
                 { name: "القصيم", url: "https://maps.app.goo.gl/Gd7g3VScomNQP8DR7" },
                 { name: "الدمام", url: "https://maps.app.goo.gl/9UiHq4kW7Mjh1Aik8" },
                 { name: "جدة", url: "https://maps.app.goo.gl/697yXkaS4o6kYsos8" },
+                { name: "خميس مشيط", url: "https://maps.app.goo.gl/6dMQqyhHiKgmrP6b7" },
               ].map((location, index) => (
                 <li key={index}>
                   <Button

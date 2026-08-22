@@ -91,7 +91,6 @@ export default function Lottery() {
 
     console.log(currentQueryString);
 
-
     // Check if we have stored query string from previous visit
     const storedQueryString = sessionStorage.getItem("lottery_referral_params");
 
@@ -610,6 +609,11 @@ export default function Lottery() {
                   <li>
                     <a href="https://maps.app.goo.gl/697yXkaS4o6kYsos8" target="_blank" rel="noreferrer">
                       جدة <OpenInNewIcon sx={{ fontSize: 16 }} />
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://maps.app.goo.gl/6dMQqyhHiKgmrP6b7" target="_blank" rel="noreferrer">
+                      خميس مشيط <OpenInNewIcon sx={{ fontSize: 16 }} />
                     </a>
                   </li>
                 </ul>

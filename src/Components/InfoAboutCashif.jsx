@@ -80,6 +80,7 @@ export default function InfoAboutCashif() {
                 <li>{t("InfoAboutCashif.t18")}</li>
                 <li>{t("InfoAboutCashif.t190")}</li>
                 <li>{t("InfoAboutCashif.t19")}</li>
+                <li>{t("InfoAboutCashif.t1900")}</li>
               </ul>
             </div>
 

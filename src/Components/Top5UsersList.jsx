@@ -116,6 +116,23 @@ const Top5UsersList = ({ languageText, userId }) => {
   const handleTooltipOpen = () => {
     setOpen(true);
   };
+
+  //
+  // console.log(isSuccess);
+  // console.log(top5Users);
+  // console.log(top5Users?.length);
+  // console.log(fetchStatus);
+
+  // hide table while fetching
+  if (fetchStatus === "fetching") {
+    return null;
+  }
+
+  // hide table if users empty array []
+  if (isSuccess && (!top5Users || top5Users.length === 0)) {
+    return null;
+  }
+
   return (
     <Card
       dir={languageText === "ar" ? "rtl" : "ltr"}

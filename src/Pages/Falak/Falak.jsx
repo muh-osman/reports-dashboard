@@ -74,7 +74,7 @@ export default function Falak() {
                 variant="contained"
                 component={Link}
                 size="large"
-                to={`${process.env.PUBLIC_URL}/login/?from=falak`}
+                to={`${process.env.PUBLIC_URL}/login/?from=falak/marketer`}
               >
                 {t("Falak.login")}
               </Button>
@@ -85,7 +85,7 @@ export default function Falak() {
                 variant="outlined"
                 component={Link}
                 size="large"
-                to={`${process.env.PUBLIC_URL}/signup/?from=falak`}
+                to={`${process.env.PUBLIC_URL}/signup/?from=falak/marketer`}
               >
                 {t("Marketer.signup")}
               </Button>
