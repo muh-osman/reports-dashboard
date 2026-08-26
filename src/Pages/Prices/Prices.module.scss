@@ -117,7 +117,7 @@
   justify-content: space-between;
   flex-direction: column;
   padding: 45px;
-  border-radius: 5px;
+  border-radius: 9px;
   min-height: 415px;
   background-color: #fff;
 
@@ -200,4 +200,18 @@
       color: #fff !important;
     }
   }
+}
+
+.services_card {
+  border: 2px solid transparent; // reserve the space so width never shifts
+  box-sizing: border-box; // border/padding counted inside width, not added to it
+}
+
+.services_card_active {
+  border-color: #174545; // just swap the color, size stays identical
+}
+
+.ask_now_active {
+  background-color: #164544 !important;
+  color: #fff !important;
 }

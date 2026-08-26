@@ -11,7 +11,8 @@ import MuiAccordion from "@mui/material/Accordion";
 import MuiAccordionSummary, { accordionSummaryClasses } from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
-import { Backdrop, CircularProgress, Modal, Button } from "@mui/material";
+import { Backdrop, CircularProgress, Modal, Button, Tooltip, IconButton } from "@mui/material";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { LoadingButton } from "@mui/lab";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 // Image
@@ -129,6 +130,11 @@ export default function PayShipping() {
 
   const [price, setPrice] = useState(null);
 
+  // Fee for receiving the car and sending it to the shipping company
+  const RECEIVE_AND_SEND_FEE = 100;
+  const shippingFee = deliveryMethod === "2" ? RECEIVE_AND_SEND_FEE : 0;
+  const totalPrice = price !== null ? price + shippingFee : null;
+
   // Get the id (report number) from the URL
   const { data: oneCardData, isLoading: isFetchDataLoading, isSuccess: isFetchDataSuccess } = useGetOneCardDataApi(reportNumber);
 
@@ -157,7 +163,7 @@ export default function PayShipping() {
       from: oneCardData?.branchNameAr,
       to: to,
       shippingType: shippingType,
-      price: price,
+      price: totalPrice,
       phoneNumber: oneCardData?.clientPhoneNumber,
       status: "الدفع عند الاستلام",
       isShipped: false,
@@ -375,11 +381,34 @@ export default function PayShipping() {
             <p>{t("PayShipping.shippingType")}</p>
             <p>{shippingType}</p>
           </div>
+
+          {deliveryMethod === "2" && (
+            <div>
+              <p style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                <span>سطحة الى شركة الشحن</span>
+                <Tooltip title={<p style={{ direction: "rtl" }}>رسوم استلام السيارة في مركز الفحص ونقلها إلى شركة الشحن</p>} arrow enterTouchDelay={0} leaveTouchDelay={3000}>
+                  <IconButton size="small" sx={{ padding: "2px" }}>
+                    <InfoOutlinedIcon sx={{ fontSize: "16px", color: "#747a79" }} />
+                  </IconButton>
+                </Tooltip>
+              </p>
+              <p style={{ display: "flex", gap: "3px" }}>
+                <span>{RECEIVE_AND_SEND_FEE}</span>
+                <span style={{ display: "flex", alignItems: "center" }}>
+                  <svg fill="#747a79" width={16} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39">
+                    <path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+                    <path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+                  </svg>
+                </span>
+              </p>
+            </div>
+          )}
+
           <div style={{ borderBottom: "none", paddingBottom: 0 }}>
             <p></p>
             <h4 style={{ fontWeight: "bold" }}>
               <span>{t("PayShipping.total")}</span>
-              <span style={{ fontSize: "20px" }}>{price}</span>
+              <span style={{ fontSize: "20px" }}>{totalPrice}</span>
               <span>
                 <svg fill="#000000de" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39">
                   <path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />

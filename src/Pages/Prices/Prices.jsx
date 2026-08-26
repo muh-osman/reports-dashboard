@@ -1,5 +1,5 @@
 import style from "./Prices.module.scss";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 // MUI
 import * as React from "react";
 import Typography from "@mui/material/Typography";
@@ -8,14 +8,21 @@ import i18n from "../../i18n";
 import { useTranslation } from "react-i18next";
 // API
 import useGetPassengerServicesPricesApi from "../../API/useGetPassengerServicesPricesApi";
+// MERGE: Plans is now rendered inline as a child of this page instead of
+// living on its own route.
+import Plans from "../Plans/Plans";
+
+// MERGE: the three possible services, kept as plain string keys so they can
+// be driven from state, the URL, and the "active" button styling all at once.
+const SERVICES = {
+  PURCHASE: "purchaseInspection",
+  CHECKIT: "checkit",
+  PASSENGER: "passengerCheck",
+};
 
 export default function Prices() {
   // Get Passenger planes Prices
-  const {
-    data: passengerPlanePrices,
-    // fetchStatus: pricesFetchStatus,
-    // isSuccess: isFetchPricesSuccess,
-  } = useGetPassengerServicesPricesApi();
+  const { data: passengerPlanePrices } = useGetPassengerServicesPricesApi();
 
   //
   React.useEffect(() => {
@@ -41,36 +48,78 @@ export default function Prices() {
 
   //
   const navigate = useNavigate();
-  const handleClickOnPurchaseInspectionButton = () => {
-    navigate(`${process.env.PUBLIC_URL}/plans?purchaseInspection=true`);
+  const location = useLocation();
 
-    // navigate(`${process.env.PUBLIC_URL}/static-plans?purchaseInspection=true`);
-  };
-  const handleClickOnCheckitInspectionButton = () => {
-    const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-    if (isLocalhost) {
-      // Use navigate for local development
-      navigate(`${process.env.PUBLIC_URL}/plans?checkit=true`);
-    } else {
-      // Use window.location for production/hosted environment
-      window.location.href = "https://cashif.cc/check-it/";
-    }
-  };
-  const handleClickOnPassengerInspectionButton = () => {
-    navigate(`${process.env.PUBLIC_URL}/plans?passengerCheck=true`);
+  // MERGE: figure out the initial selected service from the URL (so a link
+  // like ?checkit=true still preselects that service on load), falling back
+  // to "فحص الشراء" (purchase inspection) as the default.
+  const getServiceFromSearch = (search) => {
+    const params = new URLSearchParams(search);
+    if (params.get("checkit") === "true") return SERVICES.CHECKIT;
+    if (params.get("passengerCheck") === "true") return SERVICES.PASSENGER;
+    // purchaseInspection=true, or nothing at all -> default
+    return SERVICES.PURCHASE;
   };
 
-  // Get phone param and and store it in session storage
-  // const location = useLocation();
-  // const queryParams = new URLSearchParams(location.search);
+  const [selectedService, setSelectedService] = React.useState(() => getServiceFromSearch(location.search));
+  // نوع السيارة المختار في تدفق "فحص المسافر" (سيدان - دفع رباعي - فارهة)
+  const [passengerCarType, setPassengerCarType] = React.useState(null);
 
-  // React.useEffect(() => {
-  //   const phoneParam = queryParams.get("phone");
-  //   if (phoneParam) {
-  //     // Store in session storage
-  //     sessionStorage.setItem("phone", phoneParam);
-  //   }
-  // }, [location.search]); // Re-run when URL changes
+  // MERGE: keep the URL in sync with the selected service, using the same
+  // boolean-flag style the pages already used (?purchaseInspection=true,
+  // ?checkit=true, ?passengerCheck=true), without adding a new history entry.
+  React.useEffect(() => {
+    const params = new URLSearchParams();
+    params.set(selectedService, "true");
+    navigate({ search: params.toString() }, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedService]);
+
+  // MERGE: ref to the embedded Plans section so we can scroll to it.
+  const plansRef = React.useRef(null);
+  const scrollToPlans = () => {
+    // Wait a tick so the newly-selected section has rendered before scrolling.
+    requestAnimationFrame(() => {
+      plansRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  };
+
+  const handleSelectService = (service) => {
+    setSelectedService(service);
+    // Reset any previously chosen car type when switching away from/into
+    // the passenger flow, so a stale selection doesn't linger.
+    setPassengerCarType(null);
+
+    // Scroll to the Plans section for every service, including "فحص المسافر"
+    // (the car-type picker itself lives inside Plans, so scrolling now takes
+    // the user straight to it).
+    scrollToPlans();
+  };
+
+  // Imperative handle exposed by Plans, used to scroll straight to the
+  // passenger price card once it's actually expanded (see below).
+  const plansApiRef = React.useRef(null);
+
+  // Called by Plans once the user picks a car type in the passenger flow.
+  // The resulting price card is revealed by a CSS grid-template-rows
+  // transition (0fr -> 1fr), so scrolling to it right away (before that
+  // transition has run) targets a still-collapsed element and effectively
+  // does nothing — which is why it took a second click to "catch up".
+  // Waiting for the transition to finish before scrolling fixes that.
+  const handleCarTypeSelect = (carType) => {
+    setPassengerCarType(carType);
+    setTimeout(() => {
+      if (plansApiRef.current?.scrollToPassengerPlan) {
+        plansApiRef.current.scrollToPassengerPlan();
+      } else {
+        scrollToPlans();
+      }
+    }, 150);
+  };
+
+  const handleClickOnPurchaseInspectionButton = () => handleSelectService(SERVICES.PURCHASE);
+  const handleClickOnCheckitInspectionButton = () => handleSelectService(SERVICES.CHECKIT);
+  const handleClickOnPassengerInspectionButton = () => handleSelectService(SERVICES.PASSENGER);
 
   return (
     <div className={style.container}>
@@ -93,7 +142,7 @@ export default function Prices() {
 
         <div className={style.services_box}>
           {/* فحص الشراء */}
-          <div className={style.services_card}>
+          <div className={`${style.services_card} ${selectedService === SERVICES.PURCHASE ? style.services_card_active : ""}`}>
             <div className={style.service_img}>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512">
                 <path d="M160 64c0-11.8-6.5-22.6-16.9-28.2s-23-5-32.8 1.6l-96 64C-.5 111.2-4.4 131 5.4 145.8s29.7 18.7 44.4 8.9L96 123.8V416H32c-17.7 0-32 14.3-32 32s14.3 32 32 32h96 96c17.7 0 32-14.3 32-32s-14.3-32-32-32H160V64z" />
@@ -138,11 +187,13 @@ export default function Prices() {
                 <span>{t("Prices.purchaseCheckListD")}</span>
               </li>
             </ul>
-            <button onClick={handleClickOnPurchaseInspectionButton}>{t("Prices.askNow")}</button>
+            <button className={selectedService === SERVICES.PURCHASE ? style.ask_now_active : ""} onClick={handleClickOnPurchaseInspectionButton}>
+              {t("Prices.askNow")}
+            </button>
           </div>
 
           {/* مخدوم */}
-          <div className={style.services_card}>
+          <div className={`${style.services_card} ${selectedService === SERVICES.CHECKIT ? style.services_card_active : ""}`}>
             <div className={style.service_img}>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                 <path d="M142.9 96c-21.5 0-42.2 8.5-57.4 23.8L54.6 150.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L40.2 74.5C67.5 47.3 104.4 32 142.9 32C223 32 288 97 288 177.1c0 38.5-15.3 75.4-42.5 102.6L109.3 416H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-12.9 0-24.6-7.8-29.6-19.8s-2.2-25.7 6.9-34.9L200.2 234.5c15.2-15.2 23.8-35.9 23.8-57.4c0-44.8-36.3-81.1-81.1-81.1z" />
@@ -177,7 +228,10 @@ export default function Prices() {
                   </svg>
                 </span>
                 <span>
-                  {t("Prices.checkItCheckListC")} <Link to={`${process.env.PUBLIC_URL}/reports`}> {t("Prices.checkItCheckListCPlus")}</Link>
+                  {t("Prices.checkItCheckListC")}{" "}
+                  <a href={`${process.env.PUBLIC_URL}/reports`} onClick={(e) => e.stopPropagation()}>
+                    {t("Prices.checkItCheckListCPlus")}
+                  </a>
                 </span>
               </li>
               <li>
@@ -189,11 +243,13 @@ export default function Prices() {
                 <span>{t("Prices.checkItCheckListD")}</span>
               </li>
             </ul>
-            <button onClick={handleClickOnCheckitInspectionButton}>{t("Prices.askNow")}</button>
+            <button className={selectedService === SERVICES.CHECKIT ? style.ask_now_active : ""} onClick={handleClickOnCheckitInspectionButton}>
+              {t("Prices.askNow")}
+            </button>
           </div>
 
           {/* فحص المسافر */}
-          <div className={style.services_card}>
+          <div className={`${style.services_card} ${selectedService === SERVICES.PASSENGER ? style.services_card_active : ""}`}>
             <div className={style.service_img}>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                 <path d="M0 64C0 46.3 14.3 32 32 32l240 0c13.2 0 25 8.1 29.8 20.4s1.5 26.3-8.2 35.2L162.3 208l21.7 0c75.1 0 136 60.9 136 136s-60.9 136-136 136l-78.6 0C63 480 24.2 456 5.3 418.1l-1.9-3.8c-7.9-15.8-1.5-35 14.3-42.9s35-1.5 42.9 14.3l1.9 3.8c8.1 16.3 24.8 26.5 42.9 26.5l78.6 0c39.8 0 72-32.2 72-72s-32.2-72-72-72L80 272c-13.2 0-25-8.1-29.8-20.4s-1.5-26.3 8.2-35.2L189.7 96 32 96C14.3 96 0 81.7 0 64z" />
@@ -201,14 +257,7 @@ export default function Prices() {
             </div>
             <h4>{t("Prices.travelerCheck")}</h4>
             <p>
-              {t("Prices.travelerCheckDescriptionPartOne")}{" "}
-              <u
-                style={{
-                  fontWeight: "bold",
-                }}
-              >
-                {t("Prices.travelerCheckDescriptionPartTwo")}
-              </u>{" "}
+              {t("Prices.travelerCheckDescriptionPartOne")} <u style={{ fontWeight: "bold" }}>{t("Prices.travelerCheckDescriptionPartTwo")}</u>{" "}
               {t("Prices.travelerCheckDescriptionPartThree")}
             </p>
             <ul>
@@ -245,10 +294,17 @@ export default function Prices() {
                 <span>{t("Prices.travelerCheckListD")}</span>
               </li>
             </ul>
-            <button onClick={handleClickOnPassengerInspectionButton}>{t("Prices.askNow")}</button>
+            <button className={selectedService === SERVICES.PASSENGER ? style.ask_now_active : ""} onClick={handleClickOnPassengerInspectionButton}>
+              {t("Prices.askNow")}
+            </button>
           </div>
         </div>
       </section>
+
+      {/* MERGE: Plans embedded inline, scroll target lives on this wrapper */}
+      <div ref={plansRef}>
+        <Plans ref={plansApiRef} selectedService={selectedService} passengerCarType={passengerCarType} onCarTypeSelect={handleCarTypeSelect} />
+      </div>
     </div>
   );
 }

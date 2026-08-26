@@ -722,9 +722,7 @@ export default function Shippings() {
                   {/* <p style={{ margin: 0 }}>مدة وصول السطحة إلى مركز الفحص تتراوح من 15 إلى 60 دقيقة.</p> */}
                   {/* <p>يجب على صاحب السيارة تسليم السيارة للسطحة بنفسه.</p> */}
                 </div>
-                <button disabled style={{ backgroundColor: "#e8e8e9", color: "#174545" }} onClick={() => setDeliveryMethod(2)}>
-                  غير متوفر حاليا
-                </button>
+                <button onClick={() => setDeliveryMethod(2)}>اختيار</button>
               </div>
             </div>
           </section>

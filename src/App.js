@@ -83,7 +83,7 @@ export default function App() {
 
           <Route path={`${process.env.PUBLIC_URL}/reports`} element={<Reports />} />
           <Route path={`${process.env.PUBLIC_URL}/prices`} element={<Prices />} />
-          <Route path={`${process.env.PUBLIC_URL}/plans`} element={<Plans />} />
+          {/* <Route path={`${process.env.PUBLIC_URL}/plans`} element={<Plans />} /> */}
           <Route path={`${process.env.PUBLIC_URL}/static-plans`} element={<StaticPlans />} />
           <Route path={`${process.env.PUBLIC_URL}/booking`} element={<Booking />} />
           <Route path={`${process.env.PUBLIC_URL}/edit-booking/:id`} element={<EditBooking />} />

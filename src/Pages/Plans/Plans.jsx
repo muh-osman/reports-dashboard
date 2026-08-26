@@ -1,17 +1,15 @@
 import style from "./Plans.module.scss";
-import { useLocation, useNavigate } from "react-router-dom";
 // MUI
 import * as React from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import Slider from "@mui/material/Slider";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import InfoIcon from "@mui/icons-material/Info";
 import SearchIcon from "@mui/icons-material/Search";
-import { CircularProgress, FormControlLabel, Radio } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import Chip from "@mui/material/Chip";
 import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
@@ -44,7 +42,11 @@ const ryalIcon = `<svg fill="#174545" xmlns="http://www.w3.org/2000/svg" viewBox
 const redRyalIcon = `<svg width="13" fill="#d32f2f" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>`;
 const greenRyalIcon = `<svg width="13" fill="#25d366" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>`;
 
-export default function Plans() {
+// MERGE: Plans is now a *controlled* component. It no longer reads its own
+// query params or owns `passenger` state — the parent (Prices) owns which
+// service is selected and which car type (for the passenger flow) is picked,
+// and passes them in as props. This lets Prices decide when to scroll.
+const Plans = React.forwardRef(function Plans({ selectedService, passengerCarType, onCarTypeSelect }, ref) {
   // مرتاح Modal
   const [openComfortModal, setOpenComfortModal] = React.useState(false);
   const [selectedPlanUrl, setSelectedPlanUrl] = React.useState("");
@@ -84,15 +86,6 @@ export default function Plans() {
     // isSuccess: isFetchPricesSuccess,
   } = useGetPassengerServicesPricesApi();
 
-  // React.useEffect(() => {
-  //   console.log(passengerPlanePrices);
-  // }, [passengerPlanePrices]);
-
-  //
-  const navigate = useNavigate();
-  React.useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
   //
   const { t } = useTranslation();
   const [languageText, setLanguageText] = React.useState(i18n.language);
@@ -110,20 +103,19 @@ export default function Plans() {
     };
   }, []);
 
-  //
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
+  // MERGE: which service is active now comes from the parent as a prop
+  // instead of being read from the URL here.
   // الفحص العادي
-  const [isSelectPurchaseService, setIsSelectPurchaseService] = React.useState(queryParams.get("purchaseInspection") === "true");
+  const isSelectPurchaseService = selectedService === "purchaseInspection";
   // مخدوم
-  const [checkit, setCheckit] = React.useState(queryParams.get("checkit") === "true");
+  const checkit = selectedService === "checkit";
   // فحص المسافر
-  const [passengerCheck, setPassengerCheck] = React.useState(queryParams.get("passengerCheck") === "true");
-  // نوع السيارة (سيدان - دفع رباعي - فارهة)
-  const [passenger, setPassenger] = React.useState(null);
+  const passengerCheck = selectedService === "passengerCheck";
+  // نوع السيارة (سيدان - دفع رباعي - فارهة) — now controlled by the parent
+  const passenger = passengerCarType;
 
   // URL Discount
-  const [dis, setDis] = React.useState(queryParams.get("dis") === "fifty" || sessionStorage.getItem("dis") === "fifty");
+  const [dis, setDis] = React.useState(sessionStorage.getItem("dis") === "fifty");
 
   //
   // Create a component for checklist items with tooltips
@@ -176,133 +168,40 @@ export default function Plans() {
 
   // Create an array of all checklist items with their tooltips
   const checklistItems = [
-    {
-      text: t("Prices.checklist.items.0.text"),
-      tooltip: t("Prices.checklist.items.0.tooltip"),
-    },
-    {
-      text: t("Prices.checklist.items.1.text"),
-      tooltip: t("Prices.checklist.items.1.tooltip"),
-    },
-    {
-      text: t("Prices.checklist.items.2.text"),
-      tooltip: t("Prices.checklist.items.2.tooltip"),
-    },
-    {
-      text: t("Prices.checklist.items.3.text"),
-      tooltip: t("Prices.checklist.items.3.tooltip"),
-    },
-    {
-      text: t("Prices.checklist.items.4.text"),
-      tooltip: t("Prices.checklist.items.4.tooltip"),
-    },
-    {
-      text: t("Prices.checklist.items.5.text"),
-      tooltip: t("Prices.checklist.items.5.tooltip"),
-    },
-    {
-      text: t("Prices.checklist.items.6.text"),
-      tooltip: t("Prices.checklist.items.6.tooltip"),
-    },
-    {
-      text: t("Prices.checklist.items.7.text"),
-      tooltip: t("Prices.checklist.items.7.tooltip"),
-    },
-    {
-      text: t("Prices.checklist.items.8.text"),
-      tooltip: t("Prices.checklist.items.8.tooltip"),
-    },
-    {
-      text: t("Prices.checklist.items.9.text"),
-      tooltip: t("Prices.checklist.items.9.tooltip"),
-    },
-    {
-      text: t("Prices.checklist.items.10.text"),
-      tooltip: t("Prices.checklist.items.10.tooltip"),
-    },
-    {
-      text: t("Prices.checklist.items.11.text"),
-      tooltip: t("Prices.checklist.items.11.tooltip"),
-    },
-    {
-      text: t("Prices.checklist.items.12.text"),
-      tooltip: t("Prices.checklist.items.12.tooltip"),
-    },
-    {
-      text: t("Prices.checklist.items.13.text"),
-      tooltip: t("Prices.checklist.items.13.tooltip"),
-    },
-    {
-      text: t("Prices.checklist.items.14.text"),
-      tooltip: t("Prices.checklist.items.14.tooltip"),
-    },
+    { text: t("Prices.checklist.items.0.text"), tooltip: t("Prices.checklist.items.0.tooltip") },
+    { text: t("Prices.checklist.items.1.text"), tooltip: t("Prices.checklist.items.1.tooltip") },
+    { text: t("Prices.checklist.items.2.text"), tooltip: t("Prices.checklist.items.2.tooltip") },
+    { text: t("Prices.checklist.items.3.text"), tooltip: t("Prices.checklist.items.3.tooltip") },
+    { text: t("Prices.checklist.items.4.text"), tooltip: t("Prices.checklist.items.4.tooltip") },
+    { text: t("Prices.checklist.items.5.text"), tooltip: t("Prices.checklist.items.5.tooltip") },
+    { text: t("Prices.checklist.items.6.text"), tooltip: t("Prices.checklist.items.6.tooltip") },
+    { text: t("Prices.checklist.items.7.text"), tooltip: t("Prices.checklist.items.7.tooltip") },
+    { text: t("Prices.checklist.items.8.text"), tooltip: t("Prices.checklist.items.8.tooltip") },
+    { text: t("Prices.checklist.items.9.text"), tooltip: t("Prices.checklist.items.9.tooltip") },
+    { text: t("Prices.checklist.items.10.text"), tooltip: t("Prices.checklist.items.10.tooltip") },
+    { text: t("Prices.checklist.items.11.text"), tooltip: t("Prices.checklist.items.11.tooltip") },
+    { text: t("Prices.checklist.items.12.text"), tooltip: t("Prices.checklist.items.12.tooltip") },
+    { text: t("Prices.checklist.items.13.text"), tooltip: t("Prices.checklist.items.13.tooltip") },
+    { text: t("Prices.checklist.items.14.text"), tooltip: t("Prices.checklist.items.14.tooltip") },
   ];
   // Create an array of all Passenger checklist (فحص المسافر) items with their tooltips
   const PassengerchecklistItems = [
-    {
-      text: t("Prices.passengerChecklist.items.0.text"),
-      tooltip: t("Prices.passengerChecklist.items.0.tooltip"),
-    },
-    {
-      text: t("Prices.passengerChecklist.items.1.text"),
-      tooltip: t("Prices.passengerChecklist.items.1.tooltip"),
-    },
-    {
-      text: t("Prices.passengerChecklist.items.2.text"),
-      tooltip: t("Prices.passengerChecklist.items.2.tooltip"),
-    },
-    {
-      text: t("Prices.passengerChecklist.items.3.text"),
-      tooltip: t("Prices.passengerChecklist.items.3.tooltip"),
-    },
-    {
-      text: t("Prices.passengerChecklist.items.4.text"),
-      tooltip: t("Prices.passengerChecklist.items.4.tooltip"),
-    },
-    {
-      text: t("Prices.passengerChecklist.items.5.text"),
-      tooltip: t("Prices.passengerChecklist.items.5.tooltip"),
-    },
-    {
-      text: t("Prices.passengerChecklist.items.6.text"),
-      tooltip: t("Prices.passengerChecklist.items.6.tooltip"),
-    },
-    {
-      text: t("Prices.passengerChecklist.items.7.text"),
-      tooltip: t("Prices.passengerChecklist.items.7.tooltip"),
-    },
-    {
-      text: t("Prices.passengerChecklist.items.8.text"),
-      tooltip: t("Prices.passengerChecklist.items.8.tooltip"),
-    },
-    {
-      text: t("Prices.passengerChecklist.items.9.text"),
-      tooltip: t("Prices.passengerChecklist.items.9.tooltip"),
-    },
-    {
-      text: t("Prices.passengerChecklist.items.10.text"),
-      tooltip: t("Prices.passengerChecklist.items.10.tooltip"),
-    },
-    {
-      text: t("Prices.passengerChecklist.items.11.text"),
-      tooltip: t("Prices.passengerChecklist.items.11.tooltip"),
-    },
-    {
-      text: t("Prices.passengerChecklist.items.12.text"),
-      tooltip: t("Prices.passengerChecklist.items.12.tooltip"),
-    },
-    {
-      text: t("Prices.passengerChecklist.items.13.text"),
-      tooltip: t("Prices.passengerChecklist.items.13.tooltip"),
-    },
-    {
-      text: t("Prices.passengerChecklist.items.14.text"),
-      tooltip: t("Prices.passengerChecklist.items.14.tooltip"),
-    },
-    {
-      text: t("Prices.passengerChecklist.items.15.text"),
-      tooltip: t("Prices.passengerChecklist.items.15.tooltip"),
-    },
+    { text: t("Prices.passengerChecklist.items.0.text"), tooltip: t("Prices.passengerChecklist.items.0.tooltip") },
+    { text: t("Prices.passengerChecklist.items.1.text"), tooltip: t("Prices.passengerChecklist.items.1.tooltip") },
+    { text: t("Prices.passengerChecklist.items.2.text"), tooltip: t("Prices.passengerChecklist.items.2.tooltip") },
+    { text: t("Prices.passengerChecklist.items.3.text"), tooltip: t("Prices.passengerChecklist.items.3.tooltip") },
+    { text: t("Prices.passengerChecklist.items.4.text"), tooltip: t("Prices.passengerChecklist.items.4.tooltip") },
+    { text: t("Prices.passengerChecklist.items.5.text"), tooltip: t("Prices.passengerChecklist.items.5.tooltip") },
+    { text: t("Prices.passengerChecklist.items.6.text"), tooltip: t("Prices.passengerChecklist.items.6.tooltip") },
+    { text: t("Prices.passengerChecklist.items.7.text"), tooltip: t("Prices.passengerChecklist.items.7.tooltip") },
+    { text: t("Prices.passengerChecklist.items.8.text"), tooltip: t("Prices.passengerChecklist.items.8.tooltip") },
+    { text: t("Prices.passengerChecklist.items.9.text"), tooltip: t("Prices.passengerChecklist.items.9.tooltip") },
+    { text: t("Prices.passengerChecklist.items.10.text"), tooltip: t("Prices.passengerChecklist.items.10.tooltip") },
+    { text: t("Prices.passengerChecklist.items.11.text"), tooltip: t("Prices.passengerChecklist.items.11.tooltip") },
+    { text: t("Prices.passengerChecklist.items.12.text"), tooltip: t("Prices.passengerChecklist.items.12.tooltip") },
+    { text: t("Prices.passengerChecklist.items.13.text"), tooltip: t("Prices.passengerChecklist.items.13.tooltip") },
+    { text: t("Prices.passengerChecklist.items.14.text"), tooltip: t("Prices.passengerChecklist.items.14.tooltip") },
+    { text: t("Prices.passengerChecklist.items.15.text"), tooltip: t("Prices.passengerChecklist.items.15.tooltip") },
   ];
 
   // Plans Overlay
@@ -323,9 +222,6 @@ export default function Plans() {
 
   // Year
   const [selectedYear, setSelectedYear] = React.useState(""); // State to hold the selected year
-  const handleYearChange = (event, newValue) => {
-    setSelectedYear(newValue); // Update the selected year
-  };
 
   // Get Prices
   const { data: prices, fetchStatus: pricesFetchStatus, isSuccess: isFetchPricesSuccess } = useGetPlanDetailsByYearAndModel(selectedModelId, selectedYear, trigger);
@@ -333,8 +229,6 @@ export default function Plans() {
   React.useEffect(() => {
     if (pricesFetchStatus === "idle") {
       setTrigger(false);
-
-      // console.log(prices);
     }
   }, [pricesFetchStatus]);
 
@@ -361,7 +255,7 @@ export default function Plans() {
     const full = prices.find((p) => p.serviceId === 8);
     const basic = prices.find((p) => p.serviceId === 9);
     const engine = prices.find((p) => p.serviceId === 10);
-    const passenger = prices.find((p) => p.serviceId === 15);
+    const passengerRow = prices.find((p) => p.serviceId === 15);
 
     setFullPrice(Math.floor(full?.price ?? 0));
     setOldPriceFullPrice(Math.floor(full?.original_price ?? 0));
@@ -375,9 +269,9 @@ export default function Plans() {
     setOldPriceEngainPrice(Math.floor(engine?.original_price ?? 0));
     setSaveEngainPrice(Math.floor(engine?.you_save ?? 0));
 
-    setPassengerPrice(Math.floor(passenger?.price ?? 0));
-    setOldPricePassenger(Math.floor(passenger?.original_price ?? 0));
-    setSavePassengerPrice(Math.floor(passenger?.you_save ?? 0));
+    setPassengerPrice(Math.floor(passengerRow?.price ?? 0));
+    setOldPricePassenger(Math.floor(passengerRow?.original_price ?? 0));
+    setSavePassengerPrice(Math.floor(passengerRow?.you_save ?? 0));
   }, [prices]);
 
   // CSS ribbon badges
@@ -387,7 +281,6 @@ export default function Plans() {
     const full = prices.find((p) => p.serviceId === 8) ?? {};
     const basic = prices.find((p) => p.serviceId === 9) ?? {};
     const engine = prices.find((p) => p.serviceId === 10) ?? {};
-    const passenger = prices.find((p) => p.serviceId === 15) ?? {};
 
     const badge = (record) => {
       if (!record.discount_percent || record.discount_percent === 0) return "content: none;";
@@ -407,11 +300,8 @@ export default function Plans() {
     .full-Plane-catcher::after       { ${badge(full)}      }
     .bascic-catcher::after           { ${badge(basic)}     }
     .engines-catcher::after          { ${badge(engine)}    }
-    .passenger-plans-catcher::after  { ${badge(passenger)} }
   `;
     document.head.appendChild(styleEl);
-
-    // return () => styleEl.remove();
   }, [prices, languageText]);
 
   //
@@ -427,10 +317,8 @@ export default function Plans() {
   const searchBtn = React.useRef(null);
   React.useEffect(() => {
     if (isFetchPricesSuccess && prices && prices?.length > 0 && prices[0]?.carMarkId === selectedModelId) {
-      // overlay.current.style.padding = "16px";
       overlay.current.style.gridTemplateRows = "1fr";
 
-      // Wait for the layout to be updated before scrolling
       setTimeout(() => {
         searchBtn.current.scrollIntoView({
           behavior: "smooth",
@@ -448,15 +336,23 @@ export default function Plans() {
   // Show Passenger Card
   const passengerOverlay = React.useRef(null);
   React.useEffect(() => {
-    if (passenger && passengerCheck) {
-      // overlay.current.style.padding = "16px";
+    if (passenger && passengerCheck && passengerOverlay.current) {
       passengerOverlay.current.style.gridTemplateRows = "1fr";
     }
-  }, [passenger]);
+  }, [passenger, passengerCheck]);
 
-  // Car types options array
+  // Let the parent (Prices) scroll straight to this card once it's expanded,
+  // instead of guessing at Plans' internal layout.
+  React.useImperativeHandle(ref, () => ({
+    scrollToPassengerPlan: () => {
+      passengerOverlay.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    },
+  }));
+
+  // MERGE: car type selection is reported up to the parent (Prices), which
+  // owns the state and decides when to scroll (after a car type is picked).
   const handleCarTypesChange = (option) => {
-    setPassenger(option);
+    onCarTypeSelect(option);
   };
   const carTypes = [
     { value: "luxury", label: t("Prices.luxury"), image: C },
@@ -465,14 +361,13 @@ export default function Plans() {
   ];
 
   React.useEffect(() => {
-    // Create a new style element
-    const style = document.createElement("style");
+    const styleEl = document.createElement("style");
 
     const discountPercentForPassngerPlans = passengerPlanePrices?.data?.[passenger === "luxury" ? 0 : passenger === "suv" ? 1 : 2]?.discount_percent ?? "0";
 
     const content = languageText === "ar" ? `خصم ${discountPercentForPassngerPlans}%` : `${discountPercentForPassngerPlans}% Off`;
 
-    style.innerHTML = `
+    styleEl.innerHTML = `
       .passenger-plans-catcher::after
       {
         left: ${languageText === "ar" ? "-50px" : "unset"};
@@ -480,7 +375,7 @@ export default function Plans() {
         transform: ${languageText === "ar" ? "rotate(315deg)" : "rotate(45deg)"};
         ${discountPercentForPassngerPlans == 0 ? "content: none;" : `content: "${content}";`}
       }`;
-    document.head.appendChild(style);
+    document.head.appendChild(styleEl);
   }, [languageText, passenger]);
 
   return (
@@ -510,7 +405,6 @@ export default function Plans() {
             disablePortal
             onChange={(event, newValue) => {
               handleModelChange(event, newValue);
-              // Hide keyboard after selection on mobile
               if (autoCompleteInputRef.current) {
                 autoCompleteInputRef.current.blur();
               }
@@ -522,7 +416,6 @@ export default function Plans() {
               return `${option.nameAr} - ${option.nameEn}${manufacturerName ? ` | ${manufacturerName}` : ""}`;
             }}
             renderInput={(params) => <TextField {...params} label={t("Prices.search")} inputRef={autoCompleteInputRef} />}
-            // Use a unique key for each option
             renderOption={(props, option) => {
               const manufacturer = AllManufacturer?.find((m) => m.id === option.carManufacturerId);
               const manufacturerName = languageText === "ar" ? manufacturer?.nameAr : manufacturer?.nameEn;
@@ -568,44 +461,7 @@ export default function Plans() {
             }
           />
 
-          {/* <Box sx={{ width: "85%", margin: "auto", marginTop: "28px" }}>
-            <Typography
-              variant="h6"
-              component="div"
-              style={{
-                textAlign: "center",
-                margin: "auto",
-                color: "#757575",
-              }}
-            >
-              {t("Prices.selectYearOfManufacture")}
-            </Typography>
-            <Slider
-              aria-label={t("Prices.selectYearOfManufacture")}
-              value={selectedYear} // Set the value of the slider to the selected year
-              onChange={handleYearChange} // Add the onChange handler
-              valueLabelDisplay="auto"
-              step={1}
-              marks={marks}
-              min={2009}
-              max={2027}
-              valueLabelFormat={(value) => (value === 2009 ? t("Prices.older") : value)}
-            />
-          </Box> */}
-
           <Box sx={{ width: "100%", margin: "auto", marginTop: "28px" }}>
-            {/* <Typography
-              variant="h6"
-              component="div"
-              style={{
-                textAlign: "center",
-                margin: "auto",
-                color: "#757575",
-                marginBottom: "16px",
-              }}
-            >
-              {t("Prices.selectYearOfManufacture")}
-            </Typography> */}
             <FormControl fullWidth>
               <InputLabel>{t("Prices.yearOfManufacture")}</InputLabel>
               <Select value={selectedYear} label={t("Prices.yearOfManufacture")} onChange={(e) => setSelectedYear(e.target.value)} sx={{ backgroundColor: "#fff" }}>
@@ -623,17 +479,8 @@ export default function Plans() {
 
           {/* زر البحث */}
           <Box ref={searchBtn} sx={{ marginTop: "32px", textAlign: "center" }}>
-            <IconButton
-              size="large"
-              onClick={handleSubmit}
-              disabled={pricesFetchStatus === "fetching"} // Disable button while loading
-              className={style.search_btn}
-            >
-              {pricesFetchStatus === "fetching" ? (
-                <CircularProgress size={46} /> // Show loading spinner
-              ) : (
-                <SearchIcon sx={{ fontSize: "46px", color: "#174545" }} />
-              )}
+            <IconButton size="large" onClick={handleSubmit} disabled={pricesFetchStatus === "fetching"} className={style.search_btn}>
+              {pricesFetchStatus === "fetching" ? <CircularProgress size={46} /> : <SearchIcon sx={{ fontSize: "46px", color: "#174545" }} />}
             </IconButton>
           </Box>
         </div>
@@ -680,35 +527,15 @@ export default function Plans() {
                               icon={<CheckIcon style={{ color: "#25d366" }} />}
                               label={t("Prices.explainedReportInVideo")}
                             />
-                            {/* <Chip style={{ margin: "auto", backgroundColor: "#f0f1f3" }} icon={<CheckIcon style={{ color: "#25d366" }} />} label={t("Prices.carPhotography")} /> */}
                           </div>
                         )}
 
                         <h5>{t("Prices.includesExamination")}:</h5>
                         <ul className="list-unstyled mt-3 mb-4">
                           {checklistItems.map((item, index) => (
-                            <ChecklistItem
-                              key={index}
-                              checked={index < 7} // First 7 items checked for engines plan
-                              text={item.text}
-                              tooltip={item.tooltip}
-                            />
+                            <ChecklistItem key={index} checked={index < 7} text={item.text} tooltip={item.tooltip} />
                           ))}
                         </ul>
-
-                        {/* <a
-                        aria-label="Ask now Button"
-                        id="plane-one"
-                        className="ask-now"
-                        rel="noopener noreferrer"
-                        href={`${process.env.PUBLIC_URL}${checkit ? "/pay/makdom-check" : "/pay/purchase-check"}/?plan=${languageText === "ar" ? "محركات" : "Engine"}&year_id=${
-                          selectedYear >= 2017 ? 2 : 1
-                        }&car_model_id=${selectedModelId}&price_id=10&full_year=${selectedYear}${dis ? "&dis=fifty" : ""}&off=${
-                          prices?.find((p) => p.serviceId === 10)?.discount_percent ?? "0"
-                        }&comfort_service=${comfortService || "-"}`}
-                      >
-                        {t("Prices.orderNow")}
-                      </a> */}
 
                         <a
                           aria-label="Ask now Button"
@@ -767,34 +594,15 @@ export default function Plans() {
                               icon={<CheckIcon style={{ color: "#25d366" }} />}
                               label={t("Prices.explainedReportInVideo")}
                             />
-                            {/* <Chip style={{ margin: "auto", backgroundColor: "#f0f1f3" }} icon={<CheckIcon style={{ color: "#25d366" }} />} label={t("Prices.carPhotography")} /> */}
                           </div>
                         )}
 
                         <h5>{t("Prices.includesExamination")}:</h5>
                         <ul className="list-unstyled mt-3 mb-4">
                           {checklistItems.map((item, index) => (
-                            <ChecklistItem
-                              key={index}
-                              checked={index < 9} // First 9 items checked for basic plan
-                              text={item.text}
-                              tooltip={item.tooltip}
-                            />
+                            <ChecklistItem key={index} checked={index < 9} text={item.text} tooltip={item.tooltip} />
                           ))}
                         </ul>
-                        {/* <a
-                        aria-label="Ask now Button"
-                        id="plane-two"
-                        className="ask-now"
-                        rel="noopener noreferrer"
-                        href={`${process.env.PUBLIC_URL}${checkit ? "/pay/makdom-check" : "/pay/purchase-check"}/?plan=${languageText === "ar" ? "أساسي" : "Basic"}&year_id=${
-                          selectedYear >= 2017 ? 2 : 1
-                        }&car_model_id=${selectedModelId}&price_id=9&full_year=${selectedYear}${dis ? "&dis=fifty" : ""}&off=${
-                          prices?.find((p) => p.serviceId === 9)?.discount_percent ?? "0"
-                        }&comfort_service=${comfortService || "-"}`}
-                      >
-                        {t("Prices.orderNow")}
-                      </a> */}
 
                         <a
                           aria-label="Ask now Button"
@@ -853,34 +661,15 @@ export default function Plans() {
                               icon={<CheckIcon style={{ color: "#25d366" }} />}
                               label={t("Prices.explainedReportInVideo")}
                             />
-                            {/* <Chip style={{ margin: "auto", backgroundColor: "#f0f1f3" }} icon={<CheckIcon style={{ color: "#25d366" }} />} label={t("Prices.carPhotography")} /> */}
                           </div>
                         )}
 
                         <h5>{t("Prices.includesExamination")}:</h5>
                         <ul className="list-unstyled mt-3 mb-4">
                           {checklistItems.map((item) => (
-                            <ChecklistItem
-                              key={item.text}
-                              checked={true} // All items checked for full plan
-                              text={item.text}
-                              tooltip={item.tooltip}
-                            />
+                            <ChecklistItem key={item.text} checked={true} text={item.text} tooltip={item.tooltip} />
                           ))}
                         </ul>
-                        {/* <a
-                        aria-label="Ask now Button"
-                        id="plane-three"
-                        className="ask-now"
-                        rel="noopener noreferrer"
-                        href={`${process.env.PUBLIC_URL}${checkit ? "/pay/makdom-check" : "/pay/purchase-check"}/?plan=${
-                          languageText === "ar" ? "شامل" : "Full-Inspection"
-                        }&year_id=${selectedYear >= 2017 ? 2 : 1}&car_model_id=${selectedModelId}&price_id=8&full_year=${selectedYear}${dis ? "&dis=fifty" : ""}&off=${
-                          prices?.find((p) => p.serviceId === 8)?.discount_percent ?? "0"
-                        }&comfort_service=${comfortService || "-"}`}
-                      >
-                        {t("Prices.orderNow")}
-                      </a> */}
 
                         <a
                           aria-label="Ask now Button"
@@ -958,44 +747,19 @@ export default function Plans() {
                       </h1>
 
                       {passengerPlanePrices?.data?.[passenger === "luxury" ? 0 : passenger === "suv" ? 1 : 2]?.discount_percent != 0 && (
-                        <h3
-                          dir="rtl"
-                          style={{
-                            marginTop: "-20px",
-                            marginBottom: "12px",
-                            fontSize: 16,
-                            color: "#d32f2f",
-                            textAlign: "center",
-                          }}
-                        >
+                        <h3 dir="rtl" style={{ marginTop: "-20px", marginBottom: "12px", fontSize: 16, color: "#d32f2f", textAlign: "center" }}>
                           <span style={{ textDecoration: "line-through" }}>
                             {Math.floor(passengerPlanePrices?.data?.[passenger === "luxury" ? 0 : passenger === "suv" ? 1 : 2]?.original_price || 0)}
                           </span>{" "}
                           <span>
-                            <span
-                              dangerouslySetInnerHTML={{
-                                __html: redRyalIcon,
-                              }}
-                            />
+                            <span dangerouslySetInnerHTML={{ __html: redRyalIcon }} />
                           </span>
                           <span
                             dir="rtl"
-                            style={{
-                              textDecoration: "none",
-                              color: "#25d366",
-                              backgroundColor: "#dff1d9",
-                              marginRight: 6,
-                              padding: "0 5px",
-                              borderRadius: 2,
-                              fontSize: 16,
-                            }}
+                            style={{ textDecoration: "none", color: "#25d366", backgroundColor: "#dff1d9", marginRight: 6, padding: "0 5px", borderRadius: 2, fontSize: 16 }}
                           >
                             {t("Prices.save")} {Math.floor(passengerPlanePrices?.data?.[passenger === "luxury" ? 0 : passenger === "suv" ? 1 : 2]?.you_save || 0)}{" "}
-                            <span
-                              dangerouslySetInnerHTML={{
-                                __html: greenRyalIcon,
-                              }}
-                            />
+                            <span dangerouslySetInnerHTML={{ __html: greenRyalIcon }} />
                           </span>
                         </h3>
                       )}
@@ -1003,12 +767,7 @@ export default function Plans() {
                       <h5>{t("Prices.includesExamination")}:</h5>
                       <ul className="list-unstyled mt-3 mb-4">
                         {PassengerchecklistItems.map((item, index) => (
-                          <PassengerChecklistItem
-                            key={index}
-                            checked={true} // All checked
-                            text={item.text}
-                            tooltip={item.tooltip}
-                          />
+                          <PassengerChecklistItem key={index} checked={true} text={item.text} tooltip={item.tooltip} />
                         ))}
                       </ul>
 
@@ -1051,54 +810,20 @@ export default function Plans() {
             direction: languageText === "ar" ? "rtl" : "ltr",
           }}
         >
-          <Typography
-            variant="h6"
-            sx={{
-              fontWeight: "bold",
-              color: "#164544",
-              mb: 2,
-            }}
-          >
+          <Typography variant="h6" sx={{ fontWeight: "bold", color: "#164544", mb: 2 }}>
             {t("Prices.WouldYouLikeToRequestComfortableService")}
           </Typography>
 
-          <Typography
-            sx={{
-              color: "#666",
-              mb: 3,
-              fontSize: "14px",
-            }}
-          >
+          <Typography sx={{ color: "#666", mb: 3, fontSize: "14px" }}>
             {t("Prices.WePickUpTheCarFromYourLocationViaFlatbedTruckInspectItAtTheInspectionCenterAndReturnItToTheSameLocation")}
           </Typography>
 
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-              justifyContent: "center",
-            }}
-          >
-            <Button
-              sx={{
-                width: "100%",
-              }}
-              variant="outlined"
-              color="inherit"
-              onClick={() => handleContinueOrder("no")}
-            >
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2, justifyContent: "center" }}>
+            <Button sx={{ width: "100%" }} variant="outlined" color="inherit" onClick={() => handleContinueOrder("no")}>
               لا
             </Button>
 
-            <Button
-              variant="contained"
-              sx={{
-                backgroundColor: "#164544",
-                width: "100%",
-              }}
-              onClick={() => handleContinueOrder("yes")}
-            >
+            <Button variant="contained" sx={{ backgroundColor: "#164544", width: "100%" }} onClick={() => handleContinueOrder("yes")}>
               نعم (+345 ريال)
             </Button>
           </Box>
@@ -1106,4 +831,6 @@ export default function Plans() {
       </Modal>
     </div>
   );
-}
+});
+
+export default Plans;
