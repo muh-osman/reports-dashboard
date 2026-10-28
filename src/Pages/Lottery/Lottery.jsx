@@ -42,7 +42,7 @@ export default function Lottery() {
   const handleOpenShare = () => setShareOpen(true);
   const handleCloseShare = () => setShareOpen(false);
   //
-  const SHARE_LINK = "https://cashif.cc/dashboard/1/?utm_source=shared-from-cashif";
+  const SHARE_LINK = "https://cashif.com/dashboard/1/?utm_source=shared-from-cashif";
   const handleCopyShareLink = async () => {
     try {
       await navigator.clipboard.writeText(SHARE_LINK);
@@ -248,7 +248,7 @@ export default function Lottery() {
 
   //
   const sharePlatforms = () => {
-    const post = "https://cashif.cc/dashboard/1/?utm_source=shared-from-cashif";
+    const post = "https://cashif.com/dashboard/1/?utm_source=shared-from-cashif";
     return [
       {
         name: "نسخ الرابط",
@@ -297,7 +297,7 @@ export default function Lottery() {
         name: "Telegram",
         icon: <TelegramIcon />,
         color: "#757575",
-        onClick: () => window.open(`https://telegram.me/share/url?url=https://cashif.cc/dashboard/1/?utm_source=shared-from-cashif`, "_blank"),
+        onClick: () => window.open(`https://telegram.me/share/url?url=https://cashif.com/dashboard/1/?utm_source=shared-from-cashif`, "_blank"),
       },
     ];
   };
@@ -533,7 +533,7 @@ export default function Lottery() {
               >
                 <Typography sx={{ mb: 1, fontWeight: "bold" }}>اضغط على الرابط للاستفادة من الخصم عند الطلب من الموقع</Typography>
                 <Link to={`${process.env.PUBLIC_URL}/prices`} dir="ltr">
-                  https://cashif.cc
+                  https://cashif.com
                 </Link>
               </Box>
 

@@ -20,6 +20,60 @@ const SERVICES = {
   PASSENGER: "passengerCheck",
 };
 
+const CheckIcon = () => (
+  <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="VerifiedUserIcon">
+    <path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
+  </svg>
+);
+
+// Kept outside Prices so it does not remount on every parent render
+// (that remount was killing the expand/collapse height transition).
+function ServiceDetails({ expanded, onToggle, languageText, children }) {
+  const { t } = useTranslation();
+  const innerRef = React.useRef(null);
+  const [height, setHeight] = React.useState(0);
+
+  const measureHeight = React.useCallback(() => {
+    const el = innerRef.current;
+    if (!el) return 0;
+    // padding is included in scrollHeight; 1px buffer against subpixel clipping
+    return el.scrollHeight + 1;
+  }, []);
+
+  React.useEffect(() => {
+    if (expanded) {
+      // Paint height:0 first, then animate open to the measured height
+      const fullHeight = measureHeight();
+      const id = requestAnimationFrame(() => setHeight(fullHeight));
+      return () => cancelAnimationFrame(id);
+    }
+
+    // Stay on a pixel height (never "auto") so collapse can transition to 0
+    setHeight(0);
+  }, [expanded, languageText, measureHeight]);
+
+  return (
+    <>
+      <div className={`${style.details_wrapper} ${expanded ? style.details_expanded : style.details_collapsed}`} style={{ height: `${height}px` }} aria-hidden={!expanded}>
+        <div className={style.details_inner} ref={innerRef}>
+          <ul>{children}</ul>
+        </div>
+      </div>
+      <button
+        style={{ color: "#2196f3" }}
+        type="button"
+        className={style.more_details_btn}
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggle();
+        }}
+      >
+        {expanded ? t("Prices.showLess") : t("Prices.moreDetails")}
+      </button>
+    </>
+  );
+}
+
 export default function Prices() {
   // Get Passenger planes Prices
   const { data: passengerPlanePrices } = useGetPassengerServicesPricesApi();
@@ -64,6 +118,16 @@ export default function Prices() {
   const [selectedService, setSelectedService] = React.useState(() => getServiceFromSearch(location.search));
   // نوع السيارة المختار في تدفق "فحص المسافر" (سيدان - دفع رباعي - فارهة)
   const [passengerCarType, setPassengerCarType] = React.useState(null);
+
+  // NEW: tracks whether each service card's description list is expanded.
+  const [expandedCards, setExpandedCards] = React.useState({
+    [SERVICES.PURCHASE]: false,
+    [SERVICES.CHECKIT]: false,
+    [SERVICES.PASSENGER]: false,
+  });
+  const toggleCardDetails = (service) => {
+    setExpandedCards((prev) => ({ ...prev, [service]: !prev[service] }));
+  };
 
   // MERGE: keep the URL in sync with the selected service, using the same
   // boolean-flag style the pages already used (?purchaseInspection=true,
@@ -153,40 +217,34 @@ export default function Prices() {
               {t("Prices.purchaseCheckDescriptionPartOne")} <u style={{ fontWeight: "bold" }}>{t("Prices.purchaseCheckDescriptionPartTwo")} </u>{" "}
               {t("Prices.purchaseCheckDescriptionPartThree")}
             </p>
-            <ul>
+
+            <ServiceDetails expanded={expandedCards[SERVICES.PURCHASE]} onToggle={() => toggleCardDetails(SERVICES.PURCHASE)} languageText={languageText}>
               <li>
                 <span>
-                  <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="VerifiedUserIcon">
-                    <path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
-                  </svg>
+                  <CheckIcon />
                 </span>
                 <span>{t("Prices.purchaseCheckListA")}</span>
               </li>
               <li>
                 <span>
-                  <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="VerifiedUserIcon">
-                    <path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
-                  </svg>
+                  <CheckIcon />
                 </span>
                 <span>{t("Prices.purchaseCheckListB")}</span>
               </li>
               <li>
                 <span>
-                  <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="VerifiedUserIcon">
-                    <path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
-                  </svg>
+                  <CheckIcon />
                 </span>
                 <span>{t("Prices.purchaseCheckListC")}</span>
               </li>
               <li>
                 <span>
-                  <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="VerifiedUserIcon">
-                    <path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
-                  </svg>
+                  <CheckIcon />
                 </span>
                 <span>{t("Prices.purchaseCheckListD")}</span>
               </li>
-            </ul>
+            </ServiceDetails>
+
             <button className={selectedService === SERVICES.PURCHASE ? style.ask_now_active : ""} onClick={handleClickOnPurchaseInspectionButton}>
               {t("Prices.askNow")}
             </button>
@@ -201,48 +259,42 @@ export default function Prices() {
             </div>
             <h4>{t("Prices.checkItCheck")}</h4>
             <p>
-              {t("Prices.checkItCheckDescriptionPartOne")} <u style={{ fontWeight: "bold" }}>{t("Prices.checkItCheckDescriptionPartTwo")}</u>{" "}
+              {/* {t("Prices.checkItCheckDescriptionPartOne")} <u style={{ fontWeight: "bold" }}>{t("Prices.checkItCheckDescriptionPartTwo")}</u>{" "} */}
               {t("Prices.checkItCheckDescriptionPartThree")}
             </p>
-            <ul>
+
+            <ServiceDetails expanded={expandedCards[SERVICES.CHECKIT]} onToggle={() => toggleCardDetails(SERVICES.CHECKIT)} languageText={languageText}>
               <li>
                 <span>
-                  <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="VerifiedUserIcon">
-                    <path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
-                  </svg>
+                  <CheckIcon />
                 </span>
                 <span>{t("Prices.checkItCheckListA")}</span>
               </li>
               <li>
                 <span>
-                  <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="VerifiedUserIcon">
-                    <path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
-                  </svg>
+                  <CheckIcon />
                 </span>
                 <span>{t("Prices.checkItCheckListB")}</span>
               </li>
               <li>
                 <span>
-                  <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="VerifiedUserIcon">
-                    <path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
-                  </svg>
+                  <CheckIcon />
                 </span>
                 <span>
                   {t("Prices.checkItCheckListC")}{" "}
-                  <a href={`${process.env.PUBLIC_URL}/reports`} onClick={(e) => e.stopPropagation()}>
+                  <a style={{ color: "#2196f3" }} href={`${process.env.PUBLIC_URL}/reports`} onClick={(e) => e.stopPropagation()}>
                     {t("Prices.checkItCheckListCPlus")}
                   </a>
                 </span>
               </li>
               <li>
                 <span>
-                  <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="VerifiedUserIcon">
-                    <path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
-                  </svg>
+                  <CheckIcon />
                 </span>
                 <span>{t("Prices.checkItCheckListD")}</span>
               </li>
-            </ul>
+            </ServiceDetails>
+
             <button className={selectedService === SERVICES.CHECKIT ? style.ask_now_active : ""} onClick={handleClickOnCheckitInspectionButton}>
               {t("Prices.askNow")}
             </button>
@@ -260,40 +312,34 @@ export default function Prices() {
               {t("Prices.travelerCheckDescriptionPartOne")} <u style={{ fontWeight: "bold" }}>{t("Prices.travelerCheckDescriptionPartTwo")}</u>{" "}
               {t("Prices.travelerCheckDescriptionPartThree")}
             </p>
-            <ul>
+
+            <ServiceDetails expanded={expandedCards[SERVICES.PASSENGER]} onToggle={() => toggleCardDetails(SERVICES.PASSENGER)} languageText={languageText}>
               <li>
                 <span>
-                  <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="VerifiedUserIcon">
-                    <path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
-                  </svg>
+                  <CheckIcon />
                 </span>
                 <span>{t("Prices.travelerCheckListA")}</span>
               </li>
               <li>
                 <span>
-                  <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="VerifiedUserIcon">
-                    <path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
-                  </svg>
+                  <CheckIcon />
                 </span>
                 <span>{t("Prices.travelerCheckListB")}</span>
               </li>
               <li>
                 <span>
-                  <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="VerifiedUserIcon">
-                    <path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
-                  </svg>
+                  <CheckIcon />
                 </span>
                 <span>{t("Prices.travelerCheckListC")}</span>
               </li>
               <li>
                 <span>
-                  <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="VerifiedUserIcon">
-                    <path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
-                  </svg>
+                  <CheckIcon />
                 </span>
                 <span>{t("Prices.travelerCheckListD")}</span>
               </li>
-            </ul>
+            </ServiceDetails>
+
             <button className={selectedService === SERVICES.PASSENGER ? style.ask_now_active : ""} onClick={handleClickOnPassengerInspectionButton}>
               {t("Prices.askNow")}
             </button>

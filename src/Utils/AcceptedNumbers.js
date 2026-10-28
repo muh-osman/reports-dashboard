@@ -47,6 +47,11 @@ export default function AcceptedNumbers() {
     );
   }
 
-  return data?.exists ? <Outlet /> : <Soon />;
+  // if (data) {
+  //   console.log(data);
+  // }
+
+  // Pass data down to child routes using the context prop
+  return data?.exists ? <Outlet context={{ specialCode: data.special_code }} /> : <Soon />;
   // return data?.exists ? <Outlet /> : <Outlet />;
 }

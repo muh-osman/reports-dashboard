@@ -82,8 +82,11 @@ export default function App() {
           </Route>
 
           <Route path={`${process.env.PUBLIC_URL}/reports`} element={<Reports />} />
+          {/* ??% => for plans only if car up 2009 |||||| 15% or ??% (biger number) => for plans if car under 2009 */}
+          {/* Note: ??% mean cashif.online discount */}
           <Route path={`${process.env.PUBLIC_URL}/prices`} element={<Prices />} />
           {/* <Route path={`${process.env.PUBLIC_URL}/plans`} element={<Plans />} /> */}
+          {/* This page to use when internal system api broken */}
           <Route path={`${process.env.PUBLIC_URL}/static-plans`} element={<StaticPlans />} />
           <Route path={`${process.env.PUBLIC_URL}/booking`} element={<Booking />} />
           <Route path={`${process.env.PUBLIC_URL}/edit-booking/:id`} element={<EditBooking />} />
@@ -93,7 +96,7 @@ export default function App() {
 
           <Route path={`${process.env.PUBLIC_URL}/shipping/:cardId`} element={<Shipping />} />
           <Route path={`${process.env.PUBLIC_URL}/pay/shipping`} element={<PayShipping />} />
-          {/* <Route path={`${process.env.PUBLIC_URL}/pay/shipping/thanks`} element={<ThanksShipping />} /> */}
+          <Route path={`${process.env.PUBLIC_URL}/pay/shipping/thanks`} element={<ThanksShipping />} />
 
           {/* <Route path={`${process.env.PUBLIC_URL}/offer-plans`} element={<OfferPlans />} /> */}
 
@@ -119,7 +122,9 @@ export default function App() {
         {/* End protected route */}
 
         {/* صفحات شاشات الخدمة الذاتية */}
+        {/* 10% => for ultmate plan only if car up 2009 |||||| 15% => for all plans if car under 2009 */}
         <Route path={`${process.env.PUBLIC_URL}/plans-gallery`} element={<PlansInGallery />} />
+        {/* 25% for all plans and years */}
         <Route path={`${process.env.PUBLIC_URL}/new-branch`} element={<NewBranch />} />
 
         <Route path={`${process.env.PUBLIC_URL}/*`} element={<NotFound />} />

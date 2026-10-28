@@ -55,7 +55,7 @@ export default function Create() {
     <div style={{ backgroundColor: "#f0f1f3" }}>
       <div className={style.header}>
         <div className={style.top_circle_header}>
-          <a href="https://cashif.cc/">
+          <a href="https://cashif.com/">
             <img src={logo} alt="cashif logo" />
           </a>
 

@@ -214,7 +214,7 @@ export default function LotteryAlreadyRegistered() {
               >
                 <Typography sx={{ mb: 1, fontWeight: "bold" }}>اضغط على الرابط للاستفادة من الخصم عند الطلب من الموقع</Typography>
                 <Link to={`${process.env.PUBLIC_URL}/prices`} dir="ltr">
-                  https://cashif.cc
+                  https://cashif.com
                 </Link>
               </Box>
 

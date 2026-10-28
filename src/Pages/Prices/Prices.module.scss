@@ -101,7 +101,7 @@
 .services_box {
   display: flex;
   flex-wrap: wrap;
-  align-items: stretch;
+  align-items: flex-start; // each card keeps its own height when details expand
   justify-content: center;
   gap: 30px;
 
@@ -114,11 +114,10 @@
   display: flex;
   flex: 1;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   flex-direction: column;
-  padding: 45px;
+  padding: 22px;
   border-radius: 9px;
-  min-height: 415px;
   background-color: #fff;
 
   @media (max-width: 575.98px) {
@@ -129,7 +128,7 @@
 .service_img {
   width: 100px;
   height: 100px;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
   background-color: #174545;
   border-radius: 100%;
   display: flex;
@@ -150,28 +149,33 @@
     font-weight: bold;
     color: #174545;
     font-family: "mont-bold";
-    margin-bottom: 14px;
+    margin-bottom: 12px;
   }
 
   p {
     color: #757575;
-    margin-bottom: 36px;
+    // Stable gap to "more details" when collapsed AND to the list when expanded
+    margin-bottom: 16px;
     text-align: center;
   }
 
   ul {
     list-style: none;
     width: 100%;
-    margin-bottom: 24px;
+    margin-bottom: 0;
 
     li {
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       color: #757575;
       font-size: 16px;
       font-weight: 700;
       display: flex;
       align-items: center;
       gap: 9px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
 
       svg {
         width: 25px;
@@ -183,9 +187,6 @@
   }
 
   button {
-    // background-color: #174545;
-    background-color: #e8e8e9;
-    color: #174545;
     width: 100%;
     padding: 8px 12px;
     border-radius: 5px;
@@ -194,11 +195,6 @@
     font-weight: bold;
     font-size: 16px;
     cursor: pointer;
-
-    &:hover {
-      background-color: #174545 !important;
-      color: #fff !important;
-    }
   }
 }
 
@@ -214,4 +210,63 @@
 .ask_now_active {
   background-color: #164544 !important;
   color: #fff !important;
+}
+
+.details_wrapper {
+  width: 100%;
+  overflow: hidden;
+  height: 0;
+  transition: height 0.4s ease;
+}
+
+.details_inner {
+  // Small top pad only — main gap comes from p { margin-bottom }
+  padding-top: 4px;
+  padding-bottom: 4px;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.3s ease, transform 0.35s ease;
+
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.details_collapsed {
+  pointer-events: none;
+  user-select: none;
+
+  .details_inner {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+.details_expanded {
+  pointer-events: auto;
+
+  .details_inner {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.more_details_btn {
+  display: inline-block;
+  background: none !important;
+  border: none;
+  padding: 0 !important;
+  width: auto !important;
+  margin: 0 0 16px;
+  color: #164544;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
 }

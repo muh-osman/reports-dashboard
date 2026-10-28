@@ -1,5 +1,5 @@
 import style from "./PayShipping.module.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 // Lang
 import i18n from "../../i18n";
@@ -129,14 +129,24 @@ export default function PayShipping() {
   // const price = searchParams.get("price");
 
   const [price, setPrice] = useState(null);
+  const priceRef = useRef(price);
+  useEffect(() => {
+    priceRef.current = price;
+  }, [price]);
 
   // Fee for receiving the car and sending it to the shipping company
-  const RECEIVE_AND_SEND_FEE = 100;
+  const RECEIVE_AND_SEND_FEE = 115;
   const shippingFee = deliveryMethod === "2" ? RECEIVE_AND_SEND_FEE : 0;
   const totalPrice = price !== null ? price + shippingFee : null;
 
   // Get the id (report number) from the URL
   const { data: oneCardData, isLoading: isFetchDataLoading, isSuccess: isFetchDataSuccess } = useGetOneCardDataApi(reportNumber);
+
+  // NEW: ref to always hold the latest oneCardData
+  const oneCardDataRef = useRef(oneCardData);
+  useEffect(() => {
+    oneCardDataRef.current = oneCardData;
+  }, [oneCardData]);
 
   //
   const [expanded, setExpanded] = useState("panel1");
@@ -150,6 +160,11 @@ export default function PayShipping() {
   // const [isTabbyLoading, setIsTabbyBtnLoading] = useState(false);
 
   const { mutate, data: mutateData, isSuccess: isMutateSuccess } = useAddSippingCarOrderApi();
+
+  // useEffect(() => {
+  //   console.log(mutateData);
+  // }, [mutateData]);
+
   const handlePayInCenterBtn = () => {
     setIsPayInCenterLoading(true);
 
@@ -163,7 +178,7 @@ export default function PayShipping() {
       from: oneCardData?.branchNameAr,
       to: to,
       shippingType: shippingType,
-      price: totalPrice,
+      price: price,
       phoneNumber: oneCardData?.clientPhoneNumber,
       status: "الدفع عند الاستلام",
       isShipped: false,
@@ -281,53 +296,85 @@ export default function PayShipping() {
   }, [isFetchDataSuccess]);
 
   // Moyasar
-  // useEffect(() => {
-  //   // Initialize Moyasar after script loads
-  //   if (price && window.Moyasar) {
-  //     window.Moyasar.init({
-  //       element: ".mysr-form",
-  //       amount: price * 100,
-  //       currency: "SAR",
-  //       language: languageText === "ar" ? "ar" : "en",
-  //       description: "Cashif for car inspection",
-  //       publishable_api_key: window.location.hostname === "localhost" ? process.env.REACT_APP_SHIPPING_MOYASAR_TEST_KEY : process.env.REACT_APP_SHIPPING_MOYASAR_LIVE_KEY,
-  //       callback_url: `${window.location.origin}${process.env.PUBLIC_URL}/pay/shipping/thanks`,
-  //       supported_networks: ["visa", "mastercard", "mada"],
-  //       methods: ["creditcard", "applepay"],
+  useEffect(() => {
+    // Initialize Moyasar after script loads
+    if (deliveryMethod === "2" && window.Moyasar && isFetchDataSuccess) {
+      window.Moyasar.init({
+        element: ".mysr-form",
+        amount: 115 * 100,
+        currency: "SAR",
+        language: languageText === "ar" ? "ar" : "en",
+        description: "Cashif for car inspection",
+        publishable_api_key: window.location.hostname === "localhost" ? process.env.REACT_APP_SHIPPING_MOYASAR_TEST_KEY : process.env.REACT_APP_SHIPPING_MOYASAR_LIVE_KEY,
+        callback_url: `${window.location.origin}${process.env.PUBLIC_URL}/pay/shipping/thanks`,
+        supported_networks: ["visa", "mastercard", "mada"],
+        methods: ["creditcard", "applepay"],
 
-  //       apple_pay: {
-  //         country: "SA",
-  //         label: "Cashif for car inspection",
-  //         validate_merchant_url: "https://api.moyasar.com/v1/applepay/initiate",
-  //       },
+        apple_pay: {
+          country: "SA",
+          label: "Cashif for car inspection",
+          validate_merchant_url: "https://api.moyasar.com/v1/applepay/initiate",
+        },
 
-  //       metadata: {
-  //         name: oneCardData?.clientName,
-  //         reportNumber: oneCardData?.cardNumber, // this is cardNumber NOT id
-  //         model: oneCardData?.carModelNameAr,
-  //         modelCategory: "N/A",
-  //         plateNumber: oneCardData?.plateNumber,
-  //         from: oneCardData?.branchNameAr,
-  //         to: to,
-  //         shippingType: shippingType,
-  //         price: price,
-  //         phoneNumber: oneCardData?.clientPhoneNumber,
-  //       },
+        metadata: {
+          flag: "shipping",
+          payment_id: "N/A",
+          name: oneCardDataRef.current?.clientName,
+          reportNumber: oneCardDataRef.current?.cardNumber, // this is cardNumber NOT id
+          model: oneCardDataRef.current?.carModelNameAr,
+          modelCategory: deliveryMethod === "1" ? "ذهاب صاحب السيارة إلى شركة الشحن" : "سطحة من مركز الفحص إلى شركة الشحن", // this is now delivery Method "The car owner went to the shipping company" or "Flatbed truck from the inspection center to the shipping company"
+          plateNumber: oneCardDataRef.current?.plateNumber || "N/A",
+          from: oneCardDataRef.current?.branchNameAr,
+          to: to,
+          shippingType: shippingType,
+          price: priceRef.current, // price without fee 100 SAR, to save in DB
+          phoneNumber: oneCardDataRef.current?.clientPhoneNumber,
+          status: "الدفع عند الاستلام",
+          isShipped: false,
+          accountant_status: false,
+        },
 
-  //       on_failure: async function (error) {
-  //         console.log(error);
-  //       },
-  //     });
-  //   }
+        on_failure: async function (error) {
+          console.log(error);
+        },
 
-  //   return () => {
-  //     // Clean up Moyasar form when component unmounts
-  //     const formElement = document.querySelector(".mysr-form");
-  //     if (formElement) {
-  //       formElement.innerHTML = "";
-  //     }
-  //   };
-  // }, [price, languageText, oneCardData, reportNumber, to, shippingType]);
+        on_initiating: async function () {
+          // console.log(oneCardData?.clientName);
+          // return false;
+
+          // Update the data
+          return {
+            amount: 115 * 100,
+            metadata: {
+              flag: "shipping",
+              payment_id: "N/A",
+              name: oneCardDataRef.current?.clientName,
+              reportNumber: oneCardDataRef.current?.cardNumber,
+              model: oneCardDataRef.current?.carModelNameAr,
+              modelCategory: deliveryMethod === "1" ? "ذهاب صاحب السيارة إلى شركة الشحن" : "سطحة من مركز الفحص إلى شركة الشحن",
+              plateNumber: oneCardDataRef.current?.plateNumber || "N/A",
+              from: oneCardDataRef.current?.branchNameAr,
+              to: to,
+              shippingType: shippingType,
+              price: priceRef.current, // price without fee 100 SAR, to save in DB
+              phoneNumber: oneCardDataRef.current?.clientPhoneNumber,
+              status: "الدفع عند الاستلام",
+              isShipped: false,
+              accountant_status: false,
+            },
+          };
+        },
+      });
+    }
+
+    // return () => {
+    //   // Clean up Moyasar form when component unmounts
+    //   const formElement = document.querySelector(".mysr-form");
+    //   if (formElement) {
+    //     formElement.innerHTML = "";
+    //   }
+    // };
+  }, [languageText, oneCardData, reportNumber, to, shippingType, deliveryMethod, price]);
 
   return (
     <div className={style.container} dir={languageText === "ar" ? "rtl" : "ltr"}>
@@ -382,16 +429,44 @@ export default function PayShipping() {
             <p>{shippingType}</p>
           </div>
 
+          {/* شحن السيارة */}
+          <div>
+            <p style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+              <span>شحن السيارة</span>
+              <span style={{ fontSize: "12px", color: "#d32f2f", marginTop: "3px", fontWeight: "600" }}>تدفع عند الاستلام</span>
+            </p>
+
+            <p style={{ display: "flex", gap: "3px" }}>
+              <span>{price}</span>
+              <span style={{ display: "flex", alignItems: "center" }}>
+                <svg fill="#747a79" width={16} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39">
+                  <path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+                  <path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+                </svg>
+              </span>
+            </p>
+          </div>
+
           {deliveryMethod === "2" && (
             <div>
-              <p style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                <span>سطحة الى شركة الشحن</span>
-                <Tooltip title={<p style={{ direction: "rtl" }}>رسوم استلام السيارة في مركز الفحص ونقلها إلى شركة الشحن</p>} arrow enterTouchDelay={0} leaveTouchDelay={3000}>
-                  <IconButton size="small" sx={{ padding: "2px" }}>
-                    <InfoOutlinedIcon sx={{ fontSize: "16px", color: "#747a79" }} />
-                  </IconButton>
-                </Tooltip>
+              <p style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+                <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                  <span>سطحة الى شركة الشحن</span>
+                  <Tooltip
+                    title={<p style={{ direction: "rtl" }}>رسوم استلام السيارة في مركز الفحص ونقلها إلى شركة الشحن (شامل الضريبة)</p>}
+                    arrow
+                    enterTouchDelay={0}
+                    leaveTouchDelay={3000}
+                  >
+                    <IconButton size="small" sx={{ padding: "2px" }}>
+                      <InfoOutlinedIcon sx={{ fontSize: "16px", color: "#747a79" }} />
+                    </IconButton>
+                  </Tooltip>
+                </span>
+
+                <span style={{ fontSize: "12px", color: "#d32f2f", marginTop: "3px", fontWeight: "600" }}>تدفع الآن</span>
               </p>
+
               <p style={{ display: "flex", gap: "3px" }}>
                 <span>{RECEIVE_AND_SEND_FEE}</span>
                 <span style={{ display: "flex", alignItems: "center" }}>
@@ -421,97 +496,69 @@ export default function PayShipping() {
       </div>
 
       <div className={style.payment_methods_box}>
-        <Accordion expanded={expanded === "panel1"} onChange={handleChange("panel1")}>
-          <AccordionSummary
-            aria-controls="panel1d-content"
-            id="panel1d-header"
-            sx={{
-              gap: "8px",
-            }}
-          >
-            <Typography component="h5">
-              <span style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-                <span style={{ display: "flex" }}>
-                  {/* <img src={tamaraLogo} alt="tamara" /> */}
-                  <AccountBalanceIcon />
-                </span>
-                <span style={{ fontWeight: "700" }}>الدفع عند الاستلام</span>
-              </span>
-              {/* <span style={{ display: "inline-block", color: "#747a79", fontSize: "12px" }}>بدون رسوم تأخير، متوافقة مع الشريعة الإسلامية</span> */}
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails style={{ padding: "8px 0px 16px" }}>
-            <LoadingButton
-              style={{ width: "100%", backgroundColor: "#174545", fontWeight: "700" }}
-              variant="contained"
-              size="large"
-              onClick={handlePayInCenterBtn}
-              loading={isPayInCenterLoading}
-              disabled={isPayInCenterLoading}
-              loadingIndicator={
-                <CircularProgress
-                  size={16}
-                  sx={{ color: "#fff" }} // Change spinner color here
-                />
-              }
-            >
-              تأكيد الطلب
-            </LoadingButton>
-          </AccordionDetails>
-        </Accordion>
-
-        {/* <Accordion expanded={expanded === "panel2"} onChange={handleChange("panel2")}>
-          <AccordionSummary
-            aria-controls="panel2d-content"
-            id="panel2d-header"
-            sx={{
-              gap: "8px",
-            }}
-          >
-            <Typography component="h5">
-              <span style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-                <span style={{ display: "flex" }}>
-                  <img style={{ width: "74px" }} src={tabbyLogo} alt="tamara" />
-                </span>
-                <span style={{ fontWeight: "700" }}>قسمها على 4 دفعات</span>
-              </span>
-              <span style={{ display: "inline-block", color: "#747a79", fontSize: "12px" }}>بدون أي فوائد، أو رسوم</span>
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails style={{ padding: "8px 0px 16px" }}>
-            <LoadingButton
-              style={{ width: "100%", backgroundColor: "#3bffc6", fontWeight: "700", color: isTabbyLoading ? "#3bffc6" : "#000000de" }}
-              variant="contained"
-              size="large"
-              onClick={handleClickTabbyBtn}
-              loading={isTabbyLoading}
-              disabled={isTabbyLoading}
-            >
-              تأكيد الطلب
-            </LoadingButton>
-          </AccordionDetails>
-        </Accordion> */}
-
         {/* Moyasar Form */}
-        {/* <Accordion expanded={expanded === "panel3"} onChange={handleChange("panel3")}>
-          <AccordionSummary
-            aria-controls="panel3d-content"
-            id="panel3d-header"
-            sx={{
-              gap: "8px",
-            }}
-          >
-            <Typography component="h5">
-              <span style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-                <span style={{ fontWeight: "700" }}>{t("PayShipping.ePayment")}</span>
-              </span>
-              <span style={{ display: "inline-block", color: "#747a79", fontSize: "12px" }}>{t("PayShipping.payWithMadaMasterAndVisa")}</span>
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails style={{ padding: "8px 0px 16px" }}>
-            <div className="mysr-form"></div>
-          </AccordionDetails>
-        </Accordion> */}
+        {deliveryMethod === "2" && (
+          <Accordion expanded={true}>
+            <AccordionSummary
+              aria-controls="panel3d-content"
+              id="panel3d-header"
+              sx={{
+                gap: "8px",
+              }}
+            >
+              <Typography component="h5">
+                <span style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+                  <span style={{ fontWeight: "700" }}>{t("PayShipping.ePayment")}</span>
+                </span>
+                <span style={{ display: "inline-block", color: "#747a79", fontSize: "12px" }}>{t("PayShipping.payWithMadaMasterAndVisa")}</span>
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails style={{ padding: "8px 0px 16px" }}>
+              <div className="mysr-form"></div>
+            </AccordionDetails>
+          </Accordion>
+        )}
+
+        {deliveryMethod === "1" && (
+          <Accordion expanded={expanded === "panel1"} onChange={handleChange("panel1")}>
+            <AccordionSummary
+              aria-controls="panel1d-content"
+              id="panel1d-header"
+              sx={{
+                gap: "8px",
+              }}
+            >
+              <Typography component="h5">
+                <span style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+                  <span style={{ display: "flex" }}>
+                    {/* <img src={tamaraLogo} alt="tamara" /> */}
+                    <AccountBalanceIcon />
+                  </span>
+                  <span style={{ fontWeight: "700" }}>الدفع عند الاستلام</span>
+                </span>
+                {/* <span style={{ display: "inline-block", color: "#747a79", fontSize: "12px" }}>بدون رسوم تأخير، متوافقة مع الشريعة الإسلامية</span> */}
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails style={{ padding: "8px 0px 16px" }}>
+              <LoadingButton
+                style={{ width: "100%", backgroundColor: "#174545", fontWeight: "700" }}
+                variant="contained"
+                size="large"
+                onClick={handlePayInCenterBtn}
+                loading={isPayInCenterLoading}
+                disabled={isPayInCenterLoading}
+                loadingIndicator={
+                  <CircularProgress
+                    size={16}
+                    sx={{ color: "#fff" }} // Change spinner color here
+                  />
+                }
+              >
+                تأكيد الطلب
+              </LoadingButton>
+            </AccordionDetails>
+          </Accordion>
+        )}
       </div>
     </div>
   );

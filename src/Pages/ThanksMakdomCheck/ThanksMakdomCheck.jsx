@@ -178,7 +178,7 @@ export default function ThanksMakdomCheck() {
               <li>قم بإرسال رقم الحجز لصاحب السيارة.</li>
               <li>
                 اطلب من صاحب السيارة التوجه الى{" "}
-                <a href="https://cashif.cc/dashboard/contact" target="_blank">
+                <a href="https://cashif.com/dashboard/contact" target="_blank">
                   الفرع المحدد
                 </a>
                 .
@@ -335,7 +335,7 @@ export default function ThanksMakdomCheck() {
           <div>
             {/* <Button
               variant="outlined"
-              href="http://cashif.cc/"
+              href="http://cashif.com/"
               sx={{
                 marginBottom: "40px",
                 marginTop: "8px",

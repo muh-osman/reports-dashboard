@@ -1149,7 +1149,9 @@ export default function PayMakdomCheck() {
         publishable_api_key: window.location.hostname === "localhost" ? process.env.REACT_APP_PURCHASE_MOYASAR_TEST_KEY : process.env.REACT_APP_PURCHASE_MOYASAR_LIVE_KEY,
         callback_url: `${window.location.origin}${process.env.PUBLIC_URL}/pay/makdom-check/thanks`,
         supported_networks: ["visa", "mastercard", "mada"],
-        methods: ["creditcard", "applepay", "samsungpay"],
+
+        // methods: ["creditcard", "applepay", "samsungpay"],
+        methods: ["creditcard", "applepay"],
 
         apple_pay: {
           country: "SA",
@@ -1157,13 +1159,13 @@ export default function PayMakdomCheck() {
           validate_merchant_url: "https://api.moyasar.com/v1/applepay/initiate",
         },
 
-        samsung_pay: {
-          service_id: "4d1df6e9f3324a559f7fbf",
-          order_number: "ORD-" + Date.now(),
-          country: "SA",
-          label: "Cashif for car inspection",
-          environment: "PRODUCTION", // PRODUCTION, STAGE, STAGE_WITHOUT_APK
-        },
+        // samsung_pay: {
+        //   service_id: "4d1df6e9f3324a559f7fbf",
+        //   order_number: "ORD-" + Date.now(),
+        //   country: "SA",
+        //   label: "Cashif for car inspection",
+        //   environment: "PRODUCTION", // PRODUCTION, STAGE, STAGE_WITHOUT_APK
+        // },
 
         metadata: {
           name: userName,
@@ -1314,7 +1316,7 @@ export default function PayMakdomCheck() {
               <Trans
                 i18nKey="PayPurchaseCheck.step3"
                 components={{
-                  1: <a target="_blank" href="https://cashif.cc/dashboard/reports" />,
+                  1: <a target="_blank" href="https://cashif.com/dashboard/reports" />,
                 }}
               />
             </li>
@@ -1322,322 +1324,6 @@ export default function PayMakdomCheck() {
           </ol>
         </div>
       )}
-
-      {/* Box */}
-      <div className={style.pay_box}>
-        <h3>{t("PayPurchaseCheck.details")}</h3>
-
-        <div className={style.details_order_table}>
-          {/* نوع الفحص */}
-          <div>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", border: "none", padding: 0 }}>
-              <p>{plan}</p>
-              <p style={{ fontSize: "12px" }}>{model}</p>
-            </div>
-            <p style={{ display: "flex", alignItems: "center", gap: "3px", fontWeight: 700 }}>
-              {Math.trunc(basePrice || 0)} <CurrencyIcon fill="#747a79" style={{ width: "20px", height: "20px" }} />
-            </p>
-          </div>
-
-          {/* خدمة مرتاح */}
-          {!isFriday && (
-            <div>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={isMertahServiceChecked}
-                    onChange={(e) => setIsMertahServiceChecked(e.target.checked)}
-                    sx={{
-                      color: "primary.main",
-                      padding: 0,
-                      "&.Mui-checked": {
-                        color: "primary.main",
-                      },
-                      // For RTL/LTR support
-                      ...(languageText === "ar" && {
-                        marginLeft: "8px",
-                        marginRight: "0",
-                      }),
-                      ...(languageText === "en" && {
-                        marginRight: "8px",
-                        marginLeft: "0",
-                      }),
-                    }}
-                  />
-                }
-                label={<Typography variant="body1">{t("PayPurchaseCheck.mertahService")}</Typography>}
-                sx={{
-                  margin: 0,
-                  width: "100%",
-                }}
-              />
-
-              <p style={{ textDecoration: isMertahServiceChecked ? "none" : "line-through", display: "flex", alignItems: "center", gap: "3px", fontWeight: 700 }}>
-                {mertahServicePrice} <CurrencyIcon fill="#747a79" style={{ width: "20px", height: "20px" }} />
-              </p>
-            </div>
-          )}
-
-          {/* تصوير السيارة (فيديو + صور) */}
-          <div>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={isCapturePhotosAndVideosForCarChecked}
-                  onChange={(e) => setIsCapturePhotosAndVideosForCarChecked(e.target.checked)}
-                  sx={{
-                    color: "primary.main",
-                    padding: 0,
-                    "&.Mui-checked": {
-                      color: "primary.main",
-                    },
-                    // For RTL/LTR support
-                    ...(languageText === "ar" && {
-                      marginLeft: "8px",
-                      marginRight: "0",
-                    }),
-                    ...(languageText === "en" && {
-                      marginRight: "8px",
-                      marginLeft: "0",
-                    }),
-                  }}
-                />
-              }
-              label={<Typography variant="body1">{t("PayPurchaseCheck.capturePhotosAndVideosForCar")}</Typography>}
-              sx={{
-                margin: 0,
-                width: "100%",
-              }}
-            />
-
-            <p style={{ textDecoration: isCapturePhotosAndVideosForCarChecked ? "none" : "line-through", display: "flex", alignItems: "center", gap: "3px", fontWeight: 700 }}>
-              {capturePhotosAndVideosForCarPrice} <CurrencyIcon fill="#747a79" style={{ width: "20px", height: "20px" }} />
-            </p>
-          </div>
-
-          {/* شرح التقرير عبر فيديو */}
-          {/* <div>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={isExplainReportByVideoChecked}
-                  onChange={(e) => setIsExplainReportByVideoChecked(e.target.checked)}
-                  sx={{
-                    color: "primary.main",
-                    padding: 0,
-                    "&.Mui-checked": {
-                      color: "primary.main",
-                    },
-                    // For RTL/LTR support
-                    ...(languageText === "ar" && {
-                      marginLeft: "8px",
-                      marginRight: "0",
-                    }),
-                    ...(languageText === "en" && {
-                      marginRight: "8px",
-                      marginLeft: "0",
-                    }),
-                  }}
-                />
-              }
-              label={<Typography variant="body1">{t("PayPurchaseCheck.explainReportByVideo")}</Typography>}
-              sx={{
-                margin: 0,
-                width: "100%",
-              }}
-            />
-
-            <p style={{ textDecoration: isExplainReportByVideoChecked ? "none" : "line-through", display: "flex", alignItems: "center", gap: "3px", fontWeight: 700 }}>
-              {explainReportByVideoPrice} <CurrencyIcon fill="#747a79" style={{ width: "20px", height: "20px" }} />
-            </p>
-          </div> */}
-
-          {/* Discount amount */}
-          {!!appliedDiscount?.amount && (
-            <div
-              style={{
-                padding: "16px 0 8px",
-                display: "flex",
-                flexDirection: "column",
-                gap: "8px",
-                width: "100%",
-                border: "none",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  padding: "8px 12px",
-                  backgroundColor: "#e8f5e9",
-                  borderRadius: "4px",
-                  border: "none",
-                  width: "100%",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", border: "none" }}>
-                  {/* <CheckIcon fontSize="small" color="success" /> */}
-                  <Typography variant="body2" color="success.main" sx={{ color: "#4caf50 !important" }}>
-                    %{appliedDiscount?.value} {t("PayPurchaseCheck.discountApplied")}
-                  </Typography>
-                </div>
-
-                <Typography
-                  variant="body2"
-                  fontWeight="bold"
-                  // color="success.main"
-                  style={{ display: "flex", alignItems: "center", gap: "3px", fontWeight: 700, fontSize: "16px", color: "#4caf50" }}
-                >
-                  -{discountAmount}
-                  <CurrencyIcon fill="#4caf50" style={{ width: "16px", height: "16px", marginLeft: "4px" }} />
-                </Typography>
-              </div>
-            </div>
-          )}
-
-          {/* Applied Points Redemption */}
-          {appliedPoints !== 0 && (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                padding: "8px 12px",
-                backgroundColor: "#e3f2fd",
-                borderRadius: "4px",
-                border: "none",
-                width: "100%",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", border: "none" }}>
-                <Typography variant="body2" sx={{ color: "#1976d2 !important" }}>
-                  {t("PayPurchaseCheck.redeem")} {appliedPoints} {t("PayPurchaseCheck.point")}
-                </Typography>
-              </div>
-
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <Typography variant="body2" fontWeight="bold" style={{ display: "flex", alignItems: "center", gap: "3px", fontWeight: 700, fontSize: "16px", color: "#1976d2" }}>
-                  -{Math.trunc(appliedPoints)}
-                  <CurrencyIcon fill="#1976d2" style={{ width: "16px", height: "16px", marginLeft: "4px" }} />
-                </Typography>
-              </div>
-            </div>
-          )}
-
-          {/* المجموع */}
-          <div style={{ borderBottom: "none", paddingBottom: 0 }}>
-            <p></p>
-            <h4 style={{ fontWeight: "bold" }}>
-              <span>{t("PayPurchaseCheck.total")}</span>
-              <span style={{ fontSize: "20px" }}>{total}</span>
-              <span>
-                <CurrencyIcon fill="#000000de" style={{ width: "21px", height: "23px" }} />
-              </span>
-            </h4>
-          </div>
-        </div>
-      </div>
-
-      {/* Redeem/Discount Box */}
-
-      <div className={style.discount_box}>
-        {/* Discount input */}
-        <div>
-          <FormControl dir="ltr" sx={{ width: "100%" }} variant="outlined">
-            <InputLabel htmlFor="discount-input-outlined">{t("PayPurchaseCheck.discountCode")}</InputLabel>
-            <OutlinedInput
-              label={t("PayPurchaseCheck.discountCode")}
-              fullWidth
-              id="discount-input-outlined"
-              type="text"
-              value={discountCode}
-              onChange={(e) => setDiscountCode(e.target.value)}
-              disabled={isApplyingDiscount || !!appliedDiscount}
-              endAdornment={
-                <LoadingButton
-                  size="small"
-                  variant="contained"
-                  onClick={handleApplyDiscount}
-                  loading={isApplyingDiscount}
-                  disabled={!discountCode.trim() || isApplyingDiscount || !!appliedDiscount}
-                  sx={{
-                    minWidth: "80px",
-                    height: "32px",
-                    fontSize: "12px",
-                  }}
-                >
-                  {t("PayPurchaseCheck.apply")}
-                </LoadingButton>
-              }
-            />
-            <FormHelperText dir="rtl" sx={{ margin: 0, textAlign: languageText === "ar" ? "right" : "left", marginTop: "3px", fontSize: "11px" }}>
-              {t("PayPurchaseCheck.theHigherValueWillApply")}
-            </FormHelperText>
-          </FormControl>
-        </div>
-
-        {/* Redeem points */}
-        {cookies.tokenApp && points?.points > 0 && (
-          <div style={{ marginTop: "16px" }}>
-            <FormControl dir="ltr" sx={{ width: "100%" }} variant="outlined">
-              <InputLabel htmlFor="redeme-input-outlined">{t("PayPurchaseCheck.redeemeThePoints")}</InputLabel>
-              <OutlinedInput
-                label={t("PayPurchaseCheck.redeemeThePoints")}
-                fullWidth
-                id="redeme-input-outlined"
-                type="number"
-                value={redeemPoints}
-                onChange={(e) => setRedeemPoints(e.target.value)}
-                disabled={isApplyingPoints || !!appliedPoints}
-                sx={{
-                  "& input[type=number]": {
-                    MozAppearance: "textfield",
-                  },
-                  "& input[type=number]::-webkit-outer-spin-button": {
-                    WebkitAppearance: "none",
-                    margin: 0,
-                  },
-                  "& input[type=number]::-webkit-inner-spin-button": {
-                    WebkitAppearance: "none",
-                    margin: 0,
-                  },
-                }}
-                endAdornment={
-                  <LoadingButton
-                    size="small"
-                    variant="contained"
-                    onClick={handleRedeemPoints}
-                    loading={isApplyingPoints}
-                    disabled={!redeemPoints.trim() || isApplyingPoints || !!appliedPoints}
-                    sx={{
-                      minWidth: "80px",
-                      height: "32px",
-                      fontSize: "12px",
-                    }}
-                  >
-                    {t("PayPurchaseCheck.apply")}
-                  </LoadingButton>
-                }
-              />
-              <FormHelperText dir="rtl" sx={{ margin: 0, textAlign: languageText === "ar" ? "right" : "left", marginTop: "3px", fontSize: "11px" }}>
-                {t("PayPurchaseCheck.everyPointEqualOneRyal")}
-              </FormHelperText>
-            </FormControl>
-          </div>
-        )}
-
-        {/* Points banner */}
-        {cookies.tokenApp ? (
-          <div className={style.login_box}>
-            {t("PayPurchaseCheck.yourCurrentPointsBalance")} {Math.trunc(points?.points - appliedPoints || 0)} {t("PayPurchaseCheck.point")}
-          </div>
-        ) : (
-          <div className={style.login_box}>
-            {t("PayPurchaseCheck.toUsePoints")} <Link to={`${process.env.PUBLIC_URL}/login/?from=prices`}>{t("PayPurchaseCheck.login")}</Link> {t("PayPurchaseCheck.yourAccount")}
-          </div>
-        )}
-      </div>
 
       {/* Name/phone/branch */}
       <div className={style.user_data_box}>
@@ -1892,10 +1578,326 @@ export default function PayMakdomCheck() {
         )}
       </div>
 
+      {/* Redeem/Discount Box */}
+
+      <div className={style.discount_box}>
+        {/* Discount input */}
+        <div>
+          <FormControl dir="ltr" sx={{ width: "100%" }} variant="outlined">
+            <InputLabel htmlFor="discount-input-outlined">{t("PayPurchaseCheck.discountCode")}</InputLabel>
+            <OutlinedInput
+              label={t("PayPurchaseCheck.discountCode")}
+              fullWidth
+              id="discount-input-outlined"
+              type="text"
+              value={discountCode}
+              onChange={(e) => setDiscountCode(e.target.value)}
+              disabled={isApplyingDiscount || !!appliedDiscount}
+              endAdornment={
+                <LoadingButton
+                  size="small"
+                  variant="contained"
+                  onClick={handleApplyDiscount}
+                  loading={isApplyingDiscount}
+                  disabled={!discountCode.trim() || isApplyingDiscount || !!appliedDiscount}
+                  sx={{
+                    minWidth: "80px",
+                    height: "32px",
+                    fontSize: "12px",
+                  }}
+                >
+                  {t("PayPurchaseCheck.apply")}
+                </LoadingButton>
+              }
+            />
+            <FormHelperText dir="rtl" sx={{ margin: 0, textAlign: languageText === "ar" ? "right" : "left", marginTop: "3px", fontSize: "11px" }}>
+              {t("PayPurchaseCheck.theHigherValueWillApply")}
+            </FormHelperText>
+          </FormControl>
+        </div>
+
+        {/* Redeem points */}
+        {cookies.tokenApp && points?.points > 0 && (
+          <div style={{ marginTop: "16px" }}>
+            <FormControl dir="ltr" sx={{ width: "100%" }} variant="outlined">
+              <InputLabel htmlFor="redeme-input-outlined">{t("PayPurchaseCheck.redeemeThePoints")}</InputLabel>
+              <OutlinedInput
+                label={t("PayPurchaseCheck.redeemeThePoints")}
+                fullWidth
+                id="redeme-input-outlined"
+                type="number"
+                value={redeemPoints}
+                onChange={(e) => setRedeemPoints(e.target.value)}
+                disabled={isApplyingPoints || !!appliedPoints}
+                sx={{
+                  "& input[type=number]": {
+                    MozAppearance: "textfield",
+                  },
+                  "& input[type=number]::-webkit-outer-spin-button": {
+                    WebkitAppearance: "none",
+                    margin: 0,
+                  },
+                  "& input[type=number]::-webkit-inner-spin-button": {
+                    WebkitAppearance: "none",
+                    margin: 0,
+                  },
+                }}
+                endAdornment={
+                  <LoadingButton
+                    size="small"
+                    variant="contained"
+                    onClick={handleRedeemPoints}
+                    loading={isApplyingPoints}
+                    disabled={!redeemPoints.trim() || isApplyingPoints || !!appliedPoints}
+                    sx={{
+                      minWidth: "80px",
+                      height: "32px",
+                      fontSize: "12px",
+                    }}
+                  >
+                    {t("PayPurchaseCheck.apply")}
+                  </LoadingButton>
+                }
+              />
+              <FormHelperText dir="rtl" sx={{ margin: 0, textAlign: languageText === "ar" ? "right" : "left", marginTop: "3px", fontSize: "11px" }}>
+                {t("PayPurchaseCheck.everyPointEqualOneRyal")}
+              </FormHelperText>
+            </FormControl>
+          </div>
+        )}
+
+        {/* Points banner */}
+        {cookies.tokenApp ? (
+          <div className={style.login_box}>
+            {t("PayPurchaseCheck.yourCurrentPointsBalance")} {Math.trunc(points?.points - appliedPoints || 0)} {t("PayPurchaseCheck.point")}
+          </div>
+        ) : (
+          <div className={style.login_box}>
+            {t("PayPurchaseCheck.toUsePoints")} <Link to={`${process.env.PUBLIC_URL}/login/?from=prices`}>{t("PayPurchaseCheck.login")}</Link> {t("PayPurchaseCheck.yourAccount")}
+          </div>
+        )}
+      </div>
+
+      {/* Box */}
+      <div className={style.pay_box}>
+        <h3>{t("PayPurchaseCheck.details")}</h3>
+
+        <div className={style.details_order_table}>
+          {/* نوع الفحص */}
+          <div>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", border: "none", padding: 0 }}>
+              <p>{plan}</p>
+              <p style={{ fontSize: "12px" }}>{model}</p>
+            </div>
+            <p style={{ display: "flex", alignItems: "center", gap: "3px", fontWeight: 700 }}>
+              {Math.trunc(basePrice || 0)} <CurrencyIcon fill="#747a79" style={{ width: "20px", height: "20px" }} />
+            </p>
+          </div>
+
+          {/* خدمة مرتاح */}
+          {!isFriday && (
+            <div>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={isMertahServiceChecked}
+                    onChange={(e) => setIsMertahServiceChecked(e.target.checked)}
+                    sx={{
+                      color: "primary.main",
+                      padding: 0,
+                      "&.Mui-checked": {
+                        color: "primary.main",
+                      },
+                      // For RTL/LTR support
+                      ...(languageText === "ar" && {
+                        marginLeft: "8px",
+                        marginRight: "0",
+                      }),
+                      ...(languageText === "en" && {
+                        marginRight: "8px",
+                        marginLeft: "0",
+                      }),
+                    }}
+                  />
+                }
+                label={<Typography variant="body1">{t("PayPurchaseCheck.mertahService")}</Typography>}
+                sx={{
+                  margin: 0,
+                  width: "100%",
+                }}
+              />
+
+              <p style={{ textDecoration: isMertahServiceChecked ? "none" : "line-through", display: "flex", alignItems: "center", gap: "3px", fontWeight: 700 }}>
+                {mertahServicePrice} <CurrencyIcon fill="#747a79" style={{ width: "20px", height: "20px" }} />
+              </p>
+            </div>
+          )}
+
+          {/* تصوير السيارة (فيديو + صور) */}
+          <div>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={isCapturePhotosAndVideosForCarChecked}
+                  onChange={(e) => setIsCapturePhotosAndVideosForCarChecked(e.target.checked)}
+                  sx={{
+                    color: "primary.main",
+                    padding: 0,
+                    "&.Mui-checked": {
+                      color: "primary.main",
+                    },
+                    // For RTL/LTR support
+                    ...(languageText === "ar" && {
+                      marginLeft: "8px",
+                      marginRight: "0",
+                    }),
+                    ...(languageText === "en" && {
+                      marginRight: "8px",
+                      marginLeft: "0",
+                    }),
+                  }}
+                />
+              }
+              label={<Typography variant="body1">{t("PayPurchaseCheck.capturePhotosAndVideosForCar")}</Typography>}
+              sx={{
+                margin: 0,
+                width: "100%",
+              }}
+            />
+
+            <p style={{ textDecoration: isCapturePhotosAndVideosForCarChecked ? "none" : "line-through", display: "flex", alignItems: "center", gap: "3px", fontWeight: 700 }}>
+              {capturePhotosAndVideosForCarPrice} <CurrencyIcon fill="#747a79" style={{ width: "20px", height: "20px" }} />
+            </p>
+          </div>
+
+          {/* شرح التقرير عبر فيديو */}
+          {/* <div>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={isExplainReportByVideoChecked}
+                  onChange={(e) => setIsExplainReportByVideoChecked(e.target.checked)}
+                  sx={{
+                    color: "primary.main",
+                    padding: 0,
+                    "&.Mui-checked": {
+                      color: "primary.main",
+                    },
+                    // For RTL/LTR support
+                    ...(languageText === "ar" && {
+                      marginLeft: "8px",
+                      marginRight: "0",
+                    }),
+                    ...(languageText === "en" && {
+                      marginRight: "8px",
+                      marginLeft: "0",
+                    }),
+                  }}
+                />
+              }
+              label={<Typography variant="body1">{t("PayPurchaseCheck.explainReportByVideo")}</Typography>}
+              sx={{
+                margin: 0,
+                width: "100%",
+              }}
+            />
+
+            <p style={{ textDecoration: isExplainReportByVideoChecked ? "none" : "line-through", display: "flex", alignItems: "center", gap: "3px", fontWeight: 700 }}>
+              {explainReportByVideoPrice} <CurrencyIcon fill="#747a79" style={{ width: "20px", height: "20px" }} />
+            </p>
+          </div> */}
+
+          {/* Discount amount */}
+          {!!appliedDiscount?.amount && (
+            <div
+              style={{
+                padding: "16px 0 8px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px",
+                width: "100%",
+                border: "none",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "8px 12px",
+                  backgroundColor: "#e8f5e9",
+                  borderRadius: "4px",
+                  border: "none",
+                  width: "100%",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", border: "none" }}>
+                  {/* <CheckIcon fontSize="small" color="success" /> */}
+                  <Typography variant="body2" color="success.main" sx={{ color: "#4caf50 !important" }}>
+                    %{appliedDiscount?.value} {t("PayPurchaseCheck.discountApplied")}
+                  </Typography>
+                </div>
+
+                <Typography
+                  variant="body2"
+                  fontWeight="bold"
+                  // color="success.main"
+                  style={{ display: "flex", alignItems: "center", gap: "3px", fontWeight: 700, fontSize: "16px", color: "#4caf50" }}
+                >
+                  -{discountAmount}
+                  <CurrencyIcon fill="#4caf50" style={{ width: "16px", height: "16px", marginLeft: "4px" }} />
+                </Typography>
+              </div>
+            </div>
+          )}
+
+          {/* Applied Points Redemption */}
+          {appliedPoints !== 0 && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "8px 12px",
+                backgroundColor: "#e3f2fd",
+                borderRadius: "4px",
+                border: "none",
+                width: "100%",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", border: "none" }}>
+                <Typography variant="body2" sx={{ color: "#1976d2 !important" }}>
+                  {t("PayPurchaseCheck.redeem")} {appliedPoints} {t("PayPurchaseCheck.point")}
+                </Typography>
+              </div>
+
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <Typography variant="body2" fontWeight="bold" style={{ display: "flex", alignItems: "center", gap: "3px", fontWeight: 700, fontSize: "16px", color: "#1976d2" }}>
+                  -{Math.trunc(appliedPoints)}
+                  <CurrencyIcon fill="#1976d2" style={{ width: "16px", height: "16px", marginLeft: "4px" }} />
+                </Typography>
+              </div>
+            </div>
+          )}
+
+          {/* المجموع */}
+          <div style={{ borderBottom: "none", paddingBottom: 0 }}>
+            <p></p>
+            <h4 style={{ fontWeight: "bold" }}>
+              <span>{t("PayPurchaseCheck.total")}</span>
+              <span style={{ fontSize: "20px" }}>{total}</span>
+              <span>
+                <CurrencyIcon fill="#000000de" style={{ width: "21px", height: "23px" }} />
+              </span>
+            </h4>
+          </div>
+        </div>
+      </div>
+
       {/* Payment methods (Tamara/Tabby/Moyasar) */}
       <div className={style.payment_methods_box}>
         {/* Tamara */}
-        {total >= 100 && (
+        {/* {total >= 100 && (
           <Accordion expanded={expanded === "panel1"} onChange={handleChange("panel1")}>
             <AccordionSummary
               aria-controls="panel1d-content"
@@ -1933,10 +1935,10 @@ export default function PayMakdomCheck() {
               </LoadingButton>
             </AccordionDetails>
           </Accordion>
-        )}
+        )} */}
 
         {/* Tabby */}
-        {total >= 100 && (
+        {/* {total >= 100 && (
           <Accordion expanded={expanded === "panel2"} onChange={handleChange("panel2")}>
             <AccordionSummary
               aria-controls="panel2d-content"
@@ -1975,7 +1977,7 @@ export default function PayMakdomCheck() {
               </LoadingButton>
             </AccordionDetails>
           </Accordion>
-        )}
+        )} */}
 
         {/* Moyasar */}
         <Accordion expanded={expanded === "panel3"} onChange={handleChange("panel3")}>

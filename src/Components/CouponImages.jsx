@@ -123,7 +123,7 @@ export default function CouponImages({ code, percent }) {
     const globalIndex = (currentPage - 1) * itemsPerPage + index;
     return `${allTitles[globalIndex] || ""}
   كود الخصم: ${code}
-  https://cashif.cc
+  https://cashif.com
   #كاشف_لفحص_السيارات`;
   };
 
@@ -180,7 +180,7 @@ export default function CouponImages({ code, percent }) {
         color: "#757575",
         onClick: () =>
           window.open(
-            `https://telegram.me/share/url?url=https://cashif.cc/&text=${encodeURIComponent(post)}`,
+            `https://telegram.me/share/url?url=https://cashif.com/&text=${encodeURIComponent(post)}`,
             "_blank"
           ),
       },

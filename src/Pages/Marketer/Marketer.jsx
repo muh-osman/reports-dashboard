@@ -1,6 +1,7 @@
 // Marketer.jsx
 import style from "./Marketer.module.scss";
-import { Navigate, Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { Navigate, Link, useNavigate, useOutletContext } from "react-router-dom";
 // Cookies
 import { useCookies } from "react-cookie";
 // MUI
@@ -52,6 +53,11 @@ import i18n from "../../i18n";
 import { useTranslation } from "react-i18next";
 
 export default function Marketer() {
+  const { specialCode } = useOutletContext();
+  // useEffect(() => {
+  //   console.log(specialCode);
+  // }, [specialCode]);
+  //
   const { t } = useTranslation();
   const [languageText, setLanguageText] = React.useState(i18n.language);
   // Add language change listener
@@ -120,6 +126,7 @@ export default function Marketer() {
         clientId: cookies.userId,
         // cardCountFromSite: 0,
         isActive: true,
+        specialCode: specialCode,
       };
       createMarketer(data);
     }

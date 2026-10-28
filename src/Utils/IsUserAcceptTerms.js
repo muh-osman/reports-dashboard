@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useOutletContext } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
 import { CircularProgress, Box, useTheme, useMediaQuery } from "@mui/material";
@@ -20,6 +20,13 @@ async function fetchIfUserAcceptTerms(phoneNumber) {
 export default function IsUserAcceptTerms() {
   const [cookies] = useCookies(["tokenApp", "phoneNumber"]);
 
+  const { specialCode } = useOutletContext();
+
+  // useEffect(() => {
+  //   console.log(specialCode);
+  // }, [specialCode]);
+
+  //
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("md")); // 'md' breakpoint or larger
 
@@ -40,6 +47,6 @@ export default function IsUserAcceptTerms() {
     );
   }
 
-  return data?.is_accept_terms ? <Outlet /> : <AcceptTerms />;
+  return data?.is_accept_terms ? <Outlet context={{ specialCode }} /> : <AcceptTerms />;
   // return data?.exists ? <Outlet /> : <Outlet />;
 }

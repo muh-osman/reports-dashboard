@@ -393,7 +393,7 @@ export default function Shippings() {
       delivery_method: encodeURIComponent(deliveryMethod || ""),
     };
 
-    // const url = `https://cashif.cc/shipping/?report_number=${encodedParams.report_number}&model=${encodedParams.model}&model_category=${encodedParams.model_category}&from=${encodedParams.from}&to=${encodedParams.to}&shipping_type=${encodedParams.shipping_type}&price=${encodedParams.price}`;
+    // const url = `https://cashif.com/shipping/?report_number=${encodedParams.report_number}&model=${encodedParams.model}&model_category=${encodedParams.model_category}&from=${encodedParams.from}&to=${encodedParams.to}&shipping_type=${encodedParams.shipping_type}&price=${encodedParams.price}`;
     // window.location.href = url;
 
     navigate(
@@ -717,9 +717,9 @@ export default function Shippings() {
                 </div>
                 <div>
                   <h4>سطحة من مركز الفحص إلى شركة الشحن</h4>
-                  <p style={{ margin: 0 }}>سوف تصل سطحة تستلم السيارة من المركز والذهاب بها الى فرع البسامي لشحنها</p>
-                  {/* <p style={{ fontWeight: "bold", margin: 0, marginTop: "16px" }}>تنويه:</p> */}
-                  {/* <p style={{ margin: 0 }}>مدة وصول السطحة إلى مركز الفحص تتراوح من 15 إلى 60 دقيقة.</p> */}
+                  <p style={{ margin: 0 }}>سوف تصل سطحة تستلم السيارة من مركز كاشف والذهاب بها الى فرع البسامي لشحنها</p>
+                  <p style={{ fontWeight: "bold", margin: 0, marginTop: "16px" }}>تنويه:</p>
+                  <p style={{ margin: 0,color: "red" }}>رسوم منفصلة عن قيمة شحن البسامي بـ 115 ريال</p>
                   {/* <p>يجب على صاحب السيارة تسليم السيارة للسطحة بنفسه.</p> */}
                 </div>
                 <button onClick={() => setDeliveryMethod(2)}>اختيار</button>

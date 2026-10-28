@@ -543,7 +543,7 @@ export default function Home() {
 //               style={{ display: "flex", justifyContent: "center" }}
 //             >
 //               <ReactPlayer
-//                 url="https://cashif.cc/wp-content/themes/cashif_theme/assets/videos/cashif.mp4"
+//                 url="https://cashif.com/wp-content/themes/cashif_theme/assets/videos/cashif.mp4"
 //                 controls={true} // Show play/pause controls
 //                 width="100%" // Responsive width
 //                 height="auto" // Adjust height automatically
@@ -759,7 +759,7 @@ export default function Home() {
 //                         </li>
 
 //                         <li>
-//                           <a href="https://cashif.cc/check-it/">خدمة مخدوم</a>
+//                           <a href="https://cashif.com/check-it/">خدمة مخدوم</a>
 //                         </li>
 //                       </ul>
 //                     </div>
@@ -770,19 +770,19 @@ export default function Home() {
 //                       <h4>روابط مهمة</h4>
 //                       <ul>
 //                         <li>
-//                           <a href="https://cashif.cc/terms-and-privacy-policy/">
+//                           <a href="https://cashif.com/terms-and-privacy-policy/">
 //                             الأحكام والخصوصية
 //                           </a>
 //                         </li>
 
 //                         <li>
-//                           <a href="https://cashif.cc/return-policy/">
+//                           <a href="https://cashif.com/return-policy/">
 //                             الاسترجاع والاستبدال
 //                           </a>
 //                         </li>
 
 //                         <li>
-//                           <a href="https://cashif.cc/blog/">المدونة</a>
+//                           <a href="https://cashif.com/blog/">المدونة</a>
 //                         </li>
 //                       </ul>
 //                     </div>

@@ -63,7 +63,7 @@ export const useVerifyApi = () => {
             path: "/dashboard",
             expires: expirationDate,
           });
-          // This for home page & payment page (cashif.cc)
+          // This for home page & payment page (cashif.com)
           setCookie("auth", token, {
             path: "/",
             expires: expirationDate,

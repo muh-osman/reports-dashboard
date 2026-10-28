@@ -75,7 +75,7 @@ export default function ContactUs() {
               <LocationOnIcon />
             </IconButton>
 
-            <IconButton aria-label="جوال" href="mailto:info@cashif.cc">
+            <IconButton aria-label="جوال" href="mailto:info@cashif.com">
               <EmailIcon />
             </IconButton>
             <Typography
@@ -85,7 +85,7 @@ export default function ContactUs() {
                 marginRight: languageText === "ar" ? 0 : 1,
               }}
             >
-              info@cashif.cc
+              info@cashif.com
             </Typography>
 
             <IconButton aria-label="جوال" href="tel:920019948">
@@ -124,7 +124,7 @@ export default function ContactUs() {
               <LocationOnIcon />
             </IconButton>
 
-            <IconButton aria-label="جوال" href="mailto:info@cashif.cc">
+            <IconButton aria-label="جوال" href="mailto:info@cashif.com">
               <EmailIcon />
             </IconButton>
             <Typography
@@ -134,7 +134,7 @@ export default function ContactUs() {
                 marginRight: languageText === "ar" ? 0 : 1,
               }}
             >
-              info@cashif.cc
+              info@cashif.com
             </Typography>
 
             <IconButton aria-label="جوال" href="tel:920019948">
@@ -173,7 +173,7 @@ export default function ContactUs() {
               <LocationOnIcon />
             </IconButton>
 
-            <IconButton aria-label="جوال" href="mailto:info@cashif.cc">
+            <IconButton aria-label="جوال" href="mailto:info@cashif.com">
               <EmailIcon />
             </IconButton>
             <Typography
@@ -183,7 +183,7 @@ export default function ContactUs() {
                 marginRight: languageText === "ar" ? 0 : 1,
               }}
             >
-              info@cashif.cc
+              info@cashif.com
             </Typography>
 
             <IconButton aria-label="جوال" href="tel:920019948">
@@ -222,7 +222,7 @@ export default function ContactUs() {
               <LocationOnIcon />
             </IconButton>
 
-            <IconButton aria-label="جوال" href="mailto:info@cashif.cc">
+            <IconButton aria-label="جوال" href="mailto:info@cashif.com">
               <EmailIcon />
             </IconButton>
             <Typography
@@ -232,7 +232,7 @@ export default function ContactUs() {
                 marginRight: languageText === "ar" ? 0 : 1,
               }}
             >
-              info@cashif.cc
+              info@cashif.com
             </Typography>
 
             <IconButton aria-label="جوال" href="tel:920019948">
@@ -271,7 +271,7 @@ export default function ContactUs() {
               <LocationOnIcon />
             </IconButton>
 
-            <IconButton aria-label="جوال" href="mailto:info@cashif.cc">
+            <IconButton aria-label="جوال" href="mailto:info@cashif.com">
               <EmailIcon />
             </IconButton>
             <Typography
@@ -281,7 +281,7 @@ export default function ContactUs() {
                 marginRight: languageText === "ar" ? 0 : 1,
               }}
             >
-              info@cashif.cc
+              info@cashif.com
             </Typography>
 
             <IconButton aria-label="جوال" href="tel:920019948">
@@ -320,7 +320,7 @@ export default function ContactUs() {
               <LocationOnIcon />
             </IconButton>
 
-            <IconButton aria-label="جوال" href="mailto:info@cashif.cc">
+            <IconButton aria-label="جوال" href="mailto:info@cashif.com">
               <EmailIcon />
             </IconButton>
             <Typography
@@ -330,7 +330,7 @@ export default function ContactUs() {
                 marginRight: languageText === "ar" ? 0 : 1,
               }}
             >
-              info@cashif.cc
+              info@cashif.com
             </Typography>
 
             <IconButton aria-label="جوال" href="tel:920019948">

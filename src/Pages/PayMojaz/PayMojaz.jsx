@@ -152,6 +152,7 @@ export default function PayMojaz() {
         },
 
         metadata: {
+          flag: "mojaz",
           lookupType: lookupType,
           lookupValue: lookupValue,
           name: name,
@@ -182,6 +183,7 @@ export default function PayMojaz() {
           return {
             amount: 119 * 100,
             metadata: {
+              flag: "mojaz",
               lookupType: lookupType,
               lookupValue: lookupValue,
               name: name,

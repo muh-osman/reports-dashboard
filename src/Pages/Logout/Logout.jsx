@@ -24,7 +24,7 @@ export default function Logout() {
     removeCookie("username", { path: "/dashboard" });
     removeCookie("tokenApp", { path: "/dashboard" });
 
-    // window.location.href = "https://cashif.cc/";
+    // window.location.href = "https://cashif.com/";
 
     navigate(`${process.env.PUBLIC_URL}/login`);
   }, []);

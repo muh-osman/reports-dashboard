@@ -1,8 +1,10 @@
+// Old page
+
 import style from "./MyOrders.module.scss";
 //
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Box, Card, CardContent, Chip, CircularProgress, Divider, Grid, Stack, Typography, Alert, Avatar } from "@mui/material";
+import { Box, Card, CardContent, Chip, CircularProgress, Divider, Grid, Stack, Typography, Alert, Avatar, Tabs, Tab } from "@mui/material";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
@@ -11,6 +13,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import ContentPasteSearchIcon from "@mui/icons-material/ContentPasteSearch";
 import WarningIcon from "@mui/icons-material/Warning";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 // Lang
 import i18n from "../../i18n"; // Make sure to import i18n
 import { useTranslation } from "react-i18next";
@@ -20,6 +23,9 @@ import { useCookies } from "react-cookie";
 import Tabby from "../../Assets/logos/tabby.png";
 import Tamara from "../../Assets/logos/tamara.png";
 import Moyasar from "../../Assets/logos/moyasar.png";
+// Image
+import single from "../../Assets/Images/single.png";
+import multible from "../../Assets/Images/multible.png";
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
@@ -61,49 +67,49 @@ function OrderCard({ order, navigate }) {
 
   //   console.log(order.table_name);
 
-  let goToThanksPage = (paidQrCode) => {
-    // Check if "مخدوم" or "فحص الشراء"
-    if (order.service && order.service.includes("مخدوم")) {
-      if (order.table_name === "Moyasar") {
-        navigate(`/dashboard/pay/makdom-check/thanks?status=paid&message=APPROVED&id=${paidQrCode}&noAutoDownload=true`);
-      }
+  // let goToThanksPage = (paidQrCode) => {
+  //   // Check if "مخدوم" or "فحص الشراء"
+  //   if (order.service && order.service.includes("مخدوم")) {
+  //     if (order.table_name === "Moyasar") {
+  //       navigate(`/dashboard/pay/makdom-check/thanks?status=paid&message=APPROVED&id=${paidQrCode}&noAutoDownload=true`);
+  //     }
 
-      if (order.table_name === "Tamara") {
-        navigate(`/dashboard/pay/makdom-check/thanks?paymentStatus=approved&orderId=${paidQrCode}&noAutoDownload=true`);
-      }
+  //     if (order.table_name === "Tamara") {
+  //       navigate(`/dashboard/pay/makdom-check/thanks?paymentStatus=approved&orderId=${paidQrCode}&noAutoDownload=true`);
+  //     }
 
-      if (order.table_name === "Tabby") {
-        navigate(`/dashboard/pay/makdom-check/thanks?payment_id=${paidQrCode}&noAutoDownload=true`);
-      }
-    } else {
-      if (order.table_name === "Moyasar") {
-        navigate(`/dashboard/pay/purchase-check/thanks?status=paid&message=APPROVED&id=${paidQrCode}&noAutoDownload=true`);
-      }
+  //     if (order.table_name === "Tabby") {
+  //       navigate(`/dashboard/pay/makdom-check/thanks?payment_id=${paidQrCode}&noAutoDownload=true`);
+  //     }
+  //   } else {
+  //     if (order.table_name === "Moyasar") {
+  //       navigate(`/dashboard/pay/purchase-check/thanks?status=paid&message=APPROVED&id=${paidQrCode}&noAutoDownload=true`);
+  //     }
 
-      if (order.table_name === "Tamara") {
-        navigate(`/dashboard/pay/purchase-check/thanks?paymentStatus=approved&orderId=${paidQrCode}&noAutoDownload=true`);
-      }
+  //     if (order.table_name === "Tamara") {
+  //       navigate(`/dashboard/pay/purchase-check/thanks?paymentStatus=approved&orderId=${paidQrCode}&noAutoDownload=true`);
+  //     }
 
-      if (order.table_name === "Tabby") {
-        navigate(`/dashboard/pay/purchase-check/thanks?payment_id=${paidQrCode}&noAutoDownload=true`);
-      }
-    }
-  };
+  //     if (order.table_name === "Tabby") {
+  //       navigate(`/dashboard/pay/purchase-check/thanks?payment_id=${paidQrCode}&noAutoDownload=true`);
+  //     }
+  //   }
+  // };
 
   return (
     <Card
-      onClick={() => goToThanksPage(paidQrCode)}
+      // onClick={() => goToThanksPage(paidQrCode)}
       elevation={0}
       sx={{
         borderRadius: 3,
         border: "1.5px solid #e8ecf4",
-        transition: "box-shadow 0.2s, border-color 0.2s",
-        "&:hover": {
-          boxShadow: "0 8px 32px rgba(26,110,245,0.10)",
-          borderColor: "#174545",
-          cursor: "pointer",
-        },
         direction: "rtl",
+        // transition: "box-shadow 0.2s, border-color 0.2s",
+        // "&:hover": {
+        //   boxShadow: "0 8px 32px rgba(26,110,245,0.10)",
+        //   borderColor: "#174545",
+        //   cursor: "pointer",
+        // },
       }}
     >
       <CardContent sx={{ p: 3 }}>
@@ -175,6 +181,122 @@ function OrderCard({ order, navigate }) {
   );
 }
 
+function ShippingOrderCard({ order }) {
+  const getStatus = () => {
+    return {
+      label: order?.modelCategory,
+      color: "success",
+    };
+
+    if (order?.isShipped) {
+      return {
+        label: "تم الشحن",
+      };
+    }
+  };
+
+  const status = getStatus();
+
+  return (
+    <Card
+      elevation={0}
+      sx={{
+        borderRadius: 3,
+        border: "1.5px solid #e8ecf4",
+        direction: "rtl",
+      }}
+    >
+      <CardContent sx={{ p: 3 }}>
+        {/* Header */}
+        <Stack direction="row" alignItems="flex-start" justifyContent="space-between" mb={2} flexWrap="wrap" gap={1}>
+          <Stack direction="row" alignItems="center" gap={1.5}>
+            <Avatar
+              sx={{
+                bgcolor: "#17454518",
+                width: 48,
+                height: 48,
+                border: "2px solid #17454533",
+              }}
+            >
+              <Box component="img" src={single} alt="Shipping" sx={{ width: 48, height: 48, objectFit: "contain" }} />
+            </Avatar>
+
+            <Box>
+              <Typography variant="subtitle1" fontWeight={700} color="#1a202c" lineHeight={1.2}>
+                {order?.model || "طلب شحن"}
+              </Typography>
+
+              <Typography variant="caption" color="#64748b">
+                {order?.name || "—"}
+              </Typography>
+            </Box>
+          </Stack>
+
+          <Chip label={status.label} size="small" />
+        </Stack>
+
+        <Divider sx={{ mb: 2, borderColor: "#f1f5f9" }} />
+
+        {/* Details */}
+        <Grid container spacing={1.5}>
+          <Grid item xs={12} sm={6}>
+            <InfoRow icon={<ContentPasteSearchIcon sx={{ fontSize: 16, color: "#94a3b8" }} />} label="رقم التقرير" value={order?.reportNumber} />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <InfoRow icon={<DirectionsCarIcon sx={{ fontSize: 16, color: "#94a3b8" }} />} label="المركبة" value={order?.model} />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <InfoRow icon={<DirectionsCarIcon sx={{ fontSize: 16, color: "#94a3b8" }} />} label="رقم اللوحة" value={order?.plateNumber} />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <InfoRow icon={<LocalShippingIcon sx={{ fontSize: 16, color: "#94a3b8" }} />} label="نوع الشحن" value={order?.shippingType} />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <InfoRow icon={<LocationOnIcon sx={{ fontSize: 16, color: "#94a3b8" }} />} label="من" value={order?.from} />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <InfoRow icon={<LocationOnIcon sx={{ fontSize: 16, color: "#94a3b8" }} />} label="إلى" value={order?.to} />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <InfoRow
+              icon={<PaymentIcon sx={{ fontSize: 16, color: "#94a3b8" }} />}
+              label="السعر"
+              value={order?.price != null ? `${parseFloat(order.price).toLocaleString()} ريال` : "—"}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <InfoRow icon={<CalendarTodayIcon sx={{ fontSize: 16, color: "#94a3b8" }} />} label="تاريخ الطلب" value={formatDate(order?.created_at)} />
+          </Grid>
+        </Grid>
+
+        {/* Payment ID */}
+        {order?.payment_id && (
+          <Typography
+            dir="ltr"
+            variant="caption"
+            color="#c0cad8"
+            display="block"
+            mt={2}
+            sx={{
+              fontSize: 10,
+              letterSpacing: 0.5,
+            }}
+          >
+            {order.payment_id}
+          </Typography>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
 function InfoRow({ icon, label, value }) {
   return (
     <Stack direction="row" alignItems="center" gap={0.8}>
@@ -215,9 +337,16 @@ export default function MyOrders() {
   const navigate = useNavigate();
   const [cookies, setCookie] = useCookies(["phoneNumber", "tokenApp"]);
   const [orders, setOrders] = useState([]);
+  const [shippingOrders, setShippingOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isHovered, setIsHovered] = useState(false); // ✅ was missing
+
+  const [activeTab, setActiveTab] = useState(0);
+
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
+  };
 
   useEffect(() => {
     if (!cookies.phoneNumber) return;
@@ -233,6 +362,7 @@ export default function MyOrders() {
       })
       .then((json) => {
         setOrders(json.data ?? []);
+        setShippingOrders(json.shipping_orders ?? []);
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
@@ -276,11 +406,78 @@ export default function MyOrders() {
               طلباتي
             </Typography>
 
-            {orders.length > 0 && (
+            {/* {orders.length > 0 && (
               <Typography variant="body2" color="#94a3b8" mt={0.5} sx={{ textAlign: "center" }}>
                 {orders.length} طلب مسجّل
               </Typography>
-            )}
+            )} */}
+          </Box>
+
+          {/* Tabs */}
+          <Box
+            sx={{
+              width: "100%",
+              bgcolor: "#fff",
+              color: "#174545",
+              borderRadius: "24px",
+              mb: 2,
+            }}
+          >
+            <Tabs
+              value={activeTab}
+              onChange={handleTabChange}
+              centered
+              variant="fullWidth"
+              sx={{
+                "& .MuiTabs-indicator": {
+                  backgroundColor: "#f0f1f3",
+                  border: "4px solid #fff",
+                  borderRadius: "24px",
+                  height: "100%",
+                  zIndex: 0,
+                },
+              }}
+            >
+              <Tab
+                disableRipple
+                label={
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    {/* <DirectionsCarIcon fontSize="small" /> */}
+
+                    <span>طلبات الفحص</span>
+                  </Box>
+                }
+                sx={{
+                  color: "#174545",
+                  minWidth: "69px",
+                  zIndex: 1,
+                  "&.Mui-selected": {
+                    backgroundColor: "transparent",
+                    color: "#174545",
+                  },
+                }}
+              />
+
+              <Tab
+                disableRipple
+                label={
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    {/* <LocalShippingIcon fontSize="small" /> */}
+
+                    <span>طلبات الشحن</span>
+                  </Box>
+                }
+                sx={{
+                  color: "#174545",
+                  minWidth: "69px",
+                  zIndex: 1,
+                  "&.Mui-selected": {
+                    backgroundColor: "transparent",
+                    color: "#174545",
+                  },
+                }}
+              />
+            </Tabs>
           </Box>
 
           {/* states */}
@@ -296,19 +493,56 @@ export default function MyOrders() {
             </Alert>
           )}
 
-          {!loading && !error && orders.length === 0 && (
-            <Box display="flex" flexDirection="column" alignItems="center" py={10} gap={2}>
-              <DirectionsCarIcon sx={{ fontSize: 56, color: "#e2e8f0" }} />
-              <Typography color="#94a3b8">لا توجد طلبات حتى الآن</Typography>
-            </Box>
-          )}
+          {!loading && !error && (
+            <>
+              {/* Regular Orders */}
+              {activeTab === 0 && (
+                <>
+                  {orders.length === 0 ? (
+                    <Box display="flex" flexDirection="column" alignItems="center" py={10} gap={2}>
+                      <DirectionsCarIcon
+                        sx={{
+                          fontSize: 56,
+                          color: "#e2e8f0",
+                        }}
+                      />
 
-          {!loading && !error && orders.length > 0 && (
-            <Stack spacing={2}>
-              {orders.map((order) => (
-                <OrderCard key={order.paid_qr_code ?? order.id} order={order} navigate={navigate} />
-              ))}
-            </Stack>
+                      <Typography color="#94a3b8">لا توجد طلبات حتى الآن</Typography>
+                    </Box>
+                  ) : (
+                    <Stack spacing={2}>
+                      {orders.map((order) => (
+                        <OrderCard key={order.paid_qr_code ?? order.id} order={order} navigate={navigate} />
+                      ))}
+                    </Stack>
+                  )}
+                </>
+              )}
+
+              {/* Shipping Orders */}
+              {activeTab === 1 && (
+                <>
+                  {shippingOrders.length === 0 ? (
+                    <Box display="flex" flexDirection="column" alignItems="center" py={10} gap={2}>
+                      <LocalShippingIcon
+                        sx={{
+                          fontSize: 56,
+                          color: "#e2e8f0",
+                        }}
+                      />
+
+                      <Typography color="#94a3b8">لا توجد طلبات شحن حتى الآن</Typography>
+                    </Box>
+                  ) : (
+                    <Stack spacing={2}>
+                      {shippingOrders.map((order) => (
+                        <ShippingOrderCard key={order.id ?? order.payment_id} order={order} />
+                      ))}
+                    </Stack>
+                  )}
+                </>
+              )}
+            </>
           )}
         </Box>
       )}

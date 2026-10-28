@@ -155,7 +155,7 @@ export default function ThanksPurchaseCheck() {
 
             <Button
               variant="outlined"
-              href="http://cashif.cc/"
+              href="http://cashif.com/"
               sx={{
                 marginBottom: "40px",
                 marginTop: "8px",

@@ -128,7 +128,7 @@ export default function SignUp() {
     <div style={{ backgroundColor: "#f0f1f3" }}>
       <div className={style.header}>
         <div className={style.top_circle_header}>
-          <a href="https://cashif.cc/">
+          <a href="https://cashif.com/">
             <img src={logo} alt="cashif logo" />
           </a>
           <Tooltip title={t("SignUp.back")} className={style.three_dots} onClick={handleBack}>

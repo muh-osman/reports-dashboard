@@ -353,6 +353,7 @@ export default function PlansInGallery() {
   const [savePassengerPrice, setSavePassengerPrice] = React.useState(0);
 
   // Populate state from API response
+  // Populate state from API response
   React.useEffect(() => {
     if (!prices || prices.length === 0) return;
 
@@ -361,52 +362,60 @@ export default function PlansInGallery() {
     const engine = prices.find((p) => p.serviceId === 10);
     const passenger = prices.find((p) => p.serviceId === 15);
 
-    // setFullPrice(Math.floor(full?.price ?? 0));
-    // setOldPriceFullPrice(Math.floor(full?.original_price ?? 0));
-    // setSaveFullPrice(Math.floor(full?.you_save ?? 0));
+    const yearNum = Number(selectedYear);
+    const isOldYear = yearNum > 0 && yearNum <= 2009; // 2009 or older
 
-    // setBasicPrice(Math.floor(basic?.price ?? 0));
-    // setOldPriceBasicPrice(Math.floor(basic?.original_price ?? 0));
-    // setSaveBasicPrice(Math.floor(basic?.you_save ?? 0));
-
-    // setEngainPrice(Math.floor(engine?.price ?? 0));
-    // setOldPriceEngainPrice(Math.floor(engine?.original_price ?? 0));
-    // setSaveEngainPrice(Math.floor(engine?.you_save ?? 0));
-
-    // Full: force 10% off original_price
-    // الشامل — force exactly 10% discount off original_price
+    // الشامل (Full): 15% if year <= 2009, otherwise 10%
+    const fullDiscountPercent = isOldYear ? 0.15 : 0.1;
     const fullOrig = Math.floor(full?.original_price ?? 0);
-    const fullDisc = Math.floor(fullOrig * 0.9);
+    const fullDisc = Math.floor(fullOrig * (1 - fullDiscountPercent));
     setFullPrice(fullDisc);
     setOldPriceFullPrice(fullOrig);
     setSaveFullPrice(fullOrig - fullDisc);
 
-    // الأساسي — no discount, show original_price as the actual price
-    setBasicPrice(Math.floor(basic?.original_price ?? 0));
-    setOldPriceBasicPrice(0);
-    setSaveBasicPrice(0);
+    // الأساسي (Basic): 15% if year <= 2009, otherwise no discount
+    const basicOrig = Math.floor(basic?.original_price ?? 0);
+    if (isOldYear) {
+      const basicDisc = Math.floor(basicOrig * 0.85);
+      setBasicPrice(basicDisc);
+      setOldPriceBasicPrice(basicOrig);
+      setSaveBasicPrice(basicOrig - basicDisc);
+    } else {
+      setBasicPrice(basicOrig);
+      setOldPriceBasicPrice(0);
+      setSaveBasicPrice(0);
+    }
 
-    // المحركات — no discount, show original_price as the actual price
-    setEngainPrice(Math.floor(engine?.original_price ?? 0));
-    setOldPriceEngainPrice(0);
-    setSaveEngainPrice(0);
+    // المحركات (Engine): 15% if year <= 2009, otherwise no discount
+    const engineOrig = Math.floor(engine?.original_price ?? 0);
+    if (isOldYear) {
+      const engineDisc = Math.floor(engineOrig * 0.85);
+      setEngainPrice(engineDisc);
+      setOldPriceEngainPrice(engineOrig);
+      setSaveEngainPrice(engineOrig - engineDisc);
+    } else {
+      setEngainPrice(engineOrig);
+      setOldPriceEngainPrice(0);
+      setSaveEngainPrice(0);
+    }
 
     setPassengerPrice(Math.floor(passenger?.price ?? 0));
     setOldPricePassenger(Math.floor(passenger?.original_price ?? 0));
     setSavePassengerPrice(Math.floor(passenger?.you_save ?? 0));
-  }, [prices]);
+  }, [prices, selectedYear]); // <-- added selectedYear as a dependency
 
   // CSS ribbon badges
   React.useEffect(() => {
     if (!prices || prices.length === 0) return;
 
-    const full = prices.find((p) => p.serviceId === 8) ?? {};
-    const basic = prices.find((p) => p.serviceId === 9) ?? {};
-    const engine = prices.find((p) => p.serviceId === 10) ?? {};
-    const passenger = prices.find((p) => p.serviceId === 15) ?? {};
+    const yearNum = Number(selectedYear);
+    const isOldYear = yearNum > 0 && yearNum <= 2009;
 
-    const badge = (record, overridePercent = null) => {
-      const percent = overridePercent;
+    const fullPercent = isOldYear ? 15 : 10;
+    const basicPercent = isOldYear ? 15 : 0;
+    const enginePercent = isOldYear ? 15 : 0;
+
+    const badge = (percent) => {
       if (!percent || percent === 0) return "content: none;";
       const label = languageText === "ar" ? `خصم ${percent}%` : `${percent}% Off`;
       return `content: "${label}";`;
@@ -416,20 +425,17 @@ export default function PlansInGallery() {
 
     const styleEl = document.createElement("style");
     styleEl.innerHTML = `
-        .full-Plane-catcher::after,
-        .engines-catcher::after,
-        .bascic-catcher::after,
-        .passenger-plans-catcher::after { ${leftRight} }
+      .full-Plane-catcher::after,
+      .engines-catcher::after,
+      .bascic-catcher::after,
+      .passenger-plans-catcher::after { ${leftRight} }
 
-        .full-Plane-catcher::after       { ${badge(full, 10)}  }
-        .bascic-catcher::after           { ${badge(basic, 0)}  }
-        .engines-catcher::after          { ${badge(engine, 0)} }
-        .passenger-plans-catcher::after  { ${badge(passenger)} }
-      `;
+      .full-Plane-catcher::after       { ${badge(fullPercent)}  }
+      .bascic-catcher::after           { ${badge(basicPercent)}  }
+      .engines-catcher::after          { ${badge(enginePercent)} }
+    `;
     document.head.appendChild(styleEl);
-
-    // return () => styleEl.remove();
-  }, [prices, languageText]);
+  }, [prices, languageText, selectedYear]);
 
   //
   const handleSubmit = () => {

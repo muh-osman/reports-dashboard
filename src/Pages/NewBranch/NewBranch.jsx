@@ -48,6 +48,9 @@ const ryalIcon = `<svg fill="#174545" xmlns="http://www.w3.org/2000/svg" viewBox
 const redRyalIcon = `<svg width="13" fill="#d32f2f" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>`;
 const greenRyalIcon = `<svg width="13" fill="#25d366" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>`;
 
+const DISCOUNT_RATE = 0.25; // 25% off
+const DISCOUNT_PERCENT = DISCOUNT_RATE * 100;
+
 export default function NewBranch() {
   // مرتاح Modal
   const [openComfortModal, setOpenComfortModal] = React.useState(false);
@@ -329,6 +332,9 @@ export default function NewBranch() {
   // Get Prices
   const { data: prices, fetchStatus: pricesFetchStatus, isSuccess: isFetchPricesSuccess } = useGetPlanDetailsByYearAndModel(selectedModelId, selectedYear, trigger);
 
+  console.log(prices);
+
+
   React.useEffect(() => {
     if (pricesFetchStatus === "idle") {
       setTrigger(false);
@@ -374,24 +380,24 @@ export default function NewBranch() {
     // setOldPriceEngainPrice(Math.floor(engine?.original_price ?? 0));
     // setSaveEngainPrice(Math.floor(engine?.you_save ?? 0));
 
-    // Full: force 10% off original_price
-    // الشامل — force exactly 50% discount off original_price
+
+    // الشامل — 25% discount off original_price
     const fullOrig = Math.floor(full?.original_price ?? 0);
-    const fullDisc = Math.floor(fullOrig * 0.5);
+    const fullDisc = Math.floor(fullOrig * (1 - DISCOUNT_RATE));
     setFullPrice(fullDisc);
     setOldPriceFullPrice(fullOrig);
     setSaveFullPrice(fullOrig - fullDisc);
 
-    // الأساسي — force exactly 50% discount off original_price
+    // الأساسي — 25% discount off original_price
     const basicOrig = Math.floor(basic?.original_price ?? 0);
-    const basicDisc = Math.floor(basicOrig * 0.5);
+    const basicDisc = Math.floor(basicOrig * (1 - DISCOUNT_RATE));
     setBasicPrice(basicDisc);
     setOldPriceBasicPrice(basicOrig);
     setSaveBasicPrice(basicOrig - basicDisc);
 
-    // المحركات — force exactly 50% discount off original_price
+    // المحركات — 25% discount off original_price
     const engineOrig = Math.floor(engine?.original_price ?? 0);
-    const engineDisc = Math.floor(engineOrig * 0.5);
+    const engineDisc = Math.floor(engineOrig * (1 - DISCOUNT_RATE));
     setEngainPrice(engineDisc);
     setOldPriceEngainPrice(engineOrig);
     setSaveEngainPrice(engineOrig - engineDisc);
@@ -426,9 +432,9 @@ export default function NewBranch() {
         .bascic-catcher::after,
         .passenger-plans-catcher::after { ${leftRight} }
 
-        .full-Plane-catcher::after       { ${badge(full, 50)}  }
-        .bascic-catcher::after           { ${badge(basic, 50)}  }
-        .engines-catcher::after          { ${badge(engine, 50)} }
+        .full-Plane-catcher::after       { ${badge(full, DISCOUNT_PERCENT)}  }
+        .bascic-catcher::after           { ${badge(basic, DISCOUNT_PERCENT)}  }
+        .engines-catcher::after          { ${badge(engine, DISCOUNT_PERCENT)} }
         .passenger-plans-catcher::after  { ${badge(passenger)} }
       `;
     document.head.appendChild(styleEl);

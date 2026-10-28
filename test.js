@@ -1120,7 +1120,7 @@ export default function Prices() {
                             id="plane-one"
                             className="ask-now"
                             rel="noopener noreferrer"
-                            href={`https://cashif.cc${checkit ? "/check-it/receipt" : "/pay"}${languageText === "ar" ? "" : "/en"}/?plan=${
+                            href={`https://cashif.com${checkit ? "/check-it/receipt" : "/pay"}${languageText === "ar" ? "" : "/en"}/?plan=${
                               languageText === "ar" ? "محركات" : "Engine"
                             }&year_id=${selectedYear >= 2017 ? 2 : 1}&car_model_id=${carMarkIds}&price_id=2&full_year=${selectedYear}${
                               dis ? "&dis=fifty" : ""
@@ -1212,7 +1212,7 @@ export default function Prices() {
                             id="plane-two"
                             className="ask-now"
                             rel="noopener noreferrer"
-                            href={`https://cashif.cc${checkit ? "/check-it/receipt" : "/pay"}${languageText === "ar" ? "" : "/en"}/?plan=${
+                            href={`https://cashif.com${checkit ? "/check-it/receipt" : "/pay"}${languageText === "ar" ? "" : "/en"}/?plan=${
                               languageText === "ar" ? "أساسي" : "Basic"
                             }&year_id=${selectedYear >= 2017 ? 2 : 1}&car_model_id=${carMarkIds}&price_id=1&full_year=${selectedYear}${
                               dis ? "&dis=fifty" : ""
@@ -1293,7 +1293,7 @@ export default function Prices() {
                             id="plane-three"
                             className="ask-now"
                             rel="noopener noreferrer"
-                            href={`https://cashif.cc${checkit ? "/check-it/receipt" : "/pay"}${languageText === "ar" ? "" : "/en"}/?plan=${
+                            href={`https://cashif.com${checkit ? "/check-it/receipt" : "/pay"}${languageText === "ar" ? "" : "/en"}/?plan=${
                               languageText === "ar" ? "شامل" : "Full-Inspection"
                             }&year_id=${selectedYear >= 2017 ? 2 : 1}&car_model_id=${carMarkIds}&price_id=0&full_year=${selectedYear}${
                               dis ? "&dis=fifty" : ""
@@ -1416,7 +1416,7 @@ export default function Prices() {
                               id="plane-one"
                               className="ask-now"
                               rel="noopener noreferrer"
-                              href={`https://cashif.cc/pay${languageText === "ar" ? "" : "/en"}/?plan=passenger&year_id=1&car_model_id=9&price_id=2&full_year=0${
+                              href={`https://cashif.com/pay${languageText === "ar" ? "" : "/en"}/?plan=passenger&year_id=1&car_model_id=9&price_id=2&full_year=0${
                                 dis ? "&dis=fifty" : ""
                               }${passenger ? `&passenger=${passenger}` : ""}&off=${
                                 passengerPlanePrices?.data[passenger === "luxury" ? 0 : passenger === "suv" ? 1 : 2]?.discount_percent || "0"
