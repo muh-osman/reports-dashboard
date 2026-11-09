@@ -17,6 +17,8 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Box from "@mui/material/Box";
+import CheckIcon from "@mui/icons-material/Check";
+import { ksaCities, filterKsaCities, findKsaCityByName } from "../../Utils/ksaCities";
 // Image
 import tamaraLogo from "../../Assets/Images/tamara-logo.svg";
 import tabbyLogo from "../../Assets/Images/tabby.png";
@@ -718,19 +720,67 @@ export default function PayMakdomCheck() {
   ///////////////////////////////////////// Start address input /////////////////////////////////////////
   const [address, setAddress] = useState("");
   const [addressError, setAddressError] = useState(false);
+  const [cityQuery, setCityQuery] = useState("");
+  const [isCityInputFocused, setIsCityInputFocused] = useState(false);
   const addressRef = useRef(address);
   useEffect(() => {
     addressRef.current = address;
   }, [address]);
-  // Handle address change
+
+  // Clear address when switching between free-text address and city selection
+  const prevIsMertahServiceChecked = useRef(isMertahServiceChecked);
+  useEffect(() => {
+    if (prevIsMertahServiceChecked.current !== isMertahServiceChecked) {
+      setAddress("");
+      setCityQuery("");
+      setAddressError(false);
+      setIsCityInputFocused(false);
+      prevIsMertahServiceChecked.current = isMertahServiceChecked;
+    }
+  }, [isMertahServiceChecked]);
+
+  const selectedCity = findKsaCityByName(address);
+  const hasCityQuery = cityQuery.trim().length >= 1;
+  const filteredCities = hasCityQuery ? filterKsaCities(ksaCities, cityQuery, languageText) : [];
+  // Don't show cities until user types at least 1 letter.
+  // After selection (and not focused): show only the confirmed chip with checkmark.
+  const citySuggestions = selectedCity && !isCityInputFocused ? [selectedCity] : filteredCities;
+  const showCitySuggestions = (selectedCity && !isCityInputFocused) || hasCityQuery;
+
+  // Handle free-text address change (Mertah)
   const handleAddressChange = (e) => {
     const value = e.target.value;
     setAddress(value);
   };
-  // validate address
+
+  // Handle city search typing
+  const handleCityQueryChange = (e) => {
+    const value = e.target.value;
+    setCityQuery(value);
+    // Typing invalidates previous selection until user picks a city again
+    if (selectedCity) {
+      const label = languageText === "ar" ? selectedCity.nameAr : selectedCity.nameEn;
+      if (value !== label) {
+        setAddress("");
+      }
+    }
+    setAddressError(false);
+  };
+
+  // Handle city selection from the list under the input
+  const handleCitySelect = (city) => {
+    setAddress(city.nameAr);
+    setCityQuery(languageText === "ar" ? city.nameAr : city.nameEn);
+    setAddressError(false);
+    setIsCityInputFocused(false);
+  };
+
+  // validate address / city
   const handleAddressBlur = () => {
-    if (!address.trim()) {
-      if (isMertahServiceChecked) {
+    const currentAddress = addressRef.current || "";
+
+    if (!currentAddress.trim()) {
+      if (isMertahServiceCheckedRef.current) {
         toast.warn("يرجى ادخال بيانات العنوان");
       } else {
         toast.warn("يرجى ادخال بيانات المدينة");
@@ -739,9 +789,14 @@ export default function PayMakdomCheck() {
       return;
     }
 
-    // Check if
-    if (address.trim().length < 3) {
-      toast.warn("يرجى ادخال بيانات صحيحة");
+    if (isMertahServiceCheckedRef.current) {
+      if (currentAddress.trim().length < 3) {
+        toast.warn("يرجى ادخال بيانات صحيحة");
+        setAddressError(true);
+        return;
+      }
+    } else if (!findKsaCityByName(currentAddress)) {
+      toast.warn(languageText === "ar" ? "يرجى اختيار مدينة من القائمة" : "Please select a city from the list");
       setAddressError(true);
       return;
     }
@@ -811,6 +866,11 @@ export default function PayMakdomCheck() {
     }
     if (!addressRef.current) {
       toast.warn("حقل المدينة مطلوب!");
+      return;
+    }
+    if (!isMertahServiceCheckedRef.current && !findKsaCityByName(addressRef.current)) {
+      toast.warn("يرجى اختيار مدينة من القائمة");
+      setAddressError(true);
       return;
     }
 
@@ -962,6 +1022,11 @@ export default function PayMakdomCheck() {
     }
     if (!addressRef.current) {
       toast.warn("حقل المدينة مطلوب!");
+      return;
+    }
+    if (!isMertahServiceCheckedRef.current && !findKsaCityByName(addressRef.current)) {
+      toast.warn("يرجى اختيار مدينة من القائمة");
+      setAddressError(true);
       return;
     }
 
@@ -1244,6 +1309,11 @@ export default function PayMakdomCheck() {
             toast.warn("حقل المدينة مطلوب!");
             return false;
           }
+          if (!isMertahServiceCheckedRef.current && !findKsaCityByName(addressRef.current)) {
+            toast.warn("يرجى اختيار مدينة من القائمة");
+            setAddressError(true);
+            return false;
+          }
 
           // Update the data
           return {
@@ -1507,35 +1577,133 @@ export default function PayMakdomCheck() {
         )}
 
         {/* Address(City) */}
-        <FormControl fullWidth>
-          <InputLabel className={languageText === "ar" ? "custom-label-rtl" : ""} htmlFor="user-address">
-            {isMertahServiceChecked ? t("PayPurchaseCheck.address") : t("PayPurchaseCheck.addressCity")}
-          </InputLabel>
-          <OutlinedInput
-            id="user-address"
-            label={isMertahServiceChecked ? t("PayPurchaseCheck.address") : t("PayPurchaseCheck.addressCity")}
-            value={address}
-            onChange={handleAddressChange}
-            onBlur={handleAddressBlur}
-            error={!!addressError}
-            // placeholder={t("PayPurchaseCheck.addressPlaceholder")}
-            inputProps={{
-              maxLength: 200,
-            }}
-            required
-          />
+        {isMertahServiceChecked ? (
+          <FormControl fullWidth>
+            <InputLabel className={languageText === "ar" ? "custom-label-rtl" : ""} htmlFor="user-address">
+              {t("PayPurchaseCheck.address")}
+            </InputLabel>
+            <OutlinedInput
+              id="user-address"
+              label={t("PayPurchaseCheck.address")}
+              value={address}
+              onChange={handleAddressChange}
+              onBlur={handleAddressBlur}
+              error={!!addressError}
+              inputProps={{
+                maxLength: 200,
+              }}
+              required
+            />
 
-          <FormHelperText
-            sx={{
-              margin: 0,
-              marginTop: "3px",
-              textAlign: languageText === "ar" ? "right" : "left",
-              color: "text.secondary",
-            }}
-          >
-            {isMertahServiceChecked ? t("PayPurchaseCheck.addressHelperText") : t("PayPurchaseCheck.addressHelperTextCity")}
-          </FormHelperText>
-        </FormControl>
+            <FormHelperText
+              sx={{
+                margin: 0,
+                marginTop: "3px",
+                textAlign: languageText === "ar" ? "right" : "left",
+                color: "text.secondary",
+              }}
+            >
+              {t("PayPurchaseCheck.addressHelperText")}
+            </FormHelperText>
+          </FormControl>
+        ) : (
+          <FormControl fullWidth>
+            <InputLabel className={languageText === "ar" ? "custom-label-rtl" : ""} htmlFor="user-address">
+              {t("PayPurchaseCheck.addressCity")}
+            </InputLabel>
+            <OutlinedInput
+              id="user-address"
+              label={t("PayPurchaseCheck.addressCity")}
+              value={cityQuery}
+              onChange={handleCityQueryChange}
+              onFocus={() => setIsCityInputFocused(true)}
+              onBlur={() => {
+                // Delay so list click can update selection before blur validation
+                setTimeout(() => {
+                  setIsCityInputFocused(false);
+                  handleAddressBlur();
+                }, 180);
+              }}
+              error={!!addressError}
+              placeholder={languageText === "ar" ? "ابحث عن مدينتك..." : "Search for your city..."}
+              inputProps={{
+                maxLength: 100,
+              }}
+              required
+            />
+
+            {/* City suggestions under the input — only after typing at least 1 letter */}
+            {showCitySuggestions && (
+              <Box
+                dir={languageText === "ar" ? "rtl" : "ltr"}
+                sx={{
+                  mt: 1,
+                  border: "1px solid",
+                  borderColor: addressError ? "error.main" : "rgba(0, 0, 0, 0.23)",
+                  borderRadius: "4px",
+                  backgroundColor: "#f3f3f3",
+                  maxHeight: selectedCity && !isCityInputFocused ? "auto" : 168,
+                  overflow: "hidden",
+                  overflowY: selectedCity && !isCityInputFocused ? "hidden" : "auto",
+                }}
+              >
+                {citySuggestions.length > 0 ? (
+                  citySuggestions.map((city) => {
+                    const isSelected = selectedCity?.nameAr === city.nameAr;
+                    return (
+                      <Box
+                        key={city.nameAr}
+                        component="button"
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => handleCitySelect(city)}
+                        sx={{
+                          all: "unset",
+                          boxSizing: "border-box",
+                          width: "100%",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          flexDirection: languageText === "ar" ? "row" : "row-reverse",
+                          gap: 1,
+                          px: 1.75,
+                          py: 1.35,
+                          cursor: "pointer",
+                          backgroundColor: isSelected ? "#eaf7ec" : "transparent",
+                          borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
+                          "&:last-child": { borderBottom: "none" },
+                          "&:hover": {
+                            backgroundColor: isSelected ? "#eaf7ec" : "rgba(0, 0, 0, 0.04)",
+                          },
+                        }}
+                      >
+                        <Box component="span" sx={{ fontSize: "0.95rem", color: "text.primary", textAlign: languageText === "ar" ? "right" : "left", flex: 1 }}>
+                          {languageText === "ar" ? city.nameAr : city.nameEn}
+                        </Box>
+                        {isSelected && <CheckIcon sx={{ color: "#2e7d32", fontSize: 20, flexShrink: 0 }} />}
+                      </Box>
+                    );
+                  })
+                ) : (
+                  <Box sx={{ width: "100%", textAlign: "center", color: "text.secondary", fontSize: "0.875rem", py: 1.5 }}>
+                    {languageText === "ar" ? "لا توجد مدينة مطابقة" : "No matching city"}
+                  </Box>
+                )}
+              </Box>
+            )}
+
+            <FormHelperText
+              sx={{
+                margin: 0,
+                marginTop: "3px",
+                textAlign: languageText === "ar" ? "right" : "left",
+                color: "text.secondary",
+              }}
+            >
+              {t("PayPurchaseCheck.addressHelperTextCity")}
+            </FormHelperText>
+          </FormControl>
+        )}
 
         {/* Terms Acceptance Checkbox */}
         {isMertahServiceChecked && (

@@ -1,7 +1,7 @@
 {
   "name": "cashif-reports-dashboard",
   "homepage": "https://cashif.com/dashboard",
-  "version": "213.214.215",
+  "version": "215.216.217",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.4",
